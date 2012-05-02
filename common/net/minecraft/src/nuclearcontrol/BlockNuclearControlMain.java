@@ -13,30 +13,80 @@ import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 import net.minecraft.src.mod_IC2NuclearControl;
 import net.minecraft.src.forge.ITextureProvider;
+import net.minecraft.src.ic2.api.IWrenchable;
 
-public class BlockIC2Thermo extends BlockContainer implements ITextureProvider
+public class BlockNuclearControlMain extends BlockContainer implements ITextureProvider
 {
+    public static final int DAMAGE_THERMAL_MONITOR = 0;
+    public static final int DAMAGE_INDUSTRIAL_ALARM = 1;
+    public static final int DAMAGE_HOWLER_ALARM = 2;
+    
+    public static final float[][] blockSize = {
+        {0.0625F, 0, 0.0625F, 0.9375F, 0.4375F, 0.9375F},//Thermal Monitor
+        {0.125F, 0, 0.125F, 0.875F, 0.4375F, 0.875F},//Industrial  Alarm
+        {0.125F, 0, 0.125F, 0.875F, 0.4375F, 0.875F}//Howler  Alarm
+        
+    };
+    
+    private static final byte[][][] sideMapping = 
+        {
+            {//Thermal Monitor
+                {1, 0, 17, 17, 17, 17},
+                {0, 1, 17, 17, 17, 17},
+                {17, 17, 1, 0, 33, 33},
+                {17, 17, 0, 1, 33, 33},
+                {33, 33, 33, 33, 1, 0},
+                {33, 33, 33, 33, 0, 1}
+            },
+            {//Industrial Alarm
+                {4, 3, 5, 5, 5, 5},
+                {3, 4, 5, 5, 5, 5},
+                {5, 5, 4, 3, 6, 6},
+                {5, 5, 3, 4, 6, 6},
+                {6, 6, 6, 6, 4, 3},
+                {6, 6, 6, 6, 3, 4}
+            },
+            {//Howler Alarm
+                {8, 7, 9, 9, 9, 9},
+                {7, 8, 9, 9, 9, 9},
+                {9, 9, 8, 7, 10, 10},
+                {9, 9, 7, 8, 10, 10},
+                {10, 10, 10, 10, 8, 7},
+                {10, 10, 10, 10, 7, 8}
+            }
+        };
+    
 
-    public BlockIC2Thermo(int i, int j)
+    public BlockNuclearControlMain(int i, int j)
     {
-        super(i, Material.iron);
+        super(i, j, Material.iron);
     }
 
-    public boolean isBlockNormalCube(World world, int i, int j, int k)
+    @Override
+    public int getRenderType()
+    {
+        return mod_IC2NuclearControl.modelId;
+    }
+    
+    @Override
+    public boolean isBlockNormalCube(World world, int x, int y, int z)
     {
         return false;
     }
 
+    @Override
     public String getTextureFile()
     {
         return "/img/texture_thermo.png";
     }
 
+    @Override
     public boolean renderAsNormalBlock()
     {
         return false;
     }
 
+    @Override
     public boolean isOpaqueCube()
     {
         return false;
@@ -45,6 +95,7 @@ public class BlockIC2Thermo extends BlockContainer implements ITextureProvider
     /**
      * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
      */
+    @Override
     public boolean canPlaceBlockAt(World world, int x, int y, int z)
     {
     	for (int face = 0; face < 6; face++){
@@ -61,6 +112,7 @@ public class BlockIC2Thermo extends BlockContainer implements ITextureProvider
      * Called when a block is placed using an item. Used often for taking the facing and figuring out how to position
      * the item.
      */
+    @Override
     public void onBlockPlaced(World world, int x, int y, int z, int face)
     {
         int side = Facing.faceToSide[face];
@@ -70,9 +122,9 @@ public class BlockIC2Thermo extends BlockContainer implements ITextureProvider
 				z + Facing.offsetsZForSide[side], face))
         {
             TileEntity tileentity = world.getBlockTileEntity(x, y, z);
-            if(tileentity instanceof TileEntityIC2Thermo)
+            if(tileentity instanceof IWrenchable)
             {
-            	((TileEntityIC2Thermo)tileentity).setFacing((short)side);
+            	((IWrenchable)tileentity).setFacing((short)side);
             }
         }
         
@@ -81,6 +133,7 @@ public class BlockIC2Thermo extends BlockContainer implements ITextureProvider
     /**
      * Called whenever the block is added into the world.
      */
+    @Override
     public void onBlockAdded(World world, int x, int y, int z)
     {
     	for (int face = 0; face < 6; face++){
@@ -90,9 +143,9 @@ public class BlockIC2Thermo extends BlockContainer implements ITextureProvider
     									z + Facing.offsetsZForSide[side], face))
     		{
                 TileEntity tileentity = world.getBlockTileEntity(x, y, z);
-                if(tileentity instanceof TileEntityIC2Thermo)
+                if(tileentity instanceof IWrenchable)
                 {
-                	((TileEntityIC2Thermo)tileentity).setFacing((short)side);
+                	((IWrenchable)tileentity).setFacing((short)side);
                 }
                 break;
     		}
@@ -100,21 +153,21 @@ public class BlockIC2Thermo extends BlockContainer implements ITextureProvider
         dropBlockIfCantStay(world, x, y, z);
     }
 
+    @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, int neighbor)
     {
-        int metadata = world.getBlockMetadata(x, y, z);
         int side = 0;
         TileEntity tileentity = world.getBlockTileEntity(x, y, z);
-        if(tileentity instanceof TileEntityIC2Thermo)
+        if(tileentity instanceof IWrenchable)
         {
-        	side = ((TileEntityIC2Thermo)tileentity).getFacing();
+        	side = ((IWrenchable)tileentity).getFacing();
         }
 		if(!world.isBlockSolidOnSide(x + Facing.offsetsXForSide[side], 
 				y + Facing.offsetsYForSide[side], 
 				z + Facing.offsetsZForSide[side], Facing.faceToSide[side]))
 		{
 			if(!world.isRemote){
-				dropBlockAsItem(world, x, y, z, metadata, 0);
+				dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
 			}
             world.setBlockWithNotify(x, y, z, 0);
 		}
@@ -141,16 +194,11 @@ public class BlockIC2Thermo extends BlockContainer implements ITextureProvider
         }
     }
 
+    @Override
     public void setBlockBoundsForItemRender()
     {
-        float baseX1 = 0.0625F;
-        float baseY1 = 0F;
-        float baseZ1 = 0.0625F;
-        
-        float baseX2 = 0.9375F;
-        float baseY2 = 0.4375F;
-        float baseZ2 = 0.9375F; 
-        setBlockBounds(baseX1, baseY1, baseZ1, baseX2, baseY2, baseZ2);
+        setBlockBounds( blockSize[0][0], blockSize[0][1], blockSize[0][2], 
+                        blockSize[0][3], blockSize[0][4], blockSize[0][5]);
     }
     
     
@@ -159,21 +207,23 @@ public class BlockIC2Thermo extends BlockContainer implements ITextureProvider
      */
     public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, int x, int y, int z)
     {
-        float baseX1 = 0.0625F;
-        float baseY1 = 0F;
-        float baseZ1 = 0.0625F;
+        int blockType = blockAccess.getBlockMetadata(x, y, z);
         
-        float baseX2 = 0.9375F;
-        float baseY2 = 0.4375F;
-        float baseZ2 = 0.9375F; 
+        float baseX1 = blockSize[blockType][0];
+        float baseY1 = blockSize[blockType][1];
+        float baseZ1 = blockSize[blockType][2];
+        
+        float baseX2 = blockSize[blockType][3];
+        float baseY2 = blockSize[blockType][4];
+        float baseZ2 = blockSize[blockType][5]; 
 
         float tmp;
         
         int side = 0;
         TileEntity tileentity = blockAccess.getBlockTileEntity(x, y, z);
-        if(tileentity instanceof TileEntityIC2Thermo)
+        if(tileentity instanceof IWrenchable)
         {
-        	side = ((TileEntityIC2Thermo)tileentity).getFacing();
+        	side = ((IWrenchable)tileentity).getFacing();
         }
         switch (side)
         {
@@ -238,6 +288,11 @@ public class BlockIC2Thermo extends BlockContainer implements ITextureProvider
 
     public boolean blockActivated(World world, int x, int y, int z, EntityPlayer entityplayer)
     {
+        int blockType = world.getBlockMetadata(x, y, z);
+        if(blockType != DAMAGE_THERMAL_MONITOR)
+        {
+            return false;
+        }
         if (entityplayer.isSneaking())
         {
             return false;
@@ -255,14 +310,20 @@ public class BlockIC2Thermo extends BlockContainer implements ITextureProvider
      * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
      * cleared to be reused)
      */
+    @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
     {
         this.setBlockBoundsBasedOnState(world, x, y, z);
         return super.getCollisionBoundingBoxFromPool(world, x, y, z);
     }
 
+    @Override
     public boolean isPoweringTo(IBlockAccess iblockaccess, int x, int y, int z, int direction)
     {
+        TileEntity tileentity = iblockaccess.getBlockTileEntity(x, y, z);
+        if(!(tileentity instanceof TileEntityIC2Thermo))
+            return false;
+        
         int targetX = x;
         int targetY = y;
         int targetZ = z;
@@ -286,47 +347,50 @@ public class BlockIC2Thermo extends BlockContainer implements ITextureProvider
 			targetX--;
 			break;
 		}
-        TileEntity tileentity = iblockaccess.getBlockTileEntity(targetX, targetY, targetZ);
-        if (tileentity!=null && (NuclearHelper.getReactorAt(tileentity.worldObj, targetX, targetY, targetZ)!=null || 
+        TileEntity targetEntity = iblockaccess.getBlockTileEntity(targetX, targetY, targetZ);
+        if (targetEntity!=null && (NuclearHelper.getReactorAt(tileentity.worldObj, targetX, targetY, targetZ)!=null || 
     		NuclearHelper.getReactorChamberAt(tileentity.worldObj, targetX, targetY, targetZ)!=null))
         {
             return false;
         }
-        tileentity = iblockaccess.getBlockTileEntity(x, y, z);
-        if(tileentity instanceof TileEntityIC2Thermo)
-        	return ((TileEntityIC2Thermo)tileentity).getOnFire() == 1;
-        else
-        	return false;
+    	return ((TileEntityIC2Thermo)tileentity).getOnFire() == 1;
     }
 
-    private static final int[][] sideMapping = 
-    	{
-			{1, 0, 17, 17, 17, 17},
-			{0, 1, 17, 17, 17, 17},
-			{17, 17, 1, 0, 33, 33},
-			{17, 17, 0, 1, 33, 33},
-			{33, 33, 33, 33, 1, 0},
-			{33, 33, 33, 33, 0, 1}
-    	};
-    
+    @Override
     public int getBlockTextureFromSideAndMetadata(int side, int metadata)
     {
-    	int texture = sideMapping[0][side];
-		return blockIndexInTexture+texture;
+    	int texture = sideMapping[metadata][0][side];
+		return texture;
     }
     
-    public int getBlockTexture(IBlockAccess iblockaccess, int x, int y, int z, int side)
+    public int getBlockTexture(IBlockAccess blockaccess, int x, int y, int z, int side)
     {
-        TileEntity tileentity = iblockaccess.getBlockTileEntity(x, y, z);
+        TileEntity tileentity = blockaccess.getBlockTileEntity(x, y, z);
         boolean isThermo = tileentity instanceof TileEntityIC2Thermo;
+        boolean isIndustrialAlarm = tileentity instanceof TileEntityIndustrialAlarm;
         int metaSide = 0;
-        if(isThermo)
+        if(tileentity instanceof IWrenchable)
         {
-        	metaSide = ((TileEntityIC2Thermo)tileentity).getFacing();
+        	metaSide = ((IWrenchable)tileentity).getFacing();
         }
-        int texture = sideMapping[metaSide][side];
-    	if(texture!=0 || !isThermo)
-    		return blockIndexInTexture+texture;
+        int blockType = blockaccess.getBlockMetadata(x, y, z);
+        int texture = sideMapping[blockType][metaSide][side];
+        if(isIndustrialAlarm)
+        {
+            int light = ((TileEntityIndustrialAlarm)tileentity).lightLevel;
+            switch(light)
+            {
+                case 7: 
+                    texture +=16;
+                    break;
+                case 15: 
+                    texture += 32;
+                    break;
+            }
+            return texture;
+        }
+        if(texture!=0 || !isThermo)
+    		return texture;
     	byte fireState = ((TileEntityIC2Thermo)tileentity).getOnFire();
     	switch (fireState)
         {
@@ -340,23 +404,58 @@ public class BlockIC2Thermo extends BlockContainer implements ITextureProvider
                 texture = 32;
                 break;
         }
-	    return blockIndexInTexture + texture;
+	    return texture;
     }
 
+    @Override
     public TileEntity getBlockEntity()
     {
-        return new TileEntityIC2Thermo();
+        return null;
     }
 
-    public TileEntity getBlockEntity(int i)
+    @Override
+    public TileEntity getBlockEntity(int metadata)
     {
-        return getBlockEntity();
+        switch (metadata)
+        {
+        case DAMAGE_THERMAL_MONITOR:
+            return new TileEntityIC2Thermo();
+        case DAMAGE_INDUSTRIAL_ALARM:
+            return new TileEntityIndustrialAlarm();
+        case DAMAGE_HOWLER_ALARM:
+            return new TileEntityHowlerAlarm();
+        }
+        return null;
     }
+    
+    @Override
+    protected int damageDropped(int i)
+    {
+        if(i >0 && i<=2)
+            return i;
+        else
+            return 0;
+    }
+    
+    @Override
+    public int getLightValue(IBlockAccess world, int x, int y, int z) 
+    {
+        TileEntity entity = world.getBlockTileEntity(x, y, z);
+        if(entity instanceof TileEntityIndustrialAlarm)
+        {
+            return ((TileEntityIndustrialAlarm)entity).lightLevel;
+        }
+        return lightValue[blockID];
+    }
+    
+    
 
     @Override
     public void addCreativeItems(ArrayList arraylist)
     {
-        arraylist.add(new ItemStack(this));
+        arraylist.add(new ItemStack(this, 1, DAMAGE_THERMAL_MONITOR));
+        arraylist.add(new ItemStack(this, 1, DAMAGE_INDUSTRIAL_ALARM));
+        arraylist.add(new ItemStack(this, 1, DAMAGE_HOWLER_ALARM));
     }
 
 }

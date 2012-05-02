@@ -9,7 +9,8 @@ import net.minecraft.src.forge.Configuration;
 import net.minecraft.src.forge.NetworkMod;
 import net.minecraft.src.ic2.api.Ic2Recipes;
 import net.minecraft.src.ic2.api.Items;
-import net.minecraft.src.nuclearcontrol.BlockIC2Thermo;
+import net.minecraft.src.nuclearcontrol.BlockNuclearControlMain;
+import net.minecraft.src.nuclearcontrol.ItemNuclearControlMain;
 import net.minecraft.src.nuclearcontrol.ItemToolDigitalThermometer;
 import net.minecraft.src.nuclearcontrol.ItemToolThermometer;
 import net.minecraft.src.nuclearcontrol.ThermometerVersion;
@@ -22,7 +23,14 @@ public class mod_IC2NuclearControl extends NetworkMod
 
     public static Item itemToolThermometer;
     public static Item itemToolDigitalThermometer;
-    public static Block IC2Thermo;
+    public static Block blockNuclearControlMain;
+    public static int modelId;
+    public static float alarmRange;
+
+    public static boolean isClient()
+    {
+        return false;
+    }
 
     @Override
     public boolean clientSideRequired()
@@ -107,7 +115,11 @@ public class mod_IC2NuclearControl extends NetworkMod
         ModLoader.setInGameHook(this, true, false);
         initBlocks(configuration);
         registerBlocks();
+
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityIC2Thermo.class, "IC2Thermo");
+        ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityHowlerAlarm.class, "IC2HowlerAlarm");
+        ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityIndustrialAlarm.class, "IC2IndustrialAlarm");
+
         if(configuration!=null)
         {
         	configuration.save();
@@ -154,7 +166,7 @@ public class mod_IC2NuclearControl extends NetworkMod
     
     public void initBlocks(Configuration configuration)
     {
-        IC2Thermo = new BlockIC2Thermo(getIdFor(configuration, "blockNuclearControlMain", 192, true), 0)
+        blockNuclearControlMain = new BlockNuclearControlMain(getIdFor(configuration, "blockNuclearControlMain", 192, true), 0)
 				.setHardness(0.5F)
 				.setBlockName("blockThermalMonitor")
 				.setRequiresSelfNotify();
@@ -171,18 +183,38 @@ public class mod_IC2NuclearControl extends NetworkMod
 
     public void registerBlocks()
     {
-        ModLoader.registerBlock(IC2Thermo);
+        ModLoader.registerBlock(blockNuclearControlMain, ItemNuclearControlMain.class);
     }
 
     public void addRecipes()
     {
-        Ic2Recipes.addCraftingRecipe(new ItemStack(IC2Thermo, 1), new Object[]
+        Ic2Recipes.addCraftingRecipe(new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_THERMAL_MONITOR), new Object[]
                 {
                     "GGG", "GCG", "GRG", 
                     	Character.valueOf('G'), Items.getItem("reinforcedGlass"), 
                     	Character.valueOf('R'), Item.redstone, 
                     	Character.valueOf('C'), Items.getItem("advancedCircuit")
                 });
+        ItemStack howler = new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_HOWLER_ALARM);
+        Ic2Recipes.addCraftingRecipe(howler, new Object[]
+                {
+                    "NNN", "ICI", "IRI", 
+                        Character.valueOf('I'), Item.ingotIron, 
+                        Character.valueOf('R'), Item.redstone, 
+                        Character.valueOf('N'), Block.music, 
+                        Character.valueOf('C'), Items.getItem("electronicCircuit")
+                });
+
+        ItemStack industrialAlarm = new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_INDUSTRIAL_ALARM);
+        Ic2Recipes.addCraftingRecipe(industrialAlarm, new Object[]
+                {
+                    "GOG", "GHG", "GRG", 
+                        Character.valueOf('G'), Items.getItem("reinforcedGlass"), 
+                        Character.valueOf('O'), new ItemStack(Item.dyePowder, 1, 14), 
+                        Character.valueOf('R'), Item.redstone, 
+                        Character.valueOf('H'), howler 
+                });
+
         Ic2Recipes.addCraftingRecipe(new ItemStack(itemToolThermometer, 1), new Object[] 
         		{
             		"IG ", "GWG", " GG", 

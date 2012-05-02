@@ -2,10 +2,14 @@ package net.minecraft.src;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+
+import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.forge.Configuration;
@@ -14,8 +18,9 @@ import net.minecraft.src.forge.NetworkMod;
 import net.minecraft.src.forge.Property;
 import net.minecraft.src.ic2.api.Ic2Recipes;
 import net.minecraft.src.ic2.api.Items;
-import net.minecraft.src.nuclearcontrol.BlockIC2Thermo;
+import net.minecraft.src.nuclearcontrol.BlockNuclearControlMain;
 import net.minecraft.src.nuclearcontrol.GuiIC2Thermo;
+import net.minecraft.src.nuclearcontrol.ItemNuclearControlMain;
 import net.minecraft.src.nuclearcontrol.ItemToolDigitalThermometer;
 import net.minecraft.src.nuclearcontrol.ItemToolThermometer;
 import net.minecraft.src.nuclearcontrol.ThermometerVersion;
@@ -31,7 +36,9 @@ public class mod_IC2NuclearControl extends NetworkMod
 
     public static Item itemToolThermometer;
     public static Item itemToolDigitalThermometer;
-    public static Block IC2Thermo;
+    public static Block blockNuclearControlMain;
+    public static int modelId;
+    public static float alarmRange;
     
     @Override
     public boolean clientSideRequired()
@@ -48,6 +55,11 @@ public class mod_IC2NuclearControl extends NetworkMod
     public mod_IC2NuclearControl()
     {
 
+    }
+    
+    public static boolean isClient()
+    {
+        return true;
     }
     
     private static File getConfigFile(String name)
@@ -94,6 +106,7 @@ public class mod_IC2NuclearControl extends NetworkMod
 
     }
 
+    @Override
     public void load()
     {
         ModLoader.setInGameHook(this, true, false);
@@ -121,14 +134,98 @@ public class mod_IC2NuclearControl extends NetworkMod
         initBlocks(configuration);
         registerBlocks();
         addNames();
+        importSound(configuration);
         TileEntityIC2ThermoRenderer render = new TileEntityIC2ThermoRenderer();
+        
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityIC2Thermo.class, "IC2Thermo", render);
+        ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityHowlerAlarm.class, "IC2HowlerAlarm");
+        ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityIndustrialAlarm.class, "IC2IndustrialAlarm");
+        modelId = ModLoader.getUniqueBlockModelID(this, true);
+        
         if(configuration!=null)
         {
         	configuration.save();
         }
     }
     
+    private void importSound(Configuration configuration)
+    {
+        File soundDir =  new File(new File(Minecraft.getMinecraftDir(), "resources"), "newsound");
+        File ncSoundDir = new File(soundDir, "ic2nuclearControl");
+        if(!ncSoundDir.exists()){
+            ncSoundDir.mkdir();
+        }
+        File alarmFile = new File(ncSoundDir, "alarm.ogg");
+        if(!alarmFile.exists()){
+            try
+            {
+                if(!alarmFile.createNewFile() || !alarmFile.canWrite())
+                    return;
+                InputStream input = getClass().getResourceAsStream("/sound/nuclear-alarm.ogg");
+                FileOutputStream output = new FileOutputStream(alarmFile);
+                byte[] buf = new byte[8192];
+                while (true) {
+                  int length = input.read(buf);
+                  if (length < 0)
+                    break;
+                  output.write(buf, 0, length);
+                }
+                input.close();
+                output.close();
+            } catch (IOException e)
+            {
+                System.out.println("[IC2NuclearControl] can't import sound file");
+            }
+        }
+        alarmRange = new Float(configuration.getOrCreateIntProperty("alarmRange", Configuration.CATEGORY_GENERAL, 64).value).floatValue() / 16F;
+        ModLoader.getMinecraftInstance().sndManager.addSound("ic2nuclearControl/alarm.ogg", alarmFile);
+    }
+    
+    @Override
+    public void renderInvBlock(RenderBlocks render, Block block, int metadata, int model)
+    {
+        if(model == modelId){
+            float[] size = BlockNuclearControlMain.blockSize[metadata];
+            block.setBlockBounds(size[0], size[1], size[2], size[3], size[4], size[5]);
+            Tessellator tesselator = Tessellator.instance;
+            GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
+            tesselator.startDrawingQuads();
+            tesselator.setNormal(0.0F, -1.0F, 0.0F);
+            render.renderBottomFace(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSideAndMetadata(0, metadata));
+            tesselator.draw();
+            tesselator.startDrawingQuads();
+            tesselator.setNormal(0.0F, 1.0F, 0.0F);
+            render.renderTopFace(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSideAndMetadata(1, metadata));
+            tesselator.draw();
+            tesselator.startDrawingQuads();
+            tesselator.setNormal(0.0F, 0.0F, -1.0F);
+            render.renderEastFace(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSideAndMetadata(2, metadata));
+            tesselator.draw();
+            tesselator.startDrawingQuads();
+            tesselator.setNormal(0.0F, 0.0F, 1.0F);
+            render.renderWestFace(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSideAndMetadata(3, metadata));
+            tesselator.draw();
+            tesselator.startDrawingQuads();
+            tesselator.setNormal(-1.0F, 0.0F, 0.0F);
+            render.renderNorthFace(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSideAndMetadata(4, metadata));
+            tesselator.draw();
+            tesselator.startDrawingQuads();
+            tesselator.setNormal(1.0F, 0.0F, 0.0F);
+            render.renderSouthFace(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSideAndMetadata(5, metadata));
+            tesselator.draw();
+            GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+        }
+    }
+    
+    @Override
+    public boolean renderWorldBlock(RenderBlocks render, IBlockAccess blockAccess, int x, int y, int z, Block block, int model)
+    {
+       if(model == modelId){
+           render.renderStandardBlock(block, x, y, z);
+       }
+       return false;
+    }
+
     @Override
     public void modsLoaded()
     {
@@ -169,7 +266,7 @@ public class mod_IC2NuclearControl extends NetworkMod
 
     public void initBlocks(Configuration configuration)
     {
-		IC2Thermo = new BlockIC2Thermo(getIdFor(configuration, "blockNuclearControlMain", 192, true), 0)
+		blockNuclearControlMain = new BlockNuclearControlMain(getIdFor(configuration, "blockNuclearControlMain", 192, true), 0)
 					.setHardness(0.5F)
 					.setBlockName("blockThermalMonitor")
 					.setRequiresSelfNotify();
@@ -185,35 +282,54 @@ public class mod_IC2NuclearControl extends NetworkMod
 
     public void registerBlocks()
     {
-        ModLoader.registerBlock(IC2Thermo);
+        ModLoader.registerBlock(blockNuclearControlMain, ItemNuclearControlMain.class);
     }
 
     public void addRecipes()
     {
-        Ic2Recipes.addCraftingRecipe(new ItemStack(IC2Thermo, 1), new Object[]
+        Ic2Recipes.addCraftingRecipe(new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_THERMAL_MONITOR), new Object[]
                 {
                     "GGG", "GCG", "GRG", 
-                    	Character.valueOf('G'), Items.getItem("reinforcedGlass"), 
-                    	Character.valueOf('R'), Item.redstone, 
-                    	Character.valueOf('C'), Items.getItem("advancedCircuit")
+                        Character.valueOf('G'), Items.getItem("reinforcedGlass"), 
+                        Character.valueOf('R'), Item.redstone, 
+                        Character.valueOf('C'), Items.getItem("advancedCircuit")
                 });
-        
-        Ic2Recipes.addCraftingRecipe(new ItemStack(itemToolThermometer, 1), new Object[] 
-        		{
-            		"IG ", "GWG", " GG", 
-            			Character.valueOf('G'), Block.glass, 
-            			Character.valueOf('I'), Item.ingotIron, 
-            			Character.valueOf('W'), Items.getItem("waterCell")
-    			});
-        Ic2Recipes.addCraftingRecipe(new ItemStack(itemToolDigitalThermometer, 1), new Object[] 
-        		{
-            		"I  ", "IC ", " GI", 
-            			Character.valueOf('G'), Item.lightStoneDust, 
-            			Character.valueOf('I'), Items.getItem("refinedIronIngot"), 
-            			Character.valueOf('C'), Items.getItem("electronicCircuit")
-        		});
-    }
+        ItemStack howler = new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_HOWLER_ALARM);
+        Ic2Recipes.addCraftingRecipe(howler, new Object[]
+                {
+                    "NNN", "ICI", "IRI", 
+                        Character.valueOf('I'), Item.ingotIron, 
+                        Character.valueOf('R'), Item.redstone, 
+                        Character.valueOf('N'), Block.music, 
+                        Character.valueOf('C'), Items.getItem("electronicCircuit")
+                });
 
+        ItemStack industrialAlarm = new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_INDUSTRIAL_ALARM);
+        Ic2Recipes.addCraftingRecipe(industrialAlarm, new Object[]
+                {
+                    "GOG", "GHG", "GRG", 
+                        Character.valueOf('G'), Items.getItem("reinforcedGlass"), 
+                        Character.valueOf('O'), new ItemStack(Item.dyePowder, 1, 14), 
+                        Character.valueOf('R'), Item.redstone, 
+                        Character.valueOf('H'), howler 
+                });
+
+        Ic2Recipes.addCraftingRecipe(new ItemStack(itemToolThermometer, 1), new Object[] 
+                {
+                    "IG ", "GWG", " GG", 
+                        Character.valueOf('G'), Block.glass, 
+                        Character.valueOf('I'), Item.ingotIron, 
+                        Character.valueOf('W'), Items.getItem("waterCell")
+                });
+        Ic2Recipes.addCraftingRecipe(new ItemStack(itemToolDigitalThermometer, 1), new Object[] 
+                {
+                    "I  ", "IC ", " GI", 
+                        Character.valueOf('G'), Item.lightStoneDust, 
+                        Character.valueOf('I'), Items.getItem("refinedIronIngot"), 
+                        Character.valueOf('C'), Items.getItem("electronicCircuit")
+                });
+    }
+    
     private static void setPhrase(Configuration configuration, String key, String defaultValue)
     {
         configuration.getOrCreateProperty(key, "locale.en.US", defaultValue);
@@ -228,6 +344,8 @@ public class mod_IC2NuclearControl extends NetworkMod
             setPhrase(configuration, "item.ItemToolThermometer.name","Thermometer");
             setPhrase(configuration, "item.ItemToolDigitalThermometer.name", "Digital Thermometer");
             setPhrase(configuration, "tile.blockThermalMonitor.name", "Thermal Monitor");
+            setPhrase(configuration, "tile.blockIndustrialAlarm.name", "Industrial Alarm");
+            setPhrase(configuration, "tile.blockHowlerAlarm.name", "Howler Alarm");
             
             for(Map.Entry<String, Map<String, Property>> category : configuration.categories.entrySet())
             {
@@ -235,7 +353,6 @@ public class mod_IC2NuclearControl extends NetworkMod
                 if(rawLocale == null || !rawLocale.startsWith("locale."))
                     continue;
                 rawLocale = rawLocale.substring(7);
-                System.out.println(rawLocale);
                 String[] chunks = rawLocale.split("\\.");
                 Locale locale;
                 if(chunks.length>1)
@@ -245,7 +362,6 @@ public class mod_IC2NuclearControl extends NetworkMod
                 
                 for(Property property : category.getValue().values())
                 {
-                    System.out.println(property.name +":"+ locale.toString()+":"+ new String(property.value.getBytes("8859_1"),"UTF-8"));
                     ModLoader.addLocalization(property.name, locale.toString(),  new String(property.value.getBytes("8859_1"),"UTF-8"));
                 }
             

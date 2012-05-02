@@ -40,7 +40,7 @@ public class TileEntityIC2Thermo extends TileEntity implements INetworkDataProvi
         tickRate = -1;
     }
 
-    public void initData()
+    private void initData()
     {
     	if(worldObj.isRemote){
     		NetworkHelper.requestInitialData(this);
@@ -48,11 +48,13 @@ public class TileEntityIC2Thermo extends TileEntity implements INetworkDataProvi
         init = true;
     }
 
+    @Override
     public short getFacing()
     {
         return facing;
     }
-
+    
+    @Override
     public void setFacing(short f)
     {
         facing = f;
@@ -65,6 +67,7 @@ public class TileEntityIC2Thermo extends TileEntity implements INetworkDataProvi
         prevFacing = f;
     }
 
+    @Override
     public List<String> getNetworkedFields()
     {
         Vector<String> vector = new Vector<String>(3);
@@ -74,19 +77,19 @@ public class TileEntityIC2Thermo extends TileEntity implements INetworkDataProvi
         return vector;
     }
     
-    public void onNetworkUpdate(String s)
+    public void onNetworkUpdate(String field)
     {
-        if (s.equals("heatLevel") && prevHeatLevel != heatLevel)
+        if (field.equals("heatLevel") && prevHeatLevel != heatLevel)
         {
             worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
             prevHeatLevel = heatLevel;
         }
-        if (s.equals("facing") && prevFacing != facing)
+        if (field.equals("facing") && prevFacing != facing)
         {
             worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
             prevFacing = facing;
         }
-        if (s.equals("onFire") && prevOnFire != onFire)
+        if (field.equals("onFire") && prevOnFire != onFire)
         {
             worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
             worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
@@ -137,6 +140,7 @@ public class TileEntityIC2Thermo extends TileEntity implements INetworkDataProvi
     	return heatLevel;
     }
 
+    @Override
     public void readFromNBT(NBTTagCompound nbttagcompound)
     {
         super.readFromNBT(nbttagcompound);
@@ -154,6 +158,7 @@ public class TileEntityIC2Thermo extends TileEntity implements INetworkDataProvi
         }
     }
 
+    @Override
     public void writeToNBT(NBTTagCompound nbttagcompound)
     {
         super.writeToNBT(nbttagcompound);
@@ -200,6 +205,7 @@ public class TileEntityIC2Thermo extends TileEntity implements INetworkDataProvi
         }
     }
 
+    @Override
     public void updateEntity()
     {
         if (!init)
