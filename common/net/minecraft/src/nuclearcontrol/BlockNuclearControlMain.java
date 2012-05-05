@@ -209,6 +209,11 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
     {
         int blockType = blockAccess.getBlockMetadata(x, y, z);
         
+        if(blockType>=blockSize.length)
+        {
+            blockType = 0;
+        }
+            
         float baseX1 = blockSize[blockType][0];
         float baseY1 = blockSize[blockType][1];
         float baseZ1 = blockSize[blockType][2];
