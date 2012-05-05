@@ -8,7 +8,7 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm
     {
         int light = lightLevel;
         super.checkStatus();
-        //if(lightLevel!=light)
+        if(lightLevel!=light)
             worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
     }
     
