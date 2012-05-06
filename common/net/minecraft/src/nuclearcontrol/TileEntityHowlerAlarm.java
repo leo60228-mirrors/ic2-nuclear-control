@@ -23,7 +23,8 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
     public short facing;
     private int updateTicker;
     private int tickRate;
-    private boolean powered;
+    public boolean powered;
+    public boolean prevPowered;
     
     public TileEntityHowlerAlarm()
     {
@@ -34,6 +35,8 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
         init = false;
         tickRate = 5;
         updateTicker = 0;
+        powered = false;
+        prevPowered = false;
     }
 
     private void initData()
@@ -41,7 +44,10 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
         if(worldObj.isRemote){
             NetworkHelper.requestInitialData(this);
         }
-        RedstoneHelper.checkPowered(worldObj, this);
+        else
+        {
+            RedstoneHelper.checkPowered(worldObj, this);
+        }
         init = true;
     }
     
@@ -64,6 +70,25 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
         prevFacing = f;
     }
 
+    @Override
+    public boolean getPowered()
+    {
+        return powered;
+    }
+
+    @Override
+    public void setPowered(boolean value)
+    {
+        powered = value;
+
+        if (prevPowered != value)
+        {
+            NetworkHelper.updateTileEntityField(this, "powered");
+        }
+
+        prevPowered = value;
+    }
+    
     @Override
     public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int side)
     {
@@ -90,13 +115,19 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
             worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
             prevFacing = facing;
         }
+        if (field.equals("powered") && prevPowered != powered)
+        {
+            worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+            prevPowered = powered;
+        }
     }
 
     @Override
     public List<String> getNetworkedFields()
     {
-        Vector<String> vector = new Vector<String>(3);
+        Vector<String> vector = new Vector<String>(2);
         vector.add("facing");
+        vector.add("powered");
         return vector;
     }
     
@@ -148,16 +179,4 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
         }
     }
 
-    @Override
-    public boolean getPowered()
-    {
-        return powered;
-    }
-
-    @Override
-    public void setPowered(boolean value)
-    {
-        powered = value;
-    }
-    
 }
