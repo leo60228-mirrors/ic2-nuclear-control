@@ -3,6 +3,7 @@ package net.minecraft.src.nuclearcontrol;
 import java.util.ArrayList;
 
 import net.minecraft.src.AxisAlignedBB;
+import net.minecraft.src.Block;
 import net.minecraft.src.BlockContainer;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.Facing;
@@ -12,10 +13,11 @@ import net.minecraft.src.Material;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 import net.minecraft.src.mod_IC2NuclearControl;
+import net.minecraft.src.forge.IConnectRedstone;
 import net.minecraft.src.forge.ITextureProvider;
 import net.minecraft.src.ic2.api.IWrenchable;
 
-public class BlockNuclearControlMain extends BlockContainer implements ITextureProvider
+public class BlockNuclearControlMain extends BlockContainer implements ITextureProvider, IConnectRedstone
 {
     public static final int DAMAGE_THERMAL_MONITOR = 0;
     public static final int DAMAGE_INDUSTRIAL_ALARM = 1;
@@ -127,9 +129,8 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
             	((IWrenchable)tileentity).setFacing((short)side);
             }
         }
-        
     }
-
+    
     /**
      * Called whenever the block is added into the world.
      */
@@ -170,6 +171,10 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
 				dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
 			}
             world.setBlockWithNotify(x, y, z, 0);
+		}
+		else
+		{
+		    RedstoneHelper.checkPowered(world, tileentity);
 		}
     }
 
@@ -461,6 +466,12 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
         arraylist.add(new ItemStack(this, 1, DAMAGE_THERMAL_MONITOR));
         arraylist.add(new ItemStack(this, 1, DAMAGE_INDUSTRIAL_ALARM));
         arraylist.add(new ItemStack(this, 1, DAMAGE_HOWLER_ALARM));
+    }
+
+    @Override
+    public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int direction)
+    {
+        return true;
     }
 
 }

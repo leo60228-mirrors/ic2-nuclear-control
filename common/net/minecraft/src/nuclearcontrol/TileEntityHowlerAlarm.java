@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Vector;
 
 import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ModLoader;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.mod_IC2NuclearControl;
@@ -13,7 +12,7 @@ import net.minecraft.src.ic2.api.INetworkUpdateListener;
 import net.minecraft.src.ic2.api.IWrenchable;
 import net.minecraft.src.ic2.api.NetworkHelper;
 
-public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataProvider, INetworkUpdateListener, IWrenchable
+public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataProvider, INetworkUpdateListener, IWrenchable, IRedstoneConsumer
 {
     private static final byte[] lightSteps = {0, 7, 15, 7, 0, 7, 15, 7, 0};
 
@@ -24,6 +23,7 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
     public short facing;
     private int updateTicker;
     private int tickRate;
+    private boolean powered;
     
     public TileEntityHowlerAlarm()
     {
@@ -41,6 +41,7 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
         if(worldObj.isRemote){
             NetworkHelper.requestInitialData(this);
         }
+        RedstoneHelper.checkPowered(worldObj, this);
         init = true;
     }
     
@@ -132,7 +133,6 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
     
     protected void checkStatus()
     {
-        boolean powered = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);;
         if(!powered){
             lightLevel = 0;
             internalFire = 0;
@@ -146,6 +146,18 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
                 worldObj.playSoundEffect(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, "ic2nuclearControl.alarm", mod_IC2NuclearControl.alarmRange, 1F);
             }
         }
+    }
+
+    @Override
+    public boolean getPowered()
+    {
+        return powered;
+    }
+
+    @Override
+    public void setPowered(boolean value)
+    {
+        powered = value;
     }
     
 }
