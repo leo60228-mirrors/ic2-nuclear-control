@@ -242,6 +242,6 @@ public class mod_IC2NuclearControl extends NetworkMod
 
     public String getVersion()
     {
-        return "v1.1.3";
+        return "v1.1.4";
     }
 }
