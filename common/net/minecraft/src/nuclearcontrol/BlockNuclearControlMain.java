@@ -155,6 +155,17 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
     }
 
     @Override
+    public void onBlockRemoval(World world, int x, int y, int z)
+    {
+        TileEntity tileentity = world.getBlockTileEntity(x, y, z);
+        if(tileentity instanceof TileEntityHowlerAlarm)
+        {
+            ((TileEntityHowlerAlarm)tileentity).setPowered(false);
+        }
+        super.onBlockRemoval(world, x, y, z);
+    }
+
+    @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, int neighbor)
     {
         int side = 0;

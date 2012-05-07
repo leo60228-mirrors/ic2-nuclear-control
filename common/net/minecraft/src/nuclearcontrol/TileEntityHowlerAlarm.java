@@ -14,26 +14,21 @@ import net.minecraft.src.ic2.api.NetworkHelper;
 
 public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataProvider, INetworkUpdateListener, IWrenchable, IRedstoneConsumer
 {
-    private static final byte[] lightSteps = {0, 7, 15, 7, 0, 7, 15, 7, 0};
-
     private boolean init;
     private short prevFacing;
-    protected byte internalFire;
-    public byte lightLevel;
     public short facing;
     private int updateTicker;
-    private int tickRate;
+    protected int tickRate;
     public boolean powered;
     public boolean prevPowered;
+    private String soundId;
     
     public TileEntityHowlerAlarm()
     {
         facing = 0;
         prevFacing = 0;
-        internalFire = 0;
-        lightLevel = 0;
         init = false;
-        tickRate = 5;
+        tickRate = 2;
         updateTicker = 0;
         powered = false;
         prevPowered = false;
@@ -75,6 +70,17 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
     {
         return powered;
     }
+    
+    @Override
+    public void invalidate()
+    {
+        if(soundId != null)
+        {
+            SoundHelper.stopAlarm(soundId);
+            soundId = null;
+        }
+        super.invalidate();
+    }
 
     @Override
     public void setPowered(boolean value)
@@ -83,9 +89,47 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
 
         if (prevPowered != value)
         {
+            if(powered)
+            {
+                if(soundId == null)
+                    soundId = SoundHelper.playAlarm(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, "ic2nuclearControl.alarm", mod_IC2NuclearControl.alarmRange);
+            }
+            else
+            {
+                if(soundId != null)
+                {
+                    SoundHelper.stopAlarm(soundId);
+                    soundId = null;
+                }
+                    
+            }
             NetworkHelper.updateTileEntityField(this, "powered");
         }
 
+        prevPowered = value;
+    }
+    
+    public void setPoweredNoNotify(boolean value)
+    {
+        powered = value;
+
+        if (prevPowered != value)
+        {
+            if(powered)
+            {
+                if(soundId == null)
+                    soundId = SoundHelper.playAlarm(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, "ic2nuclearControl.alarm", mod_IC2NuclearControl.alarmRange);
+            }
+            else
+            {
+                if(soundId != null)
+                {
+                    SoundHelper.stopAlarm(soundId);
+                    soundId = null;
+                }
+                    
+            }
+        }
         prevPowered = value;
     }
     
@@ -117,8 +161,8 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
         }
         if (field.equals("powered") && prevPowered != powered)
         {
+            setPoweredNoNotify(powered);
             worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
-            prevPowered = powered;
         }
     }
 
@@ -164,18 +208,8 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
     
     protected void checkStatus()
     {
-        if(!powered){
-            lightLevel = 0;
-            internalFire = 0;
-        }
-        else
-        {
-            internalFire = (byte)((internalFire + 1) % lightSteps.length);
-            lightLevel = lightSteps[internalFire];
-            if(internalFire == 1)
-            {
-                worldObj.playSoundEffect(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, "ic2nuclearControl.alarm", mod_IC2NuclearControl.alarmRange, 1F);
-            }
+        if(powered && (soundId==null || !SoundHelper.isPlaying(soundId))){
+            soundId = SoundHelper.playAlarm(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, "ic2nuclearControl.alarm", mod_IC2NuclearControl.alarmRange);
         }
     }
 
