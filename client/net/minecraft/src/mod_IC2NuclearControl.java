@@ -19,13 +19,19 @@ import net.minecraft.src.forge.Property;
 import net.minecraft.src.ic2.api.Ic2Recipes;
 import net.minecraft.src.ic2.api.Items;
 import net.minecraft.src.nuclearcontrol.BlockNuclearControlMain;
+import net.minecraft.src.nuclearcontrol.ContainerRemoteThermo;
 import net.minecraft.src.nuclearcontrol.GuiIC2Thermo;
+import net.minecraft.src.nuclearcontrol.GuiRemoteThermo;
 import net.minecraft.src.nuclearcontrol.ItemNuclearControlMain;
+import net.minecraft.src.nuclearcontrol.ItemRemoteSensorKit;
+import net.minecraft.src.nuclearcontrol.ItemSensorLocationCard;
 import net.minecraft.src.nuclearcontrol.ItemToolDigitalThermometer;
 import net.minecraft.src.nuclearcontrol.ItemToolThermometer;
 import net.minecraft.src.nuclearcontrol.ThermometerVersion;
 import net.minecraft.src.nuclearcontrol.TileEntityIC2Thermo;
 import net.minecraft.src.nuclearcontrol.TileEntityIC2ThermoRenderer;
+import net.minecraft.src.nuclearcontrol.TileEntityRemoteThermo;
+import net.minecraft.src.nuclearcontrol.TileEntityRemoteThermoRenderer;
 
 public class mod_IC2NuclearControl extends NetworkMod
 {
@@ -36,6 +42,8 @@ public class mod_IC2NuclearControl extends NetworkMod
 
     public static Item itemToolThermometer;
     public static Item itemToolDigitalThermometer;
+    public static Item itemRemoteSensorKit;
+    public static Item itemSensorLocationCard;
     public static Block blockNuclearControlMain;
     public static int modelId;
     public static float alarmRange;
@@ -135,11 +143,13 @@ public class mod_IC2NuclearControl extends NetworkMod
         registerBlocks();
         addNames();
         importSound(configuration);
-        TileEntityIC2ThermoRenderer render = new TileEntityIC2ThermoRenderer();
+        TileEntityIC2ThermoRenderer renderThermalMonitor = new TileEntityIC2ThermoRenderer();
+        TileEntityRemoteThermoRenderer renderRemoteThermo = new TileEntityRemoteThermoRenderer();
         
-        ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityIC2Thermo.class, "IC2Thermo", render);
+        ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityIC2Thermo.class, "IC2Thermo", renderThermalMonitor);
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityHowlerAlarm.class, "IC2HowlerAlarm");
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityIndustrialAlarm.class, "IC2IndustrialAlarm");
+        ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityRemoteThermo.class, "IC2RemoteThermo", renderRemoteThermo);
         modelId = ModLoader.getUniqueBlockModelID(this, true);
         
         if(configuration!=null)
@@ -278,6 +288,12 @@ public class mod_IC2NuclearControl extends NetworkMod
 					getIdFor(configuration, "itemToolDigitalThermometer", 31001, false),
 					18, ThermometerVersion.DIGITAL, 1, 80, 80)
 					.setItemName("ItemToolDigitalThermometer");
+		itemRemoteSensorKit = new ItemRemoteSensorKit(
+		            getIdFor(configuration, "itemRemoteSensorKit", 31002, false),34)
+		            .setItemName("ItemRemoteSensorKit");
+		itemSensorLocationCard = new ItemSensorLocationCard(
+		            getIdFor(configuration, "itemSensorLocationCard", 31003, false), 50)
+		            .setItemName("ItemSensorLocationCard");
     }
 
     public void registerBlocks()
@@ -287,7 +303,8 @@ public class mod_IC2NuclearControl extends NetworkMod
 
     public void addRecipes()
     {
-        Ic2Recipes.addCraftingRecipe(new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_THERMAL_MONITOR), new Object[]
+        ItemStack thermalMonitor = new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_THERMAL_MONITOR);
+        Ic2Recipes.addCraftingRecipe(thermalMonitor, new Object[]
                 {
                     "GGG", "GCG", "GRG", 
                         Character.valueOf('G'), Items.getItem("reinforcedGlass"), 
@@ -314,6 +331,13 @@ public class mod_IC2NuclearControl extends NetworkMod
                         Character.valueOf('H'), howler 
                 });
 
+        Ic2Recipes.addCraftingRecipe(new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_REMOTE_THERMO), new Object[] 
+                {
+                    " F ", " M ", " T ", 
+                        Character.valueOf('T'), thermalMonitor, 
+                        Character.valueOf('M'), Items.getItem("machine"), 
+                        Character.valueOf('F'), Items.getItem("frequencyTransmitter")
+                });
         Ic2Recipes.addCraftingRecipe(new ItemStack(itemToolThermometer, 1), new Object[] 
                 {
                     "IG ", "GWG", " GG", 
@@ -321,12 +345,20 @@ public class mod_IC2NuclearControl extends NetworkMod
                         Character.valueOf('I'), Item.ingotIron, 
                         Character.valueOf('W'), Items.getItem("waterCell")
                 });
-        Ic2Recipes.addCraftingRecipe(new ItemStack(itemToolDigitalThermometer, 1), new Object[] 
+        ItemStack digitalThermometer = new ItemStack(itemToolDigitalThermometer, 1);
+        Ic2Recipes.addCraftingRecipe(digitalThermometer, new Object[] 
                 {
                     "I  ", "IC ", " GI", 
                         Character.valueOf('G'), Item.lightStoneDust, 
                         Character.valueOf('I'), Items.getItem("refinedIronIngot"), 
                         Character.valueOf('C'), Items.getItem("electronicCircuit")
+                });
+        Ic2Recipes.addCraftingRecipe(new ItemStack(itemRemoteSensorKit, 1), new Object[] 
+                {
+                    "  F", " D ", "P  ", 
+                        Character.valueOf('P'), Item.paper, 
+                        Character.valueOf('D'), digitalThermometer, 
+                        Character.valueOf('F'), Items.getItem("frequencyTransmitter")
                 });
     }
     
@@ -343,9 +375,12 @@ public class mod_IC2NuclearControl extends NetworkMod
             configuration.load();
             setPhrase(configuration, "item.ItemToolThermometer.name","Thermometer");
             setPhrase(configuration, "item.ItemToolDigitalThermometer.name", "Digital Thermometer");
+            setPhrase(configuration, "item.ItemRemoteSensorKit.name", "Remote Sensor Kit");
+            setPhrase(configuration, "item.ItemSensorLocationCard.name", "Sensor Location Card");
             setPhrase(configuration, "tile.blockThermalMonitor.name", "Thermal Monitor");
             setPhrase(configuration, "tile.blockIndustrialAlarm.name", "Industrial Alarm");
             setPhrase(configuration, "tile.blockHowlerAlarm.name", "Howler Alarm");
+            setPhrase(configuration, "tile.blockRemoteThermo.name", "Remote Thermal Monitor");
             
             for(Map.Entry<String, Map<String, Property>> category : configuration.categories.entrySet())
             {
@@ -376,11 +411,24 @@ public class mod_IC2NuclearControl extends NetworkMod
         }
     }
 
-    public static void launchGui(World world, int x, int y, int z, EntityPlayer entityplayer)
+    public static void launchGui(World world, int x, int y, int z, EntityPlayer entityplayer, int blockType)
     {
-        TileEntityIC2Thermo tileentityic2thermo = (TileEntityIC2Thermo)world.getBlockTileEntity(x, y, z);
-        GuiScreen guiscreen = new GuiIC2Thermo(world, x, y, z, entityplayer, tileentityic2thermo);
-        ModLoader.openGUI(entityplayer, guiscreen);
+        TileEntity tileEntity= world.getBlockTileEntity(x, y, z);
+        switch (blockType)
+        {
+        case BlockNuclearControlMain.DAMAGE_THERMAL_MONITOR:
+            GuiScreen guiscreen = new GuiIC2Thermo(world, x, y, z, entityplayer, (TileEntityIC2Thermo)tileEntity);
+            ModLoader.openGUI(entityplayer, guiscreen);
+            break;
+        case BlockNuclearControlMain.DAMAGE_REMOTE_THERMO:
+            ContainerRemoteThermo container = new ContainerRemoteThermo(entityplayer, (TileEntityRemoteThermo)tileEntity);
+            GuiContainer guiRemoteThermo = new GuiRemoteThermo(container);
+            ModLoader.openGUI(entityplayer, (GuiScreen)guiRemoteThermo);
+            break;
+
+        default:
+            break;
+        }
     }
 
     public static void chatMessage(EntityPlayer entityplayer, String message)

@@ -11,6 +11,8 @@ import net.minecraft.src.ic2.api.Ic2Recipes;
 import net.minecraft.src.ic2.api.Items;
 import net.minecraft.src.nuclearcontrol.BlockNuclearControlMain;
 import net.minecraft.src.nuclearcontrol.ItemNuclearControlMain;
+import net.minecraft.src.nuclearcontrol.ItemRemoteSensorKit;
+import net.minecraft.src.nuclearcontrol.ItemSensorLocationCard;
 import net.minecraft.src.nuclearcontrol.ItemToolDigitalThermometer;
 import net.minecraft.src.nuclearcontrol.ItemToolThermometer;
 import net.minecraft.src.nuclearcontrol.ThermometerVersion;
@@ -23,6 +25,8 @@ public class mod_IC2NuclearControl extends NetworkMod
 
     public static Item itemToolThermometer;
     public static Item itemToolDigitalThermometer;
+    public static Item itemRemoteSensorKit;
+    public static Item itemSensorLocationCard;
     public static Block blockNuclearControlMain;
     public static int modelId;
     public static float alarmRange;
@@ -119,6 +123,7 @@ public class mod_IC2NuclearControl extends NetworkMod
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityIC2Thermo.class, "IC2Thermo");
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityHowlerAlarm.class, "IC2HowlerAlarm");
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityIndustrialAlarm.class, "IC2IndustrialAlarm");
+        ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityRemoteThermo.class, "IC2RemoteThermo");
 
         if(configuration!=null)
         {
@@ -178,7 +183,12 @@ public class mod_IC2NuclearControl extends NetworkMod
 				getIdFor(configuration, "itemToolDigitalThermometer", 31001, false),
 				18, ThermometerVersion.DIGITAL, 1, 80, 80)
 				.setItemName("ItemToolDigitalThermometer");
-
+        itemRemoteSensorKit = new ItemRemoteSensorKit(
+                getIdFor(configuration, "itemRemoteSensorKit", 31002, false),34)
+                .setItemName("ItemRemoteSensorKit");
+        itemSensorLocationCard = new ItemSensorLocationCard(
+                getIdFor(configuration, "itemSensorLocationCard", 31003, false), 50)
+                .setItemName("ItemSensorLocationCard");
     }
 
     public void registerBlocks()
@@ -188,12 +198,13 @@ public class mod_IC2NuclearControl extends NetworkMod
 
     public void addRecipes()
     {
-        Ic2Recipes.addCraftingRecipe(new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_THERMAL_MONITOR), new Object[]
+        ItemStack thermalMonitor = new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_THERMAL_MONITOR);
+        Ic2Recipes.addCraftingRecipe(thermalMonitor, new Object[]
                 {
                     "GGG", "GCG", "GRG", 
-                    	Character.valueOf('G'), Items.getItem("reinforcedGlass"), 
-                    	Character.valueOf('R'), Item.redstone, 
-                    	Character.valueOf('C'), Items.getItem("advancedCircuit")
+                        Character.valueOf('G'), Items.getItem("reinforcedGlass"), 
+                        Character.valueOf('R'), Item.redstone, 
+                        Character.valueOf('C'), Items.getItem("advancedCircuit")
                 });
         ItemStack howler = new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_HOWLER_ALARM);
         Ic2Recipes.addCraftingRecipe(howler, new Object[]
@@ -215,23 +226,38 @@ public class mod_IC2NuclearControl extends NetworkMod
                         Character.valueOf('H'), howler 
                 });
 
+        Ic2Recipes.addCraftingRecipe(new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_REMOTE_THERMO), new Object[] 
+                {
+                    " F ", " M ", " T ", 
+                        Character.valueOf('T'), thermalMonitor, 
+                        Character.valueOf('M'), Items.getItem("machine"), 
+                        Character.valueOf('F'), Items.getItem("frequencyTransmitter")
+                });
         Ic2Recipes.addCraftingRecipe(new ItemStack(itemToolThermometer, 1), new Object[] 
-        		{
-            		"IG ", "GWG", " GG", 
-            			Character.valueOf('G'), Block.glass, 
-            			Character.valueOf('I'), Item.ingotIron, 
-            			Character.valueOf('W'), Items.getItem("waterCell")
-    			});
-        Ic2Recipes.addCraftingRecipe(new ItemStack(itemToolDigitalThermometer, 1), new Object[] 
-        		{
-            		"I  ", "IC ", " GI", 
-            			Character.valueOf('G'), Item.lightStoneDust, 
-            			Character.valueOf('I'), Items.getItem("refinedIronIngot"), 
-            			Character.valueOf('C'), Items.getItem("electronicCircuit")
-        		});
+                {
+                    "IG ", "GWG", " GG", 
+                        Character.valueOf('G'), Block.glass, 
+                        Character.valueOf('I'), Item.ingotIron, 
+                        Character.valueOf('W'), Items.getItem("waterCell")
+                });
+        ItemStack digitalThermometer = new ItemStack(itemToolDigitalThermometer, 1);
+        Ic2Recipes.addCraftingRecipe(digitalThermometer, new Object[] 
+                {
+                    "I  ", "IC ", " GI", 
+                        Character.valueOf('G'), Item.lightStoneDust, 
+                        Character.valueOf('I'), Items.getItem("refinedIronIngot"), 
+                        Character.valueOf('C'), Items.getItem("electronicCircuit")
+                });
+        Ic2Recipes.addCraftingRecipe(new ItemStack(itemRemoteSensorKit, 1), new Object[] 
+                {
+                    "  F", " D ", "P  ", 
+                        Character.valueOf('P'), Item.paper, 
+                        Character.valueOf('D'), digitalThermometer, 
+                        Character.valueOf('F'), Items.getItem("frequencyTransmitter")
+                });
     }
     
-    public static void launchGui(World world, int i, int j, int k, EntityPlayer entityplayer)
+    public static void launchGui(World world, int i, int j, int k, EntityPlayer entityplayer, int blockType)
     {
     }
 

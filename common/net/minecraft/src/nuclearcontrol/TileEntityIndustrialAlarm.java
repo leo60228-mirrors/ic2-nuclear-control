@@ -1,6 +1,6 @@
 package net.minecraft.src.nuclearcontrol;
 
-public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm
+public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm implements ITextureHelper
 {
     private static final byte[] lightSteps = {0, 7, 15, 7, 0};
 
@@ -30,6 +30,21 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm
         }
         if(lightLevel!=light)
             worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
+    }
+
+    @Override
+    public int modifyTextureIndex(int texture)
+    {
+        switch(lightLevel)
+        {
+            case 7: 
+                texture +=16;
+                break;
+            case 15: 
+                texture += 32;
+                break;
+        }
+        return texture;
     }
     
 }

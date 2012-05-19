@@ -1,5 +1,6 @@
 package net.minecraft.src.nuclearcontrol;
 
+import net.minecraft.src.Facing;
 import net.minecraft.src.FontRenderer;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.TileEntitySpecialRenderer;
@@ -17,7 +18,7 @@ public class TileEntityIC2ThermoRenderer extends TileEntitySpecialRenderer
         {
             GL11.glPushMatrix();
             TileEntityIC2Thermo thermo = (TileEntityIC2Thermo)tileEntity;
-            short side = thermo.getFacing();
+            short side = (short)Facing.faceToSide[thermo.getFacing()];
             float var12 = 0.016666668F;
             int heat = (thermo.getHeatLevel() / 500) * 500;
             String text = Integer.toString(heat);

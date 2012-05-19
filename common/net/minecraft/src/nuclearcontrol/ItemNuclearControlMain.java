@@ -26,12 +26,14 @@ public class ItemNuclearControlMain extends ItemBlock
     {
         switch(item.getItemDamage())
         {
-            case 0:
+            case BlockNuclearControlMain.DAMAGE_THERMAL_MONITOR:
                 return "tile.blockThermalMonitor";
-            case 1:
+            case BlockNuclearControlMain.DAMAGE_INDUSTRIAL_ALARM:
                 return "tile.blockIndustrialAlarm";
-            case 2:
+            case BlockNuclearControlMain.DAMAGE_HOWLER_ALARM:
                 return "tile.blockHowlerAlarm";
+            case BlockNuclearControlMain.DAMAGE_REMOTE_THERMO:
+                return "tile.blockRemoteThermo";
         
         }
         return "";

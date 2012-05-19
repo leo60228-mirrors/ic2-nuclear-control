@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Vector;
 
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.Facing;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.mod_IC2NuclearControl;
@@ -49,11 +50,17 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
     @Override
     public short getFacing()
     {
-        return facing;
+        return (short)Facing.faceToSide[facing];
     }
-
+    
     @Override
     public void setFacing(short f)
+    {
+        setSide((short)Facing.faceToSide[f]);
+    
+    }
+
+    private void setSide(short f)
     {
         facing = f;
 

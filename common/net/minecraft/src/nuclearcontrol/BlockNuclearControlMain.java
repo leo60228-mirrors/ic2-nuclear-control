@@ -3,17 +3,17 @@ package net.minecraft.src.nuclearcontrol;
 import java.util.ArrayList;
 
 import net.minecraft.src.AxisAlignedBB;
-import net.minecraft.src.Block;
 import net.minecraft.src.BlockContainer;
+import net.minecraft.src.EntityItem;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.Facing;
 import net.minecraft.src.IBlockAccess;
+import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.Material;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 import net.minecraft.src.mod_IC2NuclearControl;
-import net.minecraft.src.forge.IConnectRedstone;
 import net.minecraft.src.forge.ITextureProvider;
 import net.minecraft.src.ic2.api.IWrenchable;
 
@@ -22,13 +22,20 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
     public static final int DAMAGE_THERMAL_MONITOR = 0;
     public static final int DAMAGE_INDUSTRIAL_ALARM = 1;
     public static final int DAMAGE_HOWLER_ALARM = 2;
+    public static final int DAMAGE_REMOTE_THERMO = 3;
+
+    public static final int DAMAGE_MAX = 3;
     
     public static final float[][] blockSize = {
         {0.0625F, 0, 0.0625F, 0.9375F, 0.4375F, 0.9375F},//Thermal Monitor
         {0.125F, 0, 0.125F, 0.875F, 0.4375F, 0.875F},//Industrial  Alarm
-        {0.125F, 0, 0.125F, 0.875F, 0.4375F, 0.875F}//Howler  Alarm
+        {0.125F, 0, 0.125F, 0.875F, 0.4375F, 0.875F},//Howler  Alarm
+        {0, 0, 0, 1, 1, 1}//Remote Thermo
         
     };
+    
+    private static final boolean[] solidBlockRequired =
+        {true, true, true, false};
     
     private static final byte[][][] sideMapping = 
         {
@@ -55,6 +62,14 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
                 {9, 9, 7, 8, 10, 10},
                 {10, 10, 10, 10, 8, 7},
                 {10, 10, 10, 10, 7, 8}
+            },
+            {//Remote Thermo
+                {23, 25, 24, 24, 24, 24},
+                {25, 23, 24, 24, 24, 24},
+                {24, 24, 23, 25, 24, 24},
+                {24, 24, 25, 23, 24, 24},
+                {24, 24, 24, 24, 23, 25},
+                {24, 24, 24, 24, 25, 23}
             }
         };
     
@@ -97,8 +112,7 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
     /**
      * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
      */
-    @Override
-    public boolean canPlaceBlockAt(World world, int x, int y, int z)
+    public boolean canPlaceBlockAtlocal(World world, int x, int y, int z)
     {
     	for (int face = 0; face < 6; face++){
     		int side = Facing.faceToSide[face];
@@ -118,15 +132,20 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
     public void onBlockPlaced(World world, int x, int y, int z, int face)
     {
         int side = Facing.faceToSide[face];
+        int metadata = world.getBlockMetadata(x, y, z);
+        if(metadata > DAMAGE_MAX)
+        {
+            metadata = 0;
+        }
 
-        if(world.isBlockSolidOnSide(x + Facing.offsetsXForSide[side], 
+        if(!solidBlockRequired[metadata] || world.isBlockSolidOnSide(x + Facing.offsetsXForSide[side], 
 				y + Facing.offsetsYForSide[side], 
 				z + Facing.offsetsZForSide[side], face))
         {
             TileEntity tileentity = world.getBlockTileEntity(x, y, z);
             if(tileentity instanceof IWrenchable)
             {
-            	((IWrenchable)tileentity).setFacing((short)side);
+            	((IWrenchable)tileentity).setFacing((short)face);
             }
         }
     }
@@ -137,6 +156,12 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
     @Override
     public void onBlockAdded(World world, int x, int y, int z)
     {
+        int metadata = world.getBlockMetadata(x, y, z);
+        if(metadata > DAMAGE_MAX)
+        {
+            metadata = 0;
+        }
+        if(solidBlockRequired[metadata])
     	for (int face = 0; face < 6; face++){
     		int side = Facing.faceToSide[face];
     		if(world.isBlockSolidOnSide(x + Facing.offsetsXForSide[side], 
@@ -146,7 +171,7 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
                 TileEntity tileentity = world.getBlockTileEntity(x, y, z);
                 if(tileentity instanceof IWrenchable)
                 {
-                	((IWrenchable)tileentity).setFacing((short)side);
+                	((IWrenchable)tileentity).setFacing((short)face);
                 }
                 break;
     		}
@@ -157,10 +182,31 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
     @Override
     public void onBlockRemoval(World world, int x, int y, int z)
     {
-        TileEntity tileentity = world.getBlockTileEntity(x, y, z);
-        if(tileentity instanceof TileEntityHowlerAlarm)
+        TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+        if(tileEntity instanceof TileEntityHowlerAlarm)
         {
-            ((TileEntityHowlerAlarm)tileentity).setPowered(false);
+            ((TileEntityHowlerAlarm)tileEntity).setPowered(false);
+        }
+        if (!world.isRemote && tileEntity instanceof IInventory)
+        {
+            IInventory inventory = (IInventory)tileEntity;
+            float range = 0.7F;
+
+            for (int i = 0; i < inventory.getSizeInventory(); i++)
+            {
+                ItemStack itemStack = inventory.getStackInSlot(i);
+
+                if (itemStack != null)
+                {
+                    double dx = (double)(world.rand.nextFloat() * range) + (double)(1.0F - range) * 0.5D;
+                    double dy = (double)(world.rand.nextFloat() * range) + (double)(1.0F - range) * 0.5D;
+                    double dz = (double)(world.rand.nextFloat() * range) + (double)(1.0F - range) * 0.5D;
+                    EntityItem item = new EntityItem(world, (double)x + dx, (double)y + dy, (double)z + dz, itemStack);
+                    item.delayBeforeCanPickup = 10;
+                    world.spawnEntityInWorld(item);
+                    inventory.setInventorySlotContents(i, null);
+                }
+            }
         }
         super.onBlockRemoval(world, x, y, z);
     }
@@ -172,14 +218,17 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
         TileEntity tileentity = world.getBlockTileEntity(x, y, z);
         if(tileentity instanceof IWrenchable)
         {
-        	side = ((IWrenchable)tileentity).getFacing();
+        	side = Facing.faceToSide[((IWrenchable)tileentity).getFacing()];
         }
-		if(!world.isBlockSolidOnSide(x + Facing.offsetsXForSide[side], 
+        int metadata = world.getBlockMetadata(x, y, z);
+        
+		if( solidBlockRequired[Math.min(metadata, solidBlockRequired.length-1)] && 
+	        !world.isBlockSolidOnSide(x + Facing.offsetsXForSide[side], 
 				y + Facing.offsetsYForSide[side], 
 				z + Facing.offsetsZForSide[side], Facing.faceToSide[side]))
 		{
 			if(!world.isRemote){
-				dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
+				dropBlockAsItem(world, x, y, z, metadata, 0);
 			}
             world.setBlockWithNotify(x, y, z, 0);
 		}
@@ -196,11 +245,16 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
      */
     private boolean dropBlockIfCantStay(World world, int x, int y, int z)
     {
-        if (!canPlaceBlockAt(world, x, y, z))
+        int metadata = world.getBlockMetadata(x, y, z);
+        if(!solidBlockRequired[Math.min(metadata, solidBlockRequired.length-1)])
+        {
+            return true;
+        }
+        if (!canPlaceBlockAtlocal(world, x, y, z))
         {
             if (world.getBlockId(x, y, z) == blockID)
             {
-                dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
+                dropBlockAsItem(world, x, y, z, metadata, 0);
                 world.setBlockWithNotify(x, y, z, 0);
             }
             return false;
@@ -226,7 +280,7 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
     {
         int blockType = blockAccess.getBlockMetadata(x, y, z);
         
-        if(blockType>=blockSize.length)
+        if(blockType > DAMAGE_MAX)
         {
             blockType = 0;
         }
@@ -245,7 +299,7 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
         TileEntity tileentity = blockAccess.getBlockTileEntity(x, y, z);
         if(tileentity instanceof IWrenchable)
         {
-        	side = ((IWrenchable)tileentity).getFacing();
+        	side = Facing.faceToSide[((IWrenchable)tileentity).getFacing()];
         }
         switch (side)
         {
@@ -311,16 +365,19 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
     public boolean blockActivated(World world, int x, int y, int z, EntityPlayer entityplayer)
     {
         int blockType = world.getBlockMetadata(x, y, z);
-        if(blockType != DAMAGE_THERMAL_MONITOR)
-        {
-            return false;
-        }
         if (entityplayer.isSneaking())
         {
             return false;
         }
-        mod_IC2NuclearControl.launchGui(world, x, y, z, entityplayer);
-        return true;
+        switch(blockType)
+        {
+            case DAMAGE_THERMAL_MONITOR:
+            case DAMAGE_REMOTE_THERMO:
+                mod_IC2NuclearControl.launchGui(world, x, y, z, entityplayer, blockType);
+                return true;
+            default:
+                return false;
+        }
     }
 
     public boolean isIndirectlyPoweringTo(World world, int i, int j, int k, int l)
@@ -375,12 +432,21 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
         {
             return false;
         }
-    	return ((TileEntityIC2Thermo)tileentity).getOnFire() == 1;
+        if(tileentity instanceof TileEntityRemoteThermo)
+        {
+            TileEntityRemoteThermo thermo = (TileEntityRemoteThermo)tileentity;
+            return thermo.getOnFire() >= thermo.getHeatLevel();
+        }
+    	return ((TileEntityIC2Thermo)tileentity).getOnFire() > 0;
     }
 
     @Override
     public int getBlockTextureFromSideAndMetadata(int side, int metadata)
     {
+        if(metadata > DAMAGE_MAX)
+        {
+            metadata = 0;
+        }
     	int texture = sideMapping[metadata][0][side];
 		return texture;
     }
@@ -388,43 +454,21 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
     public int getBlockTexture(IBlockAccess blockaccess, int x, int y, int z, int side)
     {
         TileEntity tileentity = blockaccess.getBlockTileEntity(x, y, z);
-        boolean isThermo = tileentity instanceof TileEntityIC2Thermo;
-        boolean isIndustrialAlarm = tileentity instanceof TileEntityIndustrialAlarm;
         int metaSide = 0;
         if(tileentity instanceof IWrenchable)
         {
-        	metaSide = ((IWrenchable)tileentity).getFacing();
+        	metaSide = Facing.faceToSide[((IWrenchable)tileentity).getFacing()];
         }
         int blockType = blockaccess.getBlockMetadata(x, y, z);
-        int texture = sideMapping[blockType][metaSide][side];
-        if(isIndustrialAlarm)
+        if(blockType > DAMAGE_MAX)
         {
-            int light = ((TileEntityIndustrialAlarm)tileentity).lightLevel;
-            switch(light)
-            {
-                case 7: 
-                    texture +=16;
-                    break;
-                case 15: 
-                    texture += 32;
-                    break;
-            }
-            return texture;
+            blockType = 0;
         }
-        if(texture!=0 || !isThermo)
-    		return texture;
-    	byte fireState = ((TileEntityIC2Thermo)tileentity).getOnFire();
-    	switch (fireState)
+        int texture = sideMapping[blockType][metaSide][side];
+        
+        if(tileentity instanceof ITextureHelper)
         {
-            case 1:
-                texture = 16;
-                break;
-            case 0:
-                texture = 0;
-                break;
-            default:
-                texture = 32;
-                break;
+            texture = ((ITextureHelper)tileentity).modifyTextureIndex(texture); 
         }
 	    return texture;
     }
@@ -446,6 +490,8 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
             return new TileEntityIndustrialAlarm();
         case DAMAGE_HOWLER_ALARM:
             return new TileEntityHowlerAlarm();
+        case DAMAGE_REMOTE_THERMO:
+            return new TileEntityRemoteThermo();
         }
         return null;
     }
@@ -453,10 +499,18 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
     @Override
     protected int damageDropped(int i)
     {
-        if(i >0 && i<=2)
+        if(i >0 && i<=DAMAGE_MAX)
             return i;
         else
             return 0;
+    }
+    
+    @Override
+    public boolean isBlockSolidOnSide(World world, int x, int y, int z, int side) 
+    {
+        int metadata = world.getBlockMetadata(x, y, z);
+        return !solidBlockRequired[metadata];
+        
     }
     
     @Override
@@ -470,14 +524,13 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
         return lightValue[blockID];
     }
     
-    
-
     @Override
     public void addCreativeItems(ArrayList arraylist)
     {
         arraylist.add(new ItemStack(this, 1, DAMAGE_THERMAL_MONITOR));
         arraylist.add(new ItemStack(this, 1, DAMAGE_INDUSTRIAL_ALARM));
         arraylist.add(new ItemStack(this, 1, DAMAGE_HOWLER_ALARM));
+        arraylist.add(new ItemStack(this, 1, DAMAGE_REMOTE_THERMO));
     }
 
 }
