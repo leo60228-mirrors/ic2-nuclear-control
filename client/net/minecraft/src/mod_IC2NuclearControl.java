@@ -444,7 +444,7 @@ public class mod_IC2NuclearControl extends NetworkMod implements IGuiHandler
     @Override
     public String getVersion()
     {
-        return "v1.1.5";
+        return "v1.1.6";
     }
 
 }
