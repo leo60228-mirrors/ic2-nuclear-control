@@ -2,6 +2,7 @@ package net.minecraft.src.nuclearcontrol;
 
 import net.minecraft.src.Container;
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.ItemStack;
 import net.minecraft.src.Slot;
 
 public class ContainerRemoteThermo extends Container
@@ -44,6 +45,35 @@ public class ContainerRemoteThermo extends Container
     public boolean canInteractWith(EntityPlayer var1)
     {
         return remoteThermo.isUseableByPlayer(player);
+    }
+    
+    @Override
+    public ItemStack transferStackInSlot(int slotId)
+    {
+        Slot slot = (Slot)this.inventorySlots.get(slotId);
+        if(slot!=null){
+            ItemStack items = slot.getStack();
+            if(items!=null)
+            {
+                if(slotId < remoteThermo.getSizeInventory())//moving from thermo to inventory
+                {
+                    mergeItemStack(items, remoteThermo.getSizeInventory(), inventorySlots.size(), false);
+                    if (items.stackSize == 0)
+                    {
+                        slot.putStack((ItemStack)null);
+                    }
+                    else
+                    {
+                        slot.onSlotChanged();
+                    }
+                }
+                else//moving from inventory to thermo
+                {
+                    return null;// not supported yet
+                }
+            }
+        }
+        return null;
     }
     
 }

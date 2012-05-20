@@ -13,6 +13,8 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.forge.Configuration;
+import net.minecraft.src.forge.IGuiHandler;
+import net.minecraft.src.forge.MinecraftForge;
 import net.minecraft.src.forge.MinecraftForgeClient;
 import net.minecraft.src.forge.NetworkMod;
 import net.minecraft.src.forge.Property;
@@ -33,7 +35,7 @@ import net.minecraft.src.nuclearcontrol.TileEntityIC2ThermoRenderer;
 import net.minecraft.src.nuclearcontrol.TileEntityRemoteThermo;
 import net.minecraft.src.nuclearcontrol.TileEntityRemoteThermoRenderer;
 
-public class mod_IC2NuclearControl extends NetworkMod
+public class mod_IC2NuclearControl extends NetworkMod implements IGuiHandler
 {
     private static final String CONFIG_NUCLEAR_CONTROL = "IC2NuclearControl.cfg";
     private static final String CONFIG_NUCLEAR_CONTROL_LANG = "IC2NuclearControl.lang";
@@ -47,6 +49,7 @@ public class mod_IC2NuclearControl extends NetworkMod
     public static Block blockNuclearControlMain;
     public static int modelId;
     public static float alarmRange;
+    private static mod_IC2NuclearControl instance;
     
     @Override
     public boolean clientSideRequired()
@@ -117,6 +120,7 @@ public class mod_IC2NuclearControl extends NetworkMod
     @Override
     public void load()
     {
+        instance = this;
         ModLoader.setInGameHook(this, true, false);
 
         MinecraftForgeClient.preloadTexture("/img/texture_thermo.png");
@@ -151,7 +155,7 @@ public class mod_IC2NuclearControl extends NetworkMod
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityIndustrialAlarm.class, "IC2IndustrialAlarm");
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityRemoteThermo.class, "IC2RemoteThermo", renderRemoteThermo);
         modelId = ModLoader.getUniqueBlockModelID(this, true);
-        
+        MinecraftForge.setGuiHandler(this, this);
         if(configuration!=null)
         {
         	configuration.save();
@@ -413,22 +417,7 @@ public class mod_IC2NuclearControl extends NetworkMod
 
     public static void launchGui(World world, int x, int y, int z, EntityPlayer entityplayer, int blockType)
     {
-        TileEntity tileEntity= world.getBlockTileEntity(x, y, z);
-        switch (blockType)
-        {
-        case BlockNuclearControlMain.DAMAGE_THERMAL_MONITOR:
-            GuiScreen guiscreen = new GuiIC2Thermo(world, x, y, z, entityplayer, (TileEntityIC2Thermo)tileEntity);
-            ModLoader.openGUI(entityplayer, guiscreen);
-            break;
-        case BlockNuclearControlMain.DAMAGE_REMOTE_THERMO:
-            ContainerRemoteThermo container = new ContainerRemoteThermo(entityplayer, (TileEntityRemoteThermo)tileEntity);
-            GuiContainer guiRemoteThermo = new GuiRemoteThermo(container);
-            ModLoader.openGUI(entityplayer, (GuiScreen)guiRemoteThermo);
-            break;
-
-        default:
-            break;
-        }
+        entityplayer.openGui(instance, blockType, world, x, y, z);
     }
 
     public static void chatMessage(EntityPlayer entityplayer, String message)
@@ -436,8 +425,26 @@ public class mod_IC2NuclearControl extends NetworkMod
     	ModLoader.getMinecraftInstance().ingameGUI.addChatMessage(message);
     }
     
+    @Override
+    public Object getGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
+    {
+        TileEntity tileEntity= world.getBlockTileEntity(x, y, z);
+        switch (ID)
+        {
+            case BlockNuclearControlMain.DAMAGE_THERMAL_MONITOR:
+                return new GuiIC2Thermo(world, x, y, z, player, (TileEntityIC2Thermo)tileEntity);
+            case BlockNuclearControlMain.DAMAGE_REMOTE_THERMO:
+                ContainerRemoteThermo container = new ContainerRemoteThermo(player, (TileEntityRemoteThermo)tileEntity);
+                return new GuiRemoteThermo(container);
+            default:
+                return null;
+        }
+    }
+    
+    @Override
     public String getVersion()
     {
         return "v1.1.5";
     }
+
 }

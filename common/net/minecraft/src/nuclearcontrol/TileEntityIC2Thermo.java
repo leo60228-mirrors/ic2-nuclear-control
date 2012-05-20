@@ -18,7 +18,7 @@ public class TileEntityIC2Thermo extends TileEntity implements
         INetworkClientTileEntityEventListener, IWrenchable,
         ITextureHelper
 {
-    private boolean init;
+    protected boolean init;
     private int prevHeatLevel;
     public int heatLevel;
     private int mappedHeatLevel;
@@ -44,7 +44,7 @@ public class TileEntityIC2Thermo extends TileEntity implements
         tickRate = -1;
     }
 
-    private void initData()
+    protected void initData()
     {
     	if(worldObj.isRemote){
     		NetworkHelper.requestInitialData(this);
@@ -87,6 +87,7 @@ public class TileEntityIC2Thermo extends TileEntity implements
         return vector;
     }
     
+    @Override
     public void onNetworkUpdate(String field)
     {
         if (field.equals("heatLevel") && prevHeatLevel != heatLevel)

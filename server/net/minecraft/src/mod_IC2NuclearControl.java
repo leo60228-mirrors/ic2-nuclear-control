@@ -6,18 +6,22 @@ import java.io.IOException;
 import java.util.Properties;
 
 import net.minecraft.src.forge.Configuration;
+import net.minecraft.src.forge.IGuiHandler;
+import net.minecraft.src.forge.MinecraftForge;
 import net.minecraft.src.forge.NetworkMod;
 import net.minecraft.src.ic2.api.Ic2Recipes;
 import net.minecraft.src.ic2.api.Items;
 import net.minecraft.src.nuclearcontrol.BlockNuclearControlMain;
+import net.minecraft.src.nuclearcontrol.ContainerRemoteThermo;
 import net.minecraft.src.nuclearcontrol.ItemNuclearControlMain;
 import net.minecraft.src.nuclearcontrol.ItemRemoteSensorKit;
 import net.minecraft.src.nuclearcontrol.ItemSensorLocationCard;
 import net.minecraft.src.nuclearcontrol.ItemToolDigitalThermometer;
 import net.minecraft.src.nuclearcontrol.ItemToolThermometer;
 import net.minecraft.src.nuclearcontrol.ThermometerVersion;
+import net.minecraft.src.nuclearcontrol.TileEntityRemoteThermo;
 
-public class mod_IC2NuclearControl extends NetworkMod
+public class mod_IC2NuclearControl extends NetworkMod implements IGuiHandler
 {
     private static final String CONFIG_NUCLEAR_CONTROL = "IC2NuclearControl.cfg";
     private static final String CONFIG_THERMO_BLOCK = "mod_thermo.cfg";
@@ -30,6 +34,7 @@ public class mod_IC2NuclearControl extends NetworkMod
     public static Block blockNuclearControlMain;
     public static int modelId;
     public static float alarmRange;
+    private static mod_IC2NuclearControl instance;
 
     public static boolean isClient()
     {
@@ -97,6 +102,7 @@ public class mod_IC2NuclearControl extends NetworkMod
 
     public void load()
     {
+        instance = this;
     	Configuration configuration;
         try
         {
@@ -125,6 +131,7 @@ public class mod_IC2NuclearControl extends NetworkMod
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityIndustrialAlarm.class, "IC2IndustrialAlarm");
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityRemoteThermo.class, "IC2RemoteThermo");
 
+        MinecraftForge.setGuiHandler(this, this);
         if(configuration!=null)
         {
         	configuration.save();
@@ -257,8 +264,9 @@ public class mod_IC2NuclearControl extends NetworkMod
                 });
     }
     
-    public static void launchGui(World world, int i, int j, int k, EntityPlayer entityplayer, int blockType)
+    public static void launchGui(World world, int x, int y, int z, EntityPlayer entityplayer, int blockType)
     {
+        entityplayer.openGui(instance, blockType, world, x, y, z);
     }
 
     public static void chatMessage(EntityPlayer entityplayer, String message)
@@ -266,8 +274,25 @@ public class mod_IC2NuclearControl extends NetworkMod
         ((EntityPlayerMP) entityplayer).playerNetServerHandler.sendPacket(new Packet3Chat(message));
     }
 
+    @Override
+    public Object getGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
+    {
+        switch (ID)
+        {
+            case BlockNuclearControlMain.DAMAGE_THERMAL_MONITOR:
+                return null;
+            case BlockNuclearControlMain.DAMAGE_REMOTE_THERMO:
+                TileEntity tileEntity= world.getBlockTileEntity(x, y, z);
+                return new ContainerRemoteThermo(player, (TileEntityRemoteThermo)tileEntity);
+            default:
+                return null;
+        }
+    }
+    
+    @Override
     public String getVersion()
     {
         return "v1.1.5";
     }
+
 }

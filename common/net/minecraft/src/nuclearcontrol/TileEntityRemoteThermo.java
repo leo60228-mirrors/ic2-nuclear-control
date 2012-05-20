@@ -1,5 +1,7 @@
 package net.minecraft.src.nuclearcontrol;
 
+import java.util.List;
+
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
@@ -12,9 +14,11 @@ import net.minecraft.src.ic2.api.EnergyNet;
 import net.minecraft.src.ic2.api.IElectricItem;
 import net.minecraft.src.ic2.api.IEnergySink;
 import net.minecraft.src.ic2.api.Items;
+import net.minecraft.src.ic2.api.NetworkHelper;
 
 
-public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements IInventory, IEnergySink, ISlotItemFilter
+public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements 
+    IInventory, IEnergySink, ISlotItemFilter
 {
     public static final int SLOT_CHARGER = 0;
     public static final int SLOT_CARD = 1;
@@ -27,9 +31,13 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements IInve
     private int deltaX;
     private int deltaY;
     private int deltaZ;
+    private int prevMaxStorage;
     public int maxStorage;
-    private int maxPacketSize;
-    private int tier;
+    public int prevMaxPacketSize;
+    public int maxPacketSize;
+    private int prevTier;
+    public int tier;
+    private int prevEnergy;
     public int energy;
     private boolean addedToEnergyNet;
     private ItemStack inventory[];
@@ -45,6 +53,20 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements IInve
         deltaX = 0;
         deltaY = 0;
         deltaZ = 0;
+        energy = 0;
+        prevEnergy = 0;
+    }
+    
+    @Override
+    public List<String> getNetworkedFields()
+    {
+        List<String> list = super.getNetworkedFields();
+        list.add("maxStorage");
+        list.add("energy");
+        list.add("tier");
+        list.add("maxPacketSize");
+        
+        return list;
     }
     
     @Override
@@ -87,45 +109,94 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements IInve
             worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
         }
     }
+    
+    public int getEnergy()
+    {
+        return energy;
+    }
+            
+    public void setEnergy(int value)
+    {
+        energy = value;
+        if(energy!=prevEnergy)
+        {
+            NetworkHelper.updateTileEntityField(this, "energy");
+        }
+        prevEnergy = energy;
+    }
+
+    public void setTier(int value)
+    {
+        tier = value;
+        if(tier!=prevTier)
+        {
+            NetworkHelper.updateTileEntityField(this, "tier");
+        }
+        prevTier = tier;
+    }
+
+    public void setMaxPacketSize(int value)
+    {
+        maxPacketSize = value;
+        if(maxPacketSize!=prevMaxPacketSize)
+        {
+            NetworkHelper.updateTileEntityField(this, "maxPacketSize");
+        }
+        prevMaxPacketSize = maxPacketSize;
+    }
+
+    public void setMaxStorage(int value)
+    {
+        maxStorage = value;
+        if(maxStorage!=prevMaxStorage)
+        {
+            NetworkHelper.updateTileEntityField(this, "maxStorage");
+        }
+        prevMaxStorage = maxStorage;
+    }
 
     @Override
     public void updateEntity()
     {
-        if (!worldObj.isRemote && energy>0)
+        if (!worldObj.isRemote)
         {
-            energy--;
-        }
-        if(inventory[0]!= null)
-        {
-            if (energy < maxStorage && inventory[SLOT_CHARGER] != null)
+            if(energy>0)
             {
-                if (inventory[SLOT_CHARGER].getItem() instanceof IElectricItem)
+                energy--;
+            }
+            if(inventory[0]!= null)
+            {
+                if (energy < maxStorage && inventory[SLOT_CHARGER] != null)
                 {
-                    IElectricItem ielectricitem = (IElectricItem)inventory[SLOT_CHARGER].getItem();
-
-                    if (ielectricitem.canProvideEnergy())
+                    if (inventory[SLOT_CHARGER].getItem() instanceof IElectricItem)
                     {
-                        int k = ElectricItem.discharge(inventory[SLOT_CHARGER], maxStorage - energy, tier, false, false);
-                        energy += k;
-                    }
-                }
-                else if(inventory[SLOT_CHARGER].itemID == Items.getItem("suBattery").itemID)
-                {
-                    if ( ENERGY_SU_BATTERY <= maxStorage - energy || energy == 0)
-                    {
-                        inventory[SLOT_CHARGER].stackSize--;
-
-                        if (inventory[SLOT_CHARGER].stackSize <= 0)
+                        IElectricItem ielectricitem = (IElectricItem)inventory[SLOT_CHARGER].getItem();
+    
+                        if (ielectricitem.canProvideEnergy())
                         {
-                            inventory[SLOT_CHARGER] = null;
+                            int k = ElectricItem.discharge(inventory[SLOT_CHARGER], maxStorage - energy, tier, false, false);
+                            energy += k;
                         }
-
-                        energy += ENERGY_SU_BATTERY;
-                        if(energy > maxStorage)
-                            energy = maxStorage;
+                    }
+                    else if(inventory[SLOT_CHARGER].itemID == Items.getItem("suBattery").itemID)
+                    {
+                        if ( ENERGY_SU_BATTERY <= maxStorage - energy || energy == 0)
+                        {
+                            inventory[SLOT_CHARGER].stackSize--;
+    
+                            if (inventory[SLOT_CHARGER].stackSize <= 0)
+                            {
+                                inventory[SLOT_CHARGER] = null;
+                            }
+    
+                            energy += ENERGY_SU_BATTERY;
+                            if(energy > maxStorage)
+                                energy = maxStorage;
+                        }
                     }
                 }
             }
+            setEnergy(energy);
         }
         super.updateEntity();
     }
@@ -316,11 +387,18 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements IInve
             }
         }
         upgradeCountTransormer = Math.min(upgradeCountTransormer, 4);
-        tier = upgradeCountTransormer + 1;
-        maxPacketSize = BASE_PACKET_SIZE * (int)Math.pow(4D, upgradeCountTransormer);
-        maxStorage = BASE_STORAGE + STORAGE_PER_UPGRADE * upgradeCountStorage;
-        if(energy > maxStorage)
-            energy = maxStorage;
+        if(worldObj!=null && !worldObj.isRemote)
+        {
+            tier = upgradeCountTransormer + 1;
+            setTier(tier);
+            maxPacketSize = BASE_PACKET_SIZE * (int)Math.pow(4D, upgradeCountTransormer);
+            setMaxPacketSize(maxPacketSize);
+            maxStorage = BASE_STORAGE + STORAGE_PER_UPGRADE * upgradeCountStorage;
+            setMaxStorage(maxStorage);
+            if(energy > maxStorage)
+                energy = maxStorage;
+            setEnergy(energy);
+        }
     };
 
     @Override
@@ -359,7 +437,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements IInve
             left = energy - maxStorage;
             energy = maxStorage;
         }
-
+        setEnergy(energy);
         return left;
     }
 
@@ -381,7 +459,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements IInve
                 }
                 return false;
             case SLOT_CARD:
-                return ItemSensorLocationCard.getCoordinates(itemstack)!=null;
+                return itemstack.getItem() instanceof ItemSensorLocationCard;
             default:
                 return  itemstack.isItemEqual(Items.getItem("transformerUpgrade")) ||
                         itemstack.isItemEqual(Items.getItem("energyStorageUpgrade")); 
