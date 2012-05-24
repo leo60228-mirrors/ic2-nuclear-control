@@ -133,6 +133,7 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
     @Override
     public void onBlockPlaced(World world, int x, int y, int z, int face)
     {
+        super.onBlockPlaced(world, x, y, z, face);
         int side = Facing.faceToSide[face];
         int metadata = world.getBlockMetadata(x, y, z);
         if(metadata > DAMAGE_MAX)
@@ -158,6 +159,7 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
     @Override
     public void onBlockAdded(World world, int x, int y, int z)
     {
+        super.onBlockAdded(world, x, y, z);
         int metadata = world.getBlockMetadata(x, y, z);
         if(metadata > DAMAGE_MAX)
         {

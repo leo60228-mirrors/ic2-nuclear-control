@@ -20,6 +20,8 @@ public class TileEntityRemoteThermoRenderer extends TileEntitySpecialRenderer
         if(isThermo)
         {
             GL11.glPushMatrix();
+            GL11.glPolygonOffset( -1, -1 );
+            GL11.glEnable ( GL11.GL_POLYGON_OFFSET_FILL );
             TileEntityIC2Thermo thermo = (TileEntityIC2Thermo)tileEntity;
             short side = (short)Facing.faceToSide[thermo.getFacing()];
             float var12 = 0.016666668F;
@@ -66,7 +68,7 @@ public class TileEntityRemoteThermoRenderer extends TileEntitySpecialRenderer
                     break;
 
             }
-            GL11.glTranslatef(0.5F, 1.0002F, 0.4375F);
+            GL11.glTranslatef(0.5F, 1F, 0.4375F);
             GL11.glRotatef(-90, 1, 0, 0);
 
             Block block = Block.blocksList[thermo.worldObj.getBlockId(thermo.xCoord, thermo.yCoord, thermo.zCoord)];
@@ -124,6 +126,7 @@ public class TileEntityRemoteThermoRenderer extends TileEntitySpecialRenderer
             GL11.glDepthMask(true);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
+            GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL );
             GL11.glPopMatrix();
             
         }
