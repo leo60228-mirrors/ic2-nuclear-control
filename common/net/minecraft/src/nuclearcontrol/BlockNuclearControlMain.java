@@ -77,6 +77,8 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
     public BlockNuclearControlMain(int i, int j)
     {
         super(i, j, Material.iron);
+        setHardness(0.5F);
+        setRequiresSelfNotify();
     }
 
     @Override
