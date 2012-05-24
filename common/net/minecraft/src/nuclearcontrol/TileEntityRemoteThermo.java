@@ -340,34 +340,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
         super.onInventoryChanged();
         int upgradeCountTransormer = 0;
         int upgradeCountStorage = 0;
-        if(inventory[SLOT_CARD]!=null)
-        {
-            int[] coordinates = ItemSensorLocationCard.getCoordinates(inventory[SLOT_CARD]);
-            if(coordinates!=null)
-            {
-                deltaX = coordinates[0] - xCoord;
-                deltaY = coordinates[1] - yCoord;
-                deltaZ = coordinates[2] - zCoord;
-                if(Math.abs(deltaX) > LOCATION_RANGE || 
-                    Math.abs(deltaY) > LOCATION_RANGE || 
-                    Math.abs(deltaZ) > LOCATION_RANGE)
-                {
-                    deltaX = deltaY = deltaZ = 0;
-                }
-            }
-            else
-            {
-                deltaX = 0;
-                deltaY = 0;
-                deltaZ = 0;
-            }
-        }
-        else
-        {
-            deltaX = 0;
-            deltaY = 0;
-            deltaZ = 0;
-        }
+        int upgradeCountRange = 0;
         for (int i = 2; i < 5; i++)
         {
             ItemStack itemStack = inventory[i];
@@ -385,6 +358,41 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
             {
                 upgradeCountStorage += itemStack.stackSize;
             }
+            else if(itemStack.getItem() instanceof ItemRangeUpgrade)
+            {
+                upgradeCountRange += itemStack.stackSize;
+            }
+        }
+        if(inventory[SLOT_CARD]!=null)
+        {
+            int[] coordinates = ItemSensorLocationCard.getCoordinates(inventory[SLOT_CARD]);
+            if(coordinates!=null)
+            {
+                deltaX = coordinates[0] - xCoord;
+                deltaY = coordinates[1] - yCoord;
+                deltaZ = coordinates[2] - zCoord;
+                if(upgradeCountRange > 7)
+                    upgradeCountRange = 7;
+                int range = LOCATION_RANGE * (int)Math.pow(2, upgradeCountRange);
+                if(Math.abs(deltaX) > range || 
+                    Math.abs(deltaY) > range || 
+                    Math.abs(deltaZ) > range)
+                {
+                    deltaX = deltaY = deltaZ = 0;
+                }
+            }
+            else
+            {
+                deltaX = 0;
+                deltaY = 0;
+                deltaZ = 0;
+            }
+        }
+        else
+        {
+            deltaX = 0;
+            deltaY = 0;
+            deltaZ = 0;
         }
         upgradeCountTransormer = Math.min(upgradeCountTransormer, 4);
         if(worldObj!=null && !worldObj.isRemote)
@@ -462,7 +470,8 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
                 return itemstack.getItem() instanceof ItemSensorLocationCard;
             default:
                 return  itemstack.isItemEqual(Items.getItem("transformerUpgrade")) ||
-                        itemstack.isItemEqual(Items.getItem("energyStorageUpgrade")); 
+                        itemstack.isItemEqual(Items.getItem("energyStorageUpgrade")) ||
+                        itemstack.getItem() instanceof ItemRangeUpgrade; 
         }
         
     }

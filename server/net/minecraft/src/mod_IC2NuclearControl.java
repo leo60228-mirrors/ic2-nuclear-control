@@ -14,6 +14,7 @@ import net.minecraft.src.ic2.api.Items;
 import net.minecraft.src.nuclearcontrol.BlockNuclearControlMain;
 import net.minecraft.src.nuclearcontrol.ContainerRemoteThermo;
 import net.minecraft.src.nuclearcontrol.ItemNuclearControlMain;
+import net.minecraft.src.nuclearcontrol.ItemRangeUpgrade;
 import net.minecraft.src.nuclearcontrol.ItemRemoteSensorKit;
 import net.minecraft.src.nuclearcontrol.ItemSensorLocationCard;
 import net.minecraft.src.nuclearcontrol.ItemToolDigitalThermometer;
@@ -31,6 +32,7 @@ public class mod_IC2NuclearControl extends NetworkMod implements IGuiHandler
     public static Item itemToolDigitalThermometer;
     public static Item itemRemoteSensorKit;
     public static Item itemSensorLocationCard;
+    public static Item itemRangeUpgrade;
     public static Block blockNuclearControlMain;
     public static int modelId;
     public static float alarmRange;
@@ -196,6 +198,9 @@ public class mod_IC2NuclearControl extends NetworkMod implements IGuiHandler
         itemSensorLocationCard = new ItemSensorLocationCard(
                 getIdFor(configuration, "itemSensorLocationCard", 31003, false), 50)
                 .setItemName("ItemSensorLocationCard");
+        itemRangeUpgrade = new ItemRangeUpgrade(
+                getIdFor(configuration, "itemRangeUpgrade", 31004, false), 66)
+                .setItemName("ItemRangeUpgrade");
     }
 
     public void registerBlocks()
@@ -260,6 +265,12 @@ public class mod_IC2NuclearControl extends NetworkMod implements IGuiHandler
                     "  F", " D ", "P  ", 
                         Character.valueOf('P'), Item.paper, 
                         Character.valueOf('D'), digitalThermometer, 
+                        Character.valueOf('F'), Items.getItem("frequencyTransmitter")
+                });
+        Ic2Recipes.addCraftingRecipe(new ItemStack(itemRangeUpgrade, 1), new Object[] 
+                {
+                    "   ", "CFC", "   ", 
+                        Character.valueOf('C'), Items.getItem("insulatedCopperCableItem"), 
                         Character.valueOf('F'), Items.getItem("frequencyTransmitter")
                 });
     }
