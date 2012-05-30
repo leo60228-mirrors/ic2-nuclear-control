@@ -50,6 +50,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
         ModLoader.setInGameHook(this, true, false);
         initBlocks(configuration);
         registerBlocks();
+        alarmRange = new Integer(configuration.getOrCreateIntProperty("alarmRange", Configuration.CATEGORY_GENERAL, 64).value).intValue();
 
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityIC2Thermo.class, "IC2Thermo");
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityHowlerAlarm.class, "IC2HowlerAlarm");

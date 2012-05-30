@@ -8,20 +8,35 @@ import net.minecraft.src.Facing;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.mod_IC2NuclearControl;
+import net.minecraft.src.ic2.api.INetworkClientTileEntityEventListener;
 import net.minecraft.src.ic2.api.INetworkDataProvider;
 import net.minecraft.src.ic2.api.INetworkUpdateListener;
 import net.minecraft.src.ic2.api.IWrenchable;
 import net.minecraft.src.ic2.api.NetworkHelper;
 
-public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataProvider, INetworkUpdateListener, IWrenchable, IRedstoneConsumer
+public class TileEntityHowlerAlarm extends TileEntity implements 
+    INetworkDataProvider, INetworkUpdateListener, IWrenchable, IRedstoneConsumer, INetworkClientTileEntityEventListener
 {
+    private static final String DEFAULT_SOUND_NAME = "default";
+    private static final float BASE_SOUND_RANGE = 16F;
+    private static final String SOUND_PREFIX = "ic2nuclearControl.alarm-";
+    
     private boolean init;
+    
     private short prevFacing;
     public short facing;
+    
+    public int range;
+    private int prevRange;
+    
+    public boolean powered;
+    private boolean prevPowered;
+    
+    public String soundName;
+    private String prevSoundName;
+
     private int updateTicker;
     protected int tickRate;
-    public boolean powered;
-    public boolean prevPowered;
     private String soundId;
     
     public TileEntityHowlerAlarm()
@@ -33,6 +48,8 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
         updateTicker = 0;
         powered = false;
         prevPowered = false;
+        soundName = DEFAULT_SOUND_NAME;
+        range = mod_IC2NuclearControl.alarmRange;
     }
 
     private void initData()
@@ -45,6 +62,41 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
             RedstoneHelper.checkPowered(worldObj, this);
         }
         init = true;
+    }
+    
+    public int getRange()
+    {
+        return range;
+    }
+    
+    public void setRange(int r)
+    {
+        range = r;
+        if (prevRange != r)
+        {
+            NetworkHelper.updateTileEntityField(this, "range");
+        }
+        prevRange = range;
+    }    
+
+    public String getSoundName()
+    {
+        return soundName;
+    }
+    
+    public void setSoundName(String name)
+    {
+        soundName = name;
+        if (prevSoundName != name)
+        {
+            NetworkHelper.updateTileEntityField(this, "soundName");
+        }
+        prevSoundName = name;
+    }    
+
+    public void onNetworkEvent(EntityPlayer entityplayer, int i)
+    {
+        setRange(i);
     }
     
     @Override
@@ -99,7 +151,8 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
             if(powered)
             {
                 if(soundId == null)
-                    soundId = SoundHelper.playAlarm(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, "ic2nuclearControl.alarm", mod_IC2NuclearControl.alarmRange);
+                    soundId = SoundHelper.playAlarm(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, 
+                            SOUND_PREFIX+soundName, range/BASE_SOUND_RANGE);
             }
             else
             {
@@ -125,7 +178,8 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
             if(powered)
             {
                 if(soundId == null)
-                    soundId = SoundHelper.playAlarm(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, "ic2nuclearControl.alarm", mod_IC2NuclearControl.alarmRange);
+                    soundId = SoundHelper.playAlarm(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, 
+                            SOUND_PREFIX+soundName, range/BASE_SOUND_RANGE);
             }
             else
             {
@@ -179,6 +233,8 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
         Vector<String> vector = new Vector<String>(2);
         vector.add("facing");
         vector.add("powered");
+        vector.add("range");
+        vector.add("soundName");
         return vector;
     }
     
@@ -204,6 +260,11 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
     {
         super.readFromNBT(nbttagcompound);
         prevFacing = facing =  nbttagcompound.getShort("facing");
+        if(nbttagcompound.hasKey("soundName"))
+        {
+            prevSoundName = soundName = nbttagcompound.getString("soundName");
+            prevRange = range = nbttagcompound.getInteger("range");
+        }
     }
     
     @Override
@@ -211,12 +272,15 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
     {
         super.writeToNBT(nbttagcompound);
         nbttagcompound.setShort("facing", facing);
+        nbttagcompound.setString("soundName", soundName);
+        nbttagcompound.setInteger("range", range);
     }
     
     protected void checkStatus()
     {
         if(powered && (soundId==null || !SoundHelper.isPlaying(soundId))){
-            soundId = SoundHelper.playAlarm(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, "ic2nuclearControl.alarm", mod_IC2NuclearControl.alarmRange);
+            soundId = SoundHelper.playAlarm(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, 
+                    SOUND_PREFIX+soundName, range/BASE_SOUND_RANGE);
         }
     }
 

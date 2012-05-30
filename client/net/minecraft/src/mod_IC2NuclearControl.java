@@ -2,8 +2,11 @@ package net.minecraft.src;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -14,19 +17,27 @@ import net.minecraft.src.forge.MinecraftForgeClient;
 import net.minecraft.src.forge.Property;
 import net.minecraft.src.nuclearcontrol.BlockNuclearControlMain;
 import net.minecraft.src.nuclearcontrol.ContainerRemoteThermo;
+import net.minecraft.src.nuclearcontrol.GuiHowlerAlarm;
 import net.minecraft.src.nuclearcontrol.GuiIC2Thermo;
 import net.minecraft.src.nuclearcontrol.GuiRemoteThermo;
 import net.minecraft.src.nuclearcontrol.IC2NuclearControl;
+import net.minecraft.src.nuclearcontrol.TileEntityHowlerAlarm;
 import net.minecraft.src.nuclearcontrol.TileEntityIC2Thermo;
 import net.minecraft.src.nuclearcontrol.TileEntityIC2ThermoRenderer;
 import net.minecraft.src.nuclearcontrol.TileEntityRemoteThermo;
 import net.minecraft.src.nuclearcontrol.TileEntityRemoteThermoRenderer;
+import net.minecraft.src.nuclearcontrol.Utils.FileHash;
 
 import org.lwjgl.opengl.GL11;
 
 public class mod_IC2NuclearControl extends IC2NuclearControl
 {
     private static final String CONFIG_NUCLEAR_CONTROL_LANG = "IC2NuclearControl.lang";
+    
+    private static final String[] builtInAlarms = {"alarm-default.ogg", "alarm-sci-fi.ogg"};
+    private static final String OLD_ALARM_HASH = "f0b85b5423d306826f08c7fd7c50188e";
+    public static int SMPMaxAlarmRange;
+    public static List<String> availableAlarms;
 
     public static boolean isClient()
     {
@@ -92,29 +103,62 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
             ncSoundDir.mkdir();
         }
         File alarmFile = new File(ncSoundDir, "alarm.ogg");
-        if(!alarmFile.exists()){
-            try
+        if(alarmFile.exists())//v.1.1.6 -> 1.1.7 migration code
+        {
+            if(OLD_ALARM_HASH.equals(FileHash.getMD5Checksum(alarmFile)))
             {
-                if(!alarmFile.createNewFile() || !alarmFile.canWrite())
-                    return;
-                InputStream input = getClass().getResourceAsStream("/sound/nuclear-alarm.ogg");
-                FileOutputStream output = new FileOutputStream(alarmFile);
-                byte[] buf = new byte[8192];
-                while (true) {
-                  int length = input.read(buf);
-                  if (length < 0)
-                    break;
-                  output.write(buf, 0, length);
-                }
-                input.close();
-                output.close();
-            } catch (IOException e)
+                alarmFile.delete();
+            }
+            else
             {
-                System.out.println("[IC2NuclearControl] can't import sound file");
+                alarmFile.renameTo(new File(ncSoundDir, "alarm-custom.ogg"));
             }
         }
-        alarmRange = new Float(configuration.getOrCreateIntProperty("alarmRange", Configuration.CATEGORY_GENERAL, 64).value).floatValue() / 16F;
-        ModLoader.getMinecraftInstance().sndManager.addSound("ic2nuclearControl/alarm.ogg", alarmFile);
+        for (String alarmName : builtInAlarms)
+        {
+            alarmFile = new File(ncSoundDir, alarmName);
+            if(!alarmFile.exists())
+            {
+                try
+                {
+                    if(!alarmFile.createNewFile() || !alarmFile.canWrite())
+                        return;
+                    InputStream input = getClass().getResourceAsStream("/sound/"+alarmName);
+                    FileOutputStream output = new FileOutputStream(alarmFile);
+                    byte[] buf = new byte[8192];
+                    while (true) {
+                      int length = input.read(buf);
+                      if (length < 0)
+                        break;
+                      output.write(buf, 0, length);
+                    }
+                    input.close();
+                    output.close();
+                } catch (IOException e)
+                {
+                    System.out.println("[IC2NuclearControl] can't import sound file");
+                }
+            }
+        }
+        
+        File[] alarms = ncSoundDir.listFiles(new FilenameFilter() { 
+            public boolean accept(File dir, String filename)
+            { return filename.endsWith(".ogg") && filename.startsWith("alarm-"); }
+        });
+        
+        availableAlarms = new ArrayList<String>();
+        
+        SoundManager sndManager = ModLoader.getMinecraftInstance().sndManager;  
+        for(File alarmItem: alarms)
+        {
+            String name = alarmItem.getName();
+            name = name.substring(6, name.length()-4);
+            availableAlarms.add(name);
+            sndManager.addSound("ic2nuclearControl/alarm-"+name+".ogg", alarmItem);
+        }
+
+        alarmRange = new Integer(configuration.getOrCreateIntProperty("alarmRange", Configuration.CATEGORY_GENERAL, 64).value).intValue();
+        SMPMaxAlarmRange = new Integer(configuration.getOrCreateIntProperty("SMPMaxAlarmRange", Configuration.CATEGORY_GENERAL, 256).value).intValue();
     }
     
     @Override
@@ -225,6 +269,8 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
         {
             case BlockNuclearControlMain.DAMAGE_THERMAL_MONITOR:
                 return new GuiIC2Thermo(world, x, y, z, player, (TileEntityIC2Thermo)tileEntity);
+            case BlockNuclearControlMain.DAMAGE_HOWLER_ALARM:
+                return new GuiHowlerAlarm((TileEntityHowlerAlarm)tileEntity);
             case BlockNuclearControlMain.DAMAGE_REMOTE_THERMO:
                 ContainerRemoteThermo container = new ContainerRemoteThermo(player, (TileEntityRemoteThermo)tileEntity);
                 return new GuiRemoteThermo(container);

@@ -30,7 +30,7 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
     public static Item itemRangeUpgrade;
     public static Block blockNuclearControlMain;
     public static int modelId;
-    public static float alarmRange;
+    public static int alarmRange;
     protected static IC2NuclearControl instance;
 
     

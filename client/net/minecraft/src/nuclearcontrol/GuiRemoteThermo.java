@@ -1,12 +1,10 @@
 package net.minecraft.src.nuclearcontrol;
 
-import java.util.ArrayList;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.src.Container;
 import net.minecraft.src.GuiContainer;
 import net.minecraft.src.StatCollector;
+
+import org.lwjgl.opengl.GL11;
 
 public class GuiRemoteThermo extends GuiContainer
 {
