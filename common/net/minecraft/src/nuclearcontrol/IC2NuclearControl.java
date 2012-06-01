@@ -3,6 +3,7 @@ package net.minecraft.src.nuclearcontrol;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 import net.minecraft.src.Block;
@@ -10,15 +11,23 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.ModLoader;
+import net.minecraft.src.NetworkManager;
+import net.minecraft.src.Packet1Login;
 import net.minecraft.src.World;
 import net.minecraft.src.forge.Configuration;
+import net.minecraft.src.forge.IConnectionHandler;
 import net.minecraft.src.forge.IGuiHandler;
+import net.minecraft.src.forge.IPacketHandler;
+import net.minecraft.src.forge.MessageManager;
+import net.minecraft.src.forge.MinecraftForge;
 import net.minecraft.src.forge.NetworkMod;
 import net.minecraft.src.ic2.api.Ic2Recipes;
 import net.minecraft.src.ic2.api.Items;
 
-public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandler
+public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandler, IConnectionHandler, IPacketHandler
 {
+    public static final String NETWORK_CHANNEL_NAME = "nuclearControl";
+    
     protected static final String CONFIG_NUCLEAR_CONTROL = "IC2NuclearControl.cfg";
     protected static final String CONFIG_THERMO_BLOCK = "mod_thermo.cfg";
     protected static final String CONFIG_THERMOMETER = "IC2Thermometer.cfg";
@@ -32,6 +41,9 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
     public static int modelId;
     public static int alarmRange;
     protected static IC2NuclearControl instance;
+    public static int SMPMaxAlarmRange;
+    public static int maxAlarmRange;
+    public static List<String> availableAlarms;
 
     
     @Override
@@ -208,6 +220,7 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
     public void modsLoaded()
     {
         super.modsLoaded();
+        MinecraftForge.registerConnectionHandler(this);
         addRecipes();
     }    
 
@@ -233,6 +246,22 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
     public void registerBlocks()
     {
         ModLoader.registerBlock(blockNuclearControlMain, ItemNuclearControlMain.class);
+    }
+
+    @Override
+    public void onConnect(NetworkManager network)
+    {
+        MessageManager.getInstance().registerChannel(network, this, NETWORK_CHANNEL_NAME);
+    }
+    
+    @Override
+    public void onDisconnect(NetworkManager network, String message, Object[] args)
+    {
+    }
+    
+    @Override
+    public void onLogin(NetworkManager network, Packet1Login login)
+    {
     }
 
     @Override

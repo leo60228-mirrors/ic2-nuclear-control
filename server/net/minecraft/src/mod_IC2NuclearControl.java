@@ -1,5 +1,9 @@
 package net.minecraft.src;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -8,10 +12,13 @@ import net.minecraft.src.forge.MinecraftForge;
 import net.minecraft.src.nuclearcontrol.BlockNuclearControlMain;
 import net.minecraft.src.nuclearcontrol.ContainerRemoteThermo;
 import net.minecraft.src.nuclearcontrol.IC2NuclearControl;
+import net.minecraft.src.nuclearcontrol.TileEntityHowlerAlarm;
 import net.minecraft.src.nuclearcontrol.TileEntityRemoteThermo;
 
 public class mod_IC2NuclearControl extends IC2NuclearControl
 {
+    private static String allowedAlarms;
+    
 
     public static boolean isClient()
     {
@@ -51,7 +58,9 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
         initBlocks(configuration);
         registerBlocks();
         alarmRange = new Integer(configuration.getOrCreateIntProperty("alarmRange", Configuration.CATEGORY_GENERAL, 64).value).intValue();
-
+        maxAlarmRange = new Integer(configuration.getOrCreateIntProperty("maxAlarmRange", Configuration.CATEGORY_GENERAL, 128).value).intValue();
+        allowedAlarms = configuration.getOrCreateProperty("allowedAlarms", Configuration.CATEGORY_GENERAL, "default,sci-fi").value.replaceAll(" ", "");
+        SMPMaxAlarmRange = 256;
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityIC2Thermo.class, "IC2Thermo");
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityHowlerAlarm.class, "IC2HowlerAlarm");
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityIndustrialAlarm.class, "IC2IndustrialAlarm");
@@ -82,6 +91,53 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
             default:
                 return null;
         }
+    }
+    
+    @Override
+    public void onLogin(NetworkManager network, Packet1Login login) 
+    {
+        EntityPlayerMP player = ((NetServerHandler)network.getNetHandler()).getPlayerEntity();
+        ByteArrayOutputStream arrayOutput = new ByteArrayOutputStream();
+        DataOutputStream output = new DataOutputStream(arrayOutput);
+        try
+        {
+            output.writeInt(maxAlarmRange);
+            output.writeUTF(allowedAlarms);
+            Packet250CustomPayload packet = new Packet250CustomPayload();
+            packet.channel = NETWORK_CHANNEL_NAME;
+            packet.isChunkDataPacket = false;
+            packet.data = arrayOutput.toByteArray();
+            packet.length = arrayOutput.size();
+            player.playerNetServerHandler.sendPacket(packet);
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    };
+
+    @Override
+    public void onPacketData(NetworkManager network, String channel, byte[] data)
+    {
+        //used to set sound alarm from client's GUI
+        DataInputStream dataStream = new DataInputStream(new ByteArrayInputStream(data));
+        try
+        {
+            int x = dataStream.readInt();
+            int y = dataStream.readInt();
+            int z = dataStream.readInt();
+            String soundName = dataStream.readUTF();
+            EntityPlayerMP player = ((NetServerHandler)network.getNetHandler()).getPlayerEntity(); 
+            TileEntity alarm = player.worldObj.getBlockTileEntity(x, y, z);
+            if(alarm instanceof TileEntityHowlerAlarm)
+            {
+                ((TileEntityHowlerAlarm)alarm).setSoundName(soundName);
+            }
+        }
+        catch(IOException e)
+        {
+            System.err.println("[IC2NuclearControl] WARNING: Invalid packet: " + e.getMessage());
+        }
+        
     }
     
 }

@@ -8,6 +8,7 @@ import net.minecraft.src.GuiButton;
 import net.minecraft.src.ModLoader;
 import net.minecraft.src.ScaledResolution;
 import net.minecraft.src.Tessellator;
+import net.minecraft.src.mod_IC2NuclearControl;
 
 import org.lwjgl.opengl.GL11;
 
@@ -157,7 +158,15 @@ public class GuiHowlerAlarmListBox extends GuiButton
         int itemIndex = (targetY - BASIC_Y_OFFSET - yPosition + scrollTop) / lineHeight;
         if(itemIndex >= items.size())
             itemIndex = items.size()-1;
-        alarm.setSoundName(items.get(itemIndex));
+        String newSound = items.get(itemIndex);
+        if(!newSound.equals(alarm.getSoundName()))
+        {
+            if(alarm.worldObj.isRemote)
+            {
+                mod_IC2NuclearControl.setNewAlarmSound(alarm.xCoord, alarm.yCoord, alarm.zCoord, newSound);
+            }
+            alarm.setSoundName(newSound);
+        }
     }
 
 

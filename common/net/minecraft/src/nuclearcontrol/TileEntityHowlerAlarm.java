@@ -152,7 +152,7 @@ public class TileEntityHowlerAlarm extends TileEntity implements
             {
                 if(soundId == null)
                     soundId = SoundHelper.playAlarm(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, 
-                            SOUND_PREFIX+soundName, range/BASE_SOUND_RANGE);
+                            SOUND_PREFIX+soundName, getNormalizedRange());
             }
             else
             {
@@ -179,7 +179,7 @@ public class TileEntityHowlerAlarm extends TileEntity implements
             {
                 if(soundId == null)
                     soundId = SoundHelper.playAlarm(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, 
-                            SOUND_PREFIX+soundName, range/BASE_SOUND_RANGE);
+                            SOUND_PREFIX+soundName, getNormalizedRange());
             }
             else
             {
@@ -192,6 +192,15 @@ public class TileEntityHowlerAlarm extends TileEntity implements
             }
         }
         prevPowered = value;
+    }
+    
+    private float getNormalizedRange()
+    {
+        if(worldObj.isRemote)
+        {
+            return Math.min(range, mod_IC2NuclearControl.SMPMaxAlarmRange)/BASE_SOUND_RANGE;
+        }
+        return range/BASE_SOUND_RANGE;
     }
     
     @Override
@@ -224,6 +233,16 @@ public class TileEntityHowlerAlarm extends TileEntity implements
         {
             setPoweredNoNotify(powered);
             worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+        }
+        if (worldObj.isRemote && field.equals("soundName") && prevSoundName != soundName)
+        {
+            if(!mod_IC2NuclearControl.availableAlarms.contains(soundName))
+            {
+                System.out.println(String.format("[IC2NuclearControl] INFO: Can't set sound '%s' at %d,%d,%d, using default",
+                        soundName, xCoord, yCoord, zCoord));
+                soundName = DEFAULT_SOUND_NAME;
+            }
+            prevSoundName = soundName;
         }
     }
 
@@ -280,7 +299,7 @@ public class TileEntityHowlerAlarm extends TileEntity implements
     {
         if(powered && (soundId==null || !SoundHelper.isPlaying(soundId))){
             soundId = SoundHelper.playAlarm(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, 
-                    SOUND_PREFIX+soundName, range/BASE_SOUND_RANGE);
+                    SOUND_PREFIX+soundName, getNormalizedRange());
         }
     }
 

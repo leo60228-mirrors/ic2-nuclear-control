@@ -1,5 +1,8 @@
 package net.minecraft.src.nuclearcontrol;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.src.GuiScreen;
 import net.minecraft.src.OpenGlHelper;
 import net.minecraft.src.RenderHelper;
@@ -34,7 +37,17 @@ public class GuiHowlerAlarm extends GuiScreen
         guiTop = (this.height - ySize) / 2;
         controlList.clear();
         slider = new GuiHowlerAlarmSlider(3, guiLeft+12, guiTop + 33, "Sound range: %s", alarm);
-        listBox = new GuiHowlerAlarmListBox(4, guiLeft+13, guiTop+63, 105, 65, mod_IC2NuclearControl.availableAlarms, alarm);
+        List<String> items;
+        if(alarm.worldObj.isRemote)
+        {
+            items =  new ArrayList<String>(mod_IC2NuclearControl.availableAlarms);
+            items.retainAll(mod_IC2NuclearControl.serverAllowedAlarms);
+        }
+        else
+        {
+            items = mod_IC2NuclearControl.availableAlarms;
+        }
+        listBox = new GuiHowlerAlarmListBox(4, guiLeft+13, guiTop+63, 105, 65, items, alarm);
         controlList.add(slider);
         controlList.add(listBox);
         

@@ -1,11 +1,16 @@
 package net.minecraft.src;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -36,8 +41,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
     
     private static final String[] builtInAlarms = {"alarm-default.ogg", "alarm-sci-fi.ogg"};
     private static final String OLD_ALARM_HASH = "f0b85b5423d306826f08c7fd7c50188e";
-    public static int SMPMaxAlarmRange;
-    public static List<String> availableAlarms;
+    public static List<String> serverAllowedAlarms; 
 
     public static boolean isClient()
     {
@@ -159,6 +163,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
 
         alarmRange = new Integer(configuration.getOrCreateIntProperty("alarmRange", Configuration.CATEGORY_GENERAL, 64).value).intValue();
         SMPMaxAlarmRange = new Integer(configuration.getOrCreateIntProperty("SMPMaxAlarmRange", Configuration.CATEGORY_GENERAL, 256).value).intValue();
+        serverAllowedAlarms = new ArrayList<String>();
     }
     
     @Override
@@ -276,6 +281,43 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
                 return new GuiRemoteThermo(container);
             default:
                 return null;
+        }
+    }
+    
+    public static void setNewAlarmSound(int x, int y, int z, String soundName)
+    {
+        ByteArrayOutputStream arrayOutput = new ByteArrayOutputStream();
+        DataOutputStream output = new DataOutputStream(arrayOutput);
+        try
+        {
+            output.writeInt(x);
+            output.writeInt(y);
+            output.writeInt(z);
+            output.writeUTF(soundName);
+            Packet250CustomPayload packet = new Packet250CustomPayload();
+            packet.channel = NETWORK_CHANNEL_NAME;
+            packet.isChunkDataPacket = false;
+            packet.data = arrayOutput.toByteArray();
+            packet.length = arrayOutput.size();
+            ModLoader.getMinecraftInstance().getSendQueue().addToSendQueue(packet);
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void onPacketData(NetworkManager network, String channel, byte[] data)
+    {//used only to get allowed alarms list from server
+        DataInputStream dataStream = new DataInputStream(new ByteArrayInputStream(data));
+        try
+        {
+            maxAlarmRange = dataStream.readInt();
+            serverAllowedAlarms = new ArrayList<String>(Arrays.asList(dataStream.readUTF().split(",")));
+        } catch (IOException e)
+        {
+            System.err.println("[IC2NuclearControl] WARNING: Invalid packet: " + e.getMessage());
         }
     }
     

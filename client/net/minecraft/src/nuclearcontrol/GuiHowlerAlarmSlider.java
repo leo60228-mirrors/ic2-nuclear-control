@@ -2,6 +2,7 @@ package net.minecraft.src.nuclearcontrol;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.GuiButton;
+import net.minecraft.src.mod_IC2NuclearControl;
 import net.minecraft.src.ic2.api.NetworkHelper;
 
 import org.lwjgl.opengl.GL11;
@@ -22,7 +23,12 @@ public class GuiHowlerAlarmSlider extends GuiButton
         this.alarm = alarm;
         dragging = false;
         this.label = label;
-        sliderValue = ((float)alarm.getRange()-minValue)/(maxValue-minValue);
+        if(alarm.worldObj.isRemote)
+            maxValue = mod_IC2NuclearControl.maxAlarmRange;
+        int currentRange = alarm.getRange();
+        if(alarm.worldObj.isRemote && currentRange > maxValue)
+            currentRange = maxValue;
+        sliderValue = ((float)currentRange-minValue)/(maxValue-minValue);
         displayString = String.format(label, getNormalizedValue());
     }
     
