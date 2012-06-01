@@ -26,6 +26,7 @@ import net.minecraft.src.nuclearcontrol.GuiHowlerAlarm;
 import net.minecraft.src.nuclearcontrol.GuiIC2Thermo;
 import net.minecraft.src.nuclearcontrol.GuiRemoteThermo;
 import net.minecraft.src.nuclearcontrol.IC2NuclearControl;
+import net.minecraft.src.nuclearcontrol.MsgProcessor;
 import net.minecraft.src.nuclearcontrol.TileEntityHowlerAlarm;
 import net.minecraft.src.nuclearcontrol.TileEntityIC2Thermo;
 import net.minecraft.src.nuclearcontrol.TileEntityIC2ThermoRenderer;
@@ -41,7 +42,8 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
     
     private static final String[] builtInAlarms = {"alarm-default.ogg", "alarm-sci-fi.ogg"};
     private static final String OLD_ALARM_HASH = "f0b85b5423d306826f08c7fd7c50188e";
-    public static List<String> serverAllowedAlarms; 
+    public static List<String> serverAllowedAlarms;
+    private static MsgProcessor msgProcessor;
 
     public static boolean isClient()
     {
@@ -61,6 +63,8 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
         ModLoader.setInGameHook(this, true, false);
 
         MinecraftForgeClient.preloadTexture("/img/texture_thermo.png");
+        msgProcessor = new MsgProcessor();
+        MinecraftForge.registerChatHandler(msgProcessor);
         Configuration configuration;
         try
         {
@@ -231,6 +235,14 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
             setPhrase(configuration, "tile.blockIndustrialAlarm.name", "Industrial Alarm");
             setPhrase(configuration, "tile.blockHowlerAlarm.name", "Howler Alarm");
             setPhrase(configuration, "tile.blockRemoteThermo.name", "Remote Thermal Monitor");
+
+            setPhrase(configuration, "msg.nc.HowlerAlarmSoundRange", "Sound range: %s");
+            setPhrase(configuration, "msg.nc.HowlerAlarmSound", "Sound");
+            setPhrase(configuration, "msg.nc.ThermalMonitorSave", "Save setting");
+            setPhrase(configuration, "msg.nc.ThermalMonitorSignalAt", "Signal at %s heat");
+            setPhrase(configuration, "msg.nc.Thermo", "Hull heat: %s");
+            setPhrase(configuration, "msg.nc.ThermoDigital", "Hull heat: %s (Water evaporate: %s / melting: %s)");
+            setPhrase(configuration, "msg.nc.SensorKit", "Remote Sensor mounted, Sensor Location Card received");
             
             for(Map.Entry<String, Map<String, Property>> category : configuration.categories.entrySet())
             {
@@ -263,7 +275,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
 
     public static void chatMessage(EntityPlayer entityplayer, String message)
     {
-    	ModLoader.getMinecraftInstance().ingameGUI.addChatMessage(message);
+    	ModLoader.getMinecraftInstance().ingameGUI.addChatMessage(msgProcessor.onClientChatRecv(message));
     }
     
     @Override

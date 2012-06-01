@@ -23,7 +23,9 @@ public class GuiRemoteThermo extends GuiContainer
     public void initGui() {
         super.initGui();
         controlList.clear();
-        slider = new GuiRemoteThermoSlider(3, guiLeft+23, guiTop + 33, "Signal at %s heat", container.remoteThermo);
+        slider = new GuiRemoteThermoSlider(3, guiLeft+23, guiTop + 33, 
+                StatCollector.translateToLocal("msg.nc.ThermalMonitorSignalAt"), 
+                container.remoteThermo);
         controlList.add(slider);
         
     };

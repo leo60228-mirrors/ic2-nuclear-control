@@ -68,13 +68,14 @@ public class ItemToolThermometer extends Item implements ITextureProvider
         switch(thermometerVersion)
         {
         case ANALOG: 
-        	mod_IC2NuclearControl.chatMessage(entityplayer, "Hull heat: " + heat);
+        	mod_IC2NuclearControl.chatMessage(entityplayer, IC2NuclearControl.MSG_PREFIX+"Thermo:" + heat);
             break;
 
         case DIGITAL: 
             int maxHeat = NuclearHelper.getMaxHeat(reactor);
-            mod_IC2NuclearControl.chatMessage(entityplayer, "Hull heat: " + heat + " (Water evaporate: " +((maxHeat * 50) / 100) + 
-            		" / melting: "+ ((maxHeat * 85) / 100) + ")");
+            mod_IC2NuclearControl.chatMessage(entityplayer, 
+                    IC2NuclearControl.MSG_PREFIX+"ThermoDigital:" + heat + ":" +((maxHeat * 50) / 100) + 
+            		":"+ ((maxHeat * 85) / 100));
             break;
         }
     }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.GuiButton;
 import net.minecraft.src.GuiScreen;
+import net.minecraft.src.StatCollector;
 import net.minecraft.src.World;
 import net.minecraft.src.ic2.api.NetworkHelper;
 
@@ -16,6 +17,7 @@ public class GuiIC2Thermo extends GuiScreen
     public TileEntityIC2Thermo thermo;
     public float fSliderValue;
     public World world;
+    private String name;
 
     public GuiIC2Thermo(World world1, int i, int j, int k, EntityPlayer entityplayer, TileEntityIC2Thermo tileentityic2thermo)
     {
@@ -24,6 +26,7 @@ public class GuiIC2Thermo extends GuiScreen
         ySize = 166;
         thermo = tileentityic2thermo;
         world = world1;
+        name = StatCollector.translateToLocal("tile.blockThermalMonitor.name");
     }
 
     public void initGui()
@@ -37,8 +40,10 @@ public class GuiIC2Thermo extends GuiScreen
             arraylist.add(Integer.toString(i * 500));
         }
 
-        controlList.add(new GuiButton(0, width / 2 - 50, height / 4 + 108 + byte0, 98, 20, "Save setting"));
-        controlList.add(new GuiIC2ThermoSlider(3, width / 2 - 75, height / 4 + 65, arraylist, "Signal at %s heat", f, 0));
+        controlList.add(new GuiButton(0, width / 2 - 50, height / 4 + 108 + byte0, 98, 20,
+                StatCollector.translateToLocal("msg.nc.ThermalMonitorSave")));
+        controlList.add(new GuiIC2ThermoSlider(3, width / 2 - 75, height / 4 + 65, arraylist, 
+                StatCollector.translateToLocal("msg.nc.ThermalMonitorSignalAt"), f, 0));
     }
 
     protected void actionPerformed(GuiButton guibutton)
@@ -95,7 +100,7 @@ public class GuiIC2Thermo extends GuiScreen
     public void drawScreen(int i, int j, float f)
     {
         drawDefaultBackground();
-        drawCenteredString(fontRenderer, "Nuclear Thermal Protection", (width - xSize) / 2, (height - ySize) / 2 - 30, 0xffffff);
+        drawCenteredString(fontRenderer, name, (width - xSize) / 2, (height - ySize) / 2 - 30, 0xffffff);
         super.drawScreen(i, j, f);
     }
 

@@ -44,7 +44,7 @@ public class ItemRemoteSensorKit extends Item implements ITextureProvider
             entityPlayer.inventory.mainInventory[entityPlayer.inventory.currentItem] = sensorLocationCard;
         	if(!world.isRemote)
         	{
-        	    mod_IC2NuclearControl.chatMessage(entityPlayer, "Remote Sensor mounted, Sensor Location Card received");
+        	    mod_IC2NuclearControl.chatMessage(entityPlayer, IC2NuclearControl.MSG_PREFIX+"SensorKit");
         	}
         	return true;
         }

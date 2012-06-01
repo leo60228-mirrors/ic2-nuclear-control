@@ -36,7 +36,8 @@ public class GuiHowlerAlarm extends GuiScreen
         guiLeft = (this.width - xSize) / 2;
         guiTop = (this.height - ySize) / 2;
         controlList.clear();
-        slider = new GuiHowlerAlarmSlider(3, guiLeft+12, guiTop + 33, "Sound range: %s", alarm);
+        slider = new GuiHowlerAlarmSlider(3, guiLeft+12, guiTop + 33, 
+                StatCollector.translateToLocal("msg.nc.HowlerAlarmSoundRange"), alarm);
         List<String> items;
         if(alarm.worldObj.isRemote)
         {
@@ -85,7 +86,7 @@ public class GuiHowlerAlarm extends GuiScreen
     private void drawGuiContainerForegroundLayer()
     {
         fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
-        fontRenderer.drawString(StatCollector.translateToLocal("Sound"), 12, 53, 0x404040);
+        fontRenderer.drawString(StatCollector.translateToLocal("msg.nc.HowlerAlarmSound"), 12, 53, 0x404040);
     }
 
     private void drawGuiContainerBackgroundLayer()
