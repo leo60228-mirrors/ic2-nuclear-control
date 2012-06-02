@@ -70,7 +70,7 @@ public class SoundHelper
         }
     }
     
-    private static SoundPool getSoundPool()
+    public static SoundPool getSoundPool()
     {
         try
         {

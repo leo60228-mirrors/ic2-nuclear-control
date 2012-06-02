@@ -27,6 +27,7 @@ import net.minecraft.src.nuclearcontrol.GuiIC2Thermo;
 import net.minecraft.src.nuclearcontrol.GuiRemoteThermo;
 import net.minecraft.src.nuclearcontrol.IC2NuclearControl;
 import net.minecraft.src.nuclearcontrol.MsgProcessor;
+import net.minecraft.src.nuclearcontrol.SoundHelper;
 import net.minecraft.src.nuclearcontrol.TileEntityHowlerAlarm;
 import net.minecraft.src.nuclearcontrol.TileEntityIC2Thermo;
 import net.minecraft.src.nuclearcontrol.TileEntityIC2ThermoRenderer;
@@ -155,7 +156,9 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
         });
         
         availableAlarms = new ArrayList<String>();
-        
+        SoundPool pool = SoundHelper.getSoundPool();
+        boolean isGetRandomSound = pool.isGetRandomSound;
+        pool.isGetRandomSound = false;
         SoundManager sndManager = ModLoader.getMinecraftInstance().sndManager;  
         for(File alarmItem: alarms)
         {
@@ -164,6 +167,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
             availableAlarms.add(name);
             sndManager.addSound("ic2nuclearControl/alarm-"+name+".ogg", alarmItem);
         }
+        pool.isGetRandomSound = isGetRandomSound;
 
         alarmRange = new Integer(configuration.getOrCreateIntProperty("alarmRange", Configuration.CATEGORY_GENERAL, 64).value).intValue();
         SMPMaxAlarmRange = new Integer(configuration.getOrCreateIntProperty("SMPMaxAlarmRange", Configuration.CATEGORY_GENERAL, 256).value).intValue();
