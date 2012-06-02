@@ -20,7 +20,7 @@ public class TileEntityRemoteThermoRenderer extends TileEntitySpecialRenderer
         if(isThermo)
         {
             GL11.glPushMatrix();
-            GL11.glPolygonOffset( -1, -1 );
+            GL11.glPolygonOffset( -50, -50 );
             GL11.glEnable ( GL11.GL_POLYGON_OFFSET_FILL );
             TileEntityIC2Thermo thermo = (TileEntityIC2Thermo)tileEntity;
             short side = (short)Facing.faceToSide[thermo.getFacing()];

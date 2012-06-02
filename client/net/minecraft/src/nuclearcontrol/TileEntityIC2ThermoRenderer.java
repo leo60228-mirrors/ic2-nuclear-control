@@ -59,7 +59,7 @@ public class TileEntityIC2ThermoRenderer extends TileEntitySpecialRenderer
             FontRenderer fontRenderer = this.getFontRenderer();
             GL11.glRotatef(-90, 1, 0, 0);
             GL11.glScalef(var12, - var12, var12);
-            GL11.glPolygonOffset( -1, -1 );
+            GL11.glPolygonOffset( -50, -50 );
             GL11.glEnable ( GL11.GL_POLYGON_OFFSET_FILL );
             fontRenderer.drawString(text, -fontRenderer.getStringWidth(text) / 2, -fontRenderer.FONT_HEIGHT, 0);
             GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL );
