@@ -51,10 +51,12 @@ public class ContainerRemoteThermo extends Container
     public ItemStack transferStackInSlot(int slotId)
     {
         Slot slot = (Slot)this.inventorySlots.get(slotId);
-        if(slot!=null){
+        if(slot!=null)
+        {
             ItemStack items = slot.getStack();
             if(items!=null)
             {
+                int initialCount = items.stackSize;
                 if(slotId < remoteThermo.getSizeInventory())//moving from thermo to inventory
                 {
                     mergeItemStack(items, remoteThermo.getSizeInventory(), inventorySlots.size(), false);
@@ -65,11 +67,43 @@ public class ContainerRemoteThermo extends Container
                     else
                     {
                         slot.onSlotChanged();
+                        if(initialCount!=items.stackSize)
+                            return items;
                     }
                 }
                 else//moving from inventory to thermo
                 {
-                    return null;// not supported yet
+                    for(int i=0;i<remoteThermo.getSizeInventory();i++)
+                    {
+                        if(!remoteThermo.isItemValid(i, items))
+                        {
+                            continue;
+                        }
+                        ItemStack targetStack = remoteThermo.getStackInSlot(i);
+                        if(targetStack == null)
+                        {
+                            Slot targetSlot = (Slot)this.inventorySlots.get(i);
+                            targetSlot.putStack(items);
+                            slot.putStack((ItemStack)null);
+                            break;
+                        }
+                        else if(items.isStackable() && items.isItemEqual(targetStack))
+                        {
+                            mergeItemStack(items, i, i+1, false);
+                            if (items.stackSize == 0)
+                            {
+                                slot.putStack((ItemStack)null);
+                            }
+                            else
+                            {
+                                slot.onSlotChanged();
+                                if(initialCount!=items.stackSize)
+                                    return items;
+                            }
+                            break;
+                        }
+                        
+                    }
                 }
             }
         }
