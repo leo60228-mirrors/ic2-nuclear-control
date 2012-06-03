@@ -53,7 +53,7 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
     @Override
     public String getVersion()
     {
-        return "v1.1.7";
+        return "v1.1.8";
     }
 
     protected void addRecipes()
