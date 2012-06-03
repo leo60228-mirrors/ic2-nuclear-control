@@ -378,6 +378,7 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
             case DAMAGE_THERMAL_MONITOR:
             case DAMAGE_REMOTE_THERMO:
             case DAMAGE_HOWLER_ALARM:
+            case DAMAGE_INDUSTRIAL_ALARM:
                 mod_IC2NuclearControl.launchGui(world, x, y, z, entityplayer, blockType);
                 return true;
             default:

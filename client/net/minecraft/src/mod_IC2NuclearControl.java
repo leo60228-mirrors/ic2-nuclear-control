@@ -24,6 +24,7 @@ import net.minecraft.src.nuclearcontrol.BlockNuclearControlMain;
 import net.minecraft.src.nuclearcontrol.ContainerRemoteThermo;
 import net.minecraft.src.nuclearcontrol.GuiHowlerAlarm;
 import net.minecraft.src.nuclearcontrol.GuiIC2Thermo;
+import net.minecraft.src.nuclearcontrol.GuiIndustrialAlarm;
 import net.minecraft.src.nuclearcontrol.GuiRemoteThermo;
 import net.minecraft.src.nuclearcontrol.IC2NuclearControl;
 import net.minecraft.src.nuclearcontrol.MsgProcessor;
@@ -292,6 +293,8 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
                 return new GuiIC2Thermo(world, x, y, z, player, (TileEntityIC2Thermo)tileEntity);
             case BlockNuclearControlMain.DAMAGE_HOWLER_ALARM:
                 return new GuiHowlerAlarm((TileEntityHowlerAlarm)tileEntity);
+            case BlockNuclearControlMain.DAMAGE_INDUSTRIAL_ALARM:
+                return new GuiIndustrialAlarm((TileEntityHowlerAlarm)tileEntity);
             case BlockNuclearControlMain.DAMAGE_REMOTE_THERMO:
                 ContainerRemoteThermo container = new ContainerRemoteThermo(player, (TileEntityRemoteThermo)tileEntity);
                 return new GuiRemoteThermo(container);
