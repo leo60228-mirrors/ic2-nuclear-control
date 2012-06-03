@@ -80,7 +80,7 @@ public class GuiHowlerAlarmListBox extends GuiButton
     {
         if(dragging)
         {
-            int pos = (cursorY - yPosition - SCROLL_BUTTON_HEIGHT - dragDelta)*(lineHeight*items.size() + BASIC_Y_OFFSET - height)/(height - 2*SCROLL_BUTTON_HEIGHT-sliderHeight);
+            int pos = (cursorY - yPosition - SCROLL_BUTTON_HEIGHT - dragDelta)*(lineHeight*items.size() + BASIC_Y_OFFSET - height)/Math.max(height - 2*SCROLL_BUTTON_HEIGHT-sliderHeight,1);
             scrollTo(pos);
         }
         
