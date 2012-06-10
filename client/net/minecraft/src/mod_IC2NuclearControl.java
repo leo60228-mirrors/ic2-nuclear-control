@@ -110,7 +110,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
         File soundDir =  new File(new File(Minecraft.getMinecraftDir(), "resources"), "newsound");
         File ncSoundDir = new File(soundDir, "ic2nuclearControl");
         if(!ncSoundDir.exists()){
-            ncSoundDir.mkdir();
+            ncSoundDir.mkdirs();
         }
         File alarmFile = new File(ncSoundDir, "alarm.ogg");
         if(alarmFile.exists())//v.1.1.6 -> 1.1.7 migration code
