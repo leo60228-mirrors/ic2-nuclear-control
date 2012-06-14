@@ -21,10 +21,12 @@ import net.minecraft.src.forge.MinecraftForge;
 import net.minecraft.src.forge.MinecraftForgeClient;
 import net.minecraft.src.forge.Property;
 import net.minecraft.src.nuclearcontrol.BlockNuclearControlMain;
+import net.minecraft.src.nuclearcontrol.ContainerInfoPanel;
 import net.minecraft.src.nuclearcontrol.ContainerRemoteThermo;
 import net.minecraft.src.nuclearcontrol.GuiHowlerAlarm;
 import net.minecraft.src.nuclearcontrol.GuiIC2Thermo;
 import net.minecraft.src.nuclearcontrol.GuiIndustrialAlarm;
+import net.minecraft.src.nuclearcontrol.GuiInfoPanel;
 import net.minecraft.src.nuclearcontrol.GuiRemoteThermo;
 import net.minecraft.src.nuclearcontrol.IC2NuclearControl;
 import net.minecraft.src.nuclearcontrol.MsgProcessor;
@@ -32,6 +34,8 @@ import net.minecraft.src.nuclearcontrol.SoundHelper;
 import net.minecraft.src.nuclearcontrol.TileEntityHowlerAlarm;
 import net.minecraft.src.nuclearcontrol.TileEntityIC2Thermo;
 import net.minecraft.src.nuclearcontrol.TileEntityIC2ThermoRenderer;
+import net.minecraft.src.nuclearcontrol.TileEntityInfoPanel;
+import net.minecraft.src.nuclearcontrol.TileEntityInfoPanelRenderer;
 import net.minecraft.src.nuclearcontrol.TileEntityRemoteThermo;
 import net.minecraft.src.nuclearcontrol.TileEntityRemoteThermoRenderer;
 import net.minecraft.src.nuclearcontrol.Utils.FileHash;
@@ -92,11 +96,13 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
         importSound(configuration);
         TileEntityIC2ThermoRenderer renderThermalMonitor = new TileEntityIC2ThermoRenderer();
         TileEntityRemoteThermoRenderer renderRemoteThermo = new TileEntityRemoteThermoRenderer();
+        TileEntityInfoPanelRenderer renderInfoPanel = new TileEntityInfoPanelRenderer(); 
         
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityIC2Thermo.class, "IC2Thermo", renderThermalMonitor);
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityHowlerAlarm.class, "IC2HowlerAlarm");
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityIndustrialAlarm.class, "IC2IndustrialAlarm");
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityRemoteThermo.class, "IC2RemoteThermo", renderRemoteThermo);
+        ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityInfoPanel.class, "IC2NCInfoPanel", renderInfoPanel);
         modelId = ModLoader.getUniqueBlockModelID(this, true);
         MinecraftForge.setGuiHandler(this, this);
         if(configuration!=null)
@@ -240,6 +246,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
             setPhrase(configuration, "tile.blockIndustrialAlarm.name", "Industrial Alarm");
             setPhrase(configuration, "tile.blockHowlerAlarm.name", "Howler Alarm");
             setPhrase(configuration, "tile.blockRemoteThermo.name", "Remote Thermal Monitor");
+            setPhrase(configuration, "tile.blockInfoPanel.name", "Reactor Information Panel");
 
             setPhrase(configuration, "msg.nc.HowlerAlarmSoundRange", "Sound range: %s");
             setPhrase(configuration, "msg.nc.HowlerAlarmSound", "Sound");
@@ -248,6 +255,21 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
             setPhrase(configuration, "msg.nc.Thermo", "Hull heat: %s");
             setPhrase(configuration, "msg.nc.ThermoDigital", "Hull heat: %s (Water evaporate: %s / melting: %s)");
             setPhrase(configuration, "msg.nc.SensorKit", "Remote Sensor mounted, Sensor Location Card received");
+
+            setPhrase(configuration, "msg.nc.InfoPanelOn", "On");
+            setPhrase(configuration, "msg.nc.InfoPanelOff", "Off");
+            setPhrase(configuration, "msg.nc.InfoPanelHeat", "T: %s");
+            setPhrase(configuration, "msg.nc.InfoPanelMaxHeat", "MaxHeat: %s");
+            setPhrase(configuration, "msg.nc.InfoPanelMelting", "Melting: %s");
+            setPhrase(configuration, "msg.nc.InfoPanelOutput", "Output: %sEU/t");
+            setPhrase(configuration, "msg.nc.InfoPanelTimeRemaining", "Remaining: %s");
+
+            setPhrase(configuration, "msg.nc.cbInfoPanelOnOff", "On/Off status");
+            setPhrase(configuration, "msg.nc.cbInfoPanelHeat", "Heat level");
+            setPhrase(configuration, "msg.nc.cbInfoPanelMaxHeat", "Max heat");
+            setPhrase(configuration, "msg.nc.cbInfoPanelMelting", "Melting temp");
+            setPhrase(configuration, "msg.nc.cbInfoPanelOutput", "Output (EU/t)");
+            setPhrase(configuration, "msg.nc.cbInfoPanelTimeRemaining", "Time to cycle end");
             
             for(Map.Entry<String, Map<String, Property>> category : configuration.categories.entrySet())
             {
@@ -298,6 +320,9 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
             case BlockNuclearControlMain.DAMAGE_REMOTE_THERMO:
                 ContainerRemoteThermo container = new ContainerRemoteThermo(player, (TileEntityRemoteThermo)tileEntity);
                 return new GuiRemoteThermo(container);
+            case BlockNuclearControlMain.DAMAGE_INFO_PANEL:
+                ContainerInfoPanel containerPanel = new ContainerInfoPanel(player, (TileEntityInfoPanel)tileEntity);
+                return new GuiInfoPanel(containerPanel);
             default:
                 return null;
         }

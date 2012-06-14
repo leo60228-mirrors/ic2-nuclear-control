@@ -17,6 +17,9 @@ public class NuclearHelper {
     private static ItemStack reactor = null;
     private static ItemStack chamber = null;
     private static Field heatField = null;
+    private static Field outputField = null;
+    private static Method tickRateMethod = null; 
+    private static Method producingEnergyMethod = null; 
 	
     private static String getReactorPackage()
     {
@@ -82,13 +85,34 @@ public class NuclearHelper {
 		return chamber;
 	}
 	
-	private static Field getHeatField() throws NoSuchFieldException
-	{
-		if(heatField == null)
-			heatField = getReactorTileEntityClass().getField("heat");
-		return heatField;
-	}
-	
+    private static Field getHeatField() throws NoSuchFieldException
+    {
+        if(heatField == null)
+            heatField = getReactorTileEntityClass().getField("heat");
+        return heatField;
+    }
+    
+    private static Field getOutputField() throws NoSuchFieldException
+    {
+        if(outputField == null)
+            outputField = getReactorTileEntityClass().getField("output");
+        return outputField;
+    }
+    
+    private static Method getTickRateMethod() throws NoSuchMethodException
+    {
+        if(tickRateMethod == null)
+            tickRateMethod = getReactorTileEntityClass().getMethod("tickRate");
+        return tickRateMethod;
+    }
+    
+    private static Method getProducingEnergyMethod() throws NoSuchMethodException
+    {
+        if(producingEnergyMethod == null)
+            producingEnergyMethod = getReactorTileEntityClass().getMethod("produceEnergy");
+        return producingEnergyMethod;
+    }
+    
 	public static TileEntity getReactorAt(World world, int x, int y, int z) 
 	{
 		TileEntity entity = world.getBlockTileEntity(x, y, z);
@@ -198,27 +222,52 @@ public class NuclearHelper {
         }
 	}
 	
-	public static int getReactorHeat(TileEntity reactor)
-	{
+    public static int getReactorHeat(TileEntity reactor)
+    {
         try
         {
-    		return getHeatField().getInt(reactor);
+            return getHeatField().getInt(reactor);
         }
         catch (Exception exception)
         {
             throw new RuntimeException(exception);
         }
-	}
-	
-	public static int getReactorTickRate(TileEntity reactor)
-	{
+    }
+    
+    public static int getReactorOutput(TileEntity reactor)
+    {
         try
         {
-    		return (Integer)getReactorTileEntityClass().getMethod("tickRate").invoke(reactor);
+            return getOutputField().getShort(reactor);
         }
         catch (Exception exception)
         {
             throw new RuntimeException(exception);
         }
-	}
+    }
+    
+    public static int getReactorTickRate(TileEntity reactor)
+    {
+        try
+        {
+            return (Integer)getTickRateMethod().invoke(reactor);
+        }
+        catch (Exception exception)
+        {
+            throw new RuntimeException(exception);
+        }
+    }
+    
+    public static boolean getReactorIsProducingEnergy(TileEntity reactor)
+    {
+        try
+        {
+            return (Boolean)getProducingEnergyMethod().invoke(reactor);
+        }
+        catch (Exception exception)
+        {
+            throw new RuntimeException(exception);
+        }
+    }
+
 }

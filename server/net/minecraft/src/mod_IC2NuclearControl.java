@@ -10,9 +10,11 @@ import java.io.IOException;
 import net.minecraft.src.forge.Configuration;
 import net.minecraft.src.forge.MinecraftForge;
 import net.minecraft.src.nuclearcontrol.BlockNuclearControlMain;
+import net.minecraft.src.nuclearcontrol.ContainerInfoPanel;
 import net.minecraft.src.nuclearcontrol.ContainerRemoteThermo;
 import net.minecraft.src.nuclearcontrol.IC2NuclearControl;
 import net.minecraft.src.nuclearcontrol.TileEntityHowlerAlarm;
+import net.minecraft.src.nuclearcontrol.TileEntityInfoPanel;
 import net.minecraft.src.nuclearcontrol.TileEntityRemoteThermo;
 
 public class mod_IC2NuclearControl extends IC2NuclearControl
@@ -65,6 +67,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityHowlerAlarm.class, "IC2HowlerAlarm");
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityIndustrialAlarm.class, "IC2IndustrialAlarm");
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityRemoteThermo.class, "IC2RemoteThermo");
+        ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityInfoPanel.class, "IC2NCInfoPanel");
 
         MinecraftForge.setGuiHandler(this, this);
         if(configuration!=null)
@@ -81,13 +84,17 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
     @Override
     public Object getGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {
+        TileEntity tileEntity;
         switch (ID)
         {
             case BlockNuclearControlMain.DAMAGE_THERMAL_MONITOR:
                 return null;
             case BlockNuclearControlMain.DAMAGE_REMOTE_THERMO:
-                TileEntity tileEntity= world.getBlockTileEntity(x, y, z);
+                tileEntity = world.getBlockTileEntity(x, y, z);
                 return new ContainerRemoteThermo(player, (TileEntityRemoteThermo)tileEntity);
+            case BlockNuclearControlMain.DAMAGE_INFO_PANEL:
+                tileEntity = world.getBlockTileEntity(x, y, z);
+                return new ContainerInfoPanel(player, (TileEntityInfoPanel)tileEntity);
             default:
                 return null;
         }

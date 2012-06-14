@@ -93,6 +93,15 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
                         Character.valueOf('M'), Items.getItem("machine"), 
                         Character.valueOf('F'), Items.getItem("frequencyTransmitter")
                 });
+        Ic2Recipes.addCraftingRecipe(new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_INFO_PANEL), new Object[] 
+                {
+                    "PPP", "LCL", "IRI", 
+                        Character.valueOf('P'), Block.thinGlass, 
+                        Character.valueOf('L'), new ItemStack(Item.dyePowder, 1, 10), 
+                        Character.valueOf('I'), new ItemStack(Item.dyePowder, 1, 0), 
+                        Character.valueOf('R'), Item.redstone, 
+                        Character.valueOf('C'), Items.getItem("electronicCircuit") 
+                });
         Ic2Recipes.addCraftingRecipe(new ItemStack(itemToolThermometer, 1), new Object[] 
                 {
                     "IG ", "GWG", " GG", 

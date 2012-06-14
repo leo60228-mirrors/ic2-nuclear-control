@@ -23,19 +23,21 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
     public static final int DAMAGE_INDUSTRIAL_ALARM = 1;
     public static final int DAMAGE_HOWLER_ALARM = 2;
     public static final int DAMAGE_REMOTE_THERMO = 3;
+    public static final int DAMAGE_INFO_PANEL = 4;
 
-    public static final int DAMAGE_MAX = 3;
+    public static final int DAMAGE_MAX = 4;
     
     public static final float[][] blockSize = {
         {0.0625F, 0, 0.0625F, 0.9375F, 0.4375F, 0.9375F},//Thermal Monitor
         {0.125F, 0, 0.125F, 0.875F, 0.4375F, 0.875F},//Industrial  Alarm
         {0.125F, 0, 0.125F, 0.875F, 0.4375F, 0.875F},//Howler  Alarm
-        {0, 0, 0, 1, 1, 1}//Remote Thermo
+        {0, 0, 0, 1, 1, 1},//Remote Thermo
+        {0, 0, 0, 1, 1, 1}//Info Panel
         
     };
     
     private static final boolean[] solidBlockRequired =
-        {true, true, true, false};
+        {true, true, true, false, false};
     
     private static final byte[][][] sideMapping = 
         {
@@ -70,6 +72,14 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
                 {24, 24, 25, 23, 24, 24},
                 {24, 24, 24, 24, 23, 25},
                 {24, 24, 24, 24, 25, 23}
+            },
+            {//Info Panel
+                {23, 11, 24, 24, 24, 24},
+                {11, 23, 24, 24, 24, 24},
+                {24, 24, 23, 11, 24, 24},
+                {24, 24, 11, 23, 24, 24},
+                {24, 24, 24, 24, 23, 11},
+                {24, 24, 24, 24, 11, 23}
             }
         };
     
@@ -366,6 +376,7 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
         return true;
     }
 
+    @Override
     public boolean blockActivated(World world, int x, int y, int z, EntityPlayer entityplayer)
     {
         int blockType = world.getBlockMetadata(x, y, z);
@@ -379,6 +390,7 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
             case DAMAGE_REMOTE_THERMO:
             case DAMAGE_HOWLER_ALARM:
             case DAMAGE_INDUSTRIAL_ALARM:
+            case DAMAGE_INFO_PANEL:
                 mod_IC2NuclearControl.launchGui(world, x, y, z, entityplayer, blockType);
                 return true;
             default:
@@ -498,6 +510,8 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
             return new TileEntityHowlerAlarm();
         case DAMAGE_REMOTE_THERMO:
             return new TileEntityRemoteThermo();
+        case DAMAGE_INFO_PANEL:
+            return new TileEntityInfoPanel();
         }
         return null;
     }
@@ -527,6 +541,13 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
         {
             return ((TileEntityIndustrialAlarm)entity).lightLevel;
         }
+        if(entity instanceof TileEntityInfoPanel)
+        {
+            if(((TileEntityInfoPanel)entity).powered)
+                return 7;
+            else
+                return 0;
+        }
         return lightValue[blockID];
     }
     
@@ -537,6 +558,7 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
         arraylist.add(new ItemStack(this, 1, DAMAGE_INDUSTRIAL_ALARM));
         arraylist.add(new ItemStack(this, 1, DAMAGE_HOWLER_ALARM));
         arraylist.add(new ItemStack(this, 1, DAMAGE_REMOTE_THERMO));
+        arraylist.add(new ItemStack(this, 1, DAMAGE_INFO_PANEL));
     }
 
 }

@@ -34,6 +34,8 @@ public class ItemNuclearControlMain extends ItemBlock
                 return "tile.blockHowlerAlarm";
             case BlockNuclearControlMain.DAMAGE_REMOTE_THERMO:
                 return "tile.blockRemoteThermo";
+            case BlockNuclearControlMain.DAMAGE_INFO_PANEL:
+                return "tile.blockInfoPanel";
         
         }
         return "";
