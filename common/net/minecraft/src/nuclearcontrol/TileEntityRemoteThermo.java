@@ -164,9 +164,9 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
             {
                 energy--;
             }
-            if(inventory[0]!= null)
+            if(inventory[SLOT_CHARGER]!= null)
             {
-                if (energy < maxStorage && inventory[SLOT_CHARGER] != null)
+                if (energy < maxStorage)
                 {
                     if (inventory[SLOT_CHARGER].getItem() instanceof IElectricItem)
                     {
