@@ -103,7 +103,7 @@ public class GuiHowlerAlarm extends GuiScreen
     protected void mouseMovedOrUp(int mouseX, int mouseY, int which)
     {
         super.mouseMovedOrUp(mouseX, mouseY, which);
-        if((which == 0 || which == 1) && slider.dragging )
+        if((which == 0 || which == 1) && (slider.dragging || listBox.dragging))
         {
             slider.mouseReleased(mouseX, mouseY);
             listBox.mouseReleased(mouseX, mouseY);
