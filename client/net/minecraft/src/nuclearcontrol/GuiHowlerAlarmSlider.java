@@ -11,7 +11,7 @@ public class GuiHowlerAlarmSlider extends GuiButton
 {
     public float sliderValue;
     public boolean dragging;
-    private int minValue = 16;
+    private int minValue = 0;
     private int maxValue = 256;
     private int step = 8;
     private String label;
