@@ -96,7 +96,6 @@ public class ScreenManager
     
     private Screen tryBuildFromPanel(TileEntityInfoPanel panel)
     {
-        System.out.println("BuildFromPanel panel:"+panel.xCoord+","+panel.yCoord+","+panel.zCoord);
         Screen screen = new Screen();
         screen.maxX = screen.minX = panel.xCoord; 
         screen.maxY = screen.minY = panel.yCoord; 
@@ -114,21 +113,17 @@ public class ScreenManager
         if(screen.minX == screen.maxX && screen.minY == screen.maxY && screen.minZ == screen.maxZ)
             return null;
         screen.init();
-        System.out.println("BuildingDone:"+screen.minX+","+screen.minY+","+screen.minZ+":"+screen.maxX+","+screen.maxY+","+screen.maxZ);
         return screen;
     }
     
     private void destroyScreen(Screen screen)
     {
-        System.out.println("Destroy screen:"+screen.minX+","+screen.minY+","+screen.minZ+":"+screen.maxX+","+screen.maxY+","+screen.maxZ);
         screens.get(screen.coreWorld).remove(screen);
         screen.destroy();
     }
     
     public void unregisterScreenPart(TileEntity part)
     {
-        System.out.println("UNRegister:"+part.xCoord+","+part.yCoord+","+part.zCoord+":"+(part instanceof TileEntityInfoPanel));
-
         if(!screens.containsKey(part.worldObj))
             return;
         if(!unusedPanels.containsKey(part.worldObj))
@@ -160,18 +155,10 @@ public class ScreenManager
     
     public void registerInfoPanel(TileEntityInfoPanel panel)
     {
-        System.out.println("Register panel:"+panel.xCoord+","+panel.yCoord+","+panel.zCoord);
-
         if(!screens.containsKey(panel.worldObj))
             screens.put(panel.worldObj, new ArrayList<Screen>());
         if(!unusedPanels.containsKey(panel.worldObj))
             unusedPanels.put(panel.worldObj, new ArrayList<TileEntityInfoPanel>());
-
-        System.out.println("screens"+screens.get(panel.worldObj).size()+"-"+unusedPanels.get(panel.worldObj).size());
-        for (Screen screen : screens.get(panel.worldObj))
-        {
-            System.out.println(""+screen.minX+","+screen.minY+","+screen.minZ+":"+screen.maxX+","+screen.maxY+","+screen.maxZ);
-        }
         
         for (Screen screen : screens.get(panel.worldObj))
         {
@@ -191,8 +178,6 @@ public class ScreenManager
     
     public void registerInfoPanelExtender(TileEntityInfoPanelExtender extender)
     {
-        System.out.println("Register extender:"+extender.xCoord+","+extender.yCoord+","+extender.zCoord);
-
         if(!screens.containsKey(extender.worldObj))
             screens.put(extender.worldObj, new ArrayList<Screen>());
         if(!unusedPanels.containsKey(extender.worldObj))
@@ -201,12 +186,6 @@ public class ScreenManager
         List<TileEntityInfoPanel> rebuildPanels = new ArrayList<TileEntityInfoPanel>();
         List<Screen> screensToDestroy = new ArrayList<Screen>();
 
-        System.out.println("screens"+screens.get(extender.worldObj).size()+"-"+unusedPanels.get(extender.worldObj).size());
-        for (Screen screen : screens.get(extender.worldObj))
-        {
-            System.out.println(""+screen.minX+","+screen.minY+","+screen.minZ+":"+screen.maxX+","+screen.maxY+","+screen.maxZ);
-        }
-        
         for (Screen screen : screens.get(extender.worldObj))
         {
             if(screen.isBlockNearby(extender) && screen.getCore()!=null && extender.facing == screen.getCore().facing)
