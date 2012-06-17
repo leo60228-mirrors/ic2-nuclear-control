@@ -109,7 +109,7 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
                     "PPP", "WLW", "WWW", 
                         Character.valueOf('P'), Block.thinGlass, 
                         Character.valueOf('L'), new ItemStack(Item.dyePowder, 1, 10), 
-                        Character.valueOf('W'), Block.wood, 
+                        Character.valueOf('W'), Block.planks, 
                 });
         Ic2Recipes.addCraftingRecipe(new ItemStack(itemToolThermometer, 1), new Object[] 
                 {
