@@ -110,10 +110,7 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
     @Override
     public boolean isBlockNormalCube(World world, int x, int y, int z)
     {
-        int metadata = world.getBlockMetadata(x, y, z);
-        if(metadata > DAMAGE_MAX)
-            return false;
-        return !solidBlockRequired[metadata];
+        return false;
     }
 
     @Override
