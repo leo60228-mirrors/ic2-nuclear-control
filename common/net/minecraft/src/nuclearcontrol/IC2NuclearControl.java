@@ -45,6 +45,8 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
     public static int SMPMaxAlarmRange;
     public static int maxAlarmRange;
     public static List<String> availableAlarms;
+    public static ScreenManager screenManager = new ScreenManager(); 
+    
 
     
     @Override
@@ -101,6 +103,13 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
                         Character.valueOf('I'), new ItemStack(Item.dyePowder, 1, 0), 
                         Character.valueOf('R'), Item.redstone, 
                         Character.valueOf('C'), Items.getItem("electronicCircuit") 
+                });
+        Ic2Recipes.addCraftingRecipe(new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_INFO_PANEL_EXTENDER), new Object[] 
+                {
+                    "PPP", "WLW", "WWW", 
+                        Character.valueOf('P'), Block.thinGlass, 
+                        Character.valueOf('L'), new ItemStack(Item.dyePowder, 1, 10), 
+                        Character.valueOf('W'), Block.wood, 
                 });
         Ic2Recipes.addCraftingRecipe(new ItemStack(itemToolThermometer, 1), new Object[] 
                 {

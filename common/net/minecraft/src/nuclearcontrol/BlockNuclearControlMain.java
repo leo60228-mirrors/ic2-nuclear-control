@@ -24,20 +24,22 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
     public static final int DAMAGE_HOWLER_ALARM = 2;
     public static final int DAMAGE_REMOTE_THERMO = 3;
     public static final int DAMAGE_INFO_PANEL = 4;
+    public static final int DAMAGE_INFO_PANEL_EXTENDER = 5;
 
-    public static final int DAMAGE_MAX = 4;
+    public static final int DAMAGE_MAX = 5;
     
     public static final float[][] blockSize = {
         {0.0625F, 0, 0.0625F, 0.9375F, 0.4375F, 0.9375F},//Thermal Monitor
         {0.125F, 0, 0.125F, 0.875F, 0.4375F, 0.875F},//Industrial  Alarm
         {0.125F, 0, 0.125F, 0.875F, 0.4375F, 0.875F},//Howler  Alarm
         {0, 0, 0, 1, 1, 1},//Remote Thermo
-        {0, 0, 0, 1, 1, 1}//Info Panel
+        {0, 0, 0, 1, 1, 1},//Info Panel
+        {0, 0, 0, 1, 1, 1}//Info Panel Extender
         
     };
     
     private static final boolean[] solidBlockRequired =
-        {true, true, true, false, false};
+        {true, true, true, false, false, false};
     
     private static final byte[][][] sideMapping = 
         {
@@ -80,6 +82,14 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
                 {24, 24, 11, 23, 24, 24},
                 {24, 24, 24, 24, 23, 11},
                 {24, 24, 24, 24, 11, 23}
+            },
+            {//Info Panel Extender
+                {39, 11, 40, 40, 40, 40},
+                {11, 39, 40, 40, 40, 40},
+                {40, 40, 39, 11, 40, 40},
+                {40, 40, 11, 39, 40, 40},
+                {40, 40, 40, 40, 39, 11},
+                {40, 40, 40, 40, 11, 39}
             }
         };
     
@@ -100,7 +110,10 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
     @Override
     public boolean isBlockNormalCube(World world, int x, int y, int z)
     {
-        return false;
+        int metadata = world.getBlockMetadata(x, y, z);
+        if(metadata > DAMAGE_MAX)
+            return false;
+        return !solidBlockRequired[metadata];
     }
 
     @Override
@@ -512,6 +525,8 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
             return new TileEntityRemoteThermo();
         case DAMAGE_INFO_PANEL:
             return new TileEntityInfoPanel();
+        case DAMAGE_INFO_PANEL_EXTENDER:
+            return new TileEntityInfoPanelExtender();
         }
         return null;
     }
@@ -541,9 +556,17 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
         {
             return ((TileEntityIndustrialAlarm)entity).lightLevel;
         }
-        if(entity instanceof TileEntityInfoPanel)
+        else if(entity instanceof TileEntityInfoPanel)
         {
             if(((TileEntityInfoPanel)entity).powered)
+                return 7;
+            else
+                return 0;
+        }
+        else if(entity instanceof TileEntityInfoPanelExtender)
+        {
+            TileEntityInfoPanelExtender extender = (TileEntityInfoPanelExtender)entity; 
+            if(extender.getScreen()!=null && extender.getScreen().getCore()!=null && extender.getScreen().getCore().powered)
                 return 7;
             else
                 return 0;
@@ -559,6 +582,7 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
         arraylist.add(new ItemStack(this, 1, DAMAGE_HOWLER_ALARM));
         arraylist.add(new ItemStack(this, 1, DAMAGE_REMOTE_THERMO));
         arraylist.add(new ItemStack(this, 1, DAMAGE_INFO_PANEL));
+        arraylist.add(new ItemStack(this, 1, DAMAGE_INFO_PANEL_EXTENDER));
     }
 
 }

@@ -10,6 +10,7 @@ import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.NBTTagList;
 import net.minecraft.src.TileEntity;
+import net.minecraft.src.mod_IC2NuclearControl;
 import net.minecraft.src.ic2.api.INetworkClientTileEntityEventListener;
 import net.minecraft.src.ic2.api.INetworkDataProvider;
 import net.minecraft.src.ic2.api.INetworkUpdateListener;
@@ -21,7 +22,7 @@ import net.minecraft.src.ic2.api.NetworkHelper;
 public class TileEntityInfoPanel extends TileEntity implements 
     IInventory, ISlotItemFilter, INetworkDataProvider, INetworkUpdateListener, 
     INetworkClientTileEntityEventListener, IWrenchable, IRedstoneConsumer,
-    ITextureHelper
+    ITextureHelper, IScreenPart
 {
     public static final int DISPLAY_ONOFF = 1;
     public static final int DISPLAY_HEAT = 2;
@@ -39,10 +40,14 @@ public class TileEntityInfoPanel extends TileEntity implements
     public int deltaX;
     public int deltaY;
     public int deltaZ;
+    private int prevDeltaX;
+    private int prevDeltaY;
+    private int prevDeltaZ;
     protected int updateTicker;
     protected int tickRate;
     protected boolean init;
     private ItemStack inventory[];
+    private Screen screen;
 
     private boolean prevPowered;
     public boolean powered;
@@ -94,6 +99,42 @@ public class TileEntityInfoPanel extends TileEntity implements
         }
 
         prevFacing = f;
+    }
+    
+    private void setDeltaX(int d)
+    {
+        deltaX = d;
+
+        if (prevDeltaX != d)
+        {
+            NetworkHelper.updateTileEntityField(this, "deltaX");
+        }
+
+        prevDeltaX = d;
+    }
+    
+    private void setDeltaY(int d)
+    {
+        deltaY = d;
+
+        if (prevDeltaY != d)
+        {
+            NetworkHelper.updateTileEntityField(this, "deltaY");
+        }
+
+        prevDeltaY = d;
+    }
+    
+    private void setDeltaZ(int d)
+    {
+        deltaZ = d;
+
+        if (prevDeltaZ != d)
+        {
+            NetworkHelper.updateTileEntityField(this, "deltaZ");
+        }
+
+        prevDeltaZ = d;
     }
     
     @Override
@@ -179,18 +220,31 @@ public class TileEntityInfoPanel extends TileEntity implements
     {
         if (field.equals("facing") && prevFacing != facing)
         {
+            if(mod_IC2NuclearControl.isClient())
+            {
+                mod_IC2NuclearControl.screenManager.unregisterScreenPart(this);
+                mod_IC2NuclearControl.screenManager.registerInfoPanel(this);
+            }
             worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
             prevFacing = facing;
         }
         if (field.equals("powered") && prevPowered != powered)
         {
-            worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
-            worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
-            worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
+            if(screen!=null)
+            {
+                screen.turnPower(powered);
+            }
+            else
+            {
+                worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+                worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
+//              worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
+            }
             prevPowered = powered;
         }
     }
 
+    @Override
     public void onNetworkEvent(EntityPlayer entityplayer, int i)
     {
         setDisplaySettings(i);
@@ -200,9 +254,10 @@ public class TileEntityInfoPanel extends TileEntity implements
     {
         super();
         inventory = new ItemStack[2];//card + range upgrades
-        deltaX = 0;
-        deltaY = 0;
-        deltaZ = 0;
+        screen = null;
+        prevDeltaX = deltaX = 0;
+        prevDeltaY = deltaY = 0;
+        prevDeltaZ = deltaZ = 0;
         init = false;
         tickRate = -1;
         updateTicker = 0;
@@ -217,7 +272,7 @@ public class TileEntityInfoPanel extends TileEntity implements
     @Override
     public List<String> getNetworkedFields()
     {
-        List<String> list = new ArrayList<String>(8);
+        List<String> list = new ArrayList<String>(11);
         list.add("powered");
         list.add("displaySettings");
         list.add("heat");
@@ -226,6 +281,9 @@ public class TileEntityInfoPanel extends TileEntity implements
         list.add("timeLeft");
         list.add("maxHeat");
         list.add("facing");
+        list.add("deltaX");
+        list.add("deltaY");
+        list.add("deltaZ");
         return list;
     }
     
@@ -270,6 +328,10 @@ public class TileEntityInfoPanel extends TileEntity implements
         else
         {
             RedstoneHelper.checkPowered(worldObj, this);
+        }
+        if(mod_IC2NuclearControl.isClient())
+        {
+            mod_IC2NuclearControl.screenManager.registerInfoPanel(this);
         }
         init = true;
     }
@@ -316,6 +378,10 @@ public class TileEntityInfoPanel extends TileEntity implements
     public void invalidate()
     {
         super.invalidate();
+        if(mod_IC2NuclearControl.isClient())
+        {
+            mod_IC2NuclearControl.screenManager.unregisterScreenPart(this);
+        }
     }
 
     @Override
@@ -434,9 +500,9 @@ public class TileEntityInfoPanel extends TileEntity implements
             int[] coordinates = ItemSensorLocationCard.getCoordinates(inventory[SLOT_CARD]);
             if(coordinates!=null)
             {
-                deltaX = coordinates[0] - xCoord;
-                deltaY = coordinates[1] - yCoord;
-                deltaZ = coordinates[2] - zCoord;
+                setDeltaX(coordinates[0] - xCoord);
+                setDeltaY(coordinates[1] - yCoord);
+                setDeltaZ(coordinates[2] - zCoord);
                 if(upgradeCountRange > 7)
                     upgradeCountRange = 7;
                 int range = LOCATION_RANGE * (int)Math.pow(2, upgradeCountRange);
@@ -444,21 +510,23 @@ public class TileEntityInfoPanel extends TileEntity implements
                     Math.abs(deltaY) > range || 
                     Math.abs(deltaZ) > range)
                 {
-                    deltaX = deltaY = deltaZ = 0;
+                    setDeltaX(0);
+                    setDeltaY(0);
+                    setDeltaZ(0);
                 }
             }
             else
             {
-                deltaX = 0;
-                deltaY = 0;
-                deltaZ = 0;
+                setDeltaX(0);
+                setDeltaY(0);
+                setDeltaZ(0);
             }
         }
         else
         {
-            deltaX = 0;
-            deltaY = 0;
-            deltaZ = 0;
+            setDeltaX(0);
+            setDeltaY(0);
+            setDeltaZ(0);
         }
     };
 
@@ -499,4 +567,51 @@ public class TileEntityInfoPanel extends TileEntity implements
             return texture;
         return texture + 16;
     }
+
+    @Override
+    public void setScreen(Screen screen)
+    {
+        this.screen = screen;
+    }
+
+    @Override
+    public Screen getScreen()
+    {
+        return screen;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + xCoord;
+        result = prime * result + yCoord;
+        result = prime * result + zCoord;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        TileEntityInfoPanel other = (TileEntityInfoPanel) obj;
+        if (xCoord != other.xCoord)
+            return false;
+        if (yCoord != other.yCoord)
+            return false;
+        if (zCoord != other.zCoord)
+            return false;
+        if (worldObj != other.worldObj)
+            return false;
+        return true;
+    }
+    
+    
+     
 }

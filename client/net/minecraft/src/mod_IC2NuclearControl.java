@@ -17,6 +17,7 @@ import java.util.Map;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.forge.Configuration;
+import net.minecraft.src.forge.ISaveEventHandler;
 import net.minecraft.src.forge.MinecraftForge;
 import net.minecraft.src.forge.MinecraftForgeClient;
 import net.minecraft.src.forge.Property;
@@ -30,6 +31,7 @@ import net.minecraft.src.nuclearcontrol.GuiInfoPanel;
 import net.minecraft.src.nuclearcontrol.GuiRemoteThermo;
 import net.minecraft.src.nuclearcontrol.IC2NuclearControl;
 import net.minecraft.src.nuclearcontrol.MsgProcessor;
+import net.minecraft.src.nuclearcontrol.ScreenManager;
 import net.minecraft.src.nuclearcontrol.SoundHelper;
 import net.minecraft.src.nuclearcontrol.TileEntityHowlerAlarm;
 import net.minecraft.src.nuclearcontrol.TileEntityIC2Thermo;
@@ -42,7 +44,7 @@ import net.minecraft.src.nuclearcontrol.Utils.FileHash;
 
 import org.lwjgl.opengl.GL11;
 
-public class mod_IC2NuclearControl extends IC2NuclearControl
+public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEventHandler
 {
     private static final String CONFIG_NUCLEAR_CONTROL_LANG = "IC2NuclearControl.lang";
     
@@ -71,6 +73,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
         MinecraftForgeClient.preloadTexture("/img/texture_thermo.png");
         msgProcessor = new MsgProcessor();
         MinecraftForge.registerChatHandler(msgProcessor);
+        MinecraftForge.registerSaveHandler(this);
         Configuration configuration;
         try
         {
@@ -103,6 +106,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityIndustrialAlarm.class, "IC2IndustrialAlarm");
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityRemoteThermo.class, "IC2RemoteThermo", renderRemoteThermo);
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityInfoPanel.class, "IC2NCInfoPanel", renderInfoPanel);
+        ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityInfoPanelExtender.class, "IC2NCInfoPanelExtender");
         modelId = ModLoader.getUniqueBlockModelID(this, true);
         MinecraftForge.setGuiHandler(this, this);
         if(configuration!=null)
@@ -222,6 +226,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
     {
        if(model == modelId){
            render.renderStandardBlock(block, x, y, z);
+           return true;
        }
        return false;
     }
@@ -247,6 +252,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
             setPhrase(configuration, "tile.blockHowlerAlarm.name", "Howler Alarm");
             setPhrase(configuration, "tile.blockRemoteThermo.name", "Remote Thermal Monitor");
             setPhrase(configuration, "tile.blockInfoPanel.name", "Reactor Information Panel");
+            setPhrase(configuration, "tile.blockInfoPanelExtender.name", "Information Panel Extender");
 
             setPhrase(configuration, "msg.nc.HowlerAlarmSoundRange", "Sound range: %s");
             setPhrase(configuration, "msg.nc.HowlerAlarmSound", "Sound");
@@ -363,6 +369,38 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
         {
             System.err.println("[IC2NuclearControl] WARNING: Invalid packet: " + e.getMessage());
         }
+    }
+
+    @Override
+    public void onWorldLoad(World world)
+    {
+        //new screen manager for new world
+        screenManager = new ScreenManager();
+    }
+
+    @Override
+    public void onWorldSave(World world)
+    {
+    }
+
+    @Override
+    public void onChunkLoad(World world, Chunk chunk)
+    {
+    }
+
+    @Override
+    public void onChunkUnload(World world, Chunk chunk)
+    {
+    }
+
+    @Override
+    public void onChunkSaveData(World world, Chunk chunk, NBTTagCompound data)
+    {
+    }
+
+    @Override
+    public void onChunkLoadData(World world, Chunk chunk, NBTTagCompound data)
+    {
     }
     
 }
