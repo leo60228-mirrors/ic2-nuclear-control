@@ -227,10 +227,8 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
             {
                 block = Block.stone;
             }
-            Tessellator tessellator = Tessellator.instance;
-            tessellator.setBrightness(block.getMixedBrightnessForBlock(panel.worldObj, panel.xCoord, panel.yCoord, panel.zCoord));
-            tessellator.setColorOpaque_F(1, 1, 1);
             
+            GL11.glDisable(GL11.GL_LIGHTING);
             if(txtOnOff!=null && renderRightOnOff)
             {
                     fontRenderer.drawString(txtOnOff, offsetX+realWidth-offsetX-fontRenderer.getStringWidth(txtOnOff), 
@@ -241,6 +239,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
                 fontRenderer.drawString(line, offsetX, 1+offsetY + row * lineHeight, txtColor);
                 row++;
             }
+            GL11.glEnable(GL11.GL_LIGHTING);
             
             GL11.glDepthMask(true);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
