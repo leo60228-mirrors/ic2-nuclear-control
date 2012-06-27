@@ -11,6 +11,7 @@ import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.NBTTagList;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.mod_IC2NuclearControl;
+import net.minecraft.src.forge.ISidedInventory;
 import net.minecraft.src.ic2.api.INetworkClientTileEntityEventListener;
 import net.minecraft.src.ic2.api.INetworkDataProvider;
 import net.minecraft.src.ic2.api.INetworkUpdateListener;
@@ -22,7 +23,7 @@ import net.minecraft.src.ic2.api.NetworkHelper;
 public class TileEntityInfoPanel extends TileEntity implements 
     IInventory, ISlotItemFilter, INetworkDataProvider, INetworkUpdateListener, 
     INetworkClientTileEntityEventListener, IWrenchable, IRedstoneConsumer,
-    ITextureHelper, IScreenPart
+    ITextureHelper, IScreenPart, ISidedInventory
 {
     public static final int DISPLAY_ONOFF = 1;
     public static final int DISPLAY_HEAT = 2;
@@ -702,6 +703,22 @@ public class TileEntityInfoPanel extends TileEntity implements
         if (worldObj != other.worldObj)
             return false;
         return true;
+    }
+
+    @Override
+    public int getStartInventorySide(int side)
+    {
+        if(side == 0)
+            return 1;
+        return 0;
+    }
+
+    @Override
+    public int getSizeInventorySide(int side)
+    {
+        if(side == 0 || side == 1)
+            return 1;
+        return inventory.length;
     }
     
     
