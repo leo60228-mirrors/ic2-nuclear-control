@@ -149,9 +149,11 @@ public class TileEntityInfoPanelExtender extends TileEntity implements
     @Override
     public int modifyTextureIndex(int texture)
     {
-        if(texture!=11 || screen == null || screen.getCore()==null || !screen.getCore().powered)
+        if(texture!=80)
             return texture;
-        return texture + 16;
+        if(screen == null || screen.getCore() == null)
+            return texture + 15;
+        return screen.getCore().modifyTextureIndex(texture, xCoord, yCoord, zCoord);
     }
 
     @Override

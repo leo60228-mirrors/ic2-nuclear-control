@@ -8,7 +8,6 @@ import net.minecraft.src.Facing;
 import net.minecraft.src.FontRenderer;
 import net.minecraft.src.ModLoader;
 import net.minecraft.src.StatCollector;
-import net.minecraft.src.Tessellator;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.TileEntitySpecialRenderer;
 

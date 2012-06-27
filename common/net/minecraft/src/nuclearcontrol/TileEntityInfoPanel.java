@@ -30,6 +30,12 @@ public class TileEntityInfoPanel extends TileEntity implements
     public static final int DISPLAY_OUTPUT = 8;
     public static final int DISPLAY_TIME = 16;
     public static final int DISPLAY_MELTING = 32;
+
+    public static final int BORDER_NONE = 0;
+    public static final int BORDER_LEFT = 1;
+    public static final int BORDER_RIGHT = 2;
+    public static final int BORDER_TOP = 4;
+    public static final int BORDER_BOTTOM = 8;
     
     public static final int DISPLAY_DEFAULT = 63;
     
@@ -560,12 +566,98 @@ public class TileEntityInfoPanel extends TileEntity implements
         return true;
     }
 
+    public int modifyTextureIndex(int texture, int x, int y, int z)
+    {
+        if(texture!=80)
+            return texture;
+        if(screen != null)
+        {
+            //facing
+            //     top / left 
+            // 0 - minZ, minX
+            // 1 - minZ, maxX
+            // 2 - maxY, minX
+            // 3 - maxY, maxX
+            // 4 - maxY, maxZ
+            // 5 - maxY, minZ
+            switch(facing)
+            {
+                case 0:
+                    if(x == screen.minX)
+                        texture+=BORDER_LEFT;
+                    if(x == screen.maxX)
+                        texture+=BORDER_RIGHT;
+                    if(z == screen.minZ)
+                        texture+=BORDER_TOP;
+                    if(z == screen.maxZ)
+                        texture+=BORDER_BOTTOM;
+                break;
+                case 1:
+                    if(x == screen.minX)
+                        texture+=BORDER_RIGHT;
+                    if(x == screen.maxX)
+                        texture+=BORDER_LEFT;
+                    if(z == screen.minZ)
+                        texture+=BORDER_TOP;
+                    if(z == screen.maxZ)
+                        texture+=BORDER_BOTTOM;
+                break;
+                case 2:
+                    if(x == screen.minX)
+                        texture+=BORDER_LEFT;
+                    if(x == screen.maxX)
+                        texture+=BORDER_RIGHT;
+                    if(y == screen.maxY)
+                        texture+=BORDER_TOP;
+                    if(y == screen.minY)
+                        texture+=BORDER_BOTTOM;
+                break;
+                case 3:
+                    if(x == screen.minX)
+                        texture+=BORDER_RIGHT;
+                    if(x == screen.maxX)
+                        texture+=BORDER_LEFT;
+                    if(y == screen.maxY)
+                        texture+=BORDER_TOP;
+                    if(y == screen.minY)
+                        texture+=BORDER_BOTTOM;
+                break;
+                case 4:
+                    if(z == screen.minZ)
+                        texture+=BORDER_RIGHT;
+                    if(z == screen.maxZ)
+                        texture+=BORDER_LEFT;
+                    if(y == screen.maxY)
+                        texture+=BORDER_TOP;
+                    if(y == screen.minY)
+                        texture+=BORDER_BOTTOM;
+                break;
+                case 5:
+                    if(z == screen.minZ)
+                        texture+=BORDER_LEFT;
+                    if(z == screen.maxZ)
+                        texture+=BORDER_RIGHT;
+                    if(y == screen.maxY)
+                        texture+=BORDER_TOP;
+                    if(y == screen.minY)
+                        texture+=BORDER_BOTTOM;
+                break;
+            }
+        }
+        else
+        {
+            texture+=15;
+        }
+        if(powered)
+           texture+=16;
+        return texture;
+    }
+    
+    
     @Override
     public int modifyTextureIndex(int texture)
     {
-        if(texture!=11 || !powered)
-            return texture;
-        return texture + 16;
+        return modifyTextureIndex(texture, xCoord, yCoord, zCoord);
     }
 
     @Override
