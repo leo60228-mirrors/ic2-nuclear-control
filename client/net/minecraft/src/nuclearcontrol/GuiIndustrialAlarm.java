@@ -37,6 +37,7 @@ public class GuiIndustrialAlarm extends GuiScreen
         
     };
     
+    @Override
     public boolean doesGuiPauseGame()
     {
         return false;

@@ -1,111 +1,95 @@
 package net.minecraft.src.nuclearcontrol;
 
-import java.util.ArrayList;
-
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.GuiButton;
 import net.minecraft.src.GuiScreen;
+import net.minecraft.src.OpenGlHelper;
+import net.minecraft.src.RenderHelper;
 import net.minecraft.src.StatCollector;
-import net.minecraft.src.World;
-import net.minecraft.src.ic2.api.NetworkHelper;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 public class GuiIC2Thermo extends GuiScreen
 {
-    protected int xSize;
-    protected int ySize;
-    private GuiButton selectedButton;
-    public TileEntityIC2Thermo thermo;
-    public float fSliderValue;
-    public World world;
+    private TileEntityIC2Thermo thermo;
+    private GuiRemoteThermoSlider slider;
+    private int guiLeft;
+    private int guiTop;
+    private int xSize = 131;
+    private int ySize = 64;
     private String name;
 
-    public GuiIC2Thermo(World world1, int i, int j, int k, EntityPlayer entityplayer, TileEntityIC2Thermo tileentityic2thermo)
+    public GuiIC2Thermo(TileEntityIC2Thermo tileentityic2thermo)
     {
-        fSliderValue = 0.0F;
-        xSize = 176;
-        ySize = 166;
+        super();
         thermo = tileentityic2thermo;
-        world = world1;
         name = StatCollector.translateToLocal("tile.blockThermalMonitor.name");
     }
 
     public void initGui()
     {
+        super.initGui();
         controlList.clear();
-        byte byte0 = -16;
-        float f = fSliderValue = (thermo.getHeatLevel()-500)/14500F;
-        ArrayList<String> arraylist = new ArrayList<String>();
-        for (int i = 1; i <= 30; i++)
-        {
-            arraylist.add(Integer.toString(i * 500));
-        }
-
-        controlList.add(new GuiButton(0, width / 2 - 50, height / 4 + 108 + byte0, 98, 20,
-                StatCollector.translateToLocal("msg.nc.ThermalMonitorSave")));
-        controlList.add(new GuiIC2ThermoSlider(3, width / 2 - 75, height / 4 + 65, arraylist, 
-                StatCollector.translateToLocal("msg.nc.ThermalMonitorSignalAt"), f, 0));
+        guiLeft = (this.width - xSize) / 2;
+        guiTop = (this.height - ySize) / 2;
+        slider = new GuiRemoteThermoSlider(3, guiLeft+12, guiTop + 33, 
+                StatCollector.translateToLocal("msg.nc.ThermalMonitorSignalAt"), 
+                thermo);
+        controlList.add(slider);
     }
-
-    protected void actionPerformed(GuiButton guibutton)
-    {
-        if (guibutton.id == 0)
-        {
-            int i = 500+(int)Math.floor(14500F * fSliderValue);
-            thermo.setHeatLevel(i);
-            NetworkHelper.initiateClientTileEntityEvent(thermo, i);
-            mc.displayGuiScreen(null);
-            mc.setIngameFocus();
-        }
-        if (guibutton.id == 3)
-        {
-            GuiIC2ThermoSlider guiic2thermoslider = (GuiIC2ThermoSlider)guibutton;
-            fSliderValue = guiic2thermoslider.sliderValue;
-        }
-    }
-
-    public void updateScreen()
-    {
-        super.updateScreen();
-    }
-
-    protected void mouseClicked(int i, int j, int k)
-    {
-        super.mouseClicked(i, j, k);
-        if (k == 0)
-        {
-            for (int l = 0; l < controlList.size(); l++)
-            {
-                GuiButton guibutton = (GuiButton)controlList.get(l);
-                if (guibutton.mousePressed(mc, i, j))
-                {
-                    selectedButton = guibutton;
-                }
-            }
-        }
-    }
-
-    protected void mouseMovedOrUp(int i, int j, int k)
-    {
-        if (selectedButton != null && k == 0)
-        {
-            if (selectedButton.id == 3 || selectedButton.id == 5)
-            {
-                actionPerformed(selectedButton);
-            }
-            selectedButton.mouseReleased(i, j);
-            selectedButton = null;
-        }
-    }
-
-    public void drawScreen(int i, int j, float f)
-    {
-        drawDefaultBackground();
-        drawCenteredString(fontRenderer, name, (width - xSize) / 2, (height - ySize) / 2 - 30, 0xffffff);
-        super.drawScreen(i, j, f);
-    }
-
+    
+    @Override
     public boolean doesGuiPauseGame()
     {
         return false;
     }
+    
+    @Override
+    public void drawScreen(int par1, int par2, float par3)
+    {
+        drawDefaultBackground();
+        drawGuiContainerBackgroundLayer();
+        RenderHelper.enableGUIStandardItemLighting();
+        GL11.glPushMatrix();
+        GL11.glTranslatef((float)guiLeft, (float)guiTop, 0.0F);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240F, 240F);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+        drawGuiContainerForegroundLayer();
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        RenderHelper.disableStandardItemLighting();
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GL11.glPopMatrix();
+        super.drawScreen(par1, par2, par3);
+        GL11.glEnable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+    }
+
+    private void drawGuiContainerForegroundLayer()
+    {
+        fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
+    }
+
+    private void drawGuiContainerBackgroundLayer()
+    {
+        int texture = mc.renderEngine.getTexture("/img/GUIIndustrialAlarm.png");
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        mc.renderEngine.bindTexture(texture);
+        int left = (width - xSize) / 2;
+        int top = (height - ySize) / 2;
+        drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
+    }
+    
+    @Override
+    protected void mouseMovedOrUp(int mouseX, int mouseY, int which)
+    {
+        super.mouseMovedOrUp(mouseX, mouseY, which);
+        if((which == 0 || which == 1) && slider.dragging )
+        {
+            slider.mouseReleased(mouseX, mouseY);
+        }
+    }
+    
 }

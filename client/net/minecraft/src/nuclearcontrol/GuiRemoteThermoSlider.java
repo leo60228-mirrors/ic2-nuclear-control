@@ -11,9 +11,9 @@ public class GuiRemoteThermoSlider extends GuiButton
     public float sliderValue;
     public boolean dragging;
     private String label;
-    private TileEntityRemoteThermo thermo;
+    private TileEntityIC2Thermo thermo;
 
-    public GuiRemoteThermoSlider(int id, int x, int y, String label, TileEntityRemoteThermo thermo)
+    public GuiRemoteThermoSlider(int id, int x, int y, String label, TileEntityIC2Thermo thermo)
     {
         super(id, x, y, 107, 16, label);
         this.thermo = thermo;

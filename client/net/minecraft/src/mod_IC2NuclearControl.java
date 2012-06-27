@@ -318,7 +318,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
         switch (ID)
         {
             case BlockNuclearControlMain.DAMAGE_THERMAL_MONITOR:
-                return new GuiIC2Thermo(world, x, y, z, player, (TileEntityIC2Thermo)tileEntity);
+                return new GuiIC2Thermo((TileEntityIC2Thermo)tileEntity);
             case BlockNuclearControlMain.DAMAGE_HOWLER_ALARM:
                 return new GuiHowlerAlarm((TileEntityHowlerAlarm)tileEntity);
             case BlockNuclearControlMain.DAMAGE_INDUSTRIAL_ALARM:
