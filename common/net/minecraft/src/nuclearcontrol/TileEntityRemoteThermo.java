@@ -3,11 +3,11 @@ package net.minecraft.src.nuclearcontrol;
 import java.util.List;
 
 import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.NBTTagList;
 import net.minecraft.src.TileEntity;
+import net.minecraft.src.forge.ISidedInventory;
 import net.minecraft.src.ic2.api.Direction;
 import net.minecraft.src.ic2.api.ElectricItem;
 import net.minecraft.src.ic2.api.EnergyNet;
@@ -18,7 +18,7 @@ import net.minecraft.src.ic2.api.NetworkHelper;
 
 
 public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements 
-    IInventory, IEnergySink, ISlotItemFilter
+    ISidedInventory, IEnergySink, ISlotItemFilter
 {
     public static final int SLOT_CHARGER = 0;
     public static final int SLOT_CARD = 1;
@@ -486,5 +486,21 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     public int modifyTextureIndex(int texture)
     {
         return texture;
+    }
+
+    @Override
+    public int getStartInventorySide(int side)
+    {
+        if(side == 1)
+            return 1;
+        return 0;    
+    }
+
+    @Override
+    public int getSizeInventorySide(int side)
+    {
+        if(side == 0 || side == 1)
+            return 1;
+        return inventory.length;
     }
 }
