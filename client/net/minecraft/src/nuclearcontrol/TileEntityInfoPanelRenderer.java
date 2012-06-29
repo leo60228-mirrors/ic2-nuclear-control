@@ -163,7 +163,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
                 int minutes = (panel.timeLeft % 3600) / 60;
                 int seconds = panel.timeLeft % 60;
 
-                String time = hours + ":" + minutes + ":" + seconds;                
+                String time = String.format("%d:%02d:%02d", hours, minutes, seconds);                
                 rows++;
                 txtRemains = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelTimeRemaining"), time);
                 maxWidth = Math.max(fontRenderer.getStringWidth(txtRemains), maxWidth);
