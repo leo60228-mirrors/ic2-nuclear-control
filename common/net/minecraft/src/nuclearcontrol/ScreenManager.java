@@ -164,7 +164,6 @@ public class ScreenManager
             screens.put(getWorldKey(panel.worldObj), new ArrayList<Screen>());
         if(!unusedPanels.containsKey(getWorldKey(panel.worldObj)))
             unusedPanels.put(getWorldKey(panel.worldObj), new ArrayList<TileEntityInfoPanel>());
-        System.out.println(getWorldKey(panel.worldObj));
         for (Screen screen : screens.get(getWorldKey(panel.worldObj)))
         {
             if(screen.isBlockPartOf(panel))
