@@ -33,6 +33,10 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
     protected static final String CONFIG_THERMO_BLOCK = "mod_thermo.cfg";
     protected static final String CONFIG_THERMOMETER = "IC2Thermometer.cfg";
 
+    public static int IC2WrenchId;
+    public static int IC2ElectricWrenchId;
+    
+    
     public static Item itemToolThermometer;
     public static Item itemToolDigitalThermometer;
     public static Item itemRemoteSensorKit;
@@ -239,6 +243,8 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
     public void modsLoaded()
     {
         super.modsLoaded();
+        IC2WrenchId = Items.getItem("wrench").itemID;
+        IC2ElectricWrenchId = Items.getItem("electricWrench").itemID;
         MinecraftForge.registerConnectionHandler(this);
         addRecipes();
     }    

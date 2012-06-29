@@ -18,7 +18,7 @@ import net.minecraft.src.ic2.api.NetworkHelper;
 
 
 public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements 
-    ISidedInventory, IEnergySink, ISlotItemFilter
+    ISidedInventory, IEnergySink, ISlotItemFilter, IRotation
 {
     public static final int SLOT_CHARGER = 0;
     public static final int SLOT_CARD = 1;
@@ -37,6 +37,8 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     public int maxPacketSize;
     private int prevTier;
     public int tier;
+    public int rotation;
+    public int prevRotation;
     private int prevEnergy;
     public int energy;
     private boolean addedToEnergyNet;
@@ -54,6 +56,8 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
         deltaY = 0;
         deltaZ = 0;
         energy = 0;
+        prevRotation = 0;
+        rotation = 0;
         prevEnergy = 0;
     }
     
@@ -65,6 +69,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
         list.add("energy");
         list.add("tier");
         list.add("maxPacketSize");
+        list.add("rotation");
         
         return list;
     }
@@ -133,6 +138,16 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
             NetworkHelper.updateTileEntityField(this, "tier");
         }
         prevTier = tier;
+    }
+
+    public void setRotation(int value)
+    {
+        rotation = value;
+        if(rotation!=prevRotation)
+        {
+            NetworkHelper.updateTileEntityField(this, "rotation");
+        }
+        prevRotation = rotation;
     }
 
     public void setMaxPacketSize(int value)
@@ -206,7 +221,10 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     {
         super.readFromNBT(nbttagcompound);
         energy = nbttagcompound.getInteger("energy");
-
+        if(nbttagcompound.hasKey("rotation"))
+        {
+            prevRotation = rotation = nbttagcompound.getInteger("rotation");
+        }
         NBTTagList nbttaglist = nbttagcompound.getTagList("Items");
         inventory = new ItemStack[getSizeInventory()];
         for (int i = 0; i < nbttaglist.tagCount(); i++)
@@ -221,6 +239,17 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
         }
         onInventoryChanged();
     }
+    
+    @Override
+    public void onNetworkUpdate(String field)
+    {
+        super.onNetworkUpdate(field);
+        if (field.equals("rotation") && prevRotation != rotation)
+        {
+            worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+            prevRotation = rotation;
+        }
+    }    
 
     @Override
     public void invalidate()
@@ -239,6 +268,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     {
         super.writeToNBT(nbttagcompound);
         nbttagcompound.setInteger("energy", energy);
+        nbttagcompound.setInteger("rotation", rotation);
 
         NBTTagList nbttaglist = new NBTTagList();
         for (int i = 0; i < inventory.length; i++)
@@ -478,9 +508,14 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     
     @Override
     public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int face) {
-        return getFacing() != face;
+        return !entityPlayer.isSneaking() && getFacing() != face;
     };
 
+    @Override
+    public boolean wrenchCanRemove(EntityPlayer entityPlayer)
+    {
+        return !entityPlayer.isSneaking();
+    }
 
     @Override
     public int modifyTextureIndex(int texture)
@@ -502,5 +537,36 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
         if(side == 0 || side == 1)
             return 1;
         return inventory.length;
+    }
+
+    @Override
+    public void rotate()
+    {
+        int r;
+        switch (rotation)
+        {
+            case 0:
+                r = 1;
+                break;
+            case 1:
+                r = 3;
+                break;
+            case 3:
+                r = 2;
+                break;
+            case 2:
+                r = 0;
+                break;
+            default:
+                r = 0;
+                break;
+        }
+        setRotation(r);
+    }
+
+    @Override
+    public int getRotation()
+    {
+        return rotation;
     }
 }

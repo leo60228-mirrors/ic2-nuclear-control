@@ -30,6 +30,7 @@ import net.minecraft.src.nuclearcontrol.GuiIndustrialAlarm;
 import net.minecraft.src.nuclearcontrol.GuiInfoPanel;
 import net.minecraft.src.nuclearcontrol.GuiRemoteThermo;
 import net.minecraft.src.nuclearcontrol.IC2NuclearControl;
+import net.minecraft.src.nuclearcontrol.IRotation;
 import net.minecraft.src.nuclearcontrol.MsgProcessor;
 import net.minecraft.src.nuclearcontrol.ScreenManager;
 import net.minecraft.src.nuclearcontrol.SoundHelper;
@@ -224,8 +225,41 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
     @Override
     public boolean renderWorldBlock(RenderBlocks render, IBlockAccess blockAccess, int x, int y, int z, Block block, int model)
     {
-       if(model == modelId){
+       if(model == modelId)
+       {
+           TileEntity tileEntity = blockAccess.getBlockTileEntity(x, y, z);
+           if(tileEntity instanceof IRotation)
+           {
+               switch(((IRotation) tileEntity).getFacing())
+               {
+                   case 0:
+                       render.uvRotateBottom = ((IRotation) tileEntity).getRotation();
+                       break;
+                   case 1:
+                       render.uvRotateTop = ((IRotation) tileEntity).getRotation();
+                       break;
+                   case 2:
+                       render.uvRotateEast = ((IRotation) tileEntity).getRotation();
+                       break;
+                   case 3:
+                       render.uvRotateWest = ((IRotation) tileEntity).getRotation();
+                       break;
+                   case 4:
+                       render.uvRotateNorth = ((IRotation) tileEntity).getRotation();
+                       break;
+                   case 5:
+                       render.uvRotateSouth = ((IRotation) tileEntity).getRotation();
+                       break;
+                       
+               }
+           }
            render.renderStandardBlock(block, x, y, z);
+           render.uvRotateBottom = 0;
+           render.uvRotateEast = 0;
+           render.uvRotateNorth= 0;
+           render.uvRotateSouth = 0;
+           render.uvRotateTop = 0;
+           render.uvRotateWest = 0;
            return true;
        }
        return false;

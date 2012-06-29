@@ -16,13 +16,13 @@ public class TileEntityRemoteThermoRenderer extends TileEntitySpecialRenderer
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float f)
     {
-        boolean isThermo = tileEntity instanceof TileEntityIC2Thermo;
+        boolean isThermo = tileEntity instanceof TileEntityRemoteThermo;
         if(isThermo)
         {
             GL11.glPushMatrix();
-            GL11.glPolygonOffset( -50, -50 );
+            GL11.glPolygonOffset( -10, -10 );
             GL11.glEnable ( GL11.GL_POLYGON_OFFSET_FILL );
-            TileEntityIC2Thermo thermo = (TileEntityIC2Thermo)tileEntity;
+            TileEntityRemoteThermo thermo = (TileEntityRemoteThermo)tileEntity;
             short side = (short)Facing.faceToSide[thermo.getFacing()];
             float var12 = 0.016666668F;
             int heat = (thermo.getHeatLevel() / 500) * 500;
@@ -68,8 +68,22 @@ public class TileEntityRemoteThermoRenderer extends TileEntitySpecialRenderer
                     break;
 
             }
-            GL11.glTranslatef(0.5F, 1F, 0.4375F);
+            GL11.glTranslatef(0.5F, 1F, 0.5F);
             GL11.glRotatef(-90, 1, 0, 0);
+            switch (thermo.rotation)
+            {
+                case 0:
+                    break;
+                case 1:
+                    GL11.glRotatef(-90, 0, 0, 1);
+                    break;
+                case 2:
+                    GL11.glRotatef(90, 0, 0, 1);
+                    break;
+                case 3:
+                    GL11.glRotatef(180, 0, 0, 1);
+                    break;
+            }
 
             Block block = Block.blocksList[thermo.worldObj.getBlockId(thermo.xCoord, thermo.yCoord, thermo.zCoord)];
             if(block==null)
@@ -82,7 +96,7 @@ public class TileEntityRemoteThermoRenderer extends TileEntitySpecialRenderer
                 tessellator.setBrightness(block.getMixedBrightnessForBlock(thermo.worldObj, thermo.xCoord, thermo.yCoord, thermo.zCoord));
                 tessellator.setColorOpaque_F(1, 1, 1);
                 double left = -0.4375;
-                double top = -0.375;
+                double top = -0.3125;
                 double width = 0.875;
                 double height = 0.25;
                 double u = 161D/256;

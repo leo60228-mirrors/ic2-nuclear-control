@@ -392,6 +392,13 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
         int blockType = world.getBlockMetadata(x, y, z);
         if (entityplayer.isSneaking())
         {
+            TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+            if(tileEntity!=null && tileEntity instanceof IRotation && (entityplayer.getCurrentEquippedItem().itemID == IC2NuclearControl.IC2WrenchId ||
+                    entityplayer.getCurrentEquippedItem().itemID == IC2NuclearControl.IC2ElectricWrenchId ))
+            {
+                ((IRotation)tileEntity).rotate();
+                return true;
+            }
             return false;
         }
         switch(blockType)
