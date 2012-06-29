@@ -23,6 +23,11 @@ public class ScreenManager
         unusedPanels = new HashMap<Integer, List<TileEntityInfoPanel>>();
     }
     
+    private int getWorldKey(World world)
+    {
+        return world.getWorldInfo().getDimension()==0?world.worldProvider.worldType:world.getWorldInfo().getDimension();
+    }
+    
     private boolean isValidExtender(World world, int x, int y, int z, int facing)
     {
         if(world.getBlockId(x, y, z) != mod_IC2NuclearControl.blockNuclearControlMain.blockID)
@@ -118,15 +123,15 @@ public class ScreenManager
     
     private void destroyScreen(Screen screen)
     {
-        screens.get(screen.coreWorld.getWorldInfo().getDimension()).remove(screen);
+        screens.get(getWorldKey(screen.coreWorld)).remove(screen);
         screen.destroy();
     }
     
     public void unregisterScreenPart(TileEntity part)
     {
-        if(!screens.containsKey(part.worldObj.getWorldInfo().getDimension()))
+        if(!screens.containsKey(getWorldKey(part.worldObj)))
             return;
-        if(!unusedPanels.containsKey(part.worldObj.getWorldInfo().getDimension()))
+        if(!unusedPanels.containsKey(getWorldKey(part.worldObj)))
             return;
         if(!(part instanceof IScreenPart))
             return;
@@ -135,8 +140,8 @@ public class ScreenManager
         if(screen==null)
         {
             if(part instanceof TileEntityInfoPanel &&
-               unusedPanels.get(part.worldObj.getWorldInfo().getDimension()).contains(part))
-                unusedPanels.get(part.worldObj.getWorldInfo().getDimension()).remove(part);
+               unusedPanels.get(getWorldKey(part.worldObj)).contains(part))
+                unusedPanels.get(getWorldKey(part.worldObj)).remove(part);
             return;
         }
         TileEntityInfoPanel core = screen.getCore();
@@ -146,21 +151,21 @@ public class ScreenManager
         {
             Screen newScreen = tryBuildFromPanel(core);
             if(newScreen == null)
-                unusedPanels.get(core.worldObj.getWorldInfo().getDimension()).add(core);
+                unusedPanels.get(getWorldKey(core.worldObj)).add(core);
             else
-                screens.get(core.worldObj.getWorldInfo().getDimension()).add(newScreen);
+                screens.get(getWorldKey(core.worldObj)).add(newScreen);
         }
         
     }
     
     public void registerInfoPanel(TileEntityInfoPanel panel)
     {
-        if(!screens.containsKey(panel.worldObj.getWorldInfo().getDimension()))
-            screens.put(panel.worldObj.getWorldInfo().getDimension(), new ArrayList<Screen>());
-        if(!unusedPanels.containsKey(panel.worldObj.getWorldInfo().getDimension()))
-            unusedPanels.put(panel.worldObj.getWorldInfo().getDimension(), new ArrayList<TileEntityInfoPanel>());
-        
-        for (Screen screen : screens.get(panel.worldObj.getWorldInfo().getDimension()))
+        if(!screens.containsKey(getWorldKey(panel.worldObj)))
+            screens.put(getWorldKey(panel.worldObj), new ArrayList<Screen>());
+        if(!unusedPanels.containsKey(getWorldKey(panel.worldObj)))
+            unusedPanels.put(getWorldKey(panel.worldObj), new ArrayList<TileEntityInfoPanel>());
+        System.out.println(getWorldKey(panel.worldObj));
+        for (Screen screen : screens.get(getWorldKey(panel.worldObj)))
         {
             if(screen.isBlockPartOf(panel))
             {
@@ -171,22 +176,22 @@ public class ScreenManager
         }        
         Screen screen = tryBuildFromPanel(panel);
         if(screen!=null)
-            screens.get(panel.worldObj.getWorldInfo().getDimension()).add(screen);
+            screens.get(getWorldKey(panel.worldObj)).add(screen);
         else
-            unusedPanels.get(panel.worldObj.getWorldInfo().getDimension()).add(panel);
+            unusedPanels.get(getWorldKey(panel.worldObj)).add(panel);
     }
     
     public void registerInfoPanelExtender(TileEntityInfoPanelExtender extender)
     {
-        if(!screens.containsKey(extender.worldObj.getWorldInfo().getDimension()))
-            screens.put(extender.worldObj.getWorldInfo().getDimension(), new ArrayList<Screen>());
-        if(!unusedPanels.containsKey(extender.worldObj.getWorldInfo().getDimension()))
-            unusedPanels.put(extender.worldObj.getWorldInfo().getDimension(), new ArrayList<TileEntityInfoPanel>());
+        if(!screens.containsKey(getWorldKey(extender.worldObj)))
+            screens.put(getWorldKey(extender.worldObj), new ArrayList<Screen>());
+        if(!unusedPanels.containsKey(getWorldKey(extender.worldObj)))
+            unusedPanels.put(getWorldKey(extender.worldObj), new ArrayList<TileEntityInfoPanel>());
         
         List<TileEntityInfoPanel> rebuildPanels = new ArrayList<TileEntityInfoPanel>();
         List<Screen> screensToDestroy = new ArrayList<Screen>();
 
-        for (Screen screen : screens.get(extender.worldObj.getWorldInfo().getDimension()))
+        for (Screen screen : screens.get(getWorldKey(extender.worldObj)))
         {
             if(screen.isBlockNearby(extender) && screen.getCore()!=null && extender.facing == screen.getCore().facing)
             {
@@ -204,7 +209,7 @@ public class ScreenManager
         {
             destroyScreen(screen);
         }
-        for (TileEntityInfoPanel panel : unusedPanels.get(extender.worldObj.getWorldInfo().getDimension()))
+        for (TileEntityInfoPanel panel : unusedPanels.get(getWorldKey(extender.worldObj)))
         {
             if(((panel.xCoord == extender.xCoord && panel.yCoord  == extender.yCoord && (panel.zCoord == extender.zCoord+1 || panel.zCoord == extender.zCoord-1)) ||
                 (panel.xCoord == extender.xCoord && (panel.yCoord  == extender.yCoord+1 || panel.yCoord  == extender.yCoord-1) && panel.zCoord == extender.zCoord) ||
@@ -220,14 +225,14 @@ public class ScreenManager
             Screen screen = tryBuildFromPanel(panel);
             if(screen!=null)
             {
-                screens.get(extender.worldObj.getWorldInfo().getDimension()).add(screen);
-                if(unusedPanels.get(extender.worldObj.getWorldInfo().getDimension()).contains(panel))
-                    unusedPanels.get(extender.worldObj.getWorldInfo().getDimension()).remove(panel);
+                screens.get(getWorldKey(extender.worldObj)).add(screen);
+                if(unusedPanels.get(getWorldKey(extender.worldObj)).contains(panel))
+                    unusedPanels.get(getWorldKey(extender.worldObj)).remove(panel);
             }
             else
             {
-                if(!unusedPanels.get(extender.worldObj.getWorldInfo().getDimension()).contains(panel))
-                    unusedPanels.get(extender.worldObj.getWorldInfo().getDimension()).add(panel);
+                if(!unusedPanels.get(getWorldKey(extender.worldObj)).contains(panel))
+                    unusedPanels.get(getWorldKey(extender.worldObj)).add(panel);
             }
         }
     }
