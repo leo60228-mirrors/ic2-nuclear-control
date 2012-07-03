@@ -21,9 +21,9 @@ import net.minecraft.src.ic2.api.NetworkHelper;
 
 
 public class TileEntityInfoPanel extends TileEntity implements 
-    IInventory, ISlotItemFilter, INetworkDataProvider, INetworkUpdateListener, 
+    ISlotItemFilter, INetworkDataProvider, INetworkUpdateListener, 
     INetworkClientTileEntityEventListener, IWrenchable, IRedstoneConsumer,
-    ITextureHelper, IScreenPart, ISidedInventory
+    ITextureHelper, IScreenPart, ISidedInventory, IRotation
 {
     public static final int DISPLAY_ONOFF = 1;
     public static final int DISPLAY_HEAT = 2;
@@ -78,6 +78,9 @@ public class TileEntityInfoPanel extends TileEntity implements
     
     private int prevMaxHeat;
     public int maxHeat;
+    
+    private int prevRotation;
+    public int rotation;
     
     
     private short prevFacing;
@@ -249,6 +252,12 @@ public class TileEntityInfoPanel extends TileEntity implements
             }
             prevPowered = powered;
         }
+        if (field.equals("rotation") && prevRotation != rotation)
+        {
+            worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+            prevRotation = rotation;
+        }
+        
     }
 
     @Override
@@ -274,6 +283,8 @@ public class TileEntityInfoPanel extends TileEntity implements
         prevPowered = false;
         facing = 0;
         prevFacing = 0;
+        prevRotation = 0;
+        rotation = 0;        
     }
     
     @Override
@@ -291,6 +302,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         list.add("deltaX");
         list.add("deltaY");
         list.add("deltaZ");
+        list.add("rotation");
         return list;
     }
     
@@ -364,6 +376,10 @@ public class TileEntityInfoPanel extends TileEntity implements
     public void readFromNBT(NBTTagCompound nbttagcompound)
     {
         super.readFromNBT(nbttagcompound);
+        if(nbttagcompound.hasKey("rotation"))
+        {
+            prevRotation = rotation = nbttagcompound.getInteger("rotation");
+        }
         prevFacing = facing =  nbttagcompound.getShort("facing");
         prevDisplaySettings = displaySettings = nbttagcompound.getInteger("displaySettings");
         NBTTagList nbttaglist = nbttagcompound.getTagList("Items");
@@ -397,6 +413,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         super.writeToNBT(nbttagcompound);
         nbttagcompound.setShort("facing", facing);
         nbttagcompound.setInteger("displaySettings", displaySettings);
+        nbttagcompound.setInteger("rotation", rotation);
 
         NBTTagList nbttaglist = new NBTTagList();
         for (int i = 0; i < inventory.length; i++)
@@ -552,7 +569,7 @@ public class TileEntityInfoPanel extends TileEntity implements
     
     @Override
     public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int face) {
-        return getFacing() != face;
+        return !entityPlayer.isSneaking() && getFacing() != face;
     };
 
     @Override
@@ -564,7 +581,7 @@ public class TileEntityInfoPanel extends TileEntity implements
     @Override
     public boolean wrenchCanRemove(EntityPlayer entityPlayer)
     {
-        return true;
+        return !entityPlayer.isSneaking();
     }
 
     public int modifyTextureIndex(int texture, int x, int y, int z)
@@ -573,6 +590,11 @@ public class TileEntityInfoPanel extends TileEntity implements
             return texture;
         if(screen != null)
         {
+            boolean left = false;
+            boolean right = false;
+            boolean top = false;
+            boolean bottom = false;
+            boolean ccw = false;
             //facing
             //     top / left 
             // 0 - minZ, minX
@@ -585,64 +607,134 @@ public class TileEntityInfoPanel extends TileEntity implements
             {
                 case 0:
                     if(x == screen.minX)
-                        texture+=BORDER_LEFT;
+                        left = true;
                     if(x == screen.maxX)
-                        texture+=BORDER_RIGHT;
+                        right = true;
                     if(z == screen.minZ)
-                        texture+=BORDER_TOP;
+                        top = true;
                     if(z == screen.maxZ)
-                        texture+=BORDER_BOTTOM;
+                        bottom = true;
                 break;
                 case 1:
                     if(x == screen.minX)
-                        texture+=BORDER_RIGHT;
+                        left = true;
                     if(x == screen.maxX)
-                        texture+=BORDER_LEFT;
+                        right = true;
                     if(z == screen.minZ)
-                        texture+=BORDER_TOP;
+                        top = true;
                     if(z == screen.maxZ)
-                        texture+=BORDER_BOTTOM;
+                        bottom = true;
+                   // ccw = true;
                 break;
                 case 2:
                     if(x == screen.minX)
-                        texture+=BORDER_LEFT;
+                        left = true;
                     if(x == screen.maxX)
-                        texture+=BORDER_RIGHT;
+                        right = true;
                     if(y == screen.maxY)
-                        texture+=BORDER_TOP;
+                        top = true;
                     if(y == screen.minY)
-                        texture+=BORDER_BOTTOM;
+                        bottom = true;
                 break;
                 case 3:
                     if(x == screen.minX)
-                        texture+=BORDER_RIGHT;
+                        right = true;
                     if(x == screen.maxX)
-                        texture+=BORDER_LEFT;
+                        left = true;
                     if(y == screen.maxY)
-                        texture+=BORDER_TOP;
+                        top = true;
                     if(y == screen.minY)
-                        texture+=BORDER_BOTTOM;
+                        bottom = true;
+                    ccw = true;
                 break;
                 case 4:
                     if(z == screen.minZ)
-                        texture+=BORDER_RIGHT;
+                        right = true;
                     if(z == screen.maxZ)
-                        texture+=BORDER_LEFT;
+                        left = true;
                     if(y == screen.maxY)
-                        texture+=BORDER_TOP;
+                        top = true;
                     if(y == screen.minY)
-                        texture+=BORDER_BOTTOM;
+                        bottom = true;
+                    ccw = true;
                 break;
                 case 5:
                     if(z == screen.minZ)
-                        texture+=BORDER_LEFT;
+                        left = true;
                     if(z == screen.maxZ)
-                        texture+=BORDER_RIGHT;
+                        right = true;
                     if(y == screen.maxY)
-                        texture+=BORDER_TOP;
+                        top = true;
                     if(y == screen.minY)
-                        texture+=BORDER_BOTTOM;
+                        bottom = true;
                 break;
+            }
+            if(rotation == 0)
+            {
+                if(left) texture+=BORDER_LEFT;
+                if(right) texture+=BORDER_RIGHT;
+                if(top) texture+=BORDER_TOP;
+                if(bottom) texture+=BORDER_BOTTOM;
+            }
+            else
+            if( !ccw && rotation == 1)
+            {
+                if(facing == 1)
+                {
+                    if(left) texture+=BORDER_TOP;
+                    if(right) texture+=BORDER_BOTTOM;
+                    if(top) texture+=BORDER_RIGHT;
+                    if(bottom) texture+=BORDER_LEFT;
+                }
+                else
+                {
+                    if(left) texture+=BORDER_BOTTOM;
+                    if(right) texture+=BORDER_TOP;
+                    if(top) texture+=BORDER_LEFT;
+                    if(bottom) texture+=BORDER_RIGHT;
+                }
+            }
+            else
+            if( ccw && rotation == 1)
+            {
+                if(left) texture+=BORDER_BOTTOM;
+                if(right) texture+=BORDER_TOP;
+                if(top) texture+=BORDER_RIGHT;
+                if(bottom) texture+=BORDER_LEFT;
+            }
+            else
+            if(rotation == 3)
+            {
+                if(left) texture+=BORDER_RIGHT;
+                if(right) texture+=BORDER_LEFT;
+                if(top) texture+=BORDER_BOTTOM;
+                if(bottom) texture+=BORDER_TOP;
+            }
+            else
+            if( !ccw && rotation == 2)
+            {
+                if(facing == 1)
+                {
+                    if(left) texture+=BORDER_BOTTOM;
+                    if(right) texture+=BORDER_TOP;
+                    if(top) texture+=BORDER_LEFT;
+                    if(bottom) texture+=BORDER_RIGHT;
+                }
+                else
+                {
+                    if(left) texture+=BORDER_TOP;
+                    if(right) texture+=BORDER_BOTTOM;
+                    if(top) texture+=BORDER_RIGHT;
+                    if(bottom) texture+=BORDER_LEFT;
+                }
+            }
+            else
+            if( ccw && rotation == 2)
+            {
+                if(left) texture+=BORDER_TOP;
+                if(right) texture+=BORDER_BOTTOM;
+                if(top) texture+=BORDER_LEFT;
+                if(bottom) texture+=BORDER_RIGHT;
             }
         }
         else
@@ -719,6 +811,48 @@ public class TileEntityInfoPanel extends TileEntity implements
         if(side == 0 || side == 1)
             return 1;
         return inventory.length;
+    }
+
+    @Override
+    public void rotate()
+    {
+        int r;
+        switch (rotation)
+        {
+            case 0:
+                r = 1;
+                break;
+            case 1:
+                r = 3;
+                break;
+            case 3:
+                r = 2;
+                break;
+            case 2:
+                r = 0;
+                break;
+            default:
+                r = 0;
+                break;
+        }
+        setRotation(r);
+    }
+
+    @Override
+    public int getRotation()
+    {
+        return rotation;
+    }
+
+    @Override
+    public void setRotation(int value)
+    {
+        rotation = value;
+        if(rotation!=prevRotation)
+        {
+            NetworkHelper.updateTileEntityField(this, "rotation");
+        }
+        prevRotation = rotation;
     }
     
     

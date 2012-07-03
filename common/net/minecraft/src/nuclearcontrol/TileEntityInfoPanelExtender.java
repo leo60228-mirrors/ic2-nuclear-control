@@ -16,7 +16,7 @@ import net.minecraft.src.ic2.api.NetworkHelper;
 
 public class TileEntityInfoPanelExtender extends TileEntity implements 
     INetworkDataProvider, INetworkUpdateListener, 
-    IWrenchable, ITextureHelper, IScreenPart
+    IWrenchable, ITextureHelper, IScreenPart, IRotation
 {
 
     protected boolean init;
@@ -131,7 +131,7 @@ public class TileEntityInfoPanelExtender extends TileEntity implements
 
     @Override
     public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int face) {
-        return getFacing() != face;
+        return !entityPlayer.isSneaking() && getFacing() != face;
     };
 
     @Override
@@ -143,9 +143,9 @@ public class TileEntityInfoPanelExtender extends TileEntity implements
     @Override
     public boolean wrenchCanRemove(EntityPlayer entityPlayer)
     {
-        return true;
+        return !entityPlayer.isSneaking();
     }
-
+    
     @Override
     public int modifyTextureIndex(int texture)
     {
@@ -166,5 +166,27 @@ public class TileEntityInfoPanelExtender extends TileEntity implements
     public Screen getScreen()
     {
         return screen;
+    }
+
+    @Override
+    public void rotate()
+    {
+        if(screen!=null)
+            screen.getCore().rotate();
+    }
+
+    @Override
+    public int getRotation()
+    {
+        if(screen!=null)
+            return screen.getCore().rotation;
+        return 0;
+    }
+
+    @Override
+    public void setRotation(int rotation)
+    {
+        if(screen!=null)
+            screen.getCore().setRotation(rotation);
     }
 }

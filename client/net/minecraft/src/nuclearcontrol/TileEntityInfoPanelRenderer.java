@@ -113,9 +113,30 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
                     break;
             }
 
-            GL11.glTranslatef(dx, 1F, dz);
+            GL11.glTranslatef(dx+displayWidth/2, 1F, dz+displayHeight/2);
             GL11.glRotatef(-90, 1, 0, 0);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            
+            switch (panel.rotation)
+            {
+                case 0:
+                    break;
+                case 1:
+                    GL11.glRotatef(-90, 0, 0, 1);
+                    float t = displayHeight;
+                    displayHeight = displayWidth;
+                    displayWidth = t;
+                    break;
+                case 2:
+                    GL11.glRotatef(90, 0, 0, 1);
+                    float tm = displayHeight;
+                    displayHeight = displayWidth;
+                    displayWidth = tm;
+                    break;
+                case 3:
+                    GL11.glRotatef(180, 0, 0, 1);
+                    break;
+            }            
             
             FontRenderer fontRenderer = this.getFontRenderer();
             
@@ -230,12 +251,12 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
             GL11.glDisable(GL11.GL_LIGHTING);
             if(txtOnOff!=null && renderRightOnOff)
             {
-                    fontRenderer.drawString(txtOnOff, offsetX+realWidth-offsetX-fontRenderer.getStringWidth(txtOnOff), 
-                            offsetY, onOffColor);
+                    fontRenderer.drawString(txtOnOff, offsetX+realWidth/2-offsetX-fontRenderer.getStringWidth(txtOnOff), 
+                            offsetY - realHeight/2, onOffColor);
             }
             for (String line : lines)
             {
-                fontRenderer.drawString(line, offsetX, 1+offsetY + row * lineHeight, txtColor);
+                fontRenderer.drawString(line, offsetX-realWidth/2, 1+offsetY-realHeight/2 + row * lineHeight, txtColor);
                 row++;
             }
             GL11.glEnable(GL11.GL_LIGHTING);
