@@ -293,4 +293,10 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
 
     @Override
     abstract public void load();
+    
+    @Override
+    public String getPriorities()
+    {
+        return "after:mod_IC2";
+    }
 }
