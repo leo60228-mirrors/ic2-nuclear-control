@@ -6,6 +6,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 import net.minecraft.src.forge.Configuration;
 import net.minecraft.src.forge.MinecraftForge;
@@ -143,7 +144,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
         }
         catch(IOException e)
         {
-            System.err.println("[IC2NuclearControl] WARNING: Invalid packet: " + e.getMessage());
+            ModLoader.getLogger().log(Level.WARNING, LOG_PREFIX + "Invalid packet: " + e.getMessage());
         }
         
     }

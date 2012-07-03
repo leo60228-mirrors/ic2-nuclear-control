@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.forge.Configuration;
@@ -155,9 +156,10 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
                     }
                     input.close();
                     output.close();
-                } catch (IOException e)
+                } 
+                catch (IOException e)
                 {
-                    System.out.println("[IC2NuclearControl] can't import sound file");
+                    ModLoader.getLogger().log(Level.WARNING, LOG_PREFIX + "Can't import sound file");
                 }
             }
         }
@@ -334,9 +336,9 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
         }
         catch (Exception exception)
         {
-            System.out.println(exception.getMessage());
+            ModLoader.getLogger().log(Level.SEVERE, 
+                    LOG_PREFIX + "Error occured while loading "+CONFIG_NUCLEAR_CONTROL_LANG);
             exception.printStackTrace();
-            System.out.println("[IC2NuclearControl] Error occured while loading "+CONFIG_NUCLEAR_CONTROL_LANG);
         }
     }
 
@@ -401,7 +403,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
             serverAllowedAlarms = new ArrayList<String>(Arrays.asList(dataStream.readUTF().split(",")));
         } catch (IOException e)
         {
-            System.err.println("[IC2NuclearControl] WARNING: Invalid packet: " + e.getMessage());
+            ModLoader.getLogger().log(Level.WARNING, LOG_PREFIX + "Invalid packet: " + e.getMessage());
         }
     }
 

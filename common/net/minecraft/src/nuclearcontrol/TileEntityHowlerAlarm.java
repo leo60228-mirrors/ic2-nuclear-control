@@ -2,9 +2,11 @@ package net.minecraft.src.nuclearcontrol;
 
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.Facing;
+import net.minecraft.src.ModLoader;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.mod_IC2NuclearControl;
@@ -238,7 +240,8 @@ public class TileEntityHowlerAlarm extends TileEntity implements
         {
             if(!mod_IC2NuclearControl.availableAlarms.contains(soundName))
             {
-                System.out.println(String.format("[IC2NuclearControl] INFO: Can't set sound '%s' at %d,%d,%d, using default",
+                ModLoader.getLogger().log(Level.INFO, 
+                        String.format(IC2NuclearControl.LOG_PREFIX + "Can't set sound '%s' at %d,%d,%d, using default",
                         soundName, xCoord, yCoord, zCoord));
                 soundName = DEFAULT_SOUND_NAME;
             }

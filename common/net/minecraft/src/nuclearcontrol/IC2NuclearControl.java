@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import net.minecraft.src.Block;
 import net.minecraft.src.EntityPlayer;
@@ -26,6 +27,7 @@ import net.minecraft.src.ic2.api.Items;
 
 public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandler, IConnectionHandler, IPacketHandler
 {
+    public static final String LOG_PREFIX = "[IC2NuclearControl] ";
     public static final String MSG_PREFIX = "ic2:nc:c7518eb6:";
     public static final String NETWORK_CHANNEL_NAME = "nuclearControl";
     
@@ -158,7 +160,7 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
         } 
         catch (Exception exception)
         {
-            System.out.println("Can't get id for :" + name);
+            ModLoader.getLogger().log(Level.WARNING, LOG_PREFIX + "Can't get id for:" + name);
         }
 
         return i;
@@ -257,7 +259,7 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
         } 
         catch (Exception exception)
         {
-            System.out.println("Can't get id for :" + name);
+            ModLoader.getLogger().log(Level.WARNING, LOG_PREFIX + "Can't get id for:" + name);
         }
 
         return i;
