@@ -6,6 +6,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import net.minecraft.src.forge.Configuration;
@@ -110,6 +113,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
         DataOutputStream output = new DataOutputStream(arrayOutput);
         try
         {
+            output.writeShort(PACKET_ALARM);
             output.writeInt(maxAlarmRange);
             output.writeUTF(allowedAlarms);
             Packet250CustomPayload packet = new Packet250CustomPayload();
@@ -146,7 +150,58 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
         {
             ModLoader.getLogger().log(Level.WARNING, LOG_PREFIX + "Invalid packet: " + e.getMessage());
         }
-        
+    }
+    
+    public static void setSensorCardField(TileEntityInfoPanel panel, Map<String, Integer> fields)
+    {
+        if(fields==null || fields.isEmpty() || panel==null)
+            return;
+        try
+        {
+            Packet250CustomPayload packet = null;
+            
+            Iterator iterator = panel.worldObj.playerEntities.iterator();
+            int maxDist = ModLoader.getMinecraftServerInstance().configManager.getMaxTrackingDistance() + 16;
+            int maxDistSq = maxDist * maxDist;
+
+            while (iterator.hasNext())
+            {
+                EntityPlayerMP player = (EntityPlayerMP)iterator.next();
+                int dx = panel.xCoord - (int)player.posX;
+                int dy = panel.xCoord - (int)player.posX;
+                float distanceSq = dx*dx+dy*dy;
+                
+                if (distanceSq > maxDistSq)
+                {
+                    continue;
+                }
+
+                if(packet == null)
+                {
+                    packet = new Packet250CustomPayload();
+                    ByteArrayOutputStream arrayOutput = new ByteArrayOutputStream();
+                    DataOutputStream output = new DataOutputStream(arrayOutput);
+                    output.writeShort(PACKET_SENSOR);
+                    output.writeInt(panel.xCoord);
+                    output.writeInt(panel.yCoord);
+                    output.writeInt(panel.zCoord);
+                    output.writeShort(fields.size());
+                    for (Map.Entry<String, Integer> entry : fields.entrySet())
+                    {
+                        output.writeUTF(entry.getKey());
+                        output.writeInt(entry.getValue());
+                    }
+                    packet.channel = NETWORK_CHANNEL_NAME;
+                    packet.isChunkDataPacket = false;
+                    packet.data = arrayOutput.toByteArray();
+                    packet.length = arrayOutput.size();
+                }
+                player.playerNetServerHandler.sendPacket(packet);
+            }
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
     
 }

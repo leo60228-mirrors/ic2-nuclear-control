@@ -1,15 +1,16 @@
 package net.minecraft.src.nuclearcontrol;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.src.Block;
 import net.minecraft.src.Facing;
 import net.minecraft.src.FontRenderer;
+import net.minecraft.src.ItemStack;
 import net.minecraft.src.ModLoader;
-import net.minecraft.src.StatCollector;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.TileEntitySpecialRenderer;
+import net.minecraft.src.nuclearcontrol.panel.IPanelDataSource;
+import net.minecraft.src.nuclearcontrol.panel.PanelString;
 
 import org.lwjgl.opengl.GL11;
 
@@ -23,11 +24,18 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
         if(isPanel)
         {
             TileEntityInfoPanel panel = (TileEntityInfoPanel)tileEntity;
-            if(!panel.powered || panel.displaySettings == 0 || 
-                    (panel.deltaX == 0 && panel.deltaY == 0 && panel.deltaZ == 0))
-            {
+            if(!panel.powered)
                 return;
-            }
+            int displaySettings = panel.getDisplaySettings();
+            if(displaySettings == 0)
+                return;
+            ItemStack card = panel.getStackInSlot(TileEntityInfoPanel.SLOT_CARD);
+            if(!(card.getItem() instanceof IPanelDataSource))
+                return;
+            List<PanelString> data =  ((IPanelDataSource)card.getItem()).getStringData(displaySettings, card);
+            if(data == null)
+                return;
+            
             GL11.glPushMatrix();
             GL11.glPolygonOffset( -10, -10 );
             GL11.glEnable ( GL11.GL_POLYGON_OFFSET_FILL );
@@ -140,92 +148,30 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
             
             FontRenderer fontRenderer = this.getFontRenderer();
             
-            int rows = 0;
             int maxWidth = 1;
-            String txtOnOff = null;
-            List<String> lines = new ArrayList<String>();  
-            String txtHeat = null;
-            String txtMaxHeat = null;
-            String txtMelting = null;
-            String txtOutput = null;
-            String txtRemains = null;
-            if((panel.displaySettings & TileEntityInfoPanel.DISPLAY_HEAT) > 0)
+            for (PanelString panelString : data)
             {
-                txtHeat = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelHeat"), panel.heat);
-                maxWidth = Math.max(fontRenderer.getStringWidth(txtHeat), maxWidth);
-                lines.add(txtHeat);
-                rows++;
-            }
-            if((panel.displaySettings & TileEntityInfoPanel.DISPLAY_MAXHEAT) > 0)
-            {
-                rows++;
-                txtMaxHeat = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelMaxHeat"), panel.maxHeat);
-                maxWidth = Math.max(fontRenderer.getStringWidth(txtMaxHeat), maxWidth);
-                lines.add(txtMaxHeat);
-            }
-            if((panel.displaySettings & TileEntityInfoPanel.DISPLAY_MELTING) > 0)
-            {
-                rows++;
-                txtMelting = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelMelting"), panel.maxHeat*85/100);
-                maxWidth = Math.max(fontRenderer.getStringWidth(txtMelting), maxWidth);
-                lines.add(txtMelting);
-            }
-            if((panel.displaySettings & TileEntityInfoPanel.DISPLAY_OUTPUT) > 0)
-            {
-                rows++;
-                txtOutput = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelOutput"), panel.output);
-                maxWidth = Math.max(fontRenderer.getStringWidth(txtOutput), maxWidth);
-                lines.add(txtOutput);
-            }
-            
-            if((panel.displaySettings & TileEntityInfoPanel.DISPLAY_TIME) > 0)
-            {
-                int hours = panel.timeLeft / 3600;
-                int minutes = (panel.timeLeft % 3600) / 60;
-                int seconds = panel.timeLeft % 60;
-
-                String time = String.format("%d:%02d:%02d", hours, minutes, seconds);                
-                rows++;
-                txtRemains = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelTimeRemaining"), time);
-                maxWidth = Math.max(fontRenderer.getStringWidth(txtRemains), maxWidth);
-                lines.add(txtRemains);
-            }
-
-            boolean renderRightOnOff = false;
-            int txtColor = 0;
-            int onOffColor = panel.reactorPowered?0x00ff00:0xff0000;;
-            if((panel.displaySettings & TileEntityInfoPanel.DISPLAY_ONOFF) > 0)
-            {
-                if(panel.reactorPowered)
-                    txtOnOff = StatCollector.translateToLocal("msg.nc.InfoPanelOn");
-                else
-                    txtOnOff = StatCollector.translateToLocal("msg.nc.InfoPanelOff");
-                String concatString;
-                if(lines.size()>0)
+                String currentString;
+                if(panelString.textRight != null)
                 {
-                    renderRightOnOff = true;
-                    concatString = lines.get(0)+" "+txtOnOff;
+                    currentString = panelString.textLeft + " "+panelString.textRight;
                 }
                 else
                 {
-                    concatString = txtOnOff;
-                    lines.add(txtOnOff);
-                    txtColor = onOffColor;
-                    rows++;
+                    currentString = panelString.textLeft;
                 }
-                maxWidth = Math.max(fontRenderer.getStringWidth(concatString), maxWidth);
+                maxWidth = Math.max(fontRenderer.getStringWidth(currentString), maxWidth);
             }
             maxWidth+=4;
 
             int lineHeight = fontRenderer.FONT_HEIGHT + 2;
-            int requiredHeight = lineHeight * rows;
+            int requiredHeight = lineHeight * data.size();
             float scaleX = displayWidth/maxWidth;
             float scaleY = displayHeight/requiredHeight;
             float scale = Math.min(scaleX, scaleY);
             GL11.glScalef(scale, -scale, scale);
             GL11.glDepthMask(false);
             
-            int row = 0;
             int offsetX;
             int offsetY;
             
@@ -249,16 +195,17 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
             }
             
             GL11.glDisable(GL11.GL_LIGHTING);
-            if(txtOnOff!=null && renderRightOnOff)
+            
+            int row = 0;
+            for (PanelString panelString : data)
             {
-                    fontRenderer.drawString(txtOnOff, offsetX+realWidth/2-offsetX-fontRenderer.getStringWidth(txtOnOff), 
-                            offsetY - realHeight/2, onOffColor);
-            }
-            for (String line : lines)
-            {
-                fontRenderer.drawString(line, offsetX-realWidth/2, 1+offsetY-realHeight/2 + row * lineHeight, txtColor);
+                fontRenderer.drawString(panelString.textLeft, offsetX-realWidth/2, 1+offsetY-realHeight/2 + row * lineHeight, panelString.colorLeft);
+                if(panelString.textRight  != null)
+                    fontRenderer.drawString(panelString.textRight, offsetX+realWidth/2-offsetX-fontRenderer.getStringWidth(panelString.textRight), 
+                                            offsetY - realHeight/2, panelString.colorRight);
                 row++;
             }
+
             GL11.glEnable(GL11.GL_LIGHTING);
             
             GL11.glDepthMask(true);

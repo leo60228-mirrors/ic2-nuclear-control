@@ -115,6 +115,8 @@ public class NuclearHelper {
     
 	public static TileEntity getReactorAt(World world, int x, int y, int z) 
 	{
+	    if(world == null)
+	        return null;
 		TileEntity entity = world.getBlockTileEntity(x, y, z);
 		if ((getReactorTileEntityClass().isInstance(entity))
 				&& world.getBlockId(x, y, z) == getReactor().itemID
@@ -127,6 +129,8 @@ public class NuclearHelper {
 
 	public static TileEntity getReactorChamberAt(World world, int x, int y, int z) 
 	{
+        if(world == null)
+            return null;
 		TileEntity entity = world.getBlockTileEntity(x, y, z);
 		if ((getReactorChamberTileEntityClass().isInstance(entity))
 				&& world.getBlockId(x, y, z) == getChamber().itemID
@@ -137,6 +141,8 @@ public class NuclearHelper {
 	}
 
 	public static TileEntity getReactorAroundCoord(World world, int x, int y, int z) {
+        if(world == null)
+            return null;
 		ChunkPosition[] around = { 
 				new ChunkPosition(-1, 0, 0),
 				new ChunkPosition( 1, 0, 0),
@@ -155,6 +161,8 @@ public class NuclearHelper {
 
 	public static TileEntity getReactorChamberAroundCoord(World world, int x, int y, int z) 
 	{
+        if(world == null)
+            return null;
 		ChunkPosition[] around = { 
 				new ChunkPosition(-1, 0, 0),
 				new ChunkPosition( 1, 0, 0),
@@ -173,6 +181,8 @@ public class NuclearHelper {
 	
 	public static int getReactorChamberCountAroundCoord(World world, int x, int y, int z) 
 	{
+        if(world == null)
+            return 0;
 		ChunkPosition[] around = { 
 				new ChunkPosition(-1, 0, 0),
 				new ChunkPosition( 1, 0, 0),

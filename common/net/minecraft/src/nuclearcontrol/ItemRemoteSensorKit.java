@@ -40,7 +40,7 @@ public class ItemRemoteSensorKit extends Item implements ITextureProvider
         if(reactor != null)
         {
             ItemStack sensorLocationCard = new ItemStack(mod_IC2NuclearControl.itemSensorLocationCard, 1, 0);
-            ItemSensorLocationCard.setCoordinates(sensorLocationCard, reactor.xCoord, reactor.yCoord, reactor.zCoord);
+            ItemSensorLocationCardBase.setCoordinates(sensorLocationCard, reactor.xCoord, reactor.yCoord, reactor.zCoord);
             entityPlayer.inventory.mainInventory[entityPlayer.inventory.currentItem] = sensorLocationCard;
         	if(!world.isRemote)
         	{

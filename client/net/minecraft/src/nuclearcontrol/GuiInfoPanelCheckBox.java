@@ -6,22 +6,23 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.src.FontRenderer;
 import net.minecraft.src.GuiButton;
 import net.minecraft.src.ic2.api.NetworkHelper;
+import net.minecraft.src.nuclearcontrol.panel.PanelSetting;
 
 public class GuiInfoPanelCheckBox extends GuiButton
 {
-    private int mask;
     private TileEntityInfoPanel panel;
     private boolean checked;
+    private PanelSetting setting;
     
 
-    public GuiInfoPanelCheckBox(int id, int x, int y, int mask, String label, TileEntityInfoPanel panel, FontRenderer renderer)
+    public GuiInfoPanelCheckBox(int id, int x, int y, PanelSetting setting, TileEntityInfoPanel panel, FontRenderer renderer)
     {
-        super(id, x, y, 0, 0, label);
+        super(id, x, y, 0, 0, setting.title);
+        this.setting = setting;
         height  = renderer.FONT_HEIGHT+1;
-        width = renderer.getStringWidth(label)+8;
+        width = renderer.getStringWidth(setting.title)+8;
         this.panel = panel;
-        this.mask = mask;
-        checked = (panel.displaySettings & mask) > 0;
+        checked = (panel.getDisplaySettings() & setting.displayBit) > 0;
     }
 
     @Override
@@ -51,9 +52,9 @@ public class GuiInfoPanelCheckBox extends GuiButton
             checked = !checked;
             int value; 
             if(checked)
-                value = panel.displaySettings | mask;
+                value = panel.getDisplaySettings() | setting.displayBit;
             else
-                value = panel.displaySettings & (~mask);
+                value = panel.getDisplaySettings() & (~setting.displayBit);
             panel.setDisplaySettings(value);
             NetworkHelper.initiateClientTileEntityEvent(panel, value);
             return true;

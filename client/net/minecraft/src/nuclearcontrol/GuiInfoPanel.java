@@ -1,8 +1,13 @@
 package net.minecraft.src.nuclearcontrol;
 
+import java.util.List;
+
 import net.minecraft.src.Container;
 import net.minecraft.src.GuiContainer;
+import net.minecraft.src.ItemStack;
 import net.minecraft.src.StatCollector;
+import net.minecraft.src.nuclearcontrol.panel.IPanelDataSource;
+import net.minecraft.src.nuclearcontrol.panel.PanelSetting;
 
 import org.lwjgl.opengl.GL11;
 
@@ -10,6 +15,7 @@ public class GuiInfoPanel extends GuiContainer
 {
     private String name;
     private ContainerInfoPanel container;
+    private ItemStack prevCard;
 
     public GuiInfoPanel(Container container)
     {
@@ -18,24 +24,31 @@ public class GuiInfoPanel extends GuiContainer
         name = StatCollector.translateToLocal("tile.blockInfoPanel.name");
     }
     
-    @Override
-    public void initGui() {
-        super.initGui();
+    private void initControls()
+    {
+        ItemStack card = container.getSlot(TileEntityInfoPanel.SLOT_CARD).getStack();
+        if((card == null && prevCard == null) || (card!=null  && card.equals(prevCard)))
+            return;
         int h = fontRenderer.FONT_HEIGHT + 1;
         controlList.clear();
-        controlList.add(new GuiInfoPanelCheckBox(0, guiLeft + 32, guiTop + 16, TileEntityInfoPanel.DISPLAY_ONOFF, 
-                StatCollector.translateToLocal("msg.nc.cbInfoPanelOnOff"), container.panel, fontRenderer));
-        controlList.add(new GuiInfoPanelCheckBox(1, guiLeft + 32, guiTop + 16 + h, TileEntityInfoPanel.DISPLAY_HEAT, 
-                StatCollector.translateToLocal("msg.nc.cbInfoPanelHeat"), container.panel, fontRenderer));
-        controlList.add(new GuiInfoPanelCheckBox(2, guiLeft + 32, guiTop + 16 + 2*h, TileEntityInfoPanel.DISPLAY_MAXHEAT, 
-                StatCollector.translateToLocal("msg.nc.cbInfoPanelMaxHeat"), container.panel, fontRenderer));
-        controlList.add(new GuiInfoPanelCheckBox(3, guiLeft + 32, guiTop + 16 + 3*h, TileEntityInfoPanel.DISPLAY_MELTING, 
-                StatCollector.translateToLocal("msg.nc.cbInfoPanelMelting"), container.panel, fontRenderer));
-        
-        controlList.add(new GuiInfoPanelCheckBox(4, guiLeft + 32, guiTop + 16 + 4*h, TileEntityInfoPanel.DISPLAY_OUTPUT, 
-                StatCollector.translateToLocal("msg.nc.cbInfoPanelOutput"), container.panel, fontRenderer));
-        controlList.add(new GuiInfoPanelCheckBox(5, guiLeft + 32, guiTop + 16 + 5*h, TileEntityInfoPanel.DISPLAY_TIME, 
-                StatCollector.translateToLocal("msg.nc.cbInfoPanelTimeRemaining"), container.panel, fontRenderer));
+        prevCard = card;
+        if(card!=null && card.getItem() instanceof IPanelDataSource)
+        {
+            List<PanelSetting> settingsList = ((IPanelDataSource)card.getItem()).getSettingsList();
+            int row = 0;
+            for (PanelSetting panelSetting : settingsList)
+            {
+                controlList.add(new GuiInfoPanelCheckBox(0, guiLeft + 32, guiTop + 16 + h*row, panelSetting, container.panel, fontRenderer));
+                row++;
+            }
+        }
+    }
+    
+    @Override
+    public void initGui() 
+    {
+        super.initGui();
+        initControls();
     };
 
     @Override
@@ -62,4 +75,10 @@ public class GuiInfoPanel extends GuiContainer
         super.mouseMovedOrUp(mouseX, mouseY, which);
     }
 
+    @Override
+    public void updateScreen()
+    {
+        super.updateScreen();
+        initControls();
+    }
 }

@@ -43,6 +43,7 @@ import net.minecraft.src.nuclearcontrol.TileEntityInfoPanelRenderer;
 import net.minecraft.src.nuclearcontrol.TileEntityRemoteThermo;
 import net.minecraft.src.nuclearcontrol.TileEntityRemoteThermoRenderer;
 import net.minecraft.src.nuclearcontrol.Utils.FileHash;
+import net.minecraft.src.nuclearcontrol.panel.IPanelDataSource;
 
 import org.lwjgl.opengl.GL11;
 
@@ -395,12 +396,48 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
 
     @Override
     public void onPacketData(NetworkManager network, String channel, byte[] data)
-    {//used only to get allowed alarms list from server
+    {
         DataInputStream dataStream = new DataInputStream(new ByteArrayInputStream(data));
         try
         {
-            maxAlarmRange = dataStream.readInt();
-            serverAllowedAlarms = new ArrayList<String>(Arrays.asList(dataStream.readUTF().split(",")));
+            short packetType = dataStream.readShort();
+            switch (packetType)
+            {
+                case PACKET_ALARM:
+                    maxAlarmRange = dataStream.readInt();
+                    serverAllowedAlarms = new ArrayList<String>(Arrays.asList(dataStream.readUTF().split(",")));
+                    break;
+                case PACKET_SENSOR:
+                    World world = ModLoader.getMinecraftInstance().theWorld;
+                    int x = dataStream.readInt();
+                    int y = dataStream.readInt();
+                    int z = dataStream.readInt();
+                    TileEntity ent = world.getBlockTileEntity(x, y, z);
+                    if(ent == null || !(ent instanceof TileEntityInfoPanel))
+                    {
+                        return;
+                    }
+                    TileEntityInfoPanel panel = (TileEntityInfoPanel)ent;
+                    ItemStack stack = panel.getStackInSlot(TileEntityInfoPanel.SLOT_CARD);
+                    if(stack == null || !(stack.getItem() instanceof IPanelDataSource))
+                    {
+                        return;
+                    }
+                    IPanelDataSource card = (IPanelDataSource)stack.getItem();
+                    int fieldCount =  dataStream.readShort();
+                    for(int i=0; i<fieldCount; i++)
+                    {
+                        String name = dataStream.readUTF();
+                        int value = dataStream.readInt();
+                        card.networkUpdate(name, value, stack);
+                    }
+                    break;
+    
+                default:
+                    ModLoader.getLogger().log(Level.WARNING, LOG_PREFIX + "Unknown packet type: "+packetType);
+                    break;
+            }
+            
         } catch (IOException e)
         {
             ModLoader.getLogger().log(Level.WARNING, LOG_PREFIX + "Invalid packet: " + e.getMessage());
@@ -439,4 +476,8 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
     {
     }
     
+    public static void setSensorCardField(TileEntityInfoPanel panel,  Map<String, Integer> fields)
+    {
+        
+    }    
 }

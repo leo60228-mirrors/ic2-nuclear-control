@@ -27,6 +27,9 @@ import net.minecraft.src.ic2.api.Items;
 
 public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandler, IConnectionHandler, IPacketHandler
 {
+    protected static final int PACKET_ALARM = 1;
+    protected static final int PACKET_SENSOR = 2;
+
     public static final String LOG_PREFIX = "[IC2NuclearControl] ";
     public static final String MSG_PREFIX = "ic2:nc:c7518eb6:";
     public static final String NETWORK_CHANNEL_NAME = "nuclearControl";

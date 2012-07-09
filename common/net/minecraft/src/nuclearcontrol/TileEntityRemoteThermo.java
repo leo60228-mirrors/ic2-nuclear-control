@@ -395,7 +395,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
         }
         if(inventory[SLOT_CARD]!=null)
         {
-            int[] coordinates = ItemSensorLocationCard.getCoordinates(inventory[SLOT_CARD]);
+            int[] coordinates = ItemSensorLocationCardBase.getCoordinates(inventory[SLOT_CARD]);
             if(coordinates!=null)
             {
                 deltaX = coordinates[0] - xCoord;
@@ -497,7 +497,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
                 }
                 return false;
             case SLOT_CARD:
-                return itemstack.getItem() instanceof ItemSensorLocationCard;
+                return itemstack.getItem() instanceof ItemSensorLocationCardBase;
             default:
                 return  itemstack.isItemEqual(Items.getItem("transformerUpgrade")) ||
                         itemstack.isItemEqual(Items.getItem("energyStorageUpgrade")) ||
