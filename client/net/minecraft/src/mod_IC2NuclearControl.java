@@ -273,6 +273,15 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
         configuration.getOrCreateProperty(key, "locale.en.US", defaultValue);
     }
     
+    private static void setPhraseRename(Configuration configuration, String key, String oldValue, String defaultValue)
+    {
+        Property property = configuration.getOrCreateProperty(key, "locale.en.US", defaultValue);
+        if(oldValue.equals(property.value))
+        {
+            property.value = defaultValue;
+        }
+    }
+    
     public void addNames()
     {
         try
@@ -282,13 +291,13 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
             setPhrase(configuration, "item.ItemToolThermometer.name","Thermometer");
             setPhrase(configuration, "item.ItemToolDigitalThermometer.name", "Digital Thermometer");
             setPhrase(configuration, "item.ItemRemoteSensorKit.name", "Remote Sensor Kit");
-            setPhrase(configuration, "item.ItemSensorLocationCard.name", "Sensor Location Card");
+            setPhraseRename(configuration, "item.ItemSensorLocationCard.name", "Sensor Location Card", "Reactor Sensor Location Card");
             setPhrase(configuration, "item.ItemRangeUpgrade.name", "Range Upgrade");
             setPhrase(configuration, "tile.blockThermalMonitor.name", "Thermal Monitor");
             setPhrase(configuration, "tile.blockIndustrialAlarm.name", "Industrial Alarm");
             setPhrase(configuration, "tile.blockHowlerAlarm.name", "Howler Alarm");
             setPhrase(configuration, "tile.blockRemoteThermo.name", "Remote Thermal Monitor");
-            setPhrase(configuration, "tile.blockInfoPanel.name", "Reactor Information Panel");
+            setPhraseRename(configuration, "tile.blockInfoPanel.name", "Reactor Information Panel", "Industrial Information Panel");
             setPhrase(configuration, "tile.blockInfoPanelExtender.name", "Information Panel Extender");
 
             setPhrase(configuration, "msg.nc.HowlerAlarmSoundRange", "Sound range: %s");
