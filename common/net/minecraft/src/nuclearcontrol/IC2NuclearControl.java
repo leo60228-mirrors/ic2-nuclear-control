@@ -100,7 +100,7 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
 
         Ic2Recipes.addCraftingRecipe(new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_REMOTE_THERMO), new Object[] 
                 {
-                    " F ", " M ", " T ", 
+                    "F", "M", "T", 
                         Character.valueOf('T'), thermalMonitor, 
                         Character.valueOf('M'), Items.getItem("machine"), 
                         Character.valueOf('F'), Items.getItem("frequencyTransmitter")
@@ -145,7 +145,7 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
                 });
         Ic2Recipes.addCraftingRecipe(new ItemStack(itemRangeUpgrade, 1), new Object[] 
                 {
-                    "   ", "CFC", "   ", 
+                    "CFC", 
                         Character.valueOf('C'), Items.getItem("insulatedCopperCableItem"), 
                         Character.valueOf('F'), Items.getItem("frequencyTransmitter")
                 });
