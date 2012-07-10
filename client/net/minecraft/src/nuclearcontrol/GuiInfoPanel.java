@@ -34,8 +34,9 @@ public class GuiInfoPanel extends GuiContainer
         prevCard = card;
         if(card!=null && card.getItem() instanceof IPanelDataSource)
         {
-            List<PanelSetting> settingsList = ((IPanelDataSource)card.getItem()).getSettingsList();
             int row = 0;
+            List<PanelSetting> settingsList = ((IPanelDataSource)card.getItem()).getSettingsList();
+            if(settingsList!=null)
             for (PanelSetting panelSetting : settingsList)
             {
                 controlList.add(new GuiInfoPanelCheckBox(0, guiLeft + 32, guiTop + 16 + h*row, panelSetting, container.panel, fontRenderer));

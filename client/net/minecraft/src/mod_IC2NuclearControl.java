@@ -293,6 +293,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
             setPhrase(configuration, "item.ItemRemoteSensorKit.name", "Remote Sensor Kit");
             setPhraseRename(configuration, "item.ItemSensorLocationCard.name", "Sensor Location Card", "Reactor Sensor Location Card");
             setPhrase(configuration, "item.ItemRangeUpgrade.name", "Range Upgrade");
+            setPhrase(configuration, "item.ItemTimeCard.name", "Time Card");
             setPhrase(configuration, "tile.blockThermalMonitor.name", "Thermal Monitor");
             setPhrase(configuration, "tile.blockIndustrialAlarm.name", "Industrial Alarm");
             setPhrase(configuration, "tile.blockHowlerAlarm.name", "Howler Alarm");

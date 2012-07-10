@@ -46,6 +46,7 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
     public static Item itemToolDigitalThermometer;
     public static Item itemRemoteSensorKit;
     public static Item itemSensorLocationCard;
+    public static Item itemTimeCard;
     public static Item itemRangeUpgrade;
     public static Block blockNuclearControlMain;
     public static int modelId;
@@ -148,6 +149,8 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
                         Character.valueOf('C'), Items.getItem("insulatedCopperCableItem"), 
                         Character.valueOf('F'), Items.getItem("frequencyTransmitter")
                 });
+        Ic2Recipes.addShapelessCraftingRecipe(new ItemStack(itemTimeCard, 1),  
+                Items.getItem("electronicCircuit"), Item.pocketSundial);
         Ic2Recipes.addShapelessCraftingRecipe(new ItemStack(Items.getItem("electronicCircuit").getItem(), 2),  
                 itemSensorLocationCard );
     }
@@ -190,6 +193,9 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
         itemRangeUpgrade = new ItemRangeUpgrade(
                 getIdFor(configuration, "itemRangeUpgrade", 31004, false), 66)
                 .setItemName("ItemRangeUpgrade");
+        itemTimeCard = new ItemTimeCard(
+                getIdFor(configuration, "itemTimeCard", 31005, false), 48)
+                .setItemName("ItemTimeCard");
     }
     
     abstract protected File getConfigFile(String name);

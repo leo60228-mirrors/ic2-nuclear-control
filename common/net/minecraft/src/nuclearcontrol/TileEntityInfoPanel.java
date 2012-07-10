@@ -26,8 +26,11 @@ public class TileEntityInfoPanel extends TileEntity implements
     ITextureHelper, IScreenPart, ISidedInventory, IRotation
 {
     
-    private static final int CARD_TYPE_MAX = 0;
-    // 1 - reactor sensor location card
+    private static final int CARD_TYPE_MAX = 3;
+    // 0 - reactor sensor location card
+    // 1 - time card
+    // 2 - storage sensor location card
+    // 3 - storage array
 
     public static final int BORDER_NONE = 0;
     public static final int BORDER_LEFT = 1;
@@ -245,9 +248,24 @@ public class TileEntityInfoPanel extends TileEntity implements
         }
         prevFacing = facing =  nbttagcompound.getShort("facing");
         if(nbttagcompound.hasKey("dSets"))
-            displaySettings =nbttagcompound.getIntArray("dSets");
+        {
+            int[] dSets =nbttagcompound.getIntArray("dSets");
+            if(dSets.length == displaySettings.length)
+            {
+                displaySettings = dSets;
+            }
+            else
+            {
+                for(int i=0; i<dSets.length; i++)
+                {
+                    displaySettings[i] = dSets[i];
+                }
+            }
+        }
         else
+        {
             displaySettings[0] = nbttagcompound.getInteger("displaySettings");
+        }
         NBTTagList nbttaglist = nbttagcompound.getTagList("Items");
         inventory = new ItemStack[getSizeInventory()];
         for (int i = 0; i < nbttaglist.tagCount(); i++)
@@ -417,7 +435,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         switch (slotIndex)
         {
             case SLOT_CARD:
-                return itemstack.getItem() instanceof ItemSensorLocationCardBase;
+                return itemstack.getItem() instanceof IPanelDataSource;
             default:
                 return itemstack.getItem() instanceof ItemRangeUpgrade; 
         }
