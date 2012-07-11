@@ -31,7 +31,7 @@ public class GuiIC2Thermo extends GuiScreen
         controlList.clear();
         guiLeft = (this.width - xSize) / 2;
         guiTop = (this.height - ySize) / 2;
-        slider = new GuiRemoteThermoSlider(3, guiLeft+12, guiTop + 33, 
+        slider = new GuiRemoteThermoSlider(3, guiLeft+6, guiTop + 33, 
                 StatCollector.translateToLocal("msg.nc.ThermalMonitorSignalAt"), 
                 thermo);
         controlList.add(slider);
@@ -74,7 +74,7 @@ public class GuiIC2Thermo extends GuiScreen
 
     private void drawGuiContainerBackgroundLayer()
     {
-        int texture = mc.renderEngine.getTexture("/img/GUIIndustrialAlarm.png");
+        int texture = mc.renderEngine.getTexture("/img/GUIThermalMonitor.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.renderEngine.bindTexture(texture);
         int left = (width - xSize) / 2;

@@ -20,7 +20,7 @@ public class TileEntityIC2ThermoRenderer extends TileEntitySpecialRenderer
             TileEntityIC2Thermo thermo = (TileEntityIC2Thermo)tileEntity;
             short side = (short)Facing.faceToSide[thermo.getFacing()];
             float var12 = 0.016666668F;
-            int heat = (thermo.getHeatLevel() / 500) * 500;
+            int heat = (thermo.getHeatLevel() / 100) * 100;
             String text = Integer.toString(heat);
             GL11.glTranslatef((float)x, (float)y, (float)z);
             switch (side)

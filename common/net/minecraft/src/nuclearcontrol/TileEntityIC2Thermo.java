@@ -136,14 +136,14 @@ public class TileEntityIC2Thermo extends TileEntity implements
             NetworkHelper.updateTileEntityField(this, "heatLevel");
         }
         prevHeatLevel = heatLevel;
-        mappedHeatLevel = (h / 500) * 500;
+        mappedHeatLevel = (h / 100) * 100;
     }    
 
     public void setHeatLevelWithoutNotify(int h)
     {
     	heatLevel = h;
         prevHeatLevel = heatLevel;
-        mappedHeatLevel = (h/500)*500;
+        mappedHeatLevel = (h/100)*100;
     }
     
     public int getHeatLevel()

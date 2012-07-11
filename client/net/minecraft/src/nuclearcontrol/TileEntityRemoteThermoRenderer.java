@@ -25,7 +25,7 @@ public class TileEntityRemoteThermoRenderer extends TileEntitySpecialRenderer
             TileEntityRemoteThermo thermo = (TileEntityRemoteThermo)tileEntity;
             short side = (short)Facing.faceToSide[thermo.getFacing()];
             float var12 = 0.016666668F;
-            int heat = (thermo.getHeatLevel() / 500) * 500;
+            int heat = (thermo.getHeatLevel() / 100) * 100;
             String text = Integer.toString(heat);
             GL11.glTranslatef((float)x, (float)y, (float)z);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, ModLoader.getMinecraftInstance().renderEngine.getTexture("/img/texture_thermo.png"));
