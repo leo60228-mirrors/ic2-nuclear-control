@@ -2,13 +2,15 @@ package net.minecraft.src.nuclearcontrol;
 
 import net.minecraft.src.Container;
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.ICrafting;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.Slot;
 
 public class ContainerRemoteThermo extends Container
 {
-    TileEntityRemoteThermo remoteThermo;
-    EntityPlayer player;
+    public TileEntityRemoteThermo remoteThermo;
+    private EntityPlayer player;
+    private int lastEnergy = -1;
 
     public ContainerRemoteThermo(EntityPlayer player, TileEntityRemoteThermo remoteThermo)
     {
@@ -41,6 +43,32 @@ public class ContainerRemoteThermo extends Container
         }
     }
 
+
+    @Override
+    public void updateCraftingResults()
+    {
+        super.updateCraftingResults();
+        int energy = remoteThermo.energy;
+        for (int i = 0; i < crafters.size(); i++)
+        {
+            ICrafting crafting = (ICrafting)crafters.get(i);
+
+            if (lastEnergy != energy)
+            {
+                crafting.updateCraftingInventoryInfo(this, 0, energy);
+            }
+        }
+        lastEnergy = energy;
+    }
+    
+    public void updateProgressBar(int type, int value) 
+    {
+        if(type == 0)
+        {
+            remoteThermo.setEnergy(value);
+        }
+    }
+    
     @Override
     public boolean canInteractWith(EntityPlayer var1)
     {

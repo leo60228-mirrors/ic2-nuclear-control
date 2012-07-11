@@ -39,7 +39,6 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     public int tier;
     public int rotation;
     public int prevRotation;
-    private int prevEnergy;
     public int energy;
     private boolean addedToEnergyNet;
     private ItemStack inventory[];
@@ -58,7 +57,6 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
         energy = 0;
         prevRotation = 0;
         rotation = 0;
-        prevEnergy = 0;
     }
     
     @Override
@@ -66,7 +64,6 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     {
         List<String> list = super.getNetworkedFields();
         list.add("maxStorage");
-        list.add("energy");
         list.add("tier");
         list.add("maxPacketSize");
         list.add("rotation");
@@ -123,11 +120,6 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     public void setEnergy(int value)
     {
         energy = value;
-        if(energy!=prevEnergy)
-        {
-            NetworkHelper.updateTileEntityField(this, "energy");
-        }
-        prevEnergy = energy;
     }
 
     public void setTier(int value)
@@ -335,7 +327,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
             itemStack.stackSize = getInventoryStackLimit();
         }
     }
-
+    
     @Override
     public String getInvName()
     {
@@ -570,4 +562,5 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     {
         return rotation;
     }
+    
 }
