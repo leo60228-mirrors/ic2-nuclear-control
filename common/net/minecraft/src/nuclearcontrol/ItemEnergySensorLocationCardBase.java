@@ -21,7 +21,7 @@ public abstract class ItemEnergySensorLocationCardBase extends Item implements I
     public static final int DISPLAY_FREE = 2;
     public static final int DISPLAY_STORAGE = 4;
     
-    public static final int CARD_TYPE = 1;
+    public static final int CARD_TYPE = 2;
     
     protected void setField(String name, int value, NBTTagCompound nbtTagCompound, TileEntityInfoPanel panel, Map<String, Integer> updateSet)
     {

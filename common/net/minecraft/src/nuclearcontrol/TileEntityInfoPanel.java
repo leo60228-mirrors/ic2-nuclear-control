@@ -180,7 +180,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         screen = null;
         card = null;
         init = false;
-        tickRate = 20;
+        tickRate = IC2NuclearControl.screenRefreshPeriod;
         updateTicker = tickRate;
         displaySettings = new int[CARD_TYPE_MAX+1];
         for(int i=0; i<=CARD_TYPE_MAX; i++)

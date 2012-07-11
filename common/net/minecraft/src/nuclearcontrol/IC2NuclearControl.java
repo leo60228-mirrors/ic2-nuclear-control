@@ -58,7 +58,8 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
     public static int maxAlarmRange;
     public static List<String> availableAlarms;
     public static int remoteThermalMonitorEnergyConsumption;
-    public static ScreenManager screenManager = new ScreenManager(); 
+    public static ScreenManager screenManager = new ScreenManager();
+    public static int screenRefreshPeriod;
     
 
     
