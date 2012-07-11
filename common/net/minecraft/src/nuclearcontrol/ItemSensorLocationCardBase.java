@@ -129,10 +129,11 @@ public abstract class ItemSensorLocationCardBase extends Item implements ITextur
         }
         else
         {
-            setField("activeData", true, nbtTagCompound, panel, updateSet);
             TileEntity reactor = NuclearHelper.getReactorAt(panel.worldObj, 
                     coordinates[0], coordinates[1], coordinates[2]);
-            if(reactor != null){
+            if(reactor != null)
+            {
+                setField("activeData", true, nbtTagCompound, panel, updateSet);
                 setField("heat", NuclearHelper.getReactorHeat(reactor), nbtTagCompound, panel, updateSet);
                 setField("maxHeat", NuclearHelper.getMaxHeat(reactor), nbtTagCompound, panel, updateSet);
                 setField("reactorPowered", NuclearHelper.getReactorIsProducingEnergy(reactor), nbtTagCompound, panel, updateSet);
@@ -151,6 +152,10 @@ public abstract class ItemSensorLocationCardBase extends Item implements ITextur
                     }
                 }
                 setField("timeLeft", timeLeft, nbtTagCompound, panel, updateSet);
+            }
+            else
+            {
+                setField("activeData", false, nbtTagCompound, panel, updateSet);
             }
         }
         if(!updateSet.isEmpty())
