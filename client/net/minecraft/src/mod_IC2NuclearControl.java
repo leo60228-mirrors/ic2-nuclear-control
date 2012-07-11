@@ -291,7 +291,9 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
             setPhrase(configuration, "item.ItemToolThermometer.name","Thermometer");
             setPhrase(configuration, "item.ItemToolDigitalThermometer.name", "Digital Thermometer");
             setPhrase(configuration, "item.ItemRemoteSensorKit.name", "Remote Sensor Kit");
+            setPhrase(configuration, "item.ItemEnergySensorKit.name", "Energy Sensor Kit");
             setPhraseRename(configuration, "item.ItemSensorLocationCard.name", "Sensor Location Card", "Reactor Sensor Location Card");
+            setPhrase(configuration, "item.ItemEnergySensorLocationCard.name", "Energy Sensor Location Card");
             setPhrase(configuration, "item.ItemRangeUpgrade.name", "Range Upgrade");
             setPhrase(configuration, "item.ItemTimeCard.name", "Time Card");
             setPhrase(configuration, "tile.blockThermalMonitor.name", "Thermal Monitor");
@@ -317,12 +319,20 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
             setPhrase(configuration, "msg.nc.InfoPanelOutput", "Output: %sEU/t");
             setPhrase(configuration, "msg.nc.InfoPanelTimeRemaining", "Remaining: %s");
 
+            setPhrase(configuration, "msg.nc.InfoPanelEnergy", "Energy: %s");
+            setPhrase(configuration, "msg.nc.InfoPanelEnergyFree", "Free: %s");
+            setPhrase(configuration, "msg.nc.InfoPanelEnergyStorage", "Storage: %s");
+            
             setPhrase(configuration, "msg.nc.cbInfoPanelOnOff", "On/Off status");
             setPhrase(configuration, "msg.nc.cbInfoPanelHeat", "Heat level");
             setPhrase(configuration, "msg.nc.cbInfoPanelMaxHeat", "Max heat");
             setPhrase(configuration, "msg.nc.cbInfoPanelMelting", "Melting temp");
             setPhrase(configuration, "msg.nc.cbInfoPanelOutput", "Output (EU/t)");
             setPhrase(configuration, "msg.nc.cbInfoPanelTimeRemaining", "Time to cycle end");
+
+            setPhrase(configuration, "msg.nc.cbInfoPanelEnergyCurrent", "Energy");
+            setPhrase(configuration, "msg.nc.cbInfoPanelEnergyStorage", "Storage");
+            setPhrase(configuration, "msg.nc.cbInfoPanelEnergyFree", "Free");
             
             for(Map.Entry<String, Map<String, Property>> category : configuration.categories.entrySet())
             {

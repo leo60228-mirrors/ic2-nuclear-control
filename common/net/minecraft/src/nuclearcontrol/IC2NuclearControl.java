@@ -45,7 +45,9 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
     public static Item itemToolThermometer;
     public static Item itemToolDigitalThermometer;
     public static Item itemRemoteSensorKit;
+    public static Item itemEnergySensorKit;
     public static Item itemSensorLocationCard;
+    public static Item itemEnergySensorLocationCard;
     public static Item itemTimeCard;
     public static Item itemRangeUpgrade;
     public static Block blockNuclearControlMain;
@@ -143,6 +145,13 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
                         Character.valueOf('D'), digitalThermometer, 
                         Character.valueOf('F'), Items.getItem("frequencyTransmitter")
                 });
+        Ic2Recipes.addCraftingRecipe(new ItemStack(itemEnergySensorKit, 1), new Object[] 
+                {
+                    "  F", " D ", "P  ", 
+                        Character.valueOf('P'), Item.paper, 
+                        Character.valueOf('D'), Items.getItem("ecMeter"), 
+                        Character.valueOf('F'), Items.getItem("frequencyTransmitter")
+                });
         Ic2Recipes.addCraftingRecipe(new ItemStack(itemRangeUpgrade, 1), new Object[] 
                 {
                     "CFC", 
@@ -153,6 +162,8 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
                 Items.getItem("electronicCircuit"), Item.pocketSundial);
         Ic2Recipes.addShapelessCraftingRecipe(new ItemStack(Items.getItem("electronicCircuit").getItem(), 2),  
                 itemSensorLocationCard );
+        Ic2Recipes.addShapelessCraftingRecipe(new ItemStack(Items.getItem("electronicCircuit").getItem(), 2),  
+                itemEnergySensorLocationCard );
     }
     
     protected static int getIdFor(Configuration configuration, String name, int i, boolean block)
@@ -196,6 +207,12 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
         itemTimeCard = new ItemTimeCard(
                 getIdFor(configuration, "itemTimeCard", 31005, false), 48)
                 .setItemName("ItemTimeCard");
+        itemEnergySensorKit = new ItemEnergySensorKit(
+                getIdFor(configuration, "itemEnergySensorKit", 31006, false), 65)
+                .setItemName("ItemEnergySensorKit");
+        itemEnergySensorLocationCard = new ItemEnergySensorLocationCard(
+                getIdFor(configuration, "itemEnergySensorLocationCard", 31007, false), 49)
+                .setItemName("ItemEnergySensorLocationCard");
     }
     
     abstract protected File getConfigFile(String name);
