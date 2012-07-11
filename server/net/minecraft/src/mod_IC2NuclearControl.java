@@ -66,6 +66,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
         alarmRange = new Integer(configuration.getOrCreateIntProperty("alarmRange", Configuration.CATEGORY_GENERAL, 64).value).intValue();
         maxAlarmRange = new Integer(configuration.getOrCreateIntProperty("maxAlarmRange", Configuration.CATEGORY_GENERAL, 128).value).intValue();
         allowedAlarms = configuration.getOrCreateProperty("allowedAlarms", Configuration.CATEGORY_GENERAL, "default,sci-fi").value.replaceAll(" ", "");
+        remoteThermalMonitorEnergyConsumption = new Integer(configuration.getOrCreateIntProperty("remoteThermalMonitorEnergyConsumption", Configuration.CATEGORY_GENERAL, 1).value).intValue();
         SMPMaxAlarmRange = 256;
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityIC2Thermo.class, "IC2Thermo");
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityHowlerAlarm.class, "IC2HowlerAlarm");

@@ -100,6 +100,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
         registerBlocks();
         addNames();
         importSound(configuration);
+        remoteThermalMonitorEnergyConsumption = new Integer(configuration.getOrCreateIntProperty("remoteThermalMonitorEnergyConsumption", Configuration.CATEGORY_GENERAL, 1).value).intValue();
         TileEntityIC2ThermoRenderer renderThermalMonitor = new TileEntityIC2ThermoRenderer();
         TileEntityRemoteThermoRenderer renderRemoteThermo = new TileEntityRemoteThermoRenderer();
         TileEntityInfoPanelRenderer renderInfoPanel = new TileEntityInfoPanelRenderer(); 

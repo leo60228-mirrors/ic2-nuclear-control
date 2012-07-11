@@ -85,7 +85,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
         onInventoryChanged();
 
         int fire;
-        if(energy > 0)
+        if(energy >= IC2NuclearControl.remoteThermalMonitorEnergyConsumption)
         {
             TileEntity reactor = NuclearHelper.getReactorAt(worldObj, xCoord+deltaX, yCoord+deltaY, zCoord+deltaZ);
             if(reactor != null){
@@ -175,9 +175,10 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     {
         if (!worldObj.isRemote)
         {
-            if(energy>0)
+            int consumption = IC2NuclearControl.remoteThermalMonitorEnergyConsumption; 
+            if(energy>=consumption)
             {
-                energy--;
+                energy-=consumption;
             }
             if(inventory[SLOT_CHARGER]!= null)
             {
