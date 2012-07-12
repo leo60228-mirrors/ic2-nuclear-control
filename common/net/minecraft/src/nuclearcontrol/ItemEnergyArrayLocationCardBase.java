@@ -122,6 +122,8 @@ public abstract class ItemEnergyArrayLocationCardBase extends Item implements IT
         for (ItemStack card : cards)
         {
             int[] coordinates =  ItemEnergySensorLocationCard.getCoordinates(card);
+            if(coordinates == null)
+                continue;
             nbtTagCompound.setInteger(String.format("_%dx", cardCount), coordinates[0]);
             nbtTagCompound.setInteger(String.format("_%dy", cardCount), coordinates[1]);
             nbtTagCompound.setInteger(String.format("_%dz", cardCount), coordinates[2]);
