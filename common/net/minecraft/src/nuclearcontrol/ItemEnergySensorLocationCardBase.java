@@ -44,8 +44,9 @@ public abstract class ItemEnergySensorLocationCardBase extends Item implements I
         super(i);
         setIconIndex(iconIndex);
         setMaxStackSize(1);
+        canRepair = false;
     }
-
+    
     @Override
     public boolean isDamageable()
     {
@@ -109,29 +110,31 @@ public abstract class ItemEnergySensorLocationCardBase extends Item implements I
         if(coordinates == null)
         {
             setField("activeData", false, nbtTagCompound, panel, updateSet);
-            return;
-        }
-        int dx = coordinates[0] - panel.xCoord;
-        int dy = coordinates[1] - panel.yCoord;
-        int dz = coordinates[2] - panel.zCoord;
-        if(Math.abs(dx) > range || 
-            Math.abs(dy) > range || 
-            Math.abs(dz) > range)
-        {
-            setField("activeData", false, nbtTagCompound, panel, updateSet);
         }
         else
         {
-            TileEntity storage = EnergyStorageHelper.getStorageAt(panel.worldObj, 
-                    coordinates[0], coordinates[1], coordinates[2]);
-            if(storage != null){
-                setField("activeData", true, nbtTagCompound, panel, updateSet);
-                setField("energy", EnergyStorageHelper.getStorageEnergy(storage), nbtTagCompound, panel, updateSet);
-                setField("maxStorage", EnergyStorageHelper.getStorageMaxStorage(storage), nbtTagCompound, panel, updateSet);
+            int dx = coordinates[0] - panel.xCoord;
+            int dy = coordinates[1] - panel.yCoord;
+            int dz = coordinates[2] - panel.zCoord;
+            if(Math.abs(dx) > range || 
+                Math.abs(dy) > range || 
+                Math.abs(dz) > range)
+            {
+                setField("activeData", false, nbtTagCompound, panel, updateSet);
             }
             else
             {
-                setField("activeData", false, nbtTagCompound, panel, updateSet);
+                TileEntity storage = EnergyStorageHelper.getStorageAt(panel.worldObj, 
+                        coordinates[0], coordinates[1], coordinates[2]);
+                if(storage != null){
+                    setField("activeData", true, nbtTagCompound, panel, updateSet);
+                    setField("energy", EnergyStorageHelper.getStorageEnergy(storage), nbtTagCompound, panel, updateSet);
+                    setField("maxStorage", EnergyStorageHelper.getStorageMaxStorage(storage), nbtTagCompound, panel, updateSet);
+                }
+                else
+                {
+                    setField("activeData", false, nbtTagCompound, panel, updateSet);
+                }
             }
         }
         if(!updateSet.isEmpty())

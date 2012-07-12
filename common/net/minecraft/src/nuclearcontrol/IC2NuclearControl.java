@@ -8,6 +8,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import net.minecraft.src.Block;
+import net.minecraft.src.CraftingManager;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
@@ -48,6 +49,7 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
     public static Item itemEnergySensorKit;
     public static Item itemSensorLocationCard;
     public static Item itemEnergySensorLocationCard;
+    public static Item itemEnergyArrayLocationCard;
     public static Item itemTimeCard;
     public static Item itemRangeUpgrade;
     public static Block blockNuclearControlMain;
@@ -166,6 +168,7 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
                 itemSensorLocationCard );
         Ic2Recipes.addShapelessCraftingRecipe(new ItemStack(Items.getItem("electronicCircuit").getItem(), 2),  
                 itemEnergySensorLocationCard );
+        CraftingManager.getInstance().getRecipeList().add(new StorageArrayRecipe());
     }
     
     protected static int getIdFor(Configuration configuration, String name, int i, boolean block)
@@ -215,6 +218,9 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
         itemEnergySensorLocationCard = new ItemEnergySensorLocationCard(
                 getIdFor(configuration, "itemEnergySensorLocationCard", 31007, false), 49)
                 .setItemName("ItemEnergySensorLocationCard");
+        itemEnergyArrayLocationCard = new ItemEnergyArrayLocationCard(
+                getIdFor(configuration, "itemEnergyArrayLocationCard", 31008, false), 51)
+                .setItemName("ItemEnergyArrayLocationCard");
     }
     
     abstract protected File getConfigFile(String name);

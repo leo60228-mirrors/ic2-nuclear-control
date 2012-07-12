@@ -6,10 +6,10 @@ import net.minecraft.src.ItemStack;
 import net.minecraft.src.nuclearcontrol.panel.PanelSetting;
 import net.minecraft.src.nuclearcontrol.panel.PanelString;
 
-public class ItemEnergySensorLocationCard extends ItemEnergySensorLocationCardBase
+public class ItemEnergyArrayLocationCard extends ItemEnergyArrayLocationCardBase
 {
 
-    public ItemEnergySensorLocationCard(int i, int iconIndex)
+    public ItemEnergyArrayLocationCard(int i, int iconIndex)
     {
         super(i, iconIndex);
     }

@@ -51,6 +51,7 @@ public abstract class ItemSensorLocationCardBase extends Item implements ITextur
         super(i);
         setIconIndex(iconIndex);
         setMaxStackSize(1);
+        canRepair = false;
     }
 
     @Override
