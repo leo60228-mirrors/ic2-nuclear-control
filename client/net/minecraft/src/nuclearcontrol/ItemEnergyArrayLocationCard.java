@@ -1,5 +1,7 @@
 package net.minecraft.src.nuclearcontrol;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,6 +42,10 @@ public class ItemEnergyArrayLocationCard extends ItemEnergyArrayLocationCardBase
         boolean showEnergy = (displaySettings & DISPLAY_ENERGY) > 0;
         boolean showFree = (displaySettings & DISPLAY_FREE) > 0;
         boolean showStorage = (displaySettings & DISPLAY_STORAGE) > 0;
+        DecimalFormat formatter = new DecimalFormat("#,###.###");
+        DecimalFormatSymbols smb = new DecimalFormatSymbols();
+        smb.setGroupingSeparator(' ');
+        formatter.setDecimalFormatSymbols(smb);
         int cardCount =  getCardCount(itemStack);
         for(int i=0; i<cardCount; i++)
         {
@@ -56,19 +62,19 @@ public class ItemEnergyArrayLocationCard extends ItemEnergyArrayLocationCardBase
                 if(showEnergy)
                 {
                     line = new PanelString();
-                    line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyN"), i+1, energy);
+                    line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyN"), i+1, formatter.format(energy));
                     result.add(line);
                 }
                 if(showFree)
                 {
                     line = new PanelString();
-                    line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyFreeN"), i+1, storage - energy);
+                    line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyFreeN"), i+1, formatter.format(storage - energy));
                     result.add(line);
                 }
                 if(showStorage)
                 {
                     line = new PanelString();
-                    line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyStorageN"), i+1, storage);
+                    line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyStorageN"), i+1, formatter.format(storage));
                     result.add(line);
                 }
             }
@@ -78,19 +84,19 @@ public class ItemEnergyArrayLocationCard extends ItemEnergyArrayLocationCardBase
             if(showEnergy)
             {
                 line = new PanelString();
-                line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergy"), totalEnergy);
+                line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergy"), formatter.format(totalEnergy));
                 result.add(line);
             }
             if(showFree)
             {
                 line = new PanelString();
-                line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyFree"), totalStorage - totalEnergy);
+                line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyFree"), formatter.format(totalStorage - totalEnergy));
                 result.add(line);
             }
             if(showStorage)
             {
                 line = new PanelString();
-                line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyStorage"), totalStorage);
+                line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyStorage"), formatter.format(totalStorage));
                 result.add(line);
             }
         }

@@ -1,5 +1,7 @@
 package net.minecraft.src.nuclearcontrol;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,22 +39,26 @@ public class ItemEnergySensorLocationCard extends ItemEnergySensorLocationCardBa
         PanelString line;
         int energy =  nbtTagCompound.getInteger("energy");
         int storage =  nbtTagCompound.getInteger("maxStorage");
+        DecimalFormat formatter = new DecimalFormat("#,###.###");
+        DecimalFormatSymbols smb = new DecimalFormatSymbols();
+        smb.setGroupingSeparator(' ');
+        formatter.setDecimalFormatSymbols(smb);
         if((displaySettings & DISPLAY_ENERGY) > 0)
         {
             line = new PanelString();
-            line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergy"), energy);
+            line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergy"), formatter.format(energy));
             result.add(line);
         }
         if((displaySettings & DISPLAY_FREE) > 0)
         {
             line = new PanelString();
-            line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyFree"), storage - energy);
+            line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyFree"), formatter.format(storage - energy));
             result.add(line);
         }
         if((displaySettings & DISPLAY_STORAGE) > 0)
         {
             line = new PanelString();
-            line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyStorage"), storage);
+            line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyStorage"), formatter.format(storage));
             result.add(line);
         }
         return result;

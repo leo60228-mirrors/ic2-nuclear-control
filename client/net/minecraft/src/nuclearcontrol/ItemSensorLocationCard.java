@@ -1,5 +1,7 @@
 package net.minecraft.src.nuclearcontrol;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,31 +34,35 @@ public class ItemSensorLocationCard extends ItemSensorLocationCardBase
         boolean activeData = nbtTagCompound.getInteger("activeData")==1;
         if(!activeData)
             return null;
+        DecimalFormat formatter = new DecimalFormat("#,###.###");
+        DecimalFormatSymbols smb = new DecimalFormatSymbols();
+        smb.setGroupingSeparator(' ');
+        formatter.setDecimalFormatSymbols(smb);
         List<PanelString> result = new LinkedList<PanelString>();
         String text;
         PanelString line;
         if((displaySettings & DISPLAY_HEAT) > 0)
         {
             line = new PanelString();
-            line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelHeat"), nbtTagCompound.getInteger("heat"));
+            line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelHeat"), formatter.format(nbtTagCompound.getInteger("heat")));
             result.add(line);
         }
         if((displaySettings & DISPLAY_MAXHEAT) > 0)
         {
             line = new PanelString();
-            line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelMaxHeat"), nbtTagCompound.getInteger("maxHeat"));
+            line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelMaxHeat"), formatter.format(nbtTagCompound.getInteger("maxHeat")));
             result.add(line);
         }
         if((displaySettings & DISPLAY_MELTING) > 0)
         {
             line = new PanelString();
-            line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelMelting"), nbtTagCompound.getInteger("maxHeat")*85/100);
+            line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelMelting"), formatter.format(nbtTagCompound.getInteger("maxHeat")*85/100));
             result.add(line);
         }
         if((displaySettings & DISPLAY_OUTPUT) > 0)
         {
             line = new PanelString();
-            line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelOutput"), nbtTagCompound.getInteger("output"));
+            line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelOutput"), formatter.format(nbtTagCompound.getInteger("output")));
             result.add(line);
         }
         int timeLeft = nbtTagCompound.getInteger("timeLeft");
