@@ -97,6 +97,7 @@ public class ItemSensorLocationCard extends ItemSensorLocationCardBase
                 line = new PanelString();
                 line.textLeft = text;
                 line.colorLeft = txtColor;
+                result.add(line);
             }
         }        
         return result;
