@@ -23,6 +23,7 @@ public abstract class ItemEnergyArrayLocationCardBase extends Item implements IT
     public static final int DISPLAY_STORAGE = 4;
     public static final int DISPLAY_EACH = 8;
     public static final int DISPLAY_TOTAL = 16;
+    public static final int DISPLAY_PERCENTAGE = 32;    
     
     public static final int CARD_TYPE = 3;
     

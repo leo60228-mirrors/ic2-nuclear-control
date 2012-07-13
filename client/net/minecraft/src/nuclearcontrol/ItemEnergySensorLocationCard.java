@@ -61,6 +61,12 @@ public class ItemEnergySensorLocationCard extends ItemEnergySensorLocationCardBa
             line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyStorage"), formatter.format(storage));
             result.add(line);
         }
+        if((displaySettings & DISPLAY_PERCENTAGE) > 0)
+        {
+            line = new PanelString();
+            line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyPercentage"), formatter.format(storage==0? 100:(energy*100/storage)));
+            result.add(line);
+        }
         return result;
     }
 
@@ -71,6 +77,7 @@ public class ItemEnergySensorLocationCard extends ItemEnergySensorLocationCardBa
         result.add(new PanelSetting(StatCollector.translateToLocal("msg.nc.cbInfoPanelEnergyCurrent"), DISPLAY_ENERGY, CARD_TYPE));
         result.add(new PanelSetting(StatCollector.translateToLocal("msg.nc.cbInfoPanelEnergyStorage"), DISPLAY_STORAGE, CARD_TYPE));
         result.add(new PanelSetting(StatCollector.translateToLocal("msg.nc.cbInfoPanelEnergyFree"), DISPLAY_FREE, CARD_TYPE));
+        result.add(new PanelSetting(StatCollector.translateToLocal("msg.nc.cbInfoPanelEnergyPercentage"), DISPLAY_PERCENTAGE, CARD_TYPE));
         return result;
     }
 

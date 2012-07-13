@@ -325,10 +325,12 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
             setPhrase(configuration, "msg.nc.InfoPanelEnergy", "Energy: %s");
             setPhrase(configuration, "msg.nc.InfoPanelEnergyFree", "Free: %s");
             setPhrase(configuration, "msg.nc.InfoPanelEnergyStorage", "Storage: %s");
+            setPhrase(configuration, "msg.nc.InfoPanelEnergyPercentage", "Fill: %s%%");
             
             setPhrase(configuration, "msg.nc.InfoPanelEnergyN", "#%d Energy: %s");
             setPhrase(configuration, "msg.nc.InfoPanelEnergyFreeN", "#%d Free: %s");
             setPhrase(configuration, "msg.nc.InfoPanelEnergyStorageN", "#%d Storage: %s");
+            setPhrase(configuration, "msg.nc.InfoPanelEnergyPercentageN", "#%d Fill: %s%%");
             
             setPhrase(configuration, "msg.nc.cbInfoPanelOnOff", "On/Off status");
             setPhrase(configuration, "msg.nc.cbInfoPanelHeat", "Heat level");
@@ -342,6 +344,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
             setPhrase(configuration, "msg.nc.cbInfoPanelEnergyFree", "Free");
             setPhrase(configuration, "msg.nc.cbInfoPanelEnergyEach", "Each card info");
             setPhrase(configuration, "msg.nc.cbInfoPanelEnergyTotal", "Summary");
+            setPhrase(configuration, "msg.nc.cbInfoPanelEnergyPercentage", "Fill percentage");
             setPhrase(configuration, "msg.nc.EnergyCardQuantity", "Cards quantity: %d");
             
             

@@ -20,6 +20,7 @@ public abstract class ItemEnergySensorLocationCardBase extends Item implements I
     public static final int DISPLAY_ENERGY = 1;
     public static final int DISPLAY_FREE = 2;
     public static final int DISPLAY_STORAGE = 4;
+    public static final int DISPLAY_PERCENTAGE = 8;
     
     public static final int CARD_TYPE = 2;
     
