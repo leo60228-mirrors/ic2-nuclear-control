@@ -17,7 +17,7 @@ public class GuiIC2Thermo extends GuiScreen
     private int xSize = 191;
     private int ySize = 64;
     private String name;
-
+    
     public GuiIC2Thermo(TileEntityIC2Thermo tileentityic2thermo)
     {
         super();
@@ -89,6 +89,10 @@ public class GuiIC2Thermo extends GuiScreen
         if((which == 0 || which == 1) && slider.dragging )
         {
             slider.mouseReleased(mouseX, mouseY);
+        }
+        else
+        {
+            slider.checkMouseWheel(mouseX, mouseY);
         }
     }
     

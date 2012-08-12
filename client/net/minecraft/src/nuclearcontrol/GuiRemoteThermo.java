@@ -70,6 +70,10 @@ public class GuiRemoteThermo extends GuiContainer
         {
             slider.mouseReleased(mouseX, mouseY);
         }
+        else
+        {
+            slider.checkMouseWheel(mouseX, mouseY);
+        }
     }
 
 }

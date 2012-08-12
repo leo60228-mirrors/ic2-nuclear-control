@@ -4,6 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.src.GuiButton;
 import net.minecraft.src.ic2.api.NetworkHelper;
 
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 public class GuiRemoteThermoSlider extends GuiButton
@@ -19,7 +21,6 @@ public class GuiRemoteThermoSlider extends GuiButton
     private float effectiveWidth;
     private double sliderValueStep;
     
-
     public GuiRemoteThermoSlider(int id, int x, int y, String label, TileEntityIC2Thermo thermo)
     {
         super(id, x, y, 181, 16, label);
@@ -32,20 +33,41 @@ public class GuiRemoteThermoSlider extends GuiButton
         sliderValueStep = HEAT_STEP/TEMP_RANGE;
     }
     
+    public void checkMouseWheel(int mouseX, int mouseY)
+    {
+        boolean isHover = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+        if(isHover)
+        {
+            int delta = Mouse.getEventDWheel();
+            if (delta != 0)
+            {
+                int multiplier = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)?1:3;
+                if (delta > 0)
+                {
+                    setSliderPos(xPosition + 1, multiplier);
+                }
+                else
+                {
+                    setSliderPos(xPosition + width - 1, multiplier);
+                }
+            }
+        }
+    }
+    
     private int getNormalizedHeatLevel()
     {
         return ((int)Math.floor(TEMP_RANGE * sliderValue))/100*100;
     }
 
-    private void setSliderPos(int targetX)
+    private void setSliderPos(int targetX, int multiplier)
     {
         if(targetX < xPosition + ARROW_WIDTH)//left arrow
         {
-            sliderValue -= sliderValueStep;
+            sliderValue -= sliderValueStep*multiplier;
         }
         else if(targetX > xPosition + width - ARROW_WIDTH)// right arrow
         {
-            sliderValue += sliderValueStep;
+            sliderValue += sliderValueStep*multiplier;
         }
         else
         {
@@ -76,7 +98,7 @@ public class GuiRemoteThermoSlider extends GuiButton
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             if (dragging && (targetX >= xPosition + ARROW_WIDTH) && (targetX <= xPosition + width - ARROW_WIDTH))
             {
-                setSliderPos(targetX);
+                setSliderPos(targetX, 1);
             }
             drawTexturedModalRect(xPosition + ARROW_WIDTH + (int)(sliderValue * effectiveWidth), yPosition, 0, 166, 8, 16);
             minecraft.fontRenderer.drawString(displayString, xPosition, yPosition - 12, 0x404040);
@@ -88,7 +110,7 @@ public class GuiRemoteThermoSlider extends GuiButton
     {
         if (super.mousePressed(minecraft, targetX, j))
         {
-            setSliderPos(targetX);
+            setSliderPos(targetX, 1);
             dragging = true;
             return true;
         }
