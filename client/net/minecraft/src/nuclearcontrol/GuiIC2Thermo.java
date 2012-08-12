@@ -14,7 +14,7 @@ public class GuiIC2Thermo extends GuiScreen
     private GuiRemoteThermoSlider slider;
     private int guiLeft;
     private int guiTop;
-    private int xSize = 131;
+    private int xSize = 191;
     private int ySize = 64;
     private String name;
 
@@ -31,7 +31,7 @@ public class GuiIC2Thermo extends GuiScreen
         controlList.clear();
         guiLeft = (this.width - xSize) / 2;
         guiTop = (this.height - ySize) / 2;
-        slider = new GuiRemoteThermoSlider(3, guiLeft+6, guiTop + 33, 
+        slider = new GuiRemoteThermoSlider(3, guiLeft+5, guiTop + 33, 
                 StatCollector.translateToLocal("msg.nc.ThermalMonitorSignalAt"), 
                 thermo);
         controlList.add(slider);

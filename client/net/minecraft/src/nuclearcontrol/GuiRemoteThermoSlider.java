@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 public class GuiRemoteThermoSlider extends GuiButton
 {
     private static final int ARROW_WIDTH = 6;
-    private static final float TEMP_RANGE = 14500;
+    private static final float TEMP_RANGE = 16000;
     private static final int HEAT_STEP = 100;
 
     public float sliderValue;
@@ -22,7 +22,7 @@ public class GuiRemoteThermoSlider extends GuiButton
 
     public GuiRemoteThermoSlider(int id, int x, int y, String label, TileEntityIC2Thermo thermo)
     {
-        super(id, x, y, 119, 16, label);
+        super(id, x, y, 181, 16, label);
         this.thermo = thermo;
         dragging = false;
         this.label = label;
@@ -78,7 +78,7 @@ public class GuiRemoteThermoSlider extends GuiButton
             {
                 setSliderPos(targetX);
             }
-            drawTexturedModalRect(xPosition + ARROW_WIDTH + (int)(sliderValue * effectiveWidth), yPosition, 176, 14, 8, 16);
+            drawTexturedModalRect(xPosition + ARROW_WIDTH + (int)(sliderValue * effectiveWidth), yPosition, 0, 166, 8, 16);
             minecraft.fontRenderer.drawString(displayString, xPosition, yPosition - 12, 0x404040);
         }
     }

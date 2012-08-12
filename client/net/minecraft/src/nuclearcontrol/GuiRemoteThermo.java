@@ -17,13 +17,15 @@ public class GuiRemoteThermo extends GuiContainer
         super(container);
         this.container = (ContainerRemoteThermo)container;
         name = StatCollector.translateToLocal("tile.blockRemoteThermo.name");
+        xSize = 214;
+        ySize = 166;
     }
     
     @Override
     public void initGui() {
         super.initGui();
         controlList.clear();
-        slider = new GuiRemoteThermoSlider(3, guiLeft+17, guiTop + 33, 
+        slider = new GuiRemoteThermoSlider(3, guiLeft+5, guiTop + 33, 
                 StatCollector.translateToLocal("msg.nc.ThermalMonitorSignalAt"), 
                 container.remoteThermo);
         controlList.add(slider);
@@ -55,7 +57,7 @@ public class GuiRemoteThermo extends GuiContainer
 
         if (chargeWidth > 0)
         {
-            drawTexturedModalRect(left + 52, top + 53, 176, 0, chargeWidth, 14);
+            drawTexturedModalRect(left + 55, top + 53, 8, 166, chargeWidth, 14);
         }
         
     }

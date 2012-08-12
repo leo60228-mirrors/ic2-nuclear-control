@@ -20,26 +20,26 @@ public class ContainerRemoteThermo extends Container
         this.player = player; 
         
         //energy charger
-        addSlot(new SlotFilter(remoteThermo, 0, 24, 52));
+        addSlot(new SlotFilter(remoteThermo, 0, 27, 52));
         
         //upgrades
-        addSlot(new SlotFilter(remoteThermo, 1, 152, 8));
-        addSlot(new SlotFilter(remoteThermo, 2, 152, 26));
-        addSlot(new SlotFilter(remoteThermo, 3, 152, 44));
-        addSlot(new SlotFilter(remoteThermo, 4, 152, 62));
+        addSlot(new SlotFilter(remoteThermo, 1, 190, 8));
+        addSlot(new SlotFilter(remoteThermo, 2, 190, 26));
+        addSlot(new SlotFilter(remoteThermo, 3, 190, 44));
+        addSlot(new SlotFilter(remoteThermo, 4, 190, 62));
 
         //inventory
         for (int i = 0; i < 3; i++)
         {
             for (int k = 0; k < 9; k++)
             {
-                addSlot(new Slot(player.inventory, k + i * 9 + 9, 8 + k * 18, 84 + i * 18));
+                addSlot(new Slot(player.inventory, k + i * 9 + 9, 27 + k * 18, 84 + i * 18));
             }
         }
 
         for (int j = 0; j < 9; j++)
         {
-            addSlot(new Slot(player.inventory, j, 8 + j * 18, 142));
+            addSlot(new Slot(player.inventory, j, 27 + j * 18, 142));
         }
     }
 
