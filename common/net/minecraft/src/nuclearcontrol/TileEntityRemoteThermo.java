@@ -13,6 +13,7 @@ import net.minecraft.src.ic2.api.ElectricItem;
 import net.minecraft.src.ic2.api.EnergyNet;
 import net.minecraft.src.ic2.api.IElectricItem;
 import net.minecraft.src.ic2.api.IEnergySink;
+import net.minecraft.src.ic2.api.IReactor;
 import net.minecraft.src.ic2.api.Items;
 import net.minecraft.src.ic2.api.NetworkHelper;
 
@@ -84,16 +85,16 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
         int fire;
         if(energy >= IC2NuclearControl.remoteThermalMonitorEnergyConsumption)
         {
-            TileEntity reactor = NuclearHelper.getReactorAt(worldObj, xCoord+deltaX, yCoord+deltaY, zCoord+deltaZ);
+            IReactor reactor = NuclearHelper.getReactorAt(worldObj, xCoord+deltaX, yCoord+deltaY, zCoord+deltaZ);
             if(reactor != null){
                 if(tickRate == -1)
                 {
-                    tickRate = NuclearHelper.getReactorTickRate(reactor) / 2;
+                    tickRate = reactor.getTickRate() / 2;
                     if(tickRate == 0)
                         tickRate = 1;
                     updateTicker = tickRate;
                 }
-                int reactorHeat = NuclearHelper.getReactorHeat(reactor);
+                int reactorHeat = reactor.getHeat();
                 fire = reactorHeat;
             }
             else

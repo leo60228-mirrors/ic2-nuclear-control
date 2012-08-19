@@ -1,12 +1,14 @@
 package net.minecraft.src.nuclearcontrol;
 
+import net.minecraft.src.ChunkCoordinates;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
-import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 import net.minecraft.src.mod_IC2NuclearControl;
 import net.minecraft.src.forge.ITextureProvider;
+import net.minecraft.src.ic2.api.IReactor;
+import net.minecraft.src.ic2.api.IReactorChamber;
 
 public class ItemRemoteSensorKit extends Item implements ITextureProvider
 {
@@ -27,20 +29,21 @@ public class ItemRemoteSensorKit extends Item implements ITextureProvider
     {
         if(entityPlayer==null)
             return false;
-        TileEntity reactor = NuclearHelper.getReactorAt(world, x, y, z);
+        IReactor reactor = NuclearHelper.getReactorAt(world, x, y, z);
         if (reactor == null)
         {
-        	TileEntity chamber = NuclearHelper.getReactorChamberAt(world, x, y, z);
+            IReactorChamber chamber = NuclearHelper.getReactorChamberAt(world, x, y, z);
         	if(chamber!=null)
         	{
-        		reactor = NuclearHelper.getReactorAroundCoord(world, x, y, z);
+        		reactor = chamber.getReactor();
         	}
         }
         
         if(reactor != null)
         {
+            ChunkCoordinates position = reactor.getPosition();
             ItemStack sensorLocationCard = new ItemStack(mod_IC2NuclearControl.itemSensorLocationCard, 1, 0);
-            ItemSensorLocationCardBase.setCoordinates(sensorLocationCard, reactor.xCoord, reactor.yCoord, reactor.zCoord);
+            ItemSensorLocationCardBase.setCoordinates(sensorLocationCard, position.posX, position.posY, position.posZ);
             entityPlayer.inventory.mainInventory[entityPlayer.inventory.currentItem] = sensorLocationCard;
         	if(!world.isRemote)
         	{

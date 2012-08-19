@@ -3,11 +3,12 @@ package net.minecraft.src.nuclearcontrol;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
-import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 import net.minecraft.src.mod_IC2NuclearControl;
 import net.minecraft.src.forge.ITextureProvider;
 import net.minecraft.src.ic2.api.ElectricItem;
+import net.minecraft.src.ic2.api.IReactor;
+import net.minecraft.src.ic2.api.IReactorChamber;
 
 public class ItemToolThermometer extends Item implements ITextureProvider
 {
@@ -39,13 +40,13 @@ public class ItemToolThermometer extends Item implements ITextureProvider
         {
             return false;
         }
-        TileEntity reactor = NuclearHelper.getReactorAt(world, x, y, z);
+        IReactor reactor = NuclearHelper.getReactorAt(world, x, y, z);
         if (reactor == null)
         {
-        	TileEntity chamber = NuclearHelper.getReactorChamberAt(world, x, y, z);
+        	IReactorChamber chamber = NuclearHelper.getReactorChamberAt(world, x, y, z);
         	if(chamber!=null)
         	{
-        		reactor = NuclearHelper.getReactorAroundCoord(world, x, y, z);
+        		reactor = chamber.getReactor();
         	}
         }
         
@@ -62,9 +63,9 @@ public class ItemToolThermometer extends Item implements ITextureProvider
 
     }
 
-    public void messagePlayer(EntityPlayer entityplayer, TileEntity reactor)
+    public void messagePlayer(EntityPlayer entityplayer, IReactor reactor)
     {
-        int heat = NuclearHelper.getReactorHeat(reactor);
+        int heat = reactor.getHeat();
         switch(thermometerVersion)
         {
         case ANALOG: 
@@ -72,7 +73,7 @@ public class ItemToolThermometer extends Item implements ITextureProvider
             break;
 
         case DIGITAL: 
-            int maxHeat = NuclearHelper.getMaxHeat(reactor);
+            int maxHeat = reactor.getMaxHeat();
             mod_IC2NuclearControl.chatMessage(entityplayer, 
                     IC2NuclearControl.MSG_PREFIX+"ThermoDigital:" + heat + ":" +((maxHeat * 50) / 100) + 
             		":"+ ((maxHeat * 85) / 100));

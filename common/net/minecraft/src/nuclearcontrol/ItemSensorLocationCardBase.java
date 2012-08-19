@@ -9,9 +9,9 @@ import net.minecraft.src.IInventory;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.TileEntity;
 import net.minecraft.src.mod_IC2NuclearControl;
 import net.minecraft.src.forge.ITextureProvider;
+import net.minecraft.src.ic2.api.IReactor;
 import net.minecraft.src.ic2.api.Items;
 import net.minecraft.src.nuclearcontrol.panel.IPanelDataSource;
 import net.minecraft.src.nuclearcontrol.panel.PanelSetting;
@@ -130,15 +130,15 @@ public abstract class ItemSensorLocationCardBase extends Item implements ITextur
         }
         else
         {
-            TileEntity reactor = NuclearHelper.getReactorAt(panel.worldObj, 
+            IReactor reactor = NuclearHelper.getReactorAt(panel.worldObj, 
                     coordinates[0], coordinates[1], coordinates[2]);
             if(reactor != null)
             {
                 setField("activeData", true, nbtTagCompound, panel, updateSet);
-                setField("heat", NuclearHelper.getReactorHeat(reactor), nbtTagCompound, panel, updateSet);
-                setField("maxHeat", NuclearHelper.getMaxHeat(reactor), nbtTagCompound, panel, updateSet);
-                setField("reactorPowered", NuclearHelper.getReactorIsProducingEnergy(reactor), nbtTagCompound, panel, updateSet);
-                setField("output", NuclearHelper.getReactorOutput(reactor), nbtTagCompound, panel, updateSet);
+                setField("heat", reactor.getHeat(), nbtTagCompound, panel, updateSet);
+                setField("maxHeat", reactor.getMaxHeat(), nbtTagCompound, panel, updateSet);
+                setField("reactorPowered", NuclearHelper.isProducing(reactor), nbtTagCompound, panel, updateSet);
+                setField("output", reactor.getOutput(), nbtTagCompound, panel, updateSet);
 
                 IInventory inventory = (IInventory)reactor; 
                 int slotCount = inventory.getSizeInventory();

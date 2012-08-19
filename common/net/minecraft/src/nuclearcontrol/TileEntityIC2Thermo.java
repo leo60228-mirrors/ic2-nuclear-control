@@ -10,6 +10,8 @@ import net.minecraft.src.TileEntity;
 import net.minecraft.src.ic2.api.INetworkClientTileEntityEventListener;
 import net.minecraft.src.ic2.api.INetworkDataProvider;
 import net.minecraft.src.ic2.api.INetworkUpdateListener;
+import net.minecraft.src.ic2.api.IReactor;
+import net.minecraft.src.ic2.api.IReactorChamber;
 import net.minecraft.src.ic2.api.IWrenchable;
 import net.minecraft.src.ic2.api.NetworkHelper;
 
@@ -180,10 +182,10 @@ public class TileEntityIC2Thermo extends TileEntity implements
     protected void checkStatus()
     {
     	byte fire;
-        TileEntity chamber = NuclearHelper.getReactorChamberAroundCoord(worldObj, xCoord, yCoord, zCoord);
-        TileEntity reactor = null;
+    	IReactorChamber chamber = NuclearHelper.getReactorChamberAroundCoord(worldObj, xCoord, yCoord, zCoord);
+        IReactor reactor = null;
         if(chamber != null){
-        	reactor = NuclearHelper.getReactorAroundCoord(worldObj, chamber.xCoord, chamber.yCoord, chamber.zCoord);
+        	reactor = chamber.getReactor();
         }
         if(reactor == null){
         	reactor = NuclearHelper.getReactorAroundCoord(worldObj, xCoord, yCoord, zCoord);
@@ -191,12 +193,12 @@ public class TileEntityIC2Thermo extends TileEntity implements
         if(reactor != null){
         	if(tickRate == -1)
         	{
-        		tickRate = NuclearHelper.getReactorTickRate(reactor) / 2;
+        		tickRate = reactor.getTickRate() / 2;
         		if(tickRate == 0)
     				tickRate = 1;
         		updateTicker = tickRate;
         	}
-        	int reactorHeat = NuclearHelper.getReactorHeat(reactor);
+        	int reactorHeat = reactor.getHeat();
             if (reactorHeat >= mappedHeatLevel)
             {
                 fire = 1;
