@@ -9,9 +9,9 @@ import java.util.Vector;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.TileEntity;
 import net.minecraft.src.mod_IC2NuclearControl;
 import net.minecraft.src.forge.ITextureProvider;
+import net.minecraft.src.ic2.api.IEnergyStorage;
 import net.minecraft.src.nuclearcontrol.panel.IPanelDataSource;
 import net.minecraft.src.nuclearcontrol.panel.PanelSetting;
 import net.minecraft.src.nuclearcontrol.panel.PanelString;
@@ -162,13 +162,13 @@ public abstract class ItemEnergyArrayLocationCardBase extends Item implements IT
                         Math.abs(dy) <= range && 
                         Math.abs(dz) <= range)
                 {
-                    TileEntity storage = EnergyStorageHelper.getStorageAt(panel.worldObj, 
+                    IEnergyStorage storage = EnergyStorageHelper.getStorageAt(panel.worldObj, 
                             coordinates[0], coordinates[1], coordinates[2]);
                     if(storage != null)
                     {
                         setField("activeData", true, nbtTagCompound, panel, updateSet);
-                        setField(String.format("_%denergy", i), EnergyStorageHelper.getStorageEnergy(storage), nbtTagCompound, panel, updateSet);
-                        setField(String.format("_%dmaxStorage", i), EnergyStorageHelper.getStorageMaxStorage(storage), nbtTagCompound, panel, updateSet);
+                        setField(String.format("_%denergy", i), storage.getStored(), nbtTagCompound, panel, updateSet);
+                        setField(String.format("_%dmaxStorage", i), storage.getCapacity(), nbtTagCompound, panel, updateSet);
                         foundAny = true;
                     }
                 }

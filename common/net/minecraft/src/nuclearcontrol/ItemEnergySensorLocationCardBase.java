@@ -8,9 +8,9 @@ import java.util.Map;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.TileEntity;
 import net.minecraft.src.mod_IC2NuclearControl;
 import net.minecraft.src.forge.ITextureProvider;
+import net.minecraft.src.ic2.api.IEnergyStorage;
 import net.minecraft.src.nuclearcontrol.panel.IPanelDataSource;
 import net.minecraft.src.nuclearcontrol.panel.PanelSetting;
 import net.minecraft.src.nuclearcontrol.panel.PanelString;
@@ -125,12 +125,12 @@ public abstract class ItemEnergySensorLocationCardBase extends Item implements I
             }
             else
             {
-                TileEntity storage = EnergyStorageHelper.getStorageAt(panel.worldObj, 
+                IEnergyStorage storage = EnergyStorageHelper.getStorageAt(panel.worldObj, 
                         coordinates[0], coordinates[1], coordinates[2]);
                 if(storage != null){
                     setField("activeData", true, nbtTagCompound, panel, updateSet);
-                    setField("energy", EnergyStorageHelper.getStorageEnergy(storage), nbtTagCompound, panel, updateSet);
-                    setField("maxStorage", EnergyStorageHelper.getStorageMaxStorage(storage), nbtTagCompound, panel, updateSet);
+                    setField("energy", storage.getStored(), nbtTagCompound, panel, updateSet);
+                    setField("maxStorage", storage.getCapacity(), nbtTagCompound, panel, updateSet);
                 }
                 else
                 {
