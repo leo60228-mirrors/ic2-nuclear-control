@@ -9,6 +9,7 @@ import java.util.List;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.StatCollector;
+import net.minecraft.src.nuclearcontrol.Utils.StringUtils;
 import net.minecraft.src.nuclearcontrol.panel.PanelSetting;
 import net.minecraft.src.nuclearcontrol.panel.PanelString;
 
@@ -27,7 +28,7 @@ public class ItemEnergyArrayLocationCard extends ItemEnergyArrayLocationCardBase
     }
     
     @Override
-    public List<PanelString> getStringData(int displaySettings, ItemStack itemStack)
+    public List<PanelString> getStringData(int displaySettings, ItemStack itemStack, boolean showLabels)
     {
         NBTTagCompound nbtTagCompound = getTagCompound(itemStack);
         boolean activeData = nbtTagCompound.getInteger("activeData")==1;
@@ -35,23 +36,19 @@ public class ItemEnergyArrayLocationCard extends ItemEnergyArrayLocationCardBase
             return null;
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
-        long totalEnergy = 0;
-        long totalStorage = 0;
+        int totalEnergy = 0;
+        int totalStorage = 0;
         boolean showEach = (displaySettings & DISPLAY_EACH) > 0;
         boolean showSummary = (displaySettings & DISPLAY_TOTAL) > 0;
         boolean showEnergy = (displaySettings & DISPLAY_ENERGY) > 0;
         boolean showFree = (displaySettings & DISPLAY_FREE) > 0;
         boolean showStorage = (displaySettings & DISPLAY_STORAGE) > 0;
         boolean showPercentage = (displaySettings & DISPLAY_PERCENTAGE) > 0;
-        DecimalFormat formatter = new DecimalFormat("#,###.###");
-        DecimalFormatSymbols smb = new DecimalFormatSymbols();
-        smb.setGroupingSeparator(' ');
-        formatter.setDecimalFormatSymbols(smb);
         int cardCount =  getCardCount(itemStack);
         for(int i=0; i<cardCount; i++)
         {
-            long energy =  nbtTagCompound.getInteger(String.format("_%denergy",i));
-            long storage =  nbtTagCompound.getInteger(String.format("_%dmaxStorage",i));
+            int energy =  nbtTagCompound.getInteger(String.format("_%denergy",i));
+            int storage =  nbtTagCompound.getInteger(String.format("_%dmaxStorage",i));
             if(showSummary)
             {
                 totalEnergy += energy;
@@ -63,25 +60,38 @@ public class ItemEnergyArrayLocationCard extends ItemEnergyArrayLocationCardBase
                 if(showEnergy)
                 {
                     line = new PanelString();
-                    line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyN"), i+1, formatter.format(energy));
+                    if(showLabels)
+                        line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyN"), i+1, StringUtils.getFormatted("", energy, false));
+                    else
+                        line.textLeft = StringUtils.getFormatted("", energy, false);
                     result.add(line);
                 }
                 if(showFree)
                 {
                     line = new PanelString();
-                    line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyFreeN"), i+1, formatter.format(storage - energy));
+                    if(showLabels)
+                        line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyFreeN"), i+1, StringUtils.getFormatted("", storage - energy, false));
+                    else
+                        line.textLeft = StringUtils.getFormatted("", storage - energy, false);
+
                     result.add(line);
                 }
                 if(showStorage)
                 {
                     line = new PanelString();
-                    line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyStorageN"), i+1, formatter.format(storage));
+                    if(showLabels)
+                        line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyStorageN"), i+1, StringUtils.getFormatted("", storage, false));
+                    else
+                        line.textLeft = StringUtils.getFormatted("", storage, false);
                     result.add(line);
                 }
                 if(showPercentage)
                 {
                     line = new PanelString();
-                    line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyPercentageN"), i+1, formatter.format(storage==0? 100:(energy*100/storage)));
+                    if(showLabels)
+                        line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyPercentageN"), i+1, StringUtils.getFormatted("", storage==0? 100:(energy*100/storage), false));
+                    else
+                        line.textLeft = StringUtils.getFormatted("", storage==0? 100:(energy*100/storage), false);
                     result.add(line);
                 }                
             }
@@ -91,25 +101,25 @@ public class ItemEnergyArrayLocationCard extends ItemEnergyArrayLocationCardBase
             if(showEnergy)
             {
                 line = new PanelString();
-                line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergy"), formatter.format(totalEnergy));
+                line.textLeft =  StringUtils.getFormatted("msg.nc.InfoPanelEnergy", totalEnergy, showLabels);
                 result.add(line);
             }
             if(showFree)
             {
                 line = new PanelString();
-                line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyFree"), formatter.format(totalStorage - totalEnergy));
+                line.textLeft =  StringUtils.getFormatted("msg.nc.InfoPanelEnergyFree", totalStorage - totalEnergy, showLabels);
                 result.add(line);
             }
             if(showStorage)
             {
                 line = new PanelString();
-                line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyStorage"), formatter.format(totalStorage));
+                line.textLeft =  StringUtils.getFormatted("msg.nc.InfoPanelEnergyStorage", totalStorage, showLabels);
                 result.add(line);
             }
             if(showPercentage)
             {
                 line = new PanelString();
-                line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelEnergyPercentage"), formatter.format(totalStorage==0? 100:(totalEnergy*100/totalStorage)));
+                line.textLeft =  StringUtils.getFormatted("msg.nc.InfoPanelEnergyPercentage", totalStorage==0? 100:(totalEnergy*100/totalStorage), showLabels);
                 result.add(line);
             }                
         }

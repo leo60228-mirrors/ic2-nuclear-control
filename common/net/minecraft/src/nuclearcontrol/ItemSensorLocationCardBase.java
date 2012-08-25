@@ -174,7 +174,7 @@ public abstract class ItemSensorLocationCardBase extends Item implements ITextur
     abstract public void networkUpdate(String fieldName, int value, ItemStack stack);
 
     @Override
-    abstract public List<PanelString> getStringData(int displaySettings, ItemStack itemStack);
+    abstract public List<PanelString> getStringData(int displaySettings, ItemStack itemStack, boolean showLabels);
 
     @Override
     abstract public List<PanelSetting> getSettingsList();

@@ -59,6 +59,8 @@ public class TileEntityInfoPanel extends TileEntity implements
     private int prevRotation;
     public int rotation;
     
+    private boolean prevShowLabels;
+    public boolean showLabels;
     
     private short prevFacing;
     public short facing;
@@ -111,6 +113,22 @@ public class TileEntityInfoPanel extends TileEntity implements
         return powered;
     }    
     
+    
+    public void setShowLabels(boolean p)
+    {
+        showLabels = p;
+        if (prevShowLabels != p)
+        {
+            NetworkHelper.updateTileEntityField(this, "showLabels");
+        }
+        prevShowLabels = showLabels;
+    }
+
+    public boolean getShowLabels()
+    {
+        return showLabels;
+    }    
+    
     public void setDisplaySettings(int s)
     {
         int cardType = 0;
@@ -146,6 +164,10 @@ public class TileEntityInfoPanel extends TileEntity implements
         {
             inventory[SLOT_CARD] = card;
         }
+        if (field.equals("showLabels"))
+        {
+            prevShowLabels = showLabels;
+        }
         if (field.equals("powered") && prevPowered != powered)
         {
             if(screen!=null)
@@ -170,7 +192,12 @@ public class TileEntityInfoPanel extends TileEntity implements
     @Override
     public void onNetworkEvent(EntityPlayer entityplayer, int i)
     {
-        setDisplaySettings(i);
+        if(i == -1)
+            setShowLabels(true);
+        else if(i == -2)
+            setShowLabels(false);
+        else
+            setDisplaySettings(i);
     }
     
     public TileEntityInfoPanel()
@@ -202,6 +229,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         list.add("facing");
         list.add("rotation");
         list.add("card");
+        list.add("showLabels");
         return list;
     }
     
@@ -245,6 +273,15 @@ public class TileEntityInfoPanel extends TileEntity implements
         if(nbttagcompound.hasKey("rotation"))
         {
             prevRotation = rotation = nbttagcompound.getInteger("rotation");
+        }
+        if(nbttagcompound.hasKey("showLabels"))
+        {
+            prevShowLabels = showLabels = nbttagcompound.getBoolean("showLabels");
+        }
+        else
+        {
+            //v.1.1.11 compatibility
+            prevShowLabels = showLabels = true; 
         }
         prevFacing = facing =  nbttagcompound.getShort("facing");
         if(nbttagcompound.hasKey("dSets"))
@@ -302,6 +339,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         nbttagcompound.setShort("facing", facing);
         nbttagcompound.setIntArray("dSets", displaySettings);
         nbttagcompound.setInteger("rotation", rotation);
+        nbttagcompound.setBoolean("showLabels", getShowLabels());
 
         NBTTagList nbttaglist = new NBTTagList();
         for (int i = 0; i < inventory.length; i++)

@@ -11,7 +11,7 @@ public interface IPanelDataSource
     
     void networkUpdate(String fieldName, int value, ItemStack stack);
     
-    List<PanelString> getStringData(int displaySettings, ItemStack itemStack);
+    List<PanelString> getStringData(int displaySettings, ItemStack itemStack, boolean showLabels);
     
     List<PanelSetting> getSettingsList();
     

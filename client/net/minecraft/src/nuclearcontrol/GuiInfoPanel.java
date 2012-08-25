@@ -32,6 +32,7 @@ public class GuiInfoPanel extends GuiContainer
         int h = fontRenderer.FONT_HEIGHT + 1;
         controlList.clear();
         prevCard = card;
+        controlList.add(new GuiInfoPanelShowLabels(0, guiLeft + 7, guiTop + 60, container.panel));
         if(card!=null && card.getItem() instanceof IPanelDataSource)
         {
             int row = 0;

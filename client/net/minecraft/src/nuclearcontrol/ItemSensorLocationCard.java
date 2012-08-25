@@ -1,7 +1,5 @@
 package net.minecraft.src.nuclearcontrol;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,15 +7,18 @@ import java.util.List;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.StatCollector;
+import net.minecraft.src.nuclearcontrol.Utils.StringUtils;
 import net.minecraft.src.nuclearcontrol.panel.PanelSetting;
 import net.minecraft.src.nuclearcontrol.panel.PanelString;
 
 public class ItemSensorLocationCard extends ItemSensorLocationCardBase
 {
-
+    
+    
     public ItemSensorLocationCard(int i, int iconIndex)
     {
         super(i, iconIndex);
+
     }
 
     @Override
@@ -26,43 +27,41 @@ public class ItemSensorLocationCard extends ItemSensorLocationCardBase
         NBTTagCompound nbtTagCompound = getTagCompound(itemStack);
         nbtTagCompound.setInteger(fieldName, value);
     }
+
+
     
         @Override
-    public List<PanelString> getStringData(int displaySettings, ItemStack itemStack)
+    public List<PanelString> getStringData(int displaySettings, ItemStack itemStack, boolean showLabels)
     {
         NBTTagCompound nbtTagCompound = getTagCompound(itemStack);
         boolean activeData = nbtTagCompound.getInteger("activeData")==1;
         if(!activeData)
             return null;
-        DecimalFormat formatter = new DecimalFormat("#,###.###");
-        DecimalFormatSymbols smb = new DecimalFormatSymbols();
-        smb.setGroupingSeparator(' ');
-        formatter.setDecimalFormatSymbols(smb);
         List<PanelString> result = new LinkedList<PanelString>();
         String text;
         PanelString line;
         if((displaySettings & DISPLAY_HEAT) > 0)
         {
             line = new PanelString();
-            line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelHeat"), formatter.format(nbtTagCompound.getInteger("heat")));
+            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelHeat", nbtTagCompound.getInteger("heat"), showLabels); 
             result.add(line);
         }
         if((displaySettings & DISPLAY_MAXHEAT) > 0)
         {
             line = new PanelString();
-            line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelMaxHeat"), formatter.format(nbtTagCompound.getInteger("maxHeat")));
+            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelMaxHeat", nbtTagCompound.getInteger("maxHeat"), showLabels); 
             result.add(line);
         }
         if((displaySettings & DISPLAY_MELTING) > 0)
         {
             line = new PanelString();
-            line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelMelting"), formatter.format(nbtTagCompound.getInteger("maxHeat")*85/100));
+            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelMelting", nbtTagCompound.getInteger("maxHeat")*85/100, showLabels); 
             result.add(line);
         }
         if((displaySettings & DISPLAY_OUTPUT) > 0)
         {
             line = new PanelString();
-            line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelOutput"), formatter.format(nbtTagCompound.getInteger("output")));
+            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelOutput", nbtTagCompound.getInteger("output"), showLabels); 
             result.add(line);
         }
         int timeLeft = nbtTagCompound.getInteger("timeLeft");
@@ -74,7 +73,7 @@ public class ItemSensorLocationCard extends ItemSensorLocationCardBase
             line = new PanelString();
 
             String time = String.format("%d:%02d:%02d", hours, minutes, seconds);                
-            line.textLeft = String.format(StatCollector.translateToLocal("msg.nc.InfoPanelTimeRemaining"), time);
+            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelTimeRemaining", time, showLabels); 
             result.add(line);
         }
 

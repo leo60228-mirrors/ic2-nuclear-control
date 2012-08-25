@@ -38,7 +38,7 @@ public class ItemTimeCard extends Item implements ITextureProvider, IPanelDataSo
     }
 
     @Override
-    public List<PanelString> getStringData(int displaySettings, ItemStack itemStack)
+    public List<PanelString> getStringData(int displaySettings, ItemStack itemStack, boolean showLabels)
     {
         List<PanelString> result = new ArrayList<PanelString>(1);
         PanelString item = new PanelString();

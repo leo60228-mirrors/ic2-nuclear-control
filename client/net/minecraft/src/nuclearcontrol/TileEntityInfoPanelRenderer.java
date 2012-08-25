@@ -32,7 +32,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
             ItemStack card = panel.getStackInSlot(TileEntityInfoPanel.SLOT_CARD);
             if(!(card.getItem() instanceof IPanelDataSource))
                 return;
-            List<PanelString> data =  ((IPanelDataSource)card.getItem()).getStringData(displaySettings, card);
+            List<PanelString> data =  ((IPanelDataSource)card.getItem()).getStringData(displaySettings, card, panel.getShowLabels());
             if(data == null)
                 return;
             

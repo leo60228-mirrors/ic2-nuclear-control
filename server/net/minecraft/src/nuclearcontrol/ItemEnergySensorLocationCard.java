@@ -19,7 +19,7 @@ public class ItemEnergySensorLocationCard extends ItemEnergySensorLocationCardBa
     {}
 
     @Override
-    public List<PanelString> getStringData(int displaySettings, ItemStack itemStack)
+    public List<PanelString> getStringData(int displaySettings, ItemStack itemStack, boolean showLabels)
     {
         return null;
     }
