@@ -7,9 +7,10 @@ import java.util.List;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.StatCollector;
-import net.minecraft.src.nuclearcontrol.Utils.StringUtils;
 import net.minecraft.src.nuclearcontrol.panel.PanelSetting;
 import net.minecraft.src.nuclearcontrol.panel.PanelString;
+import net.minecraft.src.nuclearcontrol.utils.ItemStackUtils;
+import net.minecraft.src.nuclearcontrol.utils.StringUtils;
 
 public class ItemSensorLocationCard extends ItemSensorLocationCardBase
 {
@@ -24,7 +25,7 @@ public class ItemSensorLocationCard extends ItemSensorLocationCardBase
     @Override
     public void networkUpdate(String fieldName, int value, ItemStack itemStack)
     {
-        NBTTagCompound nbtTagCompound = getTagCompound(itemStack);
+        NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(itemStack);
         nbtTagCompound.setInteger(fieldName, value);
     }
 
@@ -33,7 +34,7 @@ public class ItemSensorLocationCard extends ItemSensorLocationCardBase
         @Override
     public List<PanelString> getStringData(int displaySettings, ItemStack itemStack, boolean showLabels)
     {
-        NBTTagCompound nbtTagCompound = getTagCompound(itemStack);
+        NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(itemStack);
         boolean activeData = nbtTagCompound.getInteger("activeData")==1;
         if(!activeData)
             return null;

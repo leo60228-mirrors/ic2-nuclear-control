@@ -25,8 +25,9 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
     public static final int DAMAGE_REMOTE_THERMO = 3;
     public static final int DAMAGE_INFO_PANEL = 4;
     public static final int DAMAGE_INFO_PANEL_EXTENDER = 5;
+    public static final int DAMAGE_ENERGY_COUNTER = 6;
 
-    public static final int DAMAGE_MAX = 5;
+    public static final int DAMAGE_MAX = 6;
     
     public static final float[][] blockSize = {
         {0.0625F, 0, 0.0625F, 0.9375F, 0.4375F, 0.9375F},//Thermal Monitor
@@ -34,12 +35,13 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
         {0.125F, 0, 0.125F, 0.875F, 0.4375F, 0.875F},//Howler  Alarm
         {0, 0, 0, 1, 1, 1},//Remote Thermo
         {0, 0, 0, 1, 1, 1},//Info Panel
-        {0, 0, 0, 1, 1, 1}//Info Panel Extender
+        {0, 0, 0, 1, 1, 1},//Info Panel Extender
+        {0, 0, 0, 1, 1, 1}//Energy Counter
         
     };
     
     private static final boolean[] solidBlockRequired =
-        {true, true, true, false, false, false};
+        {true, true, true, false, false, false, false};
     
     private static final byte[][][] sideMapping = 
         {
@@ -90,6 +92,14 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
                 {40, 40, 80, 39, 40, 40},
                 {40, 40, 40, 40, 39, 80},
                 {40, 40, 40, 40, 80, 39}
+            },
+            {//Energy Counter
+                {42, 41, 42, 42, 42, 42},
+                {41, 42, 42, 42, 42, 42},
+                {42, 42, 42, 41, 42, 42},
+                {42, 42, 41, 42, 42, 42},
+                {42, 42, 42, 42, 42, 41},
+                {42, 42, 42, 42, 41, 42}
             }
         };
     
@@ -409,6 +419,7 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
             case DAMAGE_HOWLER_ALARM:
             case DAMAGE_INDUSTRIAL_ALARM:
             case DAMAGE_INFO_PANEL:
+            case DAMAGE_ENERGY_COUNTER:
                 mod_IC2NuclearControl.launchGui(world, x, y, z, entityplayer, blockType);
                 return true;
             default:
@@ -532,6 +543,8 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
             return new TileEntityInfoPanel();
         case DAMAGE_INFO_PANEL_EXTENDER:
             return new TileEntityInfoPanelExtender();
+        case DAMAGE_ENERGY_COUNTER:
+            return new TileEntityEnergyCounter();
         }
         return null;
     }
@@ -588,6 +601,7 @@ public class BlockNuclearControlMain extends BlockContainer implements ITextureP
         arraylist.add(new ItemStack(this, 1, DAMAGE_REMOTE_THERMO));
         arraylist.add(new ItemStack(this, 1, DAMAGE_INFO_PANEL));
         arraylist.add(new ItemStack(this, 1, DAMAGE_INFO_PANEL_EXTENDER));
+        arraylist.add(new ItemStack(this, 1, DAMAGE_ENERGY_COUNTER));
     }
 
 }

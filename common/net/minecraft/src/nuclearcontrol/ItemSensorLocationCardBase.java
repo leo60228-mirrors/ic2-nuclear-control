@@ -1,23 +1,20 @@
 package net.minecraft.src.nuclearcontrol;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.minecraft.src.IInventory;
-import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.mod_IC2NuclearControl;
-import net.minecraft.src.forge.ITextureProvider;
 import net.minecraft.src.ic2.api.IReactor;
 import net.minecraft.src.ic2.api.Items;
-import net.minecraft.src.nuclearcontrol.panel.IPanelDataSource;
 import net.minecraft.src.nuclearcontrol.panel.PanelSetting;
 import net.minecraft.src.nuclearcontrol.panel.PanelString;
+import net.minecraft.src.nuclearcontrol.utils.ItemStackUtils;
 
-public abstract class ItemSensorLocationCardBase extends Item implements ITextureProvider, IPanelDataSource
+public abstract class ItemSensorLocationCardBase extends ItemCardBase
 {
     protected static final String HINT_TEMPLATE = "x: %d, y: %d, z: %d";
 
@@ -30,88 +27,15 @@ public abstract class ItemSensorLocationCardBase extends Item implements ITextur
     
     public static final int CARD_TYPE = 0;
     
-    protected void setField(String name, int value, NBTTagCompound nbtTagCompound, TileEntityInfoPanel panel, Map<String, Integer> updateSet)
-    {
-        if(nbtTagCompound.hasKey(name))
-        {
-            int prevValue = nbtTagCompound.getInteger(name);
-            if(prevValue != value)
-                updateSet.put(name, value);
-        }
-        nbtTagCompound.setInteger(name, value);
-    }
-    
-    protected void setField(String name, boolean value, NBTTagCompound nbtTagCompound, TileEntityInfoPanel panel, Map<String, Integer> updateSet)
-    {
-        setField(name, value?1:0, nbtTagCompound, panel, updateSet);
-    }
-
     public ItemSensorLocationCardBase(int i, int iconIndex)
     {
-        super(i);
-        setIconIndex(iconIndex);
-        setMaxStackSize(1);
-        canRepair = false;
-    }
-
-    @Override
-    public boolean isDamageable()
-    {
-        return true;
-    }
-    
-    @Override
-    public String getTextureFile()
-    {
-        return "/img/texture_thermo.png";
-    }
-    
-    protected static NBTTagCompound getTagCompound(ItemStack itemStack)
-    {
-        NBTTagCompound nbtTagCompound = itemStack.getTagCompound();
-        if (nbtTagCompound == null)
-        {
-            nbtTagCompound = new NBTTagCompound();
-            itemStack.setTagCompound(nbtTagCompound);
-        }
-        return nbtTagCompound;
-    }
-    
-    public static int[] getCoordinates(ItemStack itemStack)
-    {
-        if(!(itemStack.getItem() instanceof ItemSensorLocationCardBase))
-            return null;
-        NBTTagCompound nbtTagCompound = itemStack.getTagCompound();
-        if (nbtTagCompound == null)
-        {
-            return null;
-        }
-        int[] coordinates = new int[]{
-            nbtTagCompound.getInteger("x"),  
-            nbtTagCompound.getInteger("y"),  
-            nbtTagCompound.getInteger("z")  
-        };
-        return coordinates;
-    }
-    
-    public static void setCoordinates(ItemStack itemStack, int x, int y, int z)
-    {
-        NBTTagCompound nbtTagCompound = getTagCompound(itemStack);
-        nbtTagCompound.setInteger("x", x);
-        nbtTagCompound.setInteger("y", y);
-        nbtTagCompound.setInteger("z", z);
-    }
-
-    @Override
-    public void addCreativeItems(ArrayList arraylist)
-    {
-        //should not be created via creative inventory
+        super(i, iconIndex);
     }
 
     @Override
     public void update(TileEntityInfoPanel panel, ItemStack stack, int range)
     {
-        NBTTagCompound nbtTagCompound = getTagCompound(stack);
+        NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(stack);
         int[] coordinates = getCoordinates(stack);
         Map<String, Integer> updateSet = new HashMap<String, Integer>();
         if(coordinates == null)
@@ -168,7 +92,6 @@ public abstract class ItemSensorLocationCardBase extends Item implements ITextur
     {
         return CARD_TYPE;
     }
-
 
     @Override
     abstract public void networkUpdate(String fieldName, int value, ItemStack stack);

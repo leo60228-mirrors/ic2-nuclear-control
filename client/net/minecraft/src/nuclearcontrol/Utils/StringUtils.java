@@ -1,4 +1,4 @@
-package net.minecraft.src.nuclearcontrol.Utils;
+package net.minecraft.src.nuclearcontrol.utils;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -30,7 +30,7 @@ public class StringUtils
             return value;
     }
 
-    public static String getFormatted(String resourceName, int value, boolean showLabels)
+    public static String getFormatted(String resourceName, long value, boolean showLabels)
     {
         return getFormatted(resourceName, getFormatter().format(value), showLabels);
     }

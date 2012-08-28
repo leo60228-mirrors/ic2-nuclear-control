@@ -7,16 +7,17 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
 import net.minecraft.src.forge.Configuration;
 import net.minecraft.src.forge.MinecraftForge;
 import net.minecraft.src.nuclearcontrol.BlockNuclearControlMain;
+import net.minecraft.src.nuclearcontrol.ContainerEnergyCounter;
 import net.minecraft.src.nuclearcontrol.ContainerInfoPanel;
 import net.minecraft.src.nuclearcontrol.ContainerRemoteThermo;
 import net.minecraft.src.nuclearcontrol.IC2NuclearControl;
+import net.minecraft.src.nuclearcontrol.TileEntityEnergyCounter;
 import net.minecraft.src.nuclearcontrol.TileEntityHowlerAlarm;
 import net.minecraft.src.nuclearcontrol.TileEntityInfoPanel;
 import net.minecraft.src.nuclearcontrol.TileEntityRemoteThermo;
@@ -75,6 +76,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityRemoteThermo.class, "IC2RemoteThermo");
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityInfoPanel.class, "IC2NCInfoPanel");
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityInfoPanelExtender.class, "IC2NCInfoPanelExtender");
+        ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityEnergyCounter.class, "IC2NCEnergyCounter");
 
         MinecraftForge.setGuiHandler(this, this);
         if(configuration!=null)
@@ -102,6 +104,9 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
             case BlockNuclearControlMain.DAMAGE_INFO_PANEL:
                 tileEntity = world.getBlockTileEntity(x, y, z);
                 return new ContainerInfoPanel(player, (TileEntityInfoPanel)tileEntity);
+            case BlockNuclearControlMain.DAMAGE_ENERGY_COUNTER:
+                tileEntity = world.getBlockTileEntity(x, y, z);
+                return new ContainerEnergyCounter(player, (TileEntityEnergyCounter)tileEntity);
             default:
                 return null;
         }
@@ -205,5 +210,4 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
             e.printStackTrace();
         }
     }
-    
 }

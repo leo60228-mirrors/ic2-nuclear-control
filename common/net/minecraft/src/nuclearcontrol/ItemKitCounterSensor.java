@@ -1,23 +1,23 @@
 package net.minecraft.src.nuclearcontrol;
 
 import net.minecraft.src.ChunkCoordinates;
+import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 import net.minecraft.src.mod_IC2NuclearControl;
-import net.minecraft.src.ic2.api.IEnergyStorage;
 
-public class ItemEnergySensorKit extends ItemSensorKitBase
+public class ItemKitCounterSensor extends ItemSensorKitBase
 {
 
-    public ItemEnergySensorKit(int i, int iconIndex)
+    public ItemKitCounterSensor(int i, int iconIndex)
     {
-        super(i, iconIndex, mod_IC2NuclearControl.itemEnergySensorLocationCard);
+        super(i, iconIndex, mod_IC2NuclearControl.itemCounterSensorLocationCard);
     }
 
     @Override
     protected ChunkCoordinates getTargetCoordinates(World world, int x, int y, int z)
     {
-        IEnergyStorage storage = EnergyStorageHelper.getStorageAt(world, x, y, z);
-        if (storage != null)
+        TileEntity entity = world.getBlockTileEntity(x, y, z);
+        if (entity != null && entity instanceof TileEntityEnergyCounter)
         {
             ChunkCoordinates coordinates = new ChunkCoordinates();
             coordinates.posX = x;

@@ -6,22 +6,18 @@ import java.util.Map;
 
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
+import net.minecraft.src.TileEntity;
 import net.minecraft.src.mod_IC2NuclearControl;
-import net.minecraft.src.ic2.api.IEnergyStorage;
 import net.minecraft.src.nuclearcontrol.panel.PanelSetting;
 import net.minecraft.src.nuclearcontrol.panel.PanelString;
 import net.minecraft.src.nuclearcontrol.utils.ItemStackUtils;
 
-public abstract class ItemEnergySensorLocationCardBase extends ItemCardBase
+public abstract class ItemCardCounterSensorLocationBase extends ItemCardBase
 {
     public static final int DISPLAY_ENERGY = 1;
-    public static final int DISPLAY_FREE = 2;
-    public static final int DISPLAY_STORAGE = 4;
-    public static final int DISPLAY_PERCENTAGE = 8;
-    
-    public static final int CARD_TYPE = 2;
+    public static final int CARD_TYPE = 4;
 
-    public ItemEnergySensorLocationCardBase(int i, int iconIndex)
+    public ItemCardCounterSensorLocationBase(int i, int iconIndex)
     {
         super(i, iconIndex);
     }
@@ -49,12 +45,12 @@ public abstract class ItemEnergySensorLocationCardBase extends ItemCardBase
             }
             else
             {
-                IEnergyStorage storage = EnergyStorageHelper.getStorageAt(panel.worldObj, 
-                        coordinates[0], coordinates[1], coordinates[2]);
-                if(storage != null){
+                TileEntity tileEntity = panel.worldObj.getBlockTileEntity(coordinates[0], coordinates[1], coordinates[2]);
+                if(tileEntity != null && tileEntity instanceof TileEntityEnergyCounter)
+                {
+                    TileEntityEnergyCounter counter  = (TileEntityEnergyCounter)tileEntity;
                     setField("activeData", true, nbtTagCompound, panel, updateSet);
-                    setField("energy", storage.getStored(), nbtTagCompound, panel, updateSet);
-                    setField("maxStorage", storage.getCapacity(), nbtTagCompound, panel, updateSet);
+                    setField("energy", counter.counter, nbtTagCompound, panel, updateSet);
                 }
                 else
                 {

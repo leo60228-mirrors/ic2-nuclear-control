@@ -23,8 +23,10 @@ import net.minecraft.src.forge.MinecraftForge;
 import net.minecraft.src.forge.MinecraftForgeClient;
 import net.minecraft.src.forge.Property;
 import net.minecraft.src.nuclearcontrol.BlockNuclearControlMain;
+import net.minecraft.src.nuclearcontrol.ContainerEnergyCounter;
 import net.minecraft.src.nuclearcontrol.ContainerInfoPanel;
 import net.minecraft.src.nuclearcontrol.ContainerRemoteThermo;
+import net.minecraft.src.nuclearcontrol.GuiEnergyCounter;
 import net.minecraft.src.nuclearcontrol.GuiHowlerAlarm;
 import net.minecraft.src.nuclearcontrol.GuiIC2Thermo;
 import net.minecraft.src.nuclearcontrol.GuiIndustrialAlarm;
@@ -35,6 +37,7 @@ import net.minecraft.src.nuclearcontrol.IRotation;
 import net.minecraft.src.nuclearcontrol.MsgProcessor;
 import net.minecraft.src.nuclearcontrol.ScreenManager;
 import net.minecraft.src.nuclearcontrol.SoundHelper;
+import net.minecraft.src.nuclearcontrol.TileEntityEnergyCounter;
 import net.minecraft.src.nuclearcontrol.TileEntityHowlerAlarm;
 import net.minecraft.src.nuclearcontrol.TileEntityIC2Thermo;
 import net.minecraft.src.nuclearcontrol.TileEntityIC2ThermoRenderer;
@@ -42,8 +45,8 @@ import net.minecraft.src.nuclearcontrol.TileEntityInfoPanel;
 import net.minecraft.src.nuclearcontrol.TileEntityInfoPanelRenderer;
 import net.minecraft.src.nuclearcontrol.TileEntityRemoteThermo;
 import net.minecraft.src.nuclearcontrol.TileEntityRemoteThermoRenderer;
-import net.minecraft.src.nuclearcontrol.Utils.FileHash;
 import net.minecraft.src.nuclearcontrol.panel.IPanelDataSource;
+import net.minecraft.src.nuclearcontrol.utils.FileHash;
 
 import org.lwjgl.opengl.GL11;
 
@@ -112,6 +115,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityRemoteThermo.class, "IC2RemoteThermo", renderRemoteThermo);
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityInfoPanel.class, "IC2NCInfoPanel", renderInfoPanel);
         ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityInfoPanelExtender.class, "IC2NCInfoPanelExtender");
+        ModLoader.registerTileEntity(net.minecraft.src.nuclearcontrol.TileEntityEnergyCounter.class, "IC2NCEnergyCounter");
         modelId = ModLoader.getUniqueBlockModelID(this, true);
         MinecraftForge.setGuiHandler(this, this);
         if(configuration!=null)
@@ -294,8 +298,10 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
             setPhrase(configuration, "item.ItemToolDigitalThermometer.name", "Digital Thermometer");
             setPhrase(configuration, "item.ItemRemoteSensorKit.name", "Remote Sensor Kit");
             setPhrase(configuration, "item.ItemEnergySensorKit.name", "Energy Sensor Kit");
+            setPhrase(configuration, "item.ItemCounterSensorKit.name", "Counter Sensor Kit");
             setPhraseRename(configuration, "item.ItemSensorLocationCard.name", "Sensor Location Card", "Reactor Sensor Location Card");
             setPhrase(configuration, "item.ItemEnergySensorLocationCard.name", "Energy Sensor Location Card");
+            setPhrase(configuration, "item.ItemCounterSensorLocationCard.name", "Counter Sensor Location Card");
             setPhrase(configuration, "item.ItemEnergyArrayLocationCard.name", "Energy Array Location Card");
             setPhrase(configuration, "item.ItemRangeUpgrade.name", "Range Upgrade");
             setPhrase(configuration, "item.ItemTimeCard.name", "Time Card");
@@ -305,6 +311,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
             setPhrase(configuration, "tile.blockRemoteThermo.name", "Remote Thermal Monitor");
             setPhraseRename(configuration, "tile.blockInfoPanel.name", "Reactor Information Panel", "Industrial Information Panel");
             setPhrase(configuration, "tile.blockInfoPanelExtender.name", "Information Panel Extender");
+            setPhrase(configuration, "tile.blockEnergyCounter.name", "Energy Counter");
 
             setPhrase(configuration, "msg.nc.HowlerAlarmSoundRange", "Sound range: %s");
             setPhrase(configuration, "msg.nc.HowlerAlarmSound", "Sound");
@@ -347,6 +354,7 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
             setPhrase(configuration, "msg.nc.cbInfoPanelEnergyPercentage", "Fill percentage");
             setPhrase(configuration, "msg.nc.EnergyCardQuantity", "Cards quantity: %d");
             
+            setPhrase(configuration, "msg.nc.Reset", "Reset");
             
             for(Map.Entry<String, Map<String, Property>> category : configuration.categories.entrySet())
             {
@@ -400,6 +408,9 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
             case BlockNuclearControlMain.DAMAGE_INFO_PANEL:
                 ContainerInfoPanel containerPanel = new ContainerInfoPanel(player, (TileEntityInfoPanel)tileEntity);
                 return new GuiInfoPanel(containerPanel);
+            case BlockNuclearControlMain.DAMAGE_ENERGY_COUNTER:
+                ContainerEnergyCounter containerCounter = new ContainerEnergyCounter(player, (TileEntityEnergyCounter)tileEntity);
+                return new GuiEnergyCounter(containerCounter);
             default:
                 return null;
         }

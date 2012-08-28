@@ -1,7 +1,5 @@
 package net.minecraft.src.nuclearcontrol;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,9 +7,10 @@ import java.util.List;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.StatCollector;
-import net.minecraft.src.nuclearcontrol.Utils.StringUtils;
 import net.minecraft.src.nuclearcontrol.panel.PanelSetting;
 import net.minecraft.src.nuclearcontrol.panel.PanelString;
+import net.minecraft.src.nuclearcontrol.utils.ItemStackUtils;
+import net.minecraft.src.nuclearcontrol.utils.StringUtils;
 
 public class ItemEnergyArrayLocationCard extends ItemEnergyArrayLocationCardBase
 {
@@ -23,14 +22,14 @@ public class ItemEnergyArrayLocationCard extends ItemEnergyArrayLocationCardBase
     @Override
     public void networkUpdate(String fieldName, int value, ItemStack itemStack)
     {
-        NBTTagCompound nbtTagCompound = getTagCompound(itemStack);
+        NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(itemStack);
         nbtTagCompound.setInteger(fieldName, value);
     }
     
     @Override
     public List<PanelString> getStringData(int displaySettings, ItemStack itemStack, boolean showLabels)
     {
-        NBTTagCompound nbtTagCompound = getTagCompound(itemStack);
+        NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(itemStack);
         boolean activeData = nbtTagCompound.getInteger("activeData")==1;
         if(!activeData)
             return null;
@@ -44,7 +43,7 @@ public class ItemEnergyArrayLocationCard extends ItemEnergyArrayLocationCardBase
         boolean showFree = (displaySettings & DISPLAY_FREE) > 0;
         boolean showStorage = (displaySettings & DISPLAY_STORAGE) > 0;
         boolean showPercentage = (displaySettings & DISPLAY_PERCENTAGE) > 0;
-        int cardCount =  getCardCount(itemStack);
+        int cardCount = getCardCount(itemStack);
         for(int i=0; i<cardCount; i++)
         {
             int energy =  nbtTagCompound.getInteger(String.format("_%denergy",i));

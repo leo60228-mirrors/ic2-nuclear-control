@@ -1,4 +1,4 @@
-package net.minecraft.src.nuclearcontrol.Utils;
+package net.minecraft.src.nuclearcontrol.utils;
 
 import java.io.File;
 import java.io.FileInputStream;

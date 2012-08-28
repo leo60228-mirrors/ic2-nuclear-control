@@ -12,11 +12,11 @@ import net.minecraft.src.nuclearcontrol.panel.PanelString;
 import net.minecraft.src.nuclearcontrol.utils.ItemStackUtils;
 import net.minecraft.src.nuclearcontrol.utils.StringUtils;
 
-public class ItemEnergySensorLocationCard extends ItemEnergySensorLocationCardBase
+public class ItemCardCounterSensorLocation extends ItemCardCounterSensorLocationBase
 {
     private static final String HINT_TEMPLATE = "x: %d, y: %d, z: %d";
 
-    public ItemEnergySensorLocationCard(int i, int iconIndex)
+    public ItemCardCounterSensorLocation(int i, int iconIndex)
     {
         super(i, iconIndex);
     }
@@ -37,30 +37,14 @@ public class ItemEnergySensorLocationCard extends ItemEnergySensorLocationCardBa
             return null;
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
-        int energy =  nbtTagCompound.getInteger("energy");
-        int storage =  nbtTagCompound.getInteger("maxStorage");
+        long lo =  nbtTagCompound.getInteger("energy-lo");
+        long hi =  nbtTagCompound.getInteger("energy-hi");
+        long energy = (hi<<32) | lo;
+
         if((displaySettings & DISPLAY_ENERGY) > 0)
         {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelEnergy", energy, showLabels); 
-            result.add(line);
-        }
-        if((displaySettings & DISPLAY_FREE) > 0)
-        {
-            line = new PanelString();
-            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelEnergyFree", storage - energy, showLabels); 
-            result.add(line);
-        }
-        if((displaySettings & DISPLAY_STORAGE) > 0)
-        {
-            line = new PanelString();
-            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelEnergyStorage", storage, showLabels); 
-            result.add(line);
-        }
-        if((displaySettings & DISPLAY_PERCENTAGE) > 0)
-        {
-            line = new PanelString();
-            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelEnergyPercentage", storage==0? 100:(energy*100/storage), showLabels); 
             result.add(line);
         }
         return result;
@@ -71,9 +55,6 @@ public class ItemEnergySensorLocationCard extends ItemEnergySensorLocationCardBa
     {
         List<PanelSetting> result = new ArrayList<PanelSetting>(3);
         result.add(new PanelSetting(StatCollector.translateToLocal("msg.nc.cbInfoPanelEnergyCurrent"), DISPLAY_ENERGY, CARD_TYPE));
-        result.add(new PanelSetting(StatCollector.translateToLocal("msg.nc.cbInfoPanelEnergyStorage"), DISPLAY_STORAGE, CARD_TYPE));
-        result.add(new PanelSetting(StatCollector.translateToLocal("msg.nc.cbInfoPanelEnergyFree"), DISPLAY_FREE, CARD_TYPE));
-        result.add(new PanelSetting(StatCollector.translateToLocal("msg.nc.cbInfoPanelEnergyPercentage"), DISPLAY_PERCENTAGE, CARD_TYPE));
         return result;
     }
 
