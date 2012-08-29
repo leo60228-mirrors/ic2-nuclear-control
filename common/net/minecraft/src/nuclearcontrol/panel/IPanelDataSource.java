@@ -15,6 +15,10 @@ public interface IPanelDataSource
     
     List<PanelSetting> getSettingsList();
     
+    String getTitle(ItemStack stack);
+
+    void setTitle(ItemStack stack, String title);
+
     int getCardType();
 
 }

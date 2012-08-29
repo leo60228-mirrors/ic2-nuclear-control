@@ -16,6 +16,23 @@ import org.lwjgl.opengl.GL11;
 
 public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
 {
+    
+    private static String implodeArray(String[] inputArray, String glueString) 
+    {
+        String output = "";
+        if (inputArray.length > 0) 
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i=0; i<inputArray.length; i++) {
+                if(inputArray[i]==null || inputArray[i].isEmpty())
+                    continue;
+                sb.append(glueString);
+                sb.append(inputArray[i]);
+            }
+            output = sb.toString().substring(1);
+        }
+        return output;
+    }
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float f)
@@ -151,15 +168,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
             int maxWidth = 1;
             for (PanelString panelString : data)
             {
-                String currentString;
-                if(panelString.textRight != null)
-                {
-                    currentString = panelString.textLeft + " "+panelString.textRight;
-                }
-                else
-                {
-                    currentString = panelString.textLeft;
-                }
+                String currentString = implodeArray(new String[]{panelString.textLeft, panelString.textCenter, panelString.textRight}," ");
                 maxWidth = Math.max(fontRenderer.getStringWidth(currentString), maxWidth);
             }
             maxWidth+=4;
@@ -199,10 +208,13 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
             int row = 0;
             for (PanelString panelString : data)
             {
-                fontRenderer.drawString(panelString.textLeft, offsetX-realWidth/2, 1+offsetY-realHeight/2 + row * lineHeight, panelString.colorLeft);
-                if(panelString.textRight  != null)
-                    fontRenderer.drawString(panelString.textRight, offsetX+realWidth/2-offsetX-fontRenderer.getStringWidth(panelString.textRight), 
-                                            offsetY - realHeight/2, panelString.colorRight);
+                if(panelString.textLeft != null)
+                    fontRenderer.drawString(panelString.textLeft, offsetX-realWidth/2, 1+offsetY-realHeight/2 + row * lineHeight, panelString.colorLeft);
+                if(panelString.textCenter != null)
+                    fontRenderer.drawString(panelString.textCenter, -fontRenderer.getStringWidth(panelString.textCenter)/2, offsetY - realHeight/2  + row * lineHeight, panelString.colorCenter);
+                if(panelString.textRight != null)
+                    fontRenderer.drawString(panelString.textRight, realWidth/2-fontRenderer.getStringWidth(panelString.textRight), 
+                                            offsetY - realHeight/2  + row * lineHeight, panelString.colorRight);
                 row++;
             }
 

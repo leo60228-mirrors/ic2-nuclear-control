@@ -30,6 +30,7 @@ public abstract class IC2NuclearControl extends NetworkMod implements IGuiHandle
 {
     protected static final int PACKET_ALARM = 1;
     protected static final int PACKET_SENSOR = 2;
+    protected static final int PACKET_SENSOR_TITLE = 3;
 
     public static final String LOG_PREFIX = "[IC2NuclearControl] ";
     public static final String MSG_PREFIX = "ic2:nc:c7518eb6:";

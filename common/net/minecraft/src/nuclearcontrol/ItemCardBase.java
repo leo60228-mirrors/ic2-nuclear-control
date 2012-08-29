@@ -11,6 +11,7 @@ import net.minecraft.src.forge.ITextureProvider;
 import net.minecraft.src.nuclearcontrol.panel.IPanelDataSource;
 import net.minecraft.src.nuclearcontrol.panel.PanelSetting;
 import net.minecraft.src.nuclearcontrol.panel.PanelString;
+import net.minecraft.src.nuclearcontrol.utils.ItemStackUtils;
 
 public abstract class ItemCardBase extends Item implements ITextureProvider, IPanelDataSource
 {
@@ -72,6 +73,22 @@ public abstract class ItemCardBase extends Item implements ITextureProvider, IPa
             nbtTagCompound.getInteger("z")  
         };
         return coordinates;
+    }
+    
+    
+    public String getTitle(ItemStack stack)
+    {
+        if(!(stack.getItem() instanceof ItemCardBase))
+            return "";
+        NBTTagCompound nbtTagCompound = stack.getTagCompound();
+        if (nbtTagCompound == null)
+            return "";
+        return nbtTagCompound.getString("title");
+    }
+
+    public void setTitle(ItemStack stack, String title)
+    {
+        ItemStackUtils.getTagCompound(stack).setString("title", title);
     }
     
     @Override

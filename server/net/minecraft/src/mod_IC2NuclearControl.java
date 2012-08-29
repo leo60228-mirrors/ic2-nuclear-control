@@ -21,6 +21,7 @@ import net.minecraft.src.nuclearcontrol.TileEntityEnergyCounter;
 import net.minecraft.src.nuclearcontrol.TileEntityHowlerAlarm;
 import net.minecraft.src.nuclearcontrol.TileEntityInfoPanel;
 import net.minecraft.src.nuclearcontrol.TileEntityRemoteThermo;
+import net.minecraft.src.nuclearcontrol.panel.IPanelDataSource;
 
 public class mod_IC2NuclearControl extends IC2NuclearControl
 {
@@ -147,10 +148,20 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
             int z = dataStream.readInt();
             String soundName = dataStream.readUTF();
             EntityPlayerMP player = ((NetServerHandler)network.getNetHandler()).getPlayerEntity(); 
-            TileEntity alarm = player.worldObj.getBlockTileEntity(x, y, z);
-            if(alarm instanceof TileEntityHowlerAlarm)
+            TileEntity tileEntity = player.worldObj.getBlockTileEntity(x, y, z);
+            if(tileEntity instanceof TileEntityHowlerAlarm)
             {
-                ((TileEntityHowlerAlarm)alarm).setSoundName(soundName);
+                ((TileEntityHowlerAlarm)tileEntity).setSoundName(soundName);
+            }
+            else if(tileEntity instanceof TileEntityInfoPanel)
+            {
+                ItemStack stack = ((TileEntityInfoPanel)tileEntity).getStackInSlot(TileEntityInfoPanel.SLOT_CARD);
+                if(stack == null || !(stack.getItem() instanceof IPanelDataSource))
+                {
+                    return;
+                }
+                IPanelDataSource card = (IPanelDataSource)stack.getItem();
+                card.setTitle(stack, soundName);
             }
         }
         catch(IOException e)
@@ -210,4 +221,52 @@ public class mod_IC2NuclearControl extends IC2NuclearControl
             e.printStackTrace();
         }
     }
+    
+    public static void setSensorCardTitle(TileEntityInfoPanel panel, String title)
+    {
+        if(title==null || panel==null)
+            return;
+        try
+        {
+            Packet250CustomPayload packet = null;
+            
+            Iterator iterator = panel.worldObj.playerEntities.iterator();
+            int maxDist = ModLoader.getMinecraftServerInstance().configManager.getMaxTrackingDistance() + 16;
+            int maxDistSq = maxDist * maxDist;
+
+            while (iterator.hasNext())
+            {
+                EntityPlayerMP player = (EntityPlayerMP)iterator.next();
+                int dx = panel.xCoord - (int)player.posX;
+                int dy = panel.xCoord - (int)player.posX;
+                float distanceSq = dx*dx+dy*dy;
+                
+                if (distanceSq > maxDistSq)
+                {
+                    continue;
+                }
+
+                if(packet == null)
+                {
+                    packet = new Packet250CustomPayload();
+                    ByteArrayOutputStream arrayOutput = new ByteArrayOutputStream();
+                    DataOutputStream output = new DataOutputStream(arrayOutput);
+                    output.writeShort(PACKET_SENSOR_TITLE);
+                    output.writeInt(panel.xCoord);
+                    output.writeInt(panel.yCoord);
+                    output.writeInt(panel.zCoord);
+                    output.writeUTF(title);
+                    packet.channel = NETWORK_CHANNEL_NAME;
+                    packet.isChunkDataPacket = false;
+                    packet.data = arrayOutput.toByteArray();
+                    packet.length = arrayOutput.size();
+                }
+                player.playerNetServerHandler.sendPacket(packet);
+            }
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
 }

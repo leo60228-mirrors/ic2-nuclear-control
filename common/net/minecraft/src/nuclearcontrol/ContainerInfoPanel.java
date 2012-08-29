@@ -18,23 +18,23 @@ public class ContainerInfoPanel extends Container
         this.player = player; 
         
         //card
-        addSlot(new SlotFilter(panel, 0, 8, 18));
+        addSlot(new SlotFilter(panel, 0, 8, 24+18));
         
         //upgrade
-        addSlot(new SlotFilter(panel, 1, 8, 36));
+        addSlot(new SlotFilter(panel, 1, 8, 24+36));
 
         //inventory
         for (int i = 0; i < 3; i++)
         {
             for (int k = 0; k < 9; k++)
             {
-                addSlot(new Slot(player.inventory, k + i * 9 + 9, 8 + k * 18, 84 + i * 18));
+                addSlot(new Slot(player.inventory, k + i * 9 + 9, 8 + k * 18, 24 + 84 + i * 18));
             }
         }
 
         for (int j = 0; j < 9; j++)
         {
-            addSlot(new Slot(player.inventory, j, 8 + j * 18, 142));
+            addSlot(new Slot(player.inventory, j, 8 + j * 18, 24 + 142));
         }
     }
 

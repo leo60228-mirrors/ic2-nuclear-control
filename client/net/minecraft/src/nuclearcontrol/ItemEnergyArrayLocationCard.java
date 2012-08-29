@@ -44,6 +44,13 @@ public class ItemEnergyArrayLocationCard extends ItemEnergyArrayLocationCardBase
         boolean showStorage = (displaySettings & DISPLAY_STORAGE) > 0;
         boolean showPercentage = (displaySettings & DISPLAY_PERCENTAGE) > 0;
         int cardCount = getCardCount(itemStack);
+        String title = nbtTagCompound.getString("title");
+        if(title!=null && !title.isEmpty())
+        {
+            line = new PanelString();
+            line.textCenter = title; 
+            result.add(line);
+        }
         for(int i=0; i<cardCount; i++)
         {
             int energy =  nbtTagCompound.getInteger(String.format("_%denergy",i));
@@ -144,6 +151,12 @@ public class ItemEnergyArrayLocationCard extends ItemEnergyArrayLocationCardBase
         int cardCount = getCardCount(itemStack);
         if(cardCount > 0)
         {
+            NBTTagCompound nbtTagCompound = itemStack.getTagCompound();
+            String title = nbtTagCompound.getString("title");
+            if(title != null && !title.isEmpty())
+            {
+                info.add(title);
+            }
             String hint = String.format(StatCollector.translateToLocal("msg.nc.EnergyCardQuantity"), cardCount);
             info.add(hint);
         }

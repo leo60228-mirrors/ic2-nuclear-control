@@ -445,6 +445,10 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
         DataInputStream dataStream = new DataInputStream(new ByteArrayInputStream(data));
         try
         {
+            World world;
+            int x,y,z;
+            TileEntity ent;
+            TileEntityInfoPanel panel;
             short packetType = dataStream.readShort();
             switch (packetType)
             {
@@ -453,16 +457,16 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
                     serverAllowedAlarms = new ArrayList<String>(Arrays.asList(dataStream.readUTF().split(",")));
                     break;
                 case PACKET_SENSOR:
-                    World world = ModLoader.getMinecraftInstance().theWorld;
-                    int x = dataStream.readInt();
-                    int y = dataStream.readInt();
-                    int z = dataStream.readInt();
-                    TileEntity ent = world.getBlockTileEntity(x, y, z);
+                    world = ModLoader.getMinecraftInstance().theWorld;
+                    x = dataStream.readInt();
+                    y = dataStream.readInt();
+                    z = dataStream.readInt();
+                    ent = world.getBlockTileEntity(x, y, z);
                     if(ent == null || !(ent instanceof TileEntityInfoPanel))
                     {
                         return;
                     }
-                    TileEntityInfoPanel panel = (TileEntityInfoPanel)ent;
+                    panel = (TileEntityInfoPanel)ent;
                     ItemStack stack = panel.getStackInSlot(TileEntityInfoPanel.SLOT_CARD);
                     if(stack == null || !(stack.getItem() instanceof IPanelDataSource))
                     {
@@ -476,6 +480,24 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
                         int value = dataStream.readInt();
                         card.networkUpdate(name, value, stack);
                     }
+                    break;
+                case PACKET_SENSOR_TITLE:
+                    world = ModLoader.getMinecraftInstance().theWorld;
+                    x = dataStream.readInt();
+                    y = dataStream.readInt();
+                    z = dataStream.readInt();
+                    ent = world.getBlockTileEntity(x, y, z);
+                    if(ent == null || !(ent instanceof TileEntityInfoPanel))
+                    {
+                        return;
+                    }
+                    panel = (TileEntityInfoPanel)ent;
+                    ItemStack itemStack = panel.getStackInSlot(TileEntityInfoPanel.SLOT_CARD);
+                    if(itemStack == null || !(itemStack.getItem() instanceof IPanelDataSource))
+                    {
+                        return;
+                    }
+                    ((IPanelDataSource)itemStack.getItem()).setTitle(itemStack, dataStream.readUTF());
                     break;
     
                 default:

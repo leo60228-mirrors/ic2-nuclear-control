@@ -28,7 +28,7 @@ public class ItemCardCounterSensorLocation extends ItemCardCounterSensorLocation
         nbtTagCompound.setInteger(fieldName, value);
     }
     
-        @Override
+    @Override
     public List<PanelString> getStringData(int displaySettings, ItemStack itemStack, boolean showLabels)
     {
         NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(itemStack);
@@ -41,6 +41,13 @@ public class ItemCardCounterSensorLocation extends ItemCardCounterSensorLocation
         long hi =  nbtTagCompound.getInteger("energy-hi");
         long energy = (hi<<32) | lo;
 
+        String title = nbtTagCompound.getString("title");
+        if(title!=null && !title.isEmpty())
+        {
+            line = new PanelString();
+            line.textCenter = title; 
+            result.add(line);
+        }
         if((displaySettings & DISPLAY_ENERGY) > 0)
         {
             line = new PanelString();
@@ -64,6 +71,12 @@ public class ItemCardCounterSensorLocation extends ItemCardCounterSensorLocation
         int[] coordinates = getCoordinates(itemStack);
         if(coordinates!=null)
         {
+            NBTTagCompound nbtTagCompound = itemStack.getTagCompound();
+            String title = nbtTagCompound.getString("title");
+            if(title != null && !title.isEmpty())
+            {
+                info.add(title);
+            }
             String hint = String.format(HINT_TEMPLATE, coordinates[0], coordinates[1], coordinates[2]);
             info.add(hint);
         }

@@ -41,6 +41,13 @@ public class ItemSensorLocationCard extends ItemSensorLocationCardBase
         List<PanelString> result = new LinkedList<PanelString>();
         String text;
         PanelString line;
+        String title = nbtTagCompound.getString("title");
+        if(title!=null && !title.isEmpty())
+        {
+            line = new PanelString();
+            line.textCenter = title; 
+            result.add(line);
+        }
         if((displaySettings & DISPLAY_HEAT) > 0)
         {
             line = new PanelString();
@@ -81,6 +88,7 @@ public class ItemSensorLocationCard extends ItemSensorLocationCardBase
         int txtColor = 0;
         if((displaySettings & DISPLAY_ONOFF) > 0)
         {
+            int shift = title!=null && !title.isEmpty()?1:0;
             boolean reactorPowered = nbtTagCompound.getInteger("reactorPowered")==1;
             if(reactorPowered)
             {
@@ -92,9 +100,9 @@ public class ItemSensorLocationCard extends ItemSensorLocationCardBase
                 txtColor = 0xff0000;
                 text = StatCollector.translateToLocal("msg.nc.InfoPanelOff");
             }
-            if(result.size()>0)
+            if(result.size()>shift)
             {
-                PanelString firstLine = result.get(0);
+                PanelString firstLine = result.get(shift);
                 firstLine.textRight = text;
                 firstLine.colorRight = txtColor;
             }
@@ -128,6 +136,12 @@ public class ItemSensorLocationCard extends ItemSensorLocationCardBase
         int[] coordinates = getCoordinates(itemStack);
         if(coordinates!=null)
         {
+            NBTTagCompound nbtTagCompound = itemStack.getTagCompound();
+            String title = nbtTagCompound.getString("title");
+            if(title != null && !title.isEmpty())
+            {
+                info.add(title);
+            }
             String hint = String.format(HINT_TEMPLATE, coordinates[0], coordinates[1], coordinates[2]);
             info.add(hint);
         }
