@@ -29,7 +29,9 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
                 sb.append(glueString);
                 sb.append(inputArray[i]);
             }
-            output = sb.toString().substring(1);
+            output = sb.toString();
+            if(output.length()>1)
+                output = output.substring(1);
         }
         return output;
     }
