@@ -32,9 +32,9 @@ public class ItemCardCounterSensorLocation extends ItemCardCounterSensorLocation
     public List<PanelString> getStringData(int displaySettings, ItemStack itemStack, boolean showLabels)
     {
         NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(itemStack);
-        boolean activeData = nbtTagCompound.getInteger("activeData")==1;
-        if(!activeData)
-            return null;
+        int state = nbtTagCompound.getInteger("state");
+        if(state != STATE_OK)
+            return StringUtils.getStateMessage(state);
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
         long lo =  nbtTagCompound.getInteger("energy-lo");

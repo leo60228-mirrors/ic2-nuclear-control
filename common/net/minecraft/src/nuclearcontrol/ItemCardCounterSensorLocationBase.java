@@ -30,7 +30,7 @@ public abstract class ItemCardCounterSensorLocationBase extends ItemCardBase
         Map<String, Integer> updateSet = new HashMap<String, Integer>();
         if(coordinates == null)
         {
-            setField("activeData", false, nbtTagCompound, panel, updateSet);
+            setField("state", STATE_INVALID_CARD, nbtTagCompound, panel, updateSet);
         }
         else
         {
@@ -41,7 +41,7 @@ public abstract class ItemCardCounterSensorLocationBase extends ItemCardBase
                 Math.abs(dy) > range || 
                 Math.abs(dz) > range)
             {
-                setField("activeData", false, nbtTagCompound, panel, updateSet);
+                setField("state", STATE_OUT_OF_RANGE, nbtTagCompound, panel, updateSet);
             }
             else
             {
@@ -49,12 +49,12 @@ public abstract class ItemCardCounterSensorLocationBase extends ItemCardBase
                 if(tileEntity != null && tileEntity instanceof TileEntityEnergyCounter)
                 {
                     TileEntityEnergyCounter counter  = (TileEntityEnergyCounter)tileEntity;
-                    setField("activeData", true, nbtTagCompound, panel, updateSet);
+                    setField("state", STATE_OK, nbtTagCompound, panel, updateSet);
                     setField("energy", counter.counter, nbtTagCompound, panel, updateSet);
                 }
                 else
                 {
-                    setField("activeData", false, nbtTagCompound, panel, updateSet);
+                    setField("state", STATE_NO_TARGET, nbtTagCompound, panel, updateSet);
                 }
             }
         }

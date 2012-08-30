@@ -89,11 +89,12 @@ public abstract class ItemEnergyArrayLocationCardBase extends ItemCardBase
         Map<String, Integer> updateSet = new HashMap<String, Integer>();
         if(cardCount == 0)
         {
-            setField("activeData", false, nbtTagCompound, panel, updateSet);
+            setField("state", STATE_INVALID_CARD, nbtTagCompound, panel, updateSet);
         }
         else
         {
             boolean foundAny = false;
+            boolean outOfRange = false;
             for(int i=0; i<cardCount; i++)
             {
                 int[] coordinates = getCoordinates(stack, i);
@@ -108,16 +109,23 @@ public abstract class ItemEnergyArrayLocationCardBase extends ItemCardBase
                             coordinates[0], coordinates[1], coordinates[2]);
                     if(storage != null)
                     {
-                        setField("activeData", true, nbtTagCompound, panel, updateSet);
+                        setField("state", STATE_OK, nbtTagCompound, panel, updateSet);
                         setField(String.format("_%denergy", i), storage.getStored(), nbtTagCompound, panel, updateSet);
                         setField(String.format("_%dmaxStorage", i), storage.getCapacity(), nbtTagCompound, panel, updateSet);
                         foundAny = true;
                     }
                 }
+                else
+                {
+                    outOfRange = true;
+                }
             }
             if(!foundAny)
             {
-                setField("activeData", false, nbtTagCompound, panel, updateSet);
+                if(outOfRange)
+                    setField("state", STATE_OUT_OF_RANGE, nbtTagCompound, panel, updateSet);
+                else
+                    setField("state", STATE_NO_TARGET, nbtTagCompound, panel, updateSet);
             }
         }
         if(!updateSet.isEmpty())

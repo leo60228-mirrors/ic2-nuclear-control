@@ -40,7 +40,7 @@ public abstract class ItemSensorLocationCardBase extends ItemCardBase
         Map<String, Integer> updateSet = new HashMap<String, Integer>();
         if(coordinates == null)
         {
-            setField("activeData", false, nbtTagCompound, panel, updateSet);
+            setField("state", STATE_INVALID_CARD, nbtTagCompound, panel, updateSet);
             return;
         }
         int dx = coordinates[0] - panel.xCoord;
@@ -50,7 +50,7 @@ public abstract class ItemSensorLocationCardBase extends ItemCardBase
             Math.abs(dy) > range || 
             Math.abs(dz) > range)
         {
-            setField("activeData", false, nbtTagCompound, panel, updateSet);
+            setField("state", STATE_OUT_OF_RANGE, nbtTagCompound, panel, updateSet);
         }
         else
         {
@@ -58,7 +58,7 @@ public abstract class ItemSensorLocationCardBase extends ItemCardBase
                     coordinates[0], coordinates[1], coordinates[2]);
             if(reactor != null)
             {
-                setField("activeData", true, nbtTagCompound, panel, updateSet);
+                setField("state", STATE_OK, nbtTagCompound, panel, updateSet);
                 setField("heat", reactor.getHeat(), nbtTagCompound, panel, updateSet);
                 setField("maxHeat", reactor.getMaxHeat(), nbtTagCompound, panel, updateSet);
                 setField("reactorPowered", NuclearHelper.isProducing(reactor), nbtTagCompound, panel, updateSet);
@@ -80,7 +80,7 @@ public abstract class ItemSensorLocationCardBase extends ItemCardBase
             }
             else
             {
-                setField("activeData", false, nbtTagCompound, panel, updateSet);
+                setField("state", STATE_NO_TARGET, nbtTagCompound, panel, updateSet);
             }
         }
         if(!updateSet.isEmpty())

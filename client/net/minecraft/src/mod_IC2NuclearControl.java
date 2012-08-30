@@ -321,6 +321,10 @@ public class mod_IC2NuclearControl extends IC2NuclearControl implements ISaveEve
             setPhrase(configuration, "msg.nc.ThermoDigital", "Hull heat: %s (Water evaporate: %s / melting: %s)");
             setPhrase(configuration, "msg.nc.SensorKit", "Remote Sensor mounted, Sensor Location Card received");
 
+            setPhrase(configuration, "msg.nc.InfoPanelOutOfRange", "Out Of Range");
+            setPhrase(configuration, "msg.nc.InfoPanelInvalidCard", "Invalid Card");
+            setPhrase(configuration, "msg.nc.InfoPanelNoTarget", "Target Not Found");
+            
             setPhrase(configuration, "msg.nc.InfoPanelOn", "On");
             setPhrase(configuration, "msg.nc.InfoPanelOff", "Off");
             setPhrase(configuration, "msg.nc.InfoPanelHeat", "T: %s");

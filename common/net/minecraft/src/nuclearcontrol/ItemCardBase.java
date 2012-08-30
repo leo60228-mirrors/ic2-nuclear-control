@@ -15,6 +15,11 @@ import net.minecraft.src.nuclearcontrol.utils.ItemStackUtils;
 
 public abstract class ItemCardBase extends Item implements ITextureProvider, IPanelDataSource
 {
+    public static final int STATE_OK = 1;
+    public static final int STATE_NO_TARGET = 2;
+    public static final int STATE_OUT_OF_RANGE = 3;
+    public static final int STATE_INVALID_CARD = 4;
+    
   
     protected void setField(String name, int value, NBTTagCompound nbtTagCompound, TileEntityInfoPanel panel, Map<String, Integer> updateSet)
     {

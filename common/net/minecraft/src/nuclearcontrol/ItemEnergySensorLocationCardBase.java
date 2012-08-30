@@ -34,7 +34,7 @@ public abstract class ItemEnergySensorLocationCardBase extends ItemCardBase
         Map<String, Integer> updateSet = new HashMap<String, Integer>();
         if(coordinates == null)
         {
-            setField("activeData", false, nbtTagCompound, panel, updateSet);
+            setField("state", STATE_INVALID_CARD, nbtTagCompound, panel, updateSet);
         }
         else
         {
@@ -45,20 +45,20 @@ public abstract class ItemEnergySensorLocationCardBase extends ItemCardBase
                 Math.abs(dy) > range || 
                 Math.abs(dz) > range)
             {
-                setField("activeData", false, nbtTagCompound, panel, updateSet);
+                setField("state", STATE_OUT_OF_RANGE, nbtTagCompound, panel, updateSet);
             }
             else
             {
                 IEnergyStorage storage = EnergyStorageHelper.getStorageAt(panel.worldObj, 
                         coordinates[0], coordinates[1], coordinates[2]);
                 if(storage != null){
-                    setField("activeData", true, nbtTagCompound, panel, updateSet);
+                    setField("state", STATE_OK, nbtTagCompound, panel, updateSet);
                     setField("energy", storage.getStored(), nbtTagCompound, panel, updateSet);
                     setField("maxStorage", storage.getCapacity(), nbtTagCompound, panel, updateSet);
                 }
                 else
                 {
-                    setField("activeData", false, nbtTagCompound, panel, updateSet);
+                    setField("state", STATE_NO_TARGET, nbtTagCompound, panel, updateSet);
                 }
             }
         }
