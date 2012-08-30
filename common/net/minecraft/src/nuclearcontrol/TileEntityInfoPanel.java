@@ -217,7 +217,8 @@ public class TileEntityInfoPanel extends TileEntity implements
         facing = 0;
         prevFacing = 0;
         prevRotation = 0;
-        rotation = 0;        
+        rotation = 0;
+        showLabels = true;
     }
     
     @Override
