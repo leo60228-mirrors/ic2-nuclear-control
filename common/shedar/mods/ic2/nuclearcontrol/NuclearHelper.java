@@ -74,7 +74,7 @@ public class NuclearHelper {
 	public static boolean isProducing(IReactor reactor)
 	{
 	    ChunkCoordinates position =  reactor.getPosition();
-	    return !reactor.getWorld().isBlockIndirectlyGettingPowered(position.posX, position.posY, position.posZ);
+	    return reactor.getWorld().isBlockIndirectlyGettingPowered(position.posX, position.posY, position.posZ);
 	}
 	
 }

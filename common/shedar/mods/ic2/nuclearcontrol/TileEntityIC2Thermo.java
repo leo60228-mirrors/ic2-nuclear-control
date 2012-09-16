@@ -138,17 +138,17 @@ public class TileEntityIC2Thermo extends TileEntity implements
             NetworkHelper.updateTileEntityField(this, "heatLevel");
         }
         prevHeatLevel = heatLevel;
-        mappedHeatLevel = (h / 100) * 100;
+        mappedHeatLevel = h;
     }    
 
     public void setHeatLevelWithoutNotify(int h)
     {
     	heatLevel = h;
         prevHeatLevel = heatLevel;
-        mappedHeatLevel = (h/100)*100;
+        mappedHeatLevel = h;
     }
     
-    public int getHeatLevel()
+    public Integer getHeatLevel()
     {
     	return heatLevel;
     }
@@ -157,13 +157,6 @@ public class TileEntityIC2Thermo extends TileEntity implements
     public void readFromNBT(NBTTagCompound nbttagcompound)
     {
         super.readFromNBT(nbttagcompound);
-        if(nbttagcompound.hasKey("SliderValue"))
-        {//old mods backward compatibility
-            float sliderValue = nbttagcompound.getFloat("SliderValue");
-            int i = 500+(int)Math.floor(14500F * sliderValue);
-            setHeatLevelWithoutNotify(i);
-        }
-        else
         if(nbttagcompound.hasKey("heatLevel")){
         	int heat = nbttagcompound.getInteger("heatLevel");
         	setHeatLevelWithoutNotify(heat);

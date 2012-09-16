@@ -72,16 +72,18 @@ public class ItemCardReactorSensorLocation extends ItemCardBase
                 IInventory inventory = (IInventory)reactor; 
                 int slotCount = inventory.getSizeInventory();
                 int timeLeft = 0;
-                int uraniumId = Items.getItem("uraniumCell").itemID;
+                int uraniumId1 = Items.getItem("reactorUraniumSimple").itemID;
+                int uraniumId2 = Items.getItem("reactorUraniumDual").itemID;
+                int uraniumId3 = Items.getItem("reactorUraniumQuad").itemID;
                 for(int i = 0; i < slotCount; i++)
                 {
                     ItemStack rStack = inventory.getStackInSlot(i);
-                    if(rStack!=null && rStack.itemID == uraniumId)
+                    if(rStack!=null && (rStack.itemID == uraniumId1 || rStack.itemID == uraniumId2 || rStack.itemID == uraniumId3))
                     {
                         timeLeft = Math.max(timeLeft, rStack.getMaxDamage() - rStack.getItemDamage());
                     }
                 }
-                setField("timeLeft", timeLeft, nbtTagCompound, panel, updateSet);
+                setField("timeLeft", timeLeft*reactor.getTickRate()/20, nbtTagCompound, panel, updateSet);
             }
             else
             {

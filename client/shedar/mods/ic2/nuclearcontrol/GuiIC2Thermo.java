@@ -1,7 +1,10 @@
 package shedar.mods.ic2.nuclearcontrol;
 
+import net.minecraft.src.GuiButton;
 import net.minecraft.src.GuiContainer;
+import net.minecraft.src.GuiTextField;
 import net.minecraft.src.StatCollector;
+import net.minecraft.src.ic2.api.NetworkHelper;
 
 import org.lwjgl.opengl.GL11;
 
@@ -12,7 +15,7 @@ import cpw.mods.fml.common.asm.SideOnly;
 public class GuiIC2Thermo extends GuiContainer
 {
     private TileEntityIC2Thermo thermo;
-    private GuiRemoteThermoSlider slider;
+    private GuiTextField textboxHeat = null;
     private String name;
     
     public GuiIC2Thermo(TileEntityIC2Thermo thermo)
@@ -23,18 +26,62 @@ public class GuiIC2Thermo extends GuiContainer
         this.thermo = thermo;
         name = StatCollector.translateToLocal("tile.blockThermalMonitor.name");
     }
+    
+    private void updateHeat(int delta)
+    {
+        if(textboxHeat != null)
+        {
+            int heat = 0;
+            try
+            {
+                String value = textboxHeat.getText();
+                if(!"".equals(value))
+                    heat = Integer.parseInt(value);
+            }catch (NumberFormatException e) {
+                // do noting
+            }
+            heat+=delta;
+            if(heat<0)
+                heat = 0;
+            if(heat >= 1000000)
+                heat = 1000000;
+            if(thermo.getHeatLevel().intValue()!=heat){
+                thermo.setHeatLevel(heat);
+                NetworkHelper.initiateClientTileEntityEvent(thermo, heat);
+            }
+            textboxHeat.setText(new Integer(heat).toString());
+        }
+    }
 
     @SuppressWarnings("unchecked")
+    @Override
     public void initGui()
     {
         super.initGui();
         controlList.clear();
-        guiLeft = (this.width - xSize) / 2;
-        guiTop = (this.height - ySize) / 2;
-        slider = new GuiRemoteThermoSlider(3, guiLeft+5, guiTop + 33, 
-                StatCollector.translateToLocal("msg.nc.ThermalMonitorSignalAt"), 
-                thermo);
-        controlList.add(slider);
+        this.controlList.add(new CompactButton(0, guiLeft + 47, guiTop + 20, 22, 12, "-1"));
+        this.controlList.add(new CompactButton(1, guiLeft + 47, guiTop + 31, 22, 12, "-10"));
+        this.controlList.add(new CompactButton(2, guiLeft + 12, guiTop + 20, 36, 12, "-100"));
+        this.controlList.add(new CompactButton(3, guiLeft + 12, guiTop + 31, 36, 12, "-1000"));
+        this.controlList.add(new CompactButton(4, guiLeft + 12, guiTop + 42, 57, 12, "-10000"));
+        
+        this.controlList.add(new CompactButton(5, guiLeft + 122, guiTop + 20, 22, 12, "+1"));
+        this.controlList.add(new CompactButton(6, guiLeft + 122, guiTop + 31, 22, 12, "+10"));
+        this.controlList.add(new CompactButton(7, guiLeft + 143, guiTop + 20, 36, 12, "+100"));
+        this.controlList.add(new CompactButton(8, guiLeft + 143, guiTop + 31, 36, 12, "+1000"));
+        this.controlList.add(new CompactButton(9, guiLeft + 122, guiTop + 42, 57, 12, "+10000"));
+        
+        textboxHeat = new GuiTextField(fontRenderer, 70, 21, 51, 12);
+        textboxHeat.setFocused(true);
+        textboxHeat.setText(thermo.getHeatLevel().toString());
+    }
+
+    @Override
+    public void updateScreen()
+    {
+        super.updateScreen();
+        if(textboxHeat!=null)
+            textboxHeat.updateCursorCounter();
     }
     
     @Override
@@ -47,21 +94,22 @@ public class GuiIC2Thermo extends GuiContainer
     protected void drawGuiContainerForegroundLayer()
     {
         fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
+        if(textboxHeat != null)
+            textboxHeat.drawTextBox();    
     }
-
+    
     @Override
-    protected void mouseMovedOrUp(int mouseX, int mouseY, int which)
+    public void onGuiClosed()
     {
-        super.mouseMovedOrUp(mouseX, mouseY, which);
-        if((which == 0 || which == 1) && slider.dragging )
-        {
-            slider.mouseReleased(mouseX, mouseY);
-        }
-        else
-        {
-            slider.checkMouseWheel(mouseX, mouseY);
-        }
-    }
+        updateHeat(0);
+        super.onGuiClosed();
+    }    
+    
+    @Override protected void actionPerformed(GuiButton button)
+    {
+        int delta = Integer.parseInt(button.displayString);
+        updateHeat(delta);
+    };
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3)
@@ -73,5 +121,21 @@ public class GuiIC2Thermo extends GuiContainer
         int top = (height - ySize) / 2;
         drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
     }
-    
+
+    @Override
+    protected void keyTyped(char par1, int par2)
+    {
+        if (par2 == 1)//Esc
+        {
+            mc.thePlayer.closeScreen();
+        }
+        else if(par1 == 13)//Enter
+        {
+            updateHeat(0);
+        }
+        else if (textboxHeat!=null &&  textboxHeat.isFocused() && (Character.isDigit(par1) || par1 == 0 || par1 == 8))
+        {
+            textboxHeat.textboxKeyTyped(par1, par2);
+        }
+    }    
 }

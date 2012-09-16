@@ -20,7 +20,7 @@ public class ContainerRemoteThermo extends Container
         this.player = player; 
         
         //energy charger
-        addSlotToContainer(new SlotFilter(remoteThermo, 0, 27, 52));
+        addSlotToContainer(new SlotFilter(remoteThermo, 0, 13, 53));
         
         //upgrades
         addSlotToContainer(new SlotFilter(remoteThermo, 1, 190, 8));
