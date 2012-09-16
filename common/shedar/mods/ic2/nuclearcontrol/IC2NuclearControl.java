@@ -171,7 +171,7 @@ public class IC2NuclearControl
                 {
                     " A ", "FTF", 
                         Character.valueOf('A'), Items.getItem("advancedCircuit"), 
-                        Character.valueOf('F'), Items.getItem("glassFiberCableBlock"), 
+                        Character.valueOf('F'), Items.getItem("glassFiberCableItem"), 
                         Character.valueOf('T'), Items.getItem("mvTransformer")
                 });
         Ic2Recipes.addCraftingRecipe(new ItemStack(itemCounterSensorKit, 1), new Object[] 
