@@ -1,7 +1,12 @@
 package shedar.mods.ic2.nuclearcontrol;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import net.minecraft.src.Block;
@@ -32,6 +37,8 @@ import cpw.mods.fml.common.network.NetworkRegistry;
             packetHandler = PacketHandler.class, connectionHandler = ConnectionHandler.class)
 public class IC2NuclearControl
 {
+    public static final String  VER = "1.3.1";
+    
     public static final String LOG_PREFIX = "[IC2NuclearControl] ";
     public static final String NETWORK_CHANNEL_NAME = "NuclearControl";
     
@@ -47,7 +54,6 @@ public class IC2NuclearControl
     protected File configFile;
     protected File configDir;
     
-    public boolean isClient;
     public String allowedAlarms;
     public List<String> serverAllowedAlarms;
     public Item itemToolThermometer;
@@ -74,6 +80,9 @@ public class IC2NuclearControl
     public int IC2WrenchId;
     public int IC2ElectricWrenchId;
     
+    private String playerId;
+    private Boolean statEnabled;
+    public boolean isClient;
     
     
     
@@ -283,6 +292,28 @@ public class IC2NuclearControl
         {
             MinecraftForgeClient.preloadTexture("/img/texture_thermo.png");
             LanguageHelper.addNames(new File(configDir, CONFIG_NUCLEAR_CONTROL_LANG));
+            playerId = configuration.getOrCreateProperty("uuid", Configuration.CATEGORY_GENERAL, UUID.randomUUID().toString()).value.replaceAll(" ", "");
+            statEnabled = configuration.getOrCreateBooleanProperty("stat", Configuration.CATEGORY_GENERAL, true).getBoolean(true);
+            if(statEnabled)
+            {
+                URL url;
+                try
+                {
+                    url = new URL("http://nc.bqt.me/stat?user="+playerId+"&version="+VER);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setConnectTimeout(1000);
+                    connection.setReadTimeout(1000);
+                    connection.getInputStream();
+                } catch (MalformedURLException e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (IOException e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
         }
         initBlocks(configuration);
         registerBlocks();
