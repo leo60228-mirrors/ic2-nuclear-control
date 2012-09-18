@@ -107,7 +107,7 @@ public class GuiIC2Thermo extends GuiContainer
     
     @Override protected void actionPerformed(GuiButton button)
     {
-        int delta = Integer.parseInt(button.displayString);
+        int delta = Integer.parseInt(button.displayString.replace("+", ""));
         updateHeat(delta);
     };
 

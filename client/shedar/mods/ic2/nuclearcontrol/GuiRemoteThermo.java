@@ -109,7 +109,7 @@ public class GuiRemoteThermo extends GuiContainer
     
     @Override protected void actionPerformed(GuiButton button)
     {
-        int delta = Integer.parseInt(button.displayString);
+        int delta = Integer.parseInt(button.displayString.replace("+", ""));
         updateHeat(delta);
     };
     
