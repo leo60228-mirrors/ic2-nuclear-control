@@ -11,6 +11,7 @@ import net.minecraft.src.ic2.api.INetworkDataProvider;
 import net.minecraft.src.ic2.api.INetworkUpdateListener;
 import net.minecraft.src.ic2.api.IWrenchable;
 import net.minecraft.src.ic2.api.NetworkHelper;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 
 public class TileEntityInfoPanelExtender extends TileEntity implements 
@@ -54,7 +55,7 @@ public class TileEntityInfoPanelExtender extends TileEntity implements
     {
         if (field.equals("facing") && prevFacing != facing)
         {
-            if(IC2NuclearControl.instance.isClient)
+            if(FMLCommonHandler.instance().getEffectiveSide().isClient())
             {
                 IC2NuclearControl.instance.screenManager.unregisterScreenPart(this);
                 IC2NuclearControl.instance.screenManager.registerInfoPanelExtender(this);
@@ -86,7 +87,7 @@ public class TileEntityInfoPanelExtender extends TileEntity implements
         if(worldObj.isRemote){
             NetworkHelper.requestInitialData(this);
         }
-        if(IC2NuclearControl.instance.isClient)
+        if(FMLCommonHandler.instance().getEffectiveSide().isClient())
         {
             IC2NuclearControl.instance.screenManager.registerInfoPanelExtender(this);
         }
@@ -114,7 +115,7 @@ public class TileEntityInfoPanelExtender extends TileEntity implements
     public void invalidate()
     {
         super.invalidate();
-        if(IC2NuclearControl.instance.isClient)
+        if(FMLCommonHandler.instance().getEffectiveSide().isClient())
         {
             IC2NuclearControl.instance.screenManager.unregisterScreenPart(this);
         }

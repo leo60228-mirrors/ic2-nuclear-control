@@ -3,6 +3,8 @@ package shedar.mods.ic2.nuclearcontrol;
 import java.util.ArrayList;
 import java.util.List;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 import shedar.mods.ic2.nuclearcontrol.panel.IPanelDataSource;
 
 import net.minecraft.src.EntityPlayer;
@@ -154,7 +156,7 @@ public class TileEntityInfoPanel extends TileEntity implements
     {
         if (field.equals("facing") && prevFacing != facing)
         {
-            if(IC2NuclearControl.instance.isClient)
+            if(FMLCommonHandler.instance().getEffectiveSide().isClient())
             {
                 IC2NuclearControl.instance.screenManager.unregisterScreenPart(this);
                 IC2NuclearControl.instance.screenManager.registerInfoPanel(this);
@@ -245,7 +247,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         {
             RedstoneHelper.checkPowered(worldObj, this);
         }
-        if(IC2NuclearControl.instance.isClient)
+        if(FMLCommonHandler.instance().getEffectiveSide().isClient())
         {
             IC2NuclearControl.instance.screenManager.registerInfoPanel(this);
         }
@@ -329,7 +331,7 @@ public class TileEntityInfoPanel extends TileEntity implements
     public void invalidate()
     {
         super.invalidate();
-        if(IC2NuclearControl.instance.isClient)
+        if(FMLCommonHandler.instance().getEffectiveSide().isClient())
         {
             IC2NuclearControl.instance.screenManager.unregisterScreenPart(this);
         }
