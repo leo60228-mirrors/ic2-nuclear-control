@@ -4,6 +4,7 @@ import java.util.Map;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
+import net.minecraft.src.ICrafting;
 import net.minecraft.src.Packet250CustomPayload;
 
 import com.google.common.io.ByteArrayDataOutput;
@@ -14,6 +15,29 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class NuclearNetworkHelper
 {
+    
+    //server
+    public static void sendEnergyCounterValue(TileEntityEnergyCounter counter, ICrafting crafter)
+    {
+        if(counter==null || !(crafter instanceof EntityPlayerMP))
+            return;
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        ByteArrayDataOutput output = ByteStreams.newDataOutput();
+        output.writeShort(PacketHandler.PACKET_ECOUNTER);
+        output.writeInt(counter.xCoord);
+        output.writeInt(counter.yCoord);
+        output.writeInt(counter.zCoord);
+        output.writeLong(counter.counter);
+        packet.channel = IC2NuclearControl.NETWORK_CHANNEL_NAME;
+        packet.isChunkDataPacket = false;
+        packet.data = output.toByteArray();
+        packet.length = packet.data.length;
+        
+        EntityPlayerMP player = (EntityPlayerMP)crafter;
+        player.serverForThisPlayer.sendPacketToPlayer(packet);
+    }
+    
+    
     //server
     public static void setSensorCardField(TileEntityInfoPanel panel, Map<String, Integer> fields)
     {

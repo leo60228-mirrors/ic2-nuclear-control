@@ -37,6 +37,12 @@ public class ContainerEnergyCounter extends Container
         }
     }
 
+    
+    public void addCraftingToCrafters(ICrafting crafting)
+    {
+        super.addCraftingToCrafters(crafting);
+        NuclearNetworkHelper.sendEnergyCounterValue(energyCounter, crafting);
+    }    
 
     @Override
     public void updateCraftingResults()
@@ -49,17 +55,10 @@ public class ContainerEnergyCounter extends Container
 
             if (lastCounter != counter)
             {
-                crafting.updateCraftingInventoryInfo(this, (int)(counter >> 32), (int)(counter & 0xffffffff));
+                NuclearNetworkHelper.sendEnergyCounterValue(energyCounter, crafting);
             }
         }
         lastCounter = counter;
-    }
-    
-    public void updateProgressBar(int type, int value) 
-    {
-        long hi = type;
-        long lo = value;
-        energyCounter.counter = (hi << 32) | lo;
     }
     
     @Override

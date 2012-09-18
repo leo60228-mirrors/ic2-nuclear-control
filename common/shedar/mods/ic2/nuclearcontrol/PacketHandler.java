@@ -11,6 +11,7 @@ public class PacketHandler implements IPacketHandler
     public static final int PACKET_SENSOR = 2;
     public static final int PACKET_SENSOR_TITLE = 3;
     public static final int PACKET_CHAT = 4;
+    public static final int PACKET_ECOUNTER = 5;
     
     @Override
     public void onPacketData(NetworkManager manager, Packet250CustomPayload packet, Player player)

@@ -211,6 +211,19 @@ public class ClientProxy extends CommonProxy
                     }
                     ((IPanelDataSource)itemStack.getItem()).setTitle(itemStack, dat.readUTF());
                     break;
+                case PacketHandler.PACKET_ECOUNTER:
+                    world = FMLClientHandler.instance().getClient().theWorld;
+                    x = dat.readInt();
+                    y = dat.readInt();
+                    z = dat.readInt();
+                    ent = world.getBlockTileEntity(x, y, z);
+                    if(ent == null || !(ent instanceof TileEntityEnergyCounter))
+                    {
+                        return;
+                    }
+                    TileEntityEnergyCounter counter = (TileEntityEnergyCounter)ent;
+                    counter.counter = dat.readLong();
+                    break;
     
                 default:
                     FMLLog.warning("%sUnknown packet type: %d", IC2NuclearControl.LOG_PREFIX, packetType);
