@@ -305,7 +305,7 @@ public class TileEntityEnergyCounter extends TileEntity implements
     @Override
     public boolean demandsEnergy()
     {
-        return storage < packetSize;
+        return storage < 2*packetSize;
     }
 
     @Override
@@ -321,10 +321,10 @@ public class TileEntityEnergyCounter extends TileEntity implements
         storage += amount;
         int left = 0;
 
-        if (storage > packetSize)
+        if (storage > 2*packetSize)
         {
-            left = storage - packetSize;
-            storage = packetSize;
+            left = storage - 2*packetSize;
+            storage = 2*packetSize;
         }
         return left;
     }
