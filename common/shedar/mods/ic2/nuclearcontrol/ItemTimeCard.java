@@ -25,6 +25,12 @@ public class ItemTimeCard extends ItemCardBase
     }
 
     @Override
+    public boolean isDamageable()
+    {
+        return false;
+    }
+    
+    @Override
     public void networkUpdate(String fieldName, int value, ItemStack stack)
     {
     }
