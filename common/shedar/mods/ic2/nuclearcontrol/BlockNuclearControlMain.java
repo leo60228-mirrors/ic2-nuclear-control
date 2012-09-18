@@ -274,11 +274,9 @@ public class BlockNuclearControlMain extends BlockContainer
 		super.onNeighborBlockChange(world, x, y, z, neighbor);
     }
     
-    @Override
-    public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side)
+    public static boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side, int metadata)
     {
         ForgeDirection dir = ForgeDirection.getOrientation(side);
-        int metadata = world.getBlockMetadata(x, y, z);
         if(!solidBlockRequired[Math.min(metadata, solidBlockRequired.length-1)])
         {
             return true;

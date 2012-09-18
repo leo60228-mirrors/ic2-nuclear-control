@@ -1,7 +1,12 @@
 package shedar.mods.ic2.nuclearcontrol;
 
+import net.minecraft.src.Block;
+import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ItemBlock;
 import net.minecraft.src.ItemStack;
+import net.minecraft.src.World;
+import cpw.mods.fml.common.Side;
+import cpw.mods.fml.common.asm.SideOnly;
 
 public class ItemNuclearControlMain extends ItemBlock
 {
@@ -45,4 +50,55 @@ public class ItemNuclearControlMain extends ItemBlock
         return "";
     }
 
+    @SideOnly(Side.CLIENT)
+
+    /**
+     * Returns true if the given ItemBlock can be placed on the given side of the given block position.
+     */
+    @Override
+    public boolean canPlaceItemBlockOnSide(World world, int x, int y, int z, int side, EntityPlayer player, ItemStack item)
+    {
+        int var8 = world.getBlockId(x, y, z);
+
+        if (var8 == Block.snow.blockID)
+        {
+            side = 1;
+        }
+        else if (var8 != Block.vine.blockID && var8 != Block.tallGrass.blockID && var8 != Block.deadBush.blockID
+                && (Block.blocksList[var8] == null || !Block.blocksList[var8].isBlockReplaceable(world, x, y, z)))
+        {
+            if (side == 0)
+            {
+                --y;
+            }
+
+            if (side == 1)
+            {
+                ++y;
+            }
+
+            if (side == 2)
+            {
+                --z;
+            }
+
+            if (side == 3)
+            {
+                ++z;
+            }
+
+            if (side == 4)
+            {
+                --x;
+            }
+
+            if (side == 5)
+            {
+                ++x;
+            }
+        }
+
+        return BlockNuclearControlMain.canPlaceBlockOnSide(world, x, y, z, side, item.getItemDamage());
+    }
+    
 }
