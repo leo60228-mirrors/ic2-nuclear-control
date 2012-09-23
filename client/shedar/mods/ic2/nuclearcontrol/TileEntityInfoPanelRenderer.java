@@ -6,11 +6,12 @@ import net.minecraft.src.Block;
 import net.minecraft.src.Facing;
 import net.minecraft.src.FontRenderer;
 import net.minecraft.src.ItemStack;
-import net.minecraft.src.ModLoader;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.TileEntitySpecialRenderer;
 
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.client.FMLClientHandler;
 
 import shedar.mods.ic2.nuclearcontrol.Screen;
 import shedar.mods.ic2.nuclearcontrol.TileEntityInfoPanel;
@@ -81,7 +82,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
                     x -= panel.xCoord - screen.maxX;
             }
             GL11.glTranslatef((float)x, (float)y, (float)z);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, ModLoader.getMinecraftInstance().renderEngine.getTexture("/img/texture_thermo.png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, FMLClientHandler.instance().getClient().renderEngine.getTexture("/img/texture_thermo.png"));
             switch (side)
             {
                 case 0:

@@ -3,12 +3,13 @@ package shedar.mods.ic2.nuclearcontrol;
 import net.minecraft.src.Block;
 import net.minecraft.src.Facing;
 import net.minecraft.src.FontRenderer;
-import net.minecraft.src.ModLoader;
 import net.minecraft.src.Tessellator;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.TileEntitySpecialRenderer;
 
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.client.FMLClientHandler;
 
 import shedar.mods.ic2.nuclearcontrol.TileEntityRemoteThermo;
 
@@ -30,7 +31,7 @@ public class TileEntityRemoteThermoRenderer extends TileEntitySpecialRenderer
             int heat = thermo.getHeatLevel();
             String text = Integer.toString(heat);
             GL11.glTranslatef((float)x, (float)y, (float)z);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, ModLoader.getMinecraftInstance().renderEngine.getTexture("/img/texture_thermo.png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, FMLClientHandler.instance().getClient().renderEngine.getTexture("/img/texture_thermo.png"));
             Tessellator tessellator = Tessellator.instance;
             tessellator.startDrawingQuads();
             switch (side)

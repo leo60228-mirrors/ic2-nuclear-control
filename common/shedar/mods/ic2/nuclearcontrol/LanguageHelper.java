@@ -4,10 +4,10 @@ import java.io.File;
 import java.util.Locale;
 import java.util.Map;
 
-import net.minecraft.src.ModLoader;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class LanguageHelper
 {
@@ -113,7 +113,7 @@ public class LanguageHelper
                 
                 for(Property property : category.getValue().values())
                 {
-                    ModLoader.addLocalization(property.getName(), locale.toString(),  new String(property.value.getBytes("8859_1"),"UTF-8"));
+                    LanguageRegistry.instance().addStringLocalization(property.getName(), locale.toString(), new String(property.value.getBytes("8859_1"),"UTF-8"));
                 }
             
             }

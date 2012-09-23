@@ -7,18 +7,17 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
 
 import net.minecraft.src.Block;
 import net.minecraft.src.CraftingManager;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
-import net.minecraft.src.ModLoader;
 import net.minecraft.src.ic2.api.Ic2Recipes;
 import net.minecraft.src.ic2.api.Items;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
@@ -31,6 +30,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod( modid = "IC2NuclearControl", name="Nuclear Control", version="1.3.1", dependencies = "after:IC2")
 @NetworkMod(channels = { "NuclearControl" }, clientSideRequired = true, serverSideRequired = false, 
@@ -212,7 +212,7 @@ public class IC2NuclearControl
         } 
         catch (Exception exception)
         {
-            ModLoader.getLogger().log(Level.WARNING, LOG_PREFIX + "Can't get id for:" + name);
+            FMLLog.warning(LOG_PREFIX + "Can't get id for:" + name);
         }
 
         return i;
@@ -269,7 +269,7 @@ public class IC2NuclearControl
 
     public void registerBlocks()
     {
-        ModLoader.registerBlock(blockNuclearControlMain, ItemNuclearControlMain.class);
+        GameRegistry.registerBlock(blockNuclearControlMain, ItemNuclearControlMain.class);
     }
     
     @PreInit

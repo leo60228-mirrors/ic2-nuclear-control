@@ -18,7 +18,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.ItemStack;
-import net.minecraft.src.ModLoader;
 import net.minecraft.src.NetworkManager;
 import net.minecraft.src.Packet250CustomPayload;
 import net.minecraft.src.SoundPool;
@@ -29,9 +28,11 @@ import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ClientProxy extends CommonProxy
 {
@@ -125,13 +126,13 @@ public class ClientProxy extends CommonProxy
         TileEntityRemoteThermoRenderer renderRemoteThermo = new TileEntityRemoteThermoRenderer();
         TileEntityInfoPanelRenderer renderInfoPanel = new TileEntityInfoPanelRenderer(); 
         
-        ModLoader.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityIC2Thermo.class, "IC2Thermo", renderThermalMonitor);
-        ModLoader.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityHowlerAlarm.class, "IC2HowlerAlarm");
-        ModLoader.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityIndustrialAlarm.class, "IC2IndustrialAlarm");
-        ModLoader.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityRemoteThermo.class, "IC2RemoteThermo", renderRemoteThermo);
-        ModLoader.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityInfoPanel.class, "IC2NCInfoPanel", renderInfoPanel);
-        ModLoader.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityInfoPanelExtender.class, "IC2NCInfoPanelExtender");
-        ModLoader.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityEnergyCounter.class, "IC2NCEnergyCounter");
+        ClientRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityIC2Thermo.class, "IC2Thermo", renderThermalMonitor);
+        GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityHowlerAlarm.class, "IC2HowlerAlarm");
+        GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityIndustrialAlarm.class, "IC2IndustrialAlarm");
+        ClientRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityRemoteThermo.class, "IC2RemoteThermo", renderRemoteThermo);
+        ClientRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityInfoPanel.class, "IC2NCInfoPanel", renderInfoPanel);
+        GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityInfoPanelExtender.class, "IC2NCInfoPanelExtender");
+        GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityEnergyCounter.class, "IC2NCEnergyCounter");
         int modelId = RenderingRegistry.getNextAvailableRenderId();
         IC2NuclearControl.instance.modelId = modelId;
         RenderingRegistry.registerBlockHandler(new MainBlockRenderer(modelId));

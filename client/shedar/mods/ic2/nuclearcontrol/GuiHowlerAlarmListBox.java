@@ -5,12 +5,12 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.FontRenderer;
 import net.minecraft.src.GuiButton;
-import net.minecraft.src.ModLoader;
 import net.minecraft.src.ScaledResolution;
 import net.minecraft.src.Tessellator;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 
@@ -115,7 +115,7 @@ public class GuiHowlerAlarmListBox extends GuiButton
         }
         int rowTop = BASIC_Y_OFFSET;
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
-        Minecraft mc = ModLoader.getMinecraftInstance();
+        Minecraft mc = FMLClientHandler.instance().getClient();
         ScaledResolution scaler = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
         GL11.glScissor( xPosition * scaler.getScaleFactor(), 
                         mc.displayHeight - (yPosition+height) * scaler.getScaleFactor(), 
