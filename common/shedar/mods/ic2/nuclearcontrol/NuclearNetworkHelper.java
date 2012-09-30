@@ -1,11 +1,14 @@
 package shedar.mods.ic2.nuclearcontrol;
 
+import java.util.List;
 import java.util.Map;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.ICrafting;
+import net.minecraft.src.Packet;
 import net.minecraft.src.Packet250CustomPayload;
+import net.minecraft.src.World;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -37,6 +40,23 @@ public class NuclearNetworkHelper
         player.serverForThisPlayer.sendPacketToPlayer(packet);
     }
     
+    private static void sendPacketToAllAround(int x, int y, int z, int dist, World world, Packet packet)
+    {
+        @SuppressWarnings("unchecked")
+        List<EntityPlayerMP> players = world.playerEntities;
+        for (EntityPlayerMP player : players)
+        {
+            double dx = x - player.posX;
+            double dy = y - player.posY;
+            double dz = z - player.posZ;
+
+            if (dx*dx + dy*dy + dz*dz < dist * dist)
+            {
+                player.serverForThisPlayer.sendPacketToPlayer(packet);
+            }        
+        }
+        
+    }
     
     //server
     public static void setSensorCardField(TileEntityInfoPanel panel, Map<String, Integer> fields)
@@ -63,9 +83,7 @@ public class NuclearNetworkHelper
         packet.isChunkDataPacket = false;
         packet.data = output.toByteArray();
         packet.length = packet.data.length;
-        
-        FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().sendToAllNear(
-                panel.xCoord, panel.yCoord, panel.zCoord, 64, panel.worldObj.getWorldInfo().getDimension(), packet);
+        sendPacketToAllAround(panel.xCoord, panel.yCoord, panel.zCoord, 64, panel.worldObj, packet);
     }
     
     //server

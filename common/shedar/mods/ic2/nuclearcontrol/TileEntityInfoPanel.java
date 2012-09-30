@@ -450,7 +450,7 @@ public class TileEntityInfoPanel extends TileEntity implements
     public void onInventoryChanged() 
     {
         super.onInventoryChanged();
-        if(worldObj!= null && !worldObj.isRemote)
+        if(worldObj!= null && FMLCommonHandler.instance().getEffectiveSide().isServer())
         {
             int upgradeCountRange = 0;
             ItemStack itemStack = inventory[SLOT_UPGRADE];
