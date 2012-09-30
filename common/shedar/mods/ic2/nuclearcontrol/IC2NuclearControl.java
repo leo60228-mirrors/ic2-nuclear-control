@@ -1,12 +1,7 @@
 package shedar.mods.ic2.nuclearcontrol;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
-import java.util.UUID;
 
 import net.minecraft.src.Block;
 import net.minecraft.src.CraftingManager;
@@ -17,6 +12,7 @@ import net.minecraft.src.ic2.api.Items;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
+import shedar.mods.utils.StatisticReport;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
@@ -80,7 +76,6 @@ public class IC2NuclearControl
     public int IC2WrenchId;
     public int IC2ElectricWrenchId;
     
-    private String playerId;
     private Boolean statEnabled;
     public boolean isClient;
     
@@ -292,27 +287,10 @@ public class IC2NuclearControl
         {
             MinecraftForgeClient.preloadTexture("/img/texture_thermo.png");
             LanguageHelper.addNames(new File(configDir, CONFIG_NUCLEAR_CONTROL_LANG));
-            playerId = configuration.getOrCreateProperty("uuid", Configuration.CATEGORY_GENERAL, UUID.randomUUID().toString()).value.replaceAll(" ", "");
             statEnabled = configuration.getOrCreateBooleanProperty("stat", Configuration.CATEGORY_GENERAL, true).getBoolean(true);
             if(statEnabled)
             {
-                URL url;
-                try
-                {
-                    url = new URL("http://nc.bqt.me/stat?user="+playerId+"&version="+VER);
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setConnectTimeout(1000);
-                    connection.setReadTimeout(1000);
-                    connection.getInputStream();
-                } catch (MalformedURLException e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (IOException e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                StatisticReport.instance.add("nc", VER);
             }
         }
         initBlocks(configuration);
