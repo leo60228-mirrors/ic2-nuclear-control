@@ -55,6 +55,10 @@ public class TileEntityIC2Thermo extends TileEntity implements
     	if(worldObj.isRemote){
     		NetworkHelper.requestInitialData(this);
     	}
+    	else
+    	{
+            worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
+    	}
         init = true;
     }
 
@@ -293,7 +297,7 @@ public class TileEntityIC2Thermo extends TileEntity implements
     {
         return 1;
     }
-
+    
     @Override
     public int modifyTextureIndex(int texture)
     {
