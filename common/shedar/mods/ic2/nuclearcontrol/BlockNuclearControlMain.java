@@ -6,6 +6,7 @@ import net.minecraft.src.AxisAlignedBB;
 import net.minecraft.src.BlockContainer;
 import net.minecraft.src.CreativeTabs;
 import net.minecraft.src.EntityItem;
+import net.minecraft.src.EntityLiving;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.Facing;
@@ -13,6 +14,7 @@ import net.minecraft.src.IBlockAccess;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.Material;
+import net.minecraft.src.MathHelper;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 import net.minecraft.src.ic2.api.IWrenchable;
@@ -182,6 +184,42 @@ public class BlockNuclearControlMain extends BlockContainer
             	((IWrenchable)tileentity).setFacing((short)side);
             }
         }
+    }
+    
+    @Override
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving player) 
+    {
+        TileEntity block = world.getBlockTileEntity(x, y, z);
+        int metadata = world.getBlockMetadata(x, y, z);
+        if(metadata > DAMAGE_MAX)
+        {
+            metadata = 0;
+        }
+        if (player != null && !solidBlockRequired[metadata] && block instanceof IWrenchable) 
+        {
+            IWrenchable wrenchable = (IWrenchable)block;
+            int rotationSegment = MathHelper.floor_double((double)(player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+            if (player.rotationPitch >= 65) 
+            {
+                wrenchable.setFacing((short)1);
+            } 
+            else if (player.rotationPitch <= -65) 
+            {
+                wrenchable.setFacing((short)0);
+            } 
+            else 
+            {
+                switch (rotationSegment) 
+                {
+                case 0: wrenchable.setFacing((short)2); break;
+                case 1: wrenchable.setFacing((short)5); break;
+                case 2: wrenchable.setFacing((short)3); break;
+                case 3: wrenchable.setFacing((short)4); break;
+                default:
+                    wrenchable.setFacing((short)0); break;
+                }
+            }
+        }        
     }
     
     /**
