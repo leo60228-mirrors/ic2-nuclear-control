@@ -76,7 +76,8 @@ public class ScreenManager
                 {
                     for(int interZ=0;interZ<=rz && allOk;interZ++)
                     {
-                        allOk = screen.getCore()!=null && isValidExtender(world, x+dir*interX, y+dir*interY, z+dir*interZ, screen.getCore().facing);
+                        TileEntityInfoPanel core = screen.getCore(); 
+                        allOk = core!=null && isValidExtender(world, x+dir*interX, y+dir*interY, z+dir*interZ, core.facing);
                     }
                 }
             }
@@ -191,9 +192,10 @@ public class ScreenManager
 
         for (Screen screen : screens.get(getWorldKey(extender.worldObj)))
         {
-            if(screen.isBlockNearby(extender) && screen.getCore()!=null && extender.facing == screen.getCore().facing)
+            TileEntityInfoPanel core = screen.getCore();
+            if(screen.isBlockNearby(extender) && core!=null && extender.facing == core.facing)
             {
-                rebuildPanels.add(screen.getCore());
+                rebuildPanels.add(core);
                 screensToDestroy.add(screen);
             }
             else if(screen.isBlockPartOf(extender))

@@ -573,10 +573,14 @@ public class BlockNuclearControlMain extends BlockContainer
         else if(entity instanceof TileEntityInfoPanelExtender)
         {
             TileEntityInfoPanelExtender extender = (TileEntityInfoPanelExtender)entity; 
-            if(extender.getScreen()!=null && extender.getScreen().getCore()!=null && extender.getScreen().getCore().powered)
-                return 7;
-            else
-                return 0;
+            if(extender.getScreen()!=null)
+            {
+                TileEntityInfoPanel core = extender.getScreen().getCore(); 
+                if(core!=null && core.powered)
+                    return 7;
+                else
+                    return 0;
+            }
         }
         return lightValue[blockID];
     }

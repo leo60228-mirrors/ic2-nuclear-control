@@ -151,9 +151,15 @@ public class TileEntityInfoPanelExtender extends TileEntity implements
     {
         if(texture!=80)
             return texture;
-        if(screen == null || screen.getCore() == null)
-            return texture + 15;
-        return screen.getCore().modifyTextureIndex(texture, xCoord, yCoord, zCoord);
+        if(screen!=null)
+        {
+            TileEntityInfoPanel core = screen.getCore();
+            if(core!=null)
+            {
+                return core.modifyTextureIndex(texture, xCoord, yCoord, zCoord);
+            }
+        }
+        return texture + 15;
     }
 
     @Override
@@ -172,14 +178,22 @@ public class TileEntityInfoPanelExtender extends TileEntity implements
     public void rotate()
     {
         if(screen!=null)
-            screen.getCore().rotate();
+        {
+            TileEntityInfoPanel core = screen.getCore(); 
+            if(core != null)
+                core.rotate();
+        }
     }
 
     @Override
     public int getRotation()
     {
         if(screen!=null)
-            return screen.getCore().rotation;
+        {
+            TileEntityInfoPanel core = screen.getCore(); 
+            if(core != null)
+                return core.rotation;
+        }
         return 0;
     }
 
@@ -187,6 +201,10 @@ public class TileEntityInfoPanelExtender extends TileEntity implements
     public void setRotation(int rotation)
     {
         if(screen!=null)
-            screen.getCore().setRotation(rotation);
+        {
+            TileEntityInfoPanel core = screen.getCore(); 
+            if(core != null)
+                core.setRotation(rotation);
+        }
     }
 }
