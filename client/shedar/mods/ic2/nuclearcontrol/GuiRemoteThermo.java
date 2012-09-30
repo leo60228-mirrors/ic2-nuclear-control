@@ -45,6 +45,8 @@ public class GuiRemoteThermo extends GuiContainer
         this.controlList.add(new CompactButton(8, guiLeft + 143, guiTop - 5 + 31, 36, 12, "+1000"));
         this.controlList.add(new CompactButton(9, guiLeft + 122, guiTop - 5 + 42, 57, 12, "+10000"));
         
+        controlList.add(new GuiThermoInvertRedstone(10, guiLeft + 70, guiTop + 33, container.remoteThermo));
+
         textboxHeat = new GuiTextField(fontRenderer, 70, 16, 51, 12);
         textboxHeat.setFocused(true);
         textboxHeat.setText(container.remoteThermo.getHeatLevel().toString());
@@ -109,6 +111,8 @@ public class GuiRemoteThermo extends GuiContainer
     
     @Override protected void actionPerformed(GuiButton button)
     {
+        if(button.id>=10)
+            return;
         int delta = Integer.parseInt(button.displayString.replace("+", ""));
         updateHeat(delta);
     };

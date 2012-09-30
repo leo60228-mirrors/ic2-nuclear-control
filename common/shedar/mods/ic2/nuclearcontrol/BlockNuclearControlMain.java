@@ -499,9 +499,9 @@ public class BlockNuclearControlMain extends BlockContainer
         if(tileentity instanceof TileEntityRemoteThermo)
         {
             TileEntityRemoteThermo thermo = (TileEntityRemoteThermo)tileentity;
-            return thermo.getOnFire() >= thermo.getHeatLevel();
+            return thermo.getOnFire() >= thermo.getHeatLevel() ^ thermo.isInvertRedstone();
         }
-    	return ((TileEntityIC2Thermo)tileentity).getOnFire() > 0;
+    	return ((TileEntityIC2Thermo)tileentity).getOnFire() > 0 ^ ((TileEntityIC2Thermo)tileentity).isInvertRedstone();
     }
 
     @Override

@@ -28,6 +28,8 @@ public class TileEntityIC2Thermo extends TileEntity implements
     public int onFire;
     private short prevFacing;
     public short facing;
+    private boolean prevInvertRedstone;
+    private boolean invertRedstone;
 
     protected int updateTicker;
     protected int tickRate;
@@ -44,6 +46,8 @@ public class TileEntityIC2Thermo extends TileEntity implements
         heatLevel = 500;
         updateTicker = 0;
         tickRate = -1;
+        prevInvertRedstone = false;
+        invertRedstone = false;
     }
 
     protected void initData()
@@ -54,6 +58,22 @@ public class TileEntityIC2Thermo extends TileEntity implements
         init = true;
     }
 
+    public boolean isInvertRedstone()
+    {
+        return invertRedstone;
+    }
+    
+    public void setInvertRedstone(boolean value)
+    {
+        invertRedstone = value;
+        if(prevInvertRedstone !=value)
+        {
+            worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
+            NetworkHelper.updateTileEntityField(this, "invertRedstone");
+        }
+        prevInvertRedstone = value;
+    }
+    
     @Override
     public short getFacing()
     {
@@ -86,6 +106,7 @@ public class TileEntityIC2Thermo extends TileEntity implements
         vector.add("heatLevel");
         vector.add("onFire");
         vector.add("facing");
+        vector.add("invertRedstone");
         return vector;
     }
     
@@ -108,11 +129,35 @@ public class TileEntityIC2Thermo extends TileEntity implements
             worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
             prevOnFire = onFire;
         }
+        if (field.equals("invertRedstone") && prevInvertRedstone != invertRedstone)
+        {
+            worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+            worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
+            prevInvertRedstone = invertRedstone;
+        }
     }
 
     public void onNetworkEvent(EntityPlayer entityplayer, int i)
     {
-        setHeatLevel(i);
+        if(i < 0)
+        {
+            switch (i)
+            {
+            case -1:
+                setInvertRedstone(false);
+                break;
+            case -2:
+                setInvertRedstone(true);
+                break;
+            default:
+                break;
+            }
+        }
+        else
+        {
+            setHeatLevel(i);
+        }
+        
     }
     
     public void setOnFire(int f)
@@ -161,6 +206,7 @@ public class TileEntityIC2Thermo extends TileEntity implements
         	int heat = nbttagcompound.getInteger("heatLevel");
         	setHeatLevelWithoutNotify(heat);
         	prevFacing = facing =  nbttagcompound.getShort("facing");
+        	prevInvertRedstone = invertRedstone = nbttagcompound.getBoolean("invert"); 
         }
     }
 
@@ -170,6 +216,7 @@ public class TileEntityIC2Thermo extends TileEntity implements
         super.writeToNBT(nbttagcompound);
         nbttagcompound.setInteger("heatLevel", getHeatLevel());
         nbttagcompound.setShort("facing", facing);
+        nbttagcompound.setBoolean("invert", isInvertRedstone());
     }
 
     protected void checkStatus()
