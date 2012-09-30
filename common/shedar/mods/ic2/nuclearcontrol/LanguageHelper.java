@@ -80,6 +80,8 @@ public class LanguageHelper
             setPhrase(configuration, "msg.nc.InfoPanelEnergyFreeN", "#%d Free: %s");
             setPhrase(configuration, "msg.nc.InfoPanelEnergyStorageN", "#%d Storage: %s");
             setPhrase(configuration, "msg.nc.InfoPanelEnergyPercentageN", "#%d Fill: %s%%");
+
+            setPhrase(configuration, "msg.nc.InfoPanelTime", "Time: %s");
             
             setPhrase(configuration, "msg.nc.cbInfoPanelOnOff", "On/Off status");
             setPhrase(configuration, "msg.nc.cbInfoPanelHeat", "Heat level");
@@ -95,6 +97,8 @@ public class LanguageHelper
             setPhrase(configuration, "msg.nc.cbInfoPanelEnergyTotal", "Summary");
             setPhrase(configuration, "msg.nc.cbInfoPanelEnergyPercentage", "Fill percentage");
             setPhrase(configuration, "msg.nc.EnergyCardQuantity", "Cards quantity: %d");
+            
+            
             
             setPhrase(configuration, "msg.nc.Reset", "Reset");
             
