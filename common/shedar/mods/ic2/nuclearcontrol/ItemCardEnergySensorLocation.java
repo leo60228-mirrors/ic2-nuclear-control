@@ -116,8 +116,8 @@ public class ItemCardEnergySensorLocation extends ItemCardBase
             return StringUtils.getStateMessage(state);
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
-        int energy =  nbtTagCompound.getInteger("energy");
-        int storage =  nbtTagCompound.getInteger("maxStorage");
+        long energy =  nbtTagCompound.getInteger("energy");
+        long storage =  nbtTagCompound.getInteger("maxStorage");
         String title = nbtTagCompound.getString("title");
         if(title!=null && !title.isEmpty())
         {

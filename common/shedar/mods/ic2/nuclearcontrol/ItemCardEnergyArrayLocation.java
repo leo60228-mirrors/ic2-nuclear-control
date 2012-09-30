@@ -161,8 +161,8 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
             return StringUtils.getStateMessage(state);
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
-        int totalEnergy = 0;
-        int totalStorage = 0;
+        long totalEnergy = 0;
+        long totalStorage = 0;
         boolean showEach = (displaySettings & DISPLAY_EACH) > 0;
         boolean showSummary = (displaySettings & DISPLAY_TOTAL) > 0;
         boolean showEnergy = (displaySettings & DISPLAY_ENERGY) > 0;
@@ -221,9 +221,9 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
                 {
                     line = new PanelString();
                     if(showLabels)
-                        line.textLeft = StringTranslate.getInstance().translateKeyFormat("msg.nc.InfoPanelEnergyPercentageN", i+1, StringUtils.getFormatted("", storage==0? 100:(energy*100/storage), false));
+                        line.textLeft = StringTranslate.getInstance().translateKeyFormat("msg.nc.InfoPanelEnergyPercentageN", i+1, StringUtils.getFormatted("", storage==0? 100:(((long)energy)*100L/storage), false));
                     else
-                        line.textLeft = StringUtils.getFormatted("", storage==0? 100:(energy*100/storage), false);
+                        line.textLeft = StringUtils.getFormatted("", storage==0? 100:(((long)energy)*100L/storage), false);
                     result.add(line);
                 }                
             }
