@@ -14,7 +14,6 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
 
 public class NuclearNetworkHelper
 {
@@ -103,8 +102,7 @@ public class NuclearNetworkHelper
         packet.data = output.toByteArray();
         packet.length = packet.data.length;
 
-        FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().sendToAllNear(
-                panel.xCoord, panel.yCoord, panel.zCoord, 64, panel.worldObj.getWorldInfo().getDimension(), packet);
+        sendPacketToAllAround(panel.xCoord, panel.yCoord, panel.zCoord, 64, panel.worldObj, packet);
     }
     
     public static void chatMessage(EntityPlayer player, String message)

@@ -87,6 +87,7 @@ public class CommonProxy implements IGuiHandler
                 }
                 IPanelDataSource card = (IPanelDataSource) stack.getItem();
                 card.setTitle(stack, soundName);
+                NuclearNetworkHelper.setSensorCardTitle((TileEntityInfoPanel)tileEntity, soundName);
             }
         }
     }
