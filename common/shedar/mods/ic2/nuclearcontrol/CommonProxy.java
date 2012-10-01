@@ -40,6 +40,7 @@ public class CommonProxy implements IGuiHandler
         GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityInfoPanel.class, "IC2NCInfoPanel");
         GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityInfoPanelExtender.class, "IC2NCInfoPanelExtender");
         GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityEnergyCounter.class, "IC2NCEnergyCounter");
+        GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityAverageCounter.class, "IC2NCAverageCounter");
     }
 
     @Override
@@ -54,6 +55,8 @@ public class CommonProxy implements IGuiHandler
                 return new ContainerInfoPanel(player, (TileEntityInfoPanel)tileEntity);
             case BlockNuclearControlMain.DAMAGE_ENERGY_COUNTER:
                 return new ContainerEnergyCounter(player, (TileEntityEnergyCounter)tileEntity);
+            case BlockNuclearControlMain.DAMAGE_AVERAGE_COUNTER:
+                return new ContainerAverageCounter(player, (TileEntityAverageCounter)tileEntity);
             case BlockNuclearControlMain.DAMAGE_HOWLER_ALARM:
             case BlockNuclearControlMain.DAMAGE_INDUSTRIAL_ALARM:
             case BlockNuclearControlMain.DAMAGE_THERMAL_MONITOR:

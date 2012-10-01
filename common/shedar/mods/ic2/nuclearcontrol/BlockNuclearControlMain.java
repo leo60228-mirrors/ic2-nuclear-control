@@ -29,8 +29,9 @@ public class BlockNuclearControlMain extends BlockContainer
     public static final int DAMAGE_INFO_PANEL = 4;
     public static final int DAMAGE_INFO_PANEL_EXTENDER = 5;
     public static final int DAMAGE_ENERGY_COUNTER = 6;
+    public static final int DAMAGE_AVERAGE_COUNTER = 7;
 
-    public static final int DAMAGE_MAX = 6;
+    public static final int DAMAGE_MAX = 7;
     
     public static final float[][] blockSize = {
         {0.0625F, 0, 0.0625F, 0.9375F, 0.4375F, 0.9375F},//Thermal Monitor
@@ -39,12 +40,13 @@ public class BlockNuclearControlMain extends BlockContainer
         {0, 0, 0, 1, 1, 1},//Remote Thermo
         {0, 0, 0, 1, 1, 1},//Info Panel
         {0, 0, 0, 1, 1, 1},//Info Panel Extender
-        {0, 0, 0, 1, 1, 1}//Energy Counter
+        {0, 0, 0, 1, 1, 1},//Energy Counter
+        {0, 0, 0, 1, 1, 1}//Average Counter
         
     };
     
     private static final boolean[] solidBlockRequired =
-        {true, true, true, false, false, false, false};
+        {true, true, true, false, false, false, false, false};
     
     private static final byte[][][] sideMapping = 
         {
@@ -103,6 +105,14 @@ public class BlockNuclearControlMain extends BlockContainer
                 {42, 42, 41, 42, 42, 42},
                 {42, 42, 42, 42, 42, 41},
                 {42, 42, 42, 42, 41, 42}
+            },
+            {//Average Counter
+                {43, 41, 43, 43, 43, 43},
+                {41, 43, 43, 43, 43, 43},
+                {43, 43, 43, 41, 43, 43},
+                {43, 43, 41, 43, 43, 43},
+                {43, 43, 43, 43, 43, 41},
+                {43, 43, 43, 43, 41, 43}
             }
         };
     
@@ -474,6 +484,7 @@ public class BlockNuclearControlMain extends BlockContainer
             case DAMAGE_REMOTE_THERMO:
             case DAMAGE_INFO_PANEL:
             case DAMAGE_ENERGY_COUNTER:
+            case DAMAGE_AVERAGE_COUNTER:
                 if(player instanceof EntityPlayerMP)
                     player.openGui(IC2NuclearControl.instance, blockType, world, x, y, z);
                 return true;
@@ -634,6 +645,7 @@ public class BlockNuclearControlMain extends BlockContainer
         itemList.add(new ItemStack(this, 1, DAMAGE_INFO_PANEL));
         itemList.add(new ItemStack(this, 1, DAMAGE_INFO_PANEL_EXTENDER));
         itemList.add(new ItemStack(this, 1, DAMAGE_ENERGY_COUNTER));
+        itemList.add(new ItemStack(this, 1, DAMAGE_AVERAGE_COUNTER));
     }
 
     @Override
@@ -661,6 +673,8 @@ public class BlockNuclearControlMain extends BlockContainer
             return new TileEntityInfoPanelExtender();
         case DAMAGE_ENERGY_COUNTER:
             return new TileEntityEnergyCounter();
+        case DAMAGE_AVERAGE_COUNTER:
+            return new TileEntityAverageCounter();
         }
         return null;
     }

@@ -133,6 +133,7 @@ public class ClientProxy extends CommonProxy
         ClientRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityInfoPanel.class, "IC2NCInfoPanel", renderInfoPanel);
         GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityInfoPanelExtender.class, "IC2NCInfoPanelExtender");
         GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityEnergyCounter.class, "IC2NCEnergyCounter");
+        GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityAverageCounter.class, "IC2NCAverageCounter");
         int modelId = RenderingRegistry.getNextAvailableRenderId();
         IC2NuclearControl.instance.modelId = modelId;
         RenderingRegistry.registerBlockHandler(new MainBlockRenderer(modelId));
@@ -225,6 +226,19 @@ public class ClientProxy extends CommonProxy
                     TileEntityEnergyCounter counter = (TileEntityEnergyCounter)ent;
                     counter.counter = dat.readLong();
                     break;
+                case PacketHandler.PACKET_ACOUNTER:
+                    world = FMLClientHandler.instance().getClient().theWorld;
+                    x = dat.readInt();
+                    y = dat.readInt();
+                    z = dat.readInt();
+                    ent = world.getBlockTileEntity(x, y, z);
+                    if(ent == null || !(ent instanceof TileEntityAverageCounter))
+                    {
+                        return;
+                    }
+                    TileEntityAverageCounter avgCounter = (TileEntityAverageCounter)ent;
+                    avgCounter.setClientAverage(dat.readInt());
+                    break;
     
                 default:
                     FMLLog.warning("%sUnknown packet type: %d", IC2NuclearControl.LOG_PREFIX, packetType);
@@ -254,6 +268,9 @@ public class ClientProxy extends CommonProxy
             case BlockNuclearControlMain.DAMAGE_ENERGY_COUNTER:
                 ContainerEnergyCounter containerCounter = new ContainerEnergyCounter(player, (TileEntityEnergyCounter)tileEntity);
                 return new GuiEnergyCounter(containerCounter);
+            case BlockNuclearControlMain.DAMAGE_AVERAGE_COUNTER:
+                ContainerAverageCounter containerAverageCounter = new ContainerAverageCounter(player, (TileEntityAverageCounter)tileEntity);
+                return new GuiAverageCounter(containerAverageCounter);
             default:
                 return null;
         }

@@ -38,6 +38,27 @@ public class NuclearNetworkHelper
         EntityPlayerMP player = (EntityPlayerMP)crafter;
         player.serverForThisPlayer.sendPacketToPlayer(packet);
     }
+
+    //server
+    public static void sendAverageCounterValue(TileEntityAverageCounter counter, ICrafting crafter, int average)
+    {
+        if(counter==null || !(crafter instanceof EntityPlayerMP))
+            return;
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        ByteArrayDataOutput output = ByteStreams.newDataOutput();
+        output.writeShort(PacketHandler.PACKET_ACOUNTER);
+        output.writeInt(counter.xCoord);
+        output.writeInt(counter.yCoord);
+        output.writeInt(counter.zCoord);
+        output.writeInt(average);
+        packet.channel = IC2NuclearControl.NETWORK_CHANNEL_NAME;
+        packet.isChunkDataPacket = false;
+        packet.data = output.toByteArray();
+        packet.length = packet.data.length;
+        
+        EntityPlayerMP player = (EntityPlayerMP)crafter;
+        player.serverForThisPlayer.sendPacketToPlayer(packet);
+    }
     
     private static void sendPacketToAllAround(int x, int y, int z, int dist, World world, Packet packet)
     {

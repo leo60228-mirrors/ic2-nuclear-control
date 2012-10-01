@@ -61,6 +61,12 @@ public class ItemCardCounterSensorLocation extends ItemCardBase
                     setField("state", STATE_OK, nbtTagCompound, panel, updateSet);
                     setField("energy", counter.counter, nbtTagCompound, panel, updateSet);
                 }
+                else if(tileEntity != null && tileEntity instanceof TileEntityAverageCounter)
+                {
+                    TileEntityAverageCounter avgCounter  = (TileEntityAverageCounter)tileEntity;
+                    setField("state", STATE_OK, nbtTagCompound, panel, updateSet);
+                    setField("average", avgCounter.getClientAverage(), nbtTagCompound, panel, updateSet);
+                }
                 else
                 {
                     setField("state", STATE_NO_TARGET, nbtTagCompound, panel, updateSet);
@@ -93,10 +99,6 @@ public class ItemCardCounterSensorLocation extends ItemCardBase
             return StringUtils.getStateMessage(state);
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
-        long lo =  nbtTagCompound.getInteger("energy-lo");
-        long hi =  nbtTagCompound.getInteger("energy-hi");
-        long energy = (hi<<32) | lo;
-
         String title = nbtTagCompound.getString("title");
         if(title!=null && !title.isEmpty())
         {
@@ -104,11 +106,27 @@ public class ItemCardCounterSensorLocation extends ItemCardBase
             line.textCenter = title; 
             result.add(line);
         }
-        if((displaySettings & DISPLAY_ENERGY) > 0)
-        {
-            line = new PanelString();
-            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelEnergy", energy, showLabels); 
-            result.add(line);
+        if(nbtTagCompound.hasKey("average"))
+        {//average counter
+            if((displaySettings & DISPLAY_ENERGY) > 0)
+            {
+                line = new PanelString();
+                line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelOutput", nbtTagCompound.getInteger("average"), showLabels); 
+                result.add(line);
+            }
+        }
+        else
+        {//energy counter
+            if((displaySettings & DISPLAY_ENERGY) > 0)
+            {
+                long lo =  nbtTagCompound.getInteger("energy-lo");
+                long hi =  nbtTagCompound.getInteger("energy-hi");
+                long energy = (hi<<32) | lo;
+
+                line = new PanelString();
+                line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelEnergy", energy, showLabels); 
+                result.add(line);
+            }
         }
         return result;
     }

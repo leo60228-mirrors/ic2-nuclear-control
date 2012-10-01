@@ -178,6 +178,14 @@ public class IC2NuclearControl
                         Character.valueOf('F'), Items.getItem("glassFiberCableItem"), 
                         Character.valueOf('T'), Items.getItem("mvTransformer")
                 });
+        ItemStack averageCounter = new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_AVERAGE_COUNTER);
+        Ic2Recipes.addCraftingRecipe(averageCounter, new Object[]
+                {
+                "FTF", " A ",  
+                        Character.valueOf('A'), Items.getItem("advancedCircuit"), 
+                        Character.valueOf('F'), Items.getItem("glassFiberCableItem"), 
+                        Character.valueOf('T'), Items.getItem("mvTransformer")
+                });
         Ic2Recipes.addCraftingRecipe(new ItemStack(itemCounterSensorKit, 1), new Object[] 
                 {
                     "  F", " C ", "P  ", 

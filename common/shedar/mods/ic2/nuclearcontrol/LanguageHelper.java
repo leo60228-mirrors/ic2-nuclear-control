@@ -50,6 +50,7 @@ public class LanguageHelper
             setPhraseRename(configuration, "tile.blockInfoPanel.name", "Reactor Information Panel", "Industrial Information Panel");
             setPhrase(configuration, "tile.blockInfoPanelExtender.name", "Information Panel Extender");
             setPhrase(configuration, "tile.blockEnergyCounter.name", "Energy Counter");
+            setPhrase(configuration, "tile.blockAverageCounter.name", "Average Counter");
 
             setPhrase(configuration, "msg.nc.HowlerAlarmSoundRange", "Sound range: %s");
             setPhrase(configuration, "msg.nc.HowlerAlarmSound", "Sound");
@@ -97,6 +98,7 @@ public class LanguageHelper
             setPhrase(configuration, "msg.nc.cbInfoPanelEnergyTotal", "Summary");
             setPhrase(configuration, "msg.nc.cbInfoPanelEnergyPercentage", "Fill percentage");
             setPhrase(configuration, "msg.nc.EnergyCardQuantity", "Cards quantity: %d");
+            setPhrase(configuration, "msg.nc.AverageCounterPeriod", "Period: %ssec");
             
             
             

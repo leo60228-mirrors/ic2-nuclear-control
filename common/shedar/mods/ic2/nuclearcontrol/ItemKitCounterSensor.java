@@ -16,7 +16,9 @@ public class ItemKitCounterSensor extends ItemSensorKitBase
     protected ChunkCoordinates getTargetCoordinates(World world, int x, int y, int z)
     {
         TileEntity entity = world.getBlockTileEntity(x, y, z);
-        if (entity != null && entity instanceof TileEntityEnergyCounter)
+        if (entity != null && 
+            (entity instanceof TileEntityEnergyCounter ||
+             entity instanceof TileEntityAverageCounter))
         {
             ChunkCoordinates coordinates = new ChunkCoordinates();
             coordinates.posX = x;
