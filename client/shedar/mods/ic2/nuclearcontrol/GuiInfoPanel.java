@@ -16,8 +16,9 @@ import cpw.mods.fml.common.asm.SideOnly;
 import shedar.mods.ic2.nuclearcontrol.ContainerInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.NuclearNetworkHelper;
 import shedar.mods.ic2.nuclearcontrol.TileEntityInfoPanel;
-import shedar.mods.ic2.nuclearcontrol.panel.IPanelDataSource;
-import shedar.mods.ic2.nuclearcontrol.panel.PanelSetting;
+import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
+import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
+import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 
 @SideOnly(Side.CLIENT)
 public class GuiInfoPanel extends GuiContainer
@@ -62,7 +63,7 @@ public class GuiInfoPanel extends GuiContainer
             {
                 textboxTitle = new GuiTextField(fontRenderer, 7, 16, 162, 18);
                 textboxTitle.setFocused(true);
-                textboxTitle.setText(source.getTitle(card));
+                textboxTitle.setText(new CardWrapperImpl(card).getTitle());
             }
         }
         else
@@ -125,8 +126,7 @@ public class GuiInfoPanel extends GuiContainer
         ItemStack card = container.getSlot(TileEntityInfoPanel.SLOT_CARD).getStack();
         if(card!=null && card.getItem() instanceof IPanelDataSource)
         {
-            IPanelDataSource source = (IPanelDataSource)card.getItem();
-            source.setTitle(card, textboxTitle.getText());
+            new CardWrapperImpl(card).setTitle(textboxTitle.getText());
         }
     }
     

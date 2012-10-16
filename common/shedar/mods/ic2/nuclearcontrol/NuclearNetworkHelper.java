@@ -2,12 +2,14 @@ package shedar.mods.ic2.nuclearcontrol;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.ICrafting;
 import net.minecraft.src.Packet;
 import net.minecraft.src.Packet250CustomPayload;
+import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 
 import com.google.common.io.ByteArrayDataOutput;
@@ -17,6 +19,10 @@ import cpw.mods.fml.client.FMLClientHandler;
 
 public class NuclearNetworkHelper
 {
+    public static final int FIELD_LONG = 1;
+    public static final int FIELD_INT = 2;
+    public static final int FIELD_STRING = 3;
+    public static final int FIELD_BOOLEAN = 4;
     
     //server
     public static void sendEnergyCounterValue(TileEntityEnergyCounter counter, ICrafting crafter)
@@ -79,9 +85,9 @@ public class NuclearNetworkHelper
     }
     
     //server
-    public static void setSensorCardField(TileEntityInfoPanel panel, Map<String, Integer> fields)
+    public static void setSensorCardField(TileEntity panel, Map<String, Object> fields)
     {
-        if(fields==null || fields.isEmpty() || panel==null)
+        if(fields==null || fields.isEmpty() || panel==null || !(panel instanceof TileEntityInfoPanel))
             return;
             
         if(panel.worldObj.isRemote)
@@ -94,10 +100,31 @@ public class NuclearNetworkHelper
         output.writeInt(panel.yCoord);
         output.writeInt(panel.zCoord);
         output.writeShort(fields.size());
-        for (Map.Entry<String, Integer> entry : fields.entrySet())
+        for (Map.Entry<String, Object> entry : fields.entrySet())
         {
             output.writeUTF(entry.getKey());
-            output.writeInt(entry.getValue());
+            Object value = entry.getValue();
+            if(value instanceof Long)
+            {
+                output.writeByte(FIELD_LONG);
+                output.writeLong((Long)value);
+            }
+            else if(value instanceof Integer)
+            {
+                output.writeByte(FIELD_INT);
+                output.writeInt((Integer)value);
+            }
+            else if(value instanceof String)
+            {
+                output.writeByte(FIELD_STRING);
+                output.writeUTF((String)value);
+            }
+            else if(value instanceof Boolean)
+            {
+                output.writeByte(FIELD_BOOLEAN);
+                output.writeBoolean((Boolean)value);
+            }
+            
         }
         packet.channel = IC2NuclearControl.NETWORK_CHANNEL_NAME;
         packet.isChunkDataPacket = false;
@@ -146,6 +173,7 @@ public class NuclearNetworkHelper
     public static void setNewAlarmSound(int x, int y, int z, String soundName)
     {
         ByteArrayDataOutput output = ByteStreams.newDataOutput();
+        output.writeByte(PacketHandler.PACKET_CLIENT_SOUND);
         output.writeInt(x);
         output.writeInt(y);
         output.writeInt(z);
@@ -156,5 +184,69 @@ public class NuclearNetworkHelper
         packet.data = output.toByteArray();
         packet.length = packet.data.length;
         FMLClientHandler.instance().getClient().getSendQueue().addToSendQueue(packet);
-    }    
+    }
+    
+    //client
+    public static void requestDisplaySettings(TileEntityInfoPanel panel)
+    {
+        ByteArrayDataOutput output = ByteStreams.newDataOutput();
+        output.writeByte(PacketHandler.PACKET_CLIENT_REQUEST);
+        output.writeInt(panel.xCoord);
+        output.writeInt(panel.yCoord);
+        output.writeInt(panel.zCoord);
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = IC2NuclearControl.NETWORK_CHANNEL_NAME;
+        packet.isChunkDataPacket = false;
+        packet.data = output.toByteArray();
+        packet.length = packet.data.length;
+        FMLClientHandler.instance().getClient().getSendQueue().addToSendQueue(packet);
+    }
+    
+    //server
+    public static void sendDisplaySettingsToPlayer(int x, int y, int z, EntityPlayerMP player)
+    {
+        TileEntity tileEntity = player.worldObj.getBlockTileEntity(x, y, z);
+        if(!(tileEntity instanceof TileEntityInfoPanel))
+            return;
+        Map<UUID, Integer> settings = ((TileEntityInfoPanel)tileEntity).displaySettings;
+        if(settings == null)
+            return;
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        ByteArrayDataOutput output = ByteStreams.newDataOutput();
+        output.writeShort(PacketHandler.PACKET_DISP_SETTINGS_ALL);
+        output.writeInt(x);
+        output.writeInt(y);
+        output.writeInt(z);
+        output.writeInt(settings.size());
+        for (Map.Entry<UUID, Integer> item : settings.entrySet())
+        {
+            output.writeLong(item.getKey().getMostSignificantBits());
+            output.writeLong(item.getKey().getLeastSignificantBits());
+            output.writeInt(item.getValue());
+        }
+        packet.channel = IC2NuclearControl.NETWORK_CHANNEL_NAME;
+        packet.isChunkDataPacket = false;
+        packet.data = output.toByteArray();
+        packet.length = packet.data.length;
+        ((EntityPlayerMP)player).serverForThisPlayer.sendPacketToPlayer(packet);
+    }
+    
+    //server
+    public static void sendDisplaySettingsUpdate(TileEntityInfoPanel panel, UUID key, int value)
+    {
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        ByteArrayDataOutput output = ByteStreams.newDataOutput();
+        output.writeShort(PacketHandler.PACKET_DISP_SETTINGS_UPDATE);
+        output.writeInt(panel.xCoord);
+        output.writeInt(panel.yCoord);
+        output.writeInt(panel.zCoord);
+        output.writeLong(key.getMostSignificantBits());
+        output.writeLong(key.getLeastSignificantBits());
+        output.writeInt(value);
+        packet.channel = IC2NuclearControl.NETWORK_CHANNEL_NAME;
+        packet.isChunkDataPacket = false;
+        packet.data = output.toByteArray();
+        packet.length = packet.data.length;
+        sendPacketToAllAround(panel.xCoord, panel.yCoord, panel.zCoord, 64, panel.worldObj, packet);
+    }
 }

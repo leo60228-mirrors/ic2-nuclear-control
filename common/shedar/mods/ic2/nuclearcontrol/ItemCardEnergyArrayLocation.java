@@ -1,24 +1,24 @@
 package shedar.mods.ic2.nuclearcontrol;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 import java.util.Vector;
 
-import shedar.mods.ic2.nuclearcontrol.panel.PanelSetting;
-import shedar.mods.ic2.nuclearcontrol.panel.PanelString;
-import shedar.mods.ic2.nuclearcontrol.utils.ItemStackUtils;
+import net.minecraft.src.ChunkCoordinates;
+import net.minecraft.src.ItemStack;
+import net.minecraft.src.StringTranslate;
+import net.minecraft.src.TileEntity;
+import net.minecraft.src.ic2.api.IEnergyStorage;
+import shedar.mods.ic2.nuclearcontrol.api.CardState;
+import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
+import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
+import shedar.mods.ic2.nuclearcontrol.api.PanelString;
+import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
-
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
-
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.StringTranslate;
-import net.minecraft.src.ic2.api.IEnergyStorage;
 
 public class ItemCardEnergyArrayLocation extends ItemCardBase
 {
@@ -29,74 +29,55 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
     public static final int DISPLAY_TOTAL = 16;
     public static final int DISPLAY_PERCENTAGE = 32;    
     
-    public static final int CARD_TYPE = 3;
+    public static final UUID CARD_TYPE = new UUID(0, 3);;
     
     public ItemCardEnergyArrayLocation(int i, int iconIndex)
     {
         super(i, iconIndex);
     }
-
-    protected static int getCardCount(ItemStack itemStack)
-    {
-        if(itemStack == null)
-            return 0;
-        if(!(itemStack.getItem() instanceof ItemCardEnergyArrayLocation))
-            return 0;
-        NBTTagCompound nbtTagCompound = itemStack.getTagCompound();
-        if (nbtTagCompound == null)
-        {
-            return 0;
-        }
-        return nbtTagCompound.getInteger("cardCount");
-    }
     
-    private int[] getCoordinates(ItemStack itemStack, int cardNumber)
+    private int[] getCoordinates(ICardWrapper card, int cardNumber)
     {
-        if(!(itemStack.getItem() instanceof ItemCardEnergyArrayLocation))
-            return null;
-        NBTTagCompound nbtTagCompound = itemStack.getTagCompound();
-        if (nbtTagCompound == null)
-        {
-            return null;
-        }
-        int cardCount = nbtTagCompound.getInteger("cardCount");
+        int cardCount = card.getInt("cardCount");
         if(cardNumber >= cardCount)
             return null;
         int[] coordinates = new int[]{
-            nbtTagCompound.getInteger(String.format("_%dx", cardNumber)),
-            nbtTagCompound.getInteger(String.format("_%dy", cardNumber)),  
-            nbtTagCompound.getInteger(String.format("_%dz", cardNumber))  
+            card.getInt(String.format("_%dx", cardNumber)),
+            card.getInt(String.format("_%dy", cardNumber)),  
+            card.getInt(String.format("_%dz", cardNumber))  
         };
         return coordinates;
     }
 
-
-    public static void initArray(ItemStack itemStack, Vector<ItemStack> cards)
+    public static int getCardCount(ICardWrapper card)
     {
-        NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(itemStack);
-        int cardCount = getCardCount(itemStack); 
-        for (ItemStack card : cards)
+        return card.getInt("cardCount");
+    }
+    
+
+    public static void initArray(CardWrapperImpl card, Vector<ItemStack> cards)
+    {
+        int cardCount = getCardCount(card); 
+        for (ItemStack subCard : cards)
         {
-            int[] coordinates =  ItemCardEnergySensorLocation.getCoordinates(card);
-            if(coordinates == null)
+            ChunkCoordinates target = new CardWrapperImpl(subCard).getTarget();
+            if(target == null)
                 continue;
-            nbtTagCompound.setInteger(String.format("_%dx", cardCount), coordinates[0]);
-            nbtTagCompound.setInteger(String.format("_%dy", cardCount), coordinates[1]);
-            nbtTagCompound.setInteger(String.format("_%dz", cardCount), coordinates[2]);
+            card.setInt(String.format("_%dx", cardCount), target.posX);
+            card.setInt(String.format("_%dy", cardCount), target.posY);
+            card.setInt(String.format("_%dz", cardCount), target.posZ);
             cardCount++;
         }
-        nbtTagCompound.setInteger("cardCount", cardCount);
+        card.setInt("cardCount", cardCount);
     }
 
     @Override
-    public void update(TileEntityInfoPanel panel, ItemStack stack, int range)
+    public CardState update(TileEntity panel, ICardWrapper card, int range)
     {
-        NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(stack);
-        int cardCount = getCardCount(stack);
-        Map<String, Integer> updateSet = new HashMap<String, Integer>();
+        int cardCount = getCardCount(card);
         if(cardCount == 0)
         {
-            setField("state", STATE_INVALID_CARD, nbtTagCompound, panel, updateSet);
+            return CardState.INVALID_CARD;
         }
         else
         {
@@ -104,7 +85,7 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
             boolean outOfRange = false;
             for(int i=0; i<cardCount; i++)
             {
-                int[] coordinates = getCoordinates(stack, i);
+                int[] coordinates = getCoordinates(card, i);
                 int dx = coordinates[0] - panel.xCoord;
                 int dy = coordinates[1] - panel.yCoord;
                 int dz = coordinates[2] - panel.zCoord;
@@ -116,9 +97,8 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
                             coordinates[0], coordinates[1], coordinates[2]);
                     if(storage != null)
                     {
-                        setField("state", STATE_OK, nbtTagCompound, panel, updateSet);
-                        setField(String.format("_%denergy", i), storage.getStored(), nbtTagCompound, panel, updateSet);
-                        setField(String.format("_%dmaxStorage", i), storage.getCapacity(), nbtTagCompound, panel, updateSet);
+                        card.setInt(String.format("_%denergy", i), storage.getStored());
+                        card.setInt(String.format("_%dmaxStorage", i), storage.getCapacity());
                         foundAny = true;
                     }
                 }
@@ -130,35 +110,23 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
             if(!foundAny)
             {
                 if(outOfRange)
-                    setField("state", STATE_OUT_OF_RANGE, nbtTagCompound, panel, updateSet);
+                    return CardState.OUT_OF_RANGE;
                 else
-                    setField("state", STATE_NO_TARGET, nbtTagCompound, panel, updateSet);
+                    return CardState.NO_TARGET;
             }
+            return CardState.OK;
         }
-        if(!updateSet.isEmpty())
-            NuclearNetworkHelper.setSensorCardField(panel, updateSet);
     }
 
     @Override
-    public int getCardType()
+    public UUID getCardType()
     {
         return CARD_TYPE;
     }
-
-    @Override
-    public void networkUpdate(String fieldName, int value, ItemStack itemStack)
-    {
-        NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(itemStack);
-        nbtTagCompound.setInteger(fieldName, value);
-    }
     
     @Override
-    public List<PanelString> getStringData(int displaySettings, ItemStack itemStack, boolean showLabels)
+    public List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels)
     {
-        NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(itemStack);
-        int state = nbtTagCompound.getInteger("state");
-        if(state != STATE_OK)
-            return StringUtils.getStateMessage(state);
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
         long totalEnergy = 0;
@@ -169,18 +137,11 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
         boolean showFree = (displaySettings & DISPLAY_FREE) > 0;
         boolean showStorage = (displaySettings & DISPLAY_STORAGE) > 0;
         boolean showPercentage = (displaySettings & DISPLAY_PERCENTAGE) > 0;
-        int cardCount = getCardCount(itemStack);
-        String title = nbtTagCompound.getString("title");
-        if(title!=null && !title.isEmpty())
-        {
-            line = new PanelString();
-            line.textCenter = title; 
-            result.add(line);
-        }
+        int cardCount = getCardCount(card);
         for(int i=0; i<cardCount; i++)
         {
-            int energy =  nbtTagCompound.getInteger(String.format("_%denergy",i));
-            int storage =  nbtTagCompound.getInteger(String.format("_%dmaxStorage",i));
+            int energy =  card.getInt(String.format("_%denergy",i));
+            int storage =  card.getInt(String.format("_%dmaxStorage",i));
             if(showSummary)
             {
                 totalEnergy += energy;
@@ -276,11 +237,11 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void addInformation(ItemStack itemStack, List info) 
     {
-        int cardCount = getCardCount(itemStack);
+        CardWrapperImpl card = new CardWrapperImpl(itemStack);
+        int cardCount = getCardCount(card);
         if(cardCount > 0)
         {
-            NBTTagCompound nbtTagCompound = itemStack.getTagCompound();
-            String title = nbtTagCompound.getString("title");
+            String title = card.getTitle();
             if(title != null && !title.isEmpty())
             {
                 info.add(title);

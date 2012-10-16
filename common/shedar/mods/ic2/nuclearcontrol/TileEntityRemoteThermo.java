@@ -2,6 +2,9 @@ package shedar.mods.ic2.nuclearcontrol;
 
 import java.util.List;
 
+import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
+
+import net.minecraft.src.ChunkCoordinates;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
@@ -390,12 +393,12 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
         }
         if(inventory[SLOT_CARD]!=null)
         {
-            int[] coordinates = ItemCardReactorSensorLocation.getCoordinates(inventory[SLOT_CARD]);
-            if(coordinates!=null)
+            ChunkCoordinates target = new CardWrapperImpl(inventory[SLOT_CARD]).getTarget();
+            if(target != null)
             {
-                deltaX = coordinates[0] - xCoord;
-                deltaY = coordinates[1] - yCoord;
-                deltaZ = coordinates[2] - zCoord;
+                deltaX = target.posX - xCoord;
+                deltaY = target.posY - yCoord;
+                deltaZ = target.posZ - zCoord;
                 if(upgradeCountRange > 7)
                     upgradeCountRange = 7;
                 int range = LOCATION_RANGE * (int)Math.pow(2, upgradeCountRange);

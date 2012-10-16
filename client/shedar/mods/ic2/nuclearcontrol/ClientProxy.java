@@ -7,12 +7,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
-import shedar.mods.ic2.nuclearcontrol.panel.IPanelDataSource;
+import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
+import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.EntityPlayer;
@@ -186,13 +190,30 @@ public class ClientProxy extends CommonProxy
                     {
                         return;
                     }
-                    IPanelDataSource card = (IPanelDataSource)stack.getItem();
+                    CardWrapperImpl helper = new CardWrapperImpl(stack);
                     int fieldCount =  dat.readShort();
                     for(int i=0; i<fieldCount; i++)
                     {
                         String name = dat.readUTF();
-                        int value = dat.readInt();
-                        card.networkUpdate(name, value, stack);
+                        byte type = dat.readByte();
+                        switch (type)
+                        {
+                        case NuclearNetworkHelper.FIELD_INT:
+                            helper.setInt(name, dat.readInt());
+                            break;
+                        case NuclearNetworkHelper.FIELD_BOOLEAN:
+                            helper.setBoolean(name, dat.readBoolean());
+                            break;
+                        case NuclearNetworkHelper.FIELD_LONG:
+                            helper.setLong(name, dat.readLong());
+                            break;
+                        case NuclearNetworkHelper.FIELD_STRING:
+                            helper.setString(name, dat.readUTF());
+                            break;
+                        default:
+                            FMLLog.warning("Invalid field type: %d", type);
+                            break;
+                        }
                     }
                     break;
                 case PacketHandler.PACKET_SENSOR_TITLE:
@@ -211,7 +232,7 @@ public class ClientProxy extends CommonProxy
                     {
                         return;
                     }
-                    ((IPanelDataSource)itemStack.getItem()).setTitle(itemStack, dat.readUTF());
+                    new CardWrapperImpl(itemStack).setTitle(dat.readUTF());
                     break;
                 case PacketHandler.PACKET_ECOUNTER:
                     world = FMLClientHandler.instance().getClient().theWorld;
@@ -239,7 +260,42 @@ public class ClientProxy extends CommonProxy
                     TileEntityAverageCounter avgCounter = (TileEntityAverageCounter)ent;
                     avgCounter.setClientAverage(dat.readInt());
                     break;
-    
+                case PacketHandler.PACKET_DISP_SETTINGS_ALL:
+                    world = FMLClientHandler.instance().getClient().theWorld;
+                    x = dat.readInt();
+                    y = dat.readInt();
+                    z = dat.readInt();
+                    ent = world.getBlockTileEntity(x, y, z);
+                    if(ent == null || !(ent instanceof TileEntityInfoPanel))
+                    {
+                        return;
+                    }
+                    int count = dat.readInt();
+                    Map<UUID, Integer> settings = new HashMap<UUID, Integer>();
+                    for(int i=0; i<count; i++)
+                    {
+                        long most = dat.readLong();
+                        long least = dat.readLong();
+                        settings.put(new UUID(most, least), dat.readInt()); 
+                    }
+                    ((TileEntityInfoPanel)ent).displaySettings = settings;
+                    break;
+                case PacketHandler.PACKET_DISP_SETTINGS_UPDATE:
+                    world = FMLClientHandler.instance().getClient().theWorld;
+                    x = dat.readInt();
+                    y = dat.readInt();
+                    z = dat.readInt();
+                    ent = world.getBlockTileEntity(x, y, z);
+                    if(ent == null || !(ent instanceof TileEntityInfoPanel))
+                    {
+                        return;
+                    }
+                    if(((TileEntityInfoPanel)ent).displaySettings == null)
+                        return;
+                    long most = dat.readLong();
+                    long least = dat.readLong();
+                    ((TileEntityInfoPanel)ent).displaySettings.put(new UUID(most, least), dat.readInt()); 
+                    break;
                 default:
                     FMLLog.warning("%sUnknown packet type: %d", IC2NuclearControl.LOG_PREFIX, packetType);
                     break;

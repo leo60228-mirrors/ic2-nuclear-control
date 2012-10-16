@@ -1,12 +1,19 @@
 package shedar.mods.ic2.nuclearcontrol;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-import shedar.mods.ic2.nuclearcontrol.panel.IPanelDataSource;
+import shedar.mods.ic2.nuclearcontrol.api.CardState;
+import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
+import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
+import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 
+import net.minecraft.src.ChunkCoordinates;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.Facing;
 import net.minecraft.src.Item;
@@ -28,13 +35,6 @@ public class TileEntityInfoPanel extends TileEntity implements
     INetworkClientTileEntityEventListener, IWrenchable, IRedstoneConsumer,
     ITextureHelper, IScreenPart, ISidedInventory, IRotation
 {
-    
-    private static final int CARD_TYPE_MAX = 4;
-    // 0 - reactor sensor location card
-    // 1 - time card
-    // 2 - storage sensor location card
-    // 3 - storage array
-    // 4 - counter card
 
     public static final int BORDER_NONE = 0;
     public static final int BORDER_LEFT = 1;
@@ -58,7 +58,7 @@ public class TileEntityInfoPanel extends TileEntity implements
     private boolean prevPowered;
     public boolean powered;
 
-    public int[] displaySettings;
+    public Map<UUID, Integer> displaySettings;
     
     private int prevRotation;
     public int rotation;
@@ -135,18 +135,16 @@ public class TileEntityInfoPanel extends TileEntity implements
     
     public void setDisplaySettings(int s)
     {
-        int cardType = 0;
-        if(inventory[0]!=null && inventory[0].getItem() instanceof IPanelDataSource)
+        UUID cardType = null;
+        if(inventory[0]!=null && inventory[SLOT_CARD].getItem() instanceof IPanelDataSource)
         {
-            cardType = ((IPanelDataSource)inventory[0].getItem()).getCardType();
+            cardType = ((IPanelDataSource)inventory[SLOT_CARD].getItem()).getCardType();
         }
-        if(cardType > CARD_TYPE_MAX)
-            cardType = 0;
-        boolean update = displaySettings[cardType] != s;
-        displaySettings[cardType] = s;
-        if (update)
+        boolean update = !displaySettings.containsKey(cardType)  || displaySettings.get(cardType) != s;
+        displaySettings.put(cardType, s);
+        if (update && FMLCommonHandler.instance().getEffectiveSide().isServer())
         {
-            NetworkHelper.updateTileEntityField(this, "displaySettings");
+            NuclearNetworkHelper.sendDisplaySettingsUpdate(this, cardType, s);
         }
     }
     
@@ -213,9 +211,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         init = false;
         tickRate = IC2NuclearControl.instance.screenRefreshPeriod;
         updateTicker = tickRate;
-        displaySettings = new int[CARD_TYPE_MAX+1];
-        for(int i=0; i<=CARD_TYPE_MAX; i++)
-            displaySettings[i] = DISPLAY_DEFAULT;
+        displaySettings = new HashMap<UUID, Integer>();
         powered = false;
         prevPowered = false;
         facing = 0;
@@ -230,7 +226,6 @@ public class TileEntityInfoPanel extends TileEntity implements
     {
         List<String> list = new ArrayList<String>(5);
         list.add("powered");
-        list.add("displaySettings");
         list.add("facing");
         list.add("rotation");
         list.add("card");
@@ -240,8 +235,10 @@ public class TileEntityInfoPanel extends TileEntity implements
     
     protected void initData()
     {
-        if(worldObj.isRemote){
+        if(worldObj.isRemote)
+        {
             NetworkHelper.requestInitialData(this);
+            NuclearNetworkHelper.requestDisplaySettings(this);
         }
         else
         {
@@ -289,24 +286,27 @@ public class TileEntityInfoPanel extends TileEntity implements
             prevShowLabels = showLabels = true; 
         }
         prevFacing = facing =  nbttagcompound.getShort("facing");
-        if(nbttagcompound.hasKey("dSets"))
+
+        if(nbttagcompound.hasKey("dSettings"))
         {
-            int[] dSets =nbttagcompound.getIntArray("dSets");
-            if(dSets.length == displaySettings.length)
+            NBTTagList settingsList = nbttagcompound.getTagList("dSettings");
+            for (int i = 0; i < settingsList.tagCount(); i++)
             {
-                displaySettings = dSets;
-            }
-            else
-            {
-                for(int i=0; i<dSets.length; i++)
-                {
-                    displaySettings[i] = dSets[i];
-                }
+                NBTTagCompound compound = (NBTTagCompound)settingsList.tagAt(i);
+                UUID key = UUID.fromString(compound.getString("key"));
+                int value = compound.getInteger("value");
+                displaySettings.put(key, value);
             }
         }
-        else
-        {
-            displaySettings[0] = nbttagcompound.getInteger("displaySettings");
+      
+        if(nbttagcompound.hasKey("dSets"))
+        {//v.1.3.2 compatibility
+            
+            int[] dSets = nbttagcompound.getIntArray("dSets");
+            for(int i=0; i<dSets.length; i++)
+            {
+                displaySettings.put(new UUID(0, i), dSets[i]);
+            }
         }
         NBTTagList nbttaglist = nbttagcompound.getTagList("Items");
         inventory = new ItemStack[getSizeInventory()];
@@ -342,7 +342,15 @@ public class TileEntityInfoPanel extends TileEntity implements
     {
         super.writeToNBT(nbttagcompound);
         nbttagcompound.setShort("facing", facing);
-        nbttagcompound.setIntArray("dSets", displaySettings);
+        NBTTagList settingsList = new NBTTagList();
+        for (Map.Entry<UUID, Integer> item : displaySettings.entrySet())
+        {
+            NBTTagCompound compound = new NBTTagCompound();
+            compound.setString("key", item.getKey().toString());
+            compound.setInteger("value", item.getValue());
+            settingsList.appendTag(compound);
+        }
+        nbttagcompound.setTag("dSettings", settingsList);
         nbttagcompound.setInteger("rotation", rotation);
         nbttagcompound.setBoolean("showLabels", getShowLabels());
 
@@ -458,15 +466,45 @@ public class TileEntityInfoPanel extends TileEntity implements
             {
                 upgradeCountRange = itemStack.stackSize;
             }
-            if(inventory[SLOT_CARD]!=null)
+            ItemStack card = inventory[SLOT_CARD]; 
+            if(card != null)
             {
-                Item item = inventory[SLOT_CARD].getItem();
+                Item item = card.getItem();
                 if(item instanceof IPanelDataSource)
                 {
+                    boolean needUpdate = true;
                     if(upgradeCountRange > 7)
                         upgradeCountRange = 7;
                     int range = LOCATION_RANGE * (int)Math.pow(2, upgradeCountRange);
-                    ((IPanelDataSource) item).update(this, inventory[SLOT_CARD], range);
+                    CardWrapperImpl cardHelper = new CardWrapperImpl(card);
+                    if(item instanceof IRemoteSensor)
+                    {
+                        ChunkCoordinates target = cardHelper.getTarget();
+                        if(target == null)
+                        {
+                            needUpdate = false;
+                            cardHelper.setState(CardState.INVALID_CARD);
+                        }
+                        else
+                        {
+                            int dx = target.posX - xCoord;
+                            int dy = target.posY - yCoord;
+                            int dz = target.posZ - zCoord;
+                            if (Math.abs(dx) > range || 
+                                Math.abs(dy) > range || 
+                                Math.abs(dz) > range)
+                            {
+                                needUpdate = false;
+                                cardHelper.setState(CardState.OUT_OF_RANGE);
+                            }
+                        }
+                    }
+                    if(needUpdate)
+                    {
+                        CardState state = ((IPanelDataSource) item).update(this, cardHelper, range);
+                        cardHelper.setInt("state", state.getIndex());
+                    }
+                    cardHelper.commit(this);
                 }
             }
         }
@@ -775,16 +813,17 @@ public class TileEntityInfoPanel extends TileEntity implements
     
     public int getDisplaySettings()
     {
-        if(inventory[SLOT_CARD] == null)
+        ItemStack card = inventory[SLOT_CARD]; 
+        if(card == null)
             return 0;
-        int cardType = 0;
-        if(inventory[0]!=null && inventory[0].getItem() instanceof IPanelDataSource)
+        UUID cardType = null;
+        if(card.getItem() instanceof IPanelDataSource)
         {
-            cardType = ((IPanelDataSource)inventory[0].getItem()).getCardType();
+            cardType = ((IPanelDataSource)card.getItem()).getCardType();
         }
-        if(cardType > CARD_TYPE_MAX)
-            cardType = 0;
-        return displaySettings[cardType];
+        if(displaySettings.containsKey(cardType))
+            return displaySettings.get(cardType);
+        return DISPLAY_DEFAULT;
     }
     
      

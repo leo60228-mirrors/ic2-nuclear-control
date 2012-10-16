@@ -2,6 +2,8 @@ package shedar.mods.ic2.nuclearcontrol;
 
 import java.util.Vector;
 
+import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
+
 import net.minecraft.src.IRecipe;
 import net.minecraft.src.InventoryCrafting;
 import net.minecraft.src.ItemStack;
@@ -54,12 +56,12 @@ public class StorageArrayRecipe implements IRecipe
         if(cardCount >= 2 && cardCount <= 6 && arrayCount == 0)
         {
             ItemStack itemStack = new ItemStack(IC2NuclearControl.instance.itemEnergyArrayLocationCard, 1, 0);
-            ItemCardEnergyArrayLocation.initArray(itemStack, cards);
+            ItemCardEnergyArrayLocation.initArray(new CardWrapperImpl(itemStack), cards);
             return itemStack;
         }
         else if(cardCount == 0 && arrayCount == 1)
         {
-            int cnt = ItemCardEnergyArrayLocation.getCardCount(array);
+            int cnt = ItemCardEnergyArrayLocation.getCardCount(new CardWrapperImpl(array));
             if(cnt > 0)
             {
                 return new ItemStack(Items.getItem("electronicCircuit").getItem(), 2*cnt, 0);
@@ -67,12 +69,12 @@ public class StorageArrayRecipe implements IRecipe
         }
         else if(arrayCount == 1 && cardCount > 0)
         {
-            int cnt = ItemCardEnergyArrayLocation.getCardCount(array);
+            int cnt = ItemCardEnergyArrayLocation.getCardCount(new CardWrapperImpl(array));
             if(cnt + cardCount <= 6)
             {
                 ItemStack itemStack = new ItemStack(IC2NuclearControl.instance.itemEnergyArrayLocationCard, 1, 0);
                 itemStack.setTagCompound((NBTTagCompound)array.getTagCompound().copy());
-                ItemCardEnergyArrayLocation.initArray(itemStack, cards);
+                ItemCardEnergyArrayLocation.initArray(new CardWrapperImpl(itemStack), cards);
                 return itemStack;
             }
         }

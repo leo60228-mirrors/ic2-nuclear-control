@@ -15,8 +15,11 @@ import cpw.mods.fml.client.FMLClientHandler;
 
 import shedar.mods.ic2.nuclearcontrol.Screen;
 import shedar.mods.ic2.nuclearcontrol.TileEntityInfoPanel;
-import shedar.mods.ic2.nuclearcontrol.panel.IPanelDataSource;
-import shedar.mods.ic2.nuclearcontrol.panel.PanelString;
+import shedar.mods.ic2.nuclearcontrol.api.CardState;
+import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
+import shedar.mods.ic2.nuclearcontrol.api.PanelString;
+import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
+import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
 public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
 {
@@ -55,9 +58,24 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
             ItemStack card = panel.getStackInSlot(TileEntityInfoPanel.SLOT_CARD);
             if(!(card.getItem() instanceof IPanelDataSource))
                 return;
-            List<PanelString> data =  ((IPanelDataSource)card.getItem()).getStringData(displaySettings, card, panel.getShowLabels());
+
+            CardWrapperImpl helper = new CardWrapperImpl(card);
+            CardState state = helper.getState();
+            List<PanelString> data;
+            if(state != CardState.OK && state != CardState.CUSTOM_ERROR)
+                data = StringUtils.getStateMessage(state);
+            else
+                data = ((IPanelDataSource)card.getItem()).getStringData(displaySettings, helper, panel.getShowLabels());
             if(data == null)
                 return;
+            
+            String title = helper.getTitle();
+            if(title!=null && !title.isEmpty())
+            {
+                PanelString titleString = new PanelString();
+                titleString.textCenter = title;
+                data.add(0, titleString);
+            }
             
             GL11.glPushMatrix();
             GL11.glPolygonOffset( -10, -10 );

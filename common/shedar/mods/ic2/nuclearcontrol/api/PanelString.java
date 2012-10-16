@@ -1,4 +1,4 @@
-package shedar.mods.ic2.nuclearcontrol.panel;
+package shedar.mods.ic2.nuclearcontrol.api;
 
 public class PanelString
 {

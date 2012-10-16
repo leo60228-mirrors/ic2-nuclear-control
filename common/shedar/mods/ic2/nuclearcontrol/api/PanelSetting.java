@@ -1,12 +1,14 @@
-package shedar.mods.ic2.nuclearcontrol.panel;
+package shedar.mods.ic2.nuclearcontrol.api;
+
+import java.util.UUID;
 
 public class PanelSetting
 {
     public String title;
     public int displayBit;
-    public int cardType;
+    public UUID cardType;
     
-    public PanelSetting(String title, int displayBit, int cardType)
+    public PanelSetting(String title, int displayBit, UUID cardType)
     {
         this.title = title;
         this.displayBit = displayBit;

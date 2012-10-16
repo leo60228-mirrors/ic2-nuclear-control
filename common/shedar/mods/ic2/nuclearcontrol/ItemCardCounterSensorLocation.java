@@ -1,30 +1,30 @@
 package shedar.mods.ic2.nuclearcontrol;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
-import shedar.mods.ic2.nuclearcontrol.panel.PanelSetting;
-import shedar.mods.ic2.nuclearcontrol.panel.PanelString;
-import shedar.mods.ic2.nuclearcontrol.utils.ItemStackUtils;
+import net.minecraft.src.ChunkCoordinates;
+import net.minecraft.src.ItemStack;
+import net.minecraft.src.StringTranslate;
+import net.minecraft.src.TileEntity;
+import shedar.mods.ic2.nuclearcontrol.api.CardState;
+import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
+import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
+import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
+import shedar.mods.ic2.nuclearcontrol.api.PanelString;
+import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
-
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.StringTranslate;
-import net.minecraft.src.TileEntity;
-
-public class ItemCardCounterSensorLocation extends ItemCardBase
+public class ItemCardCounterSensorLocation extends ItemCardBase implements IRemoteSensor
 {
     private static final String HINT_TEMPLATE = "x: %d, y: %d, z: %d";
 
     public static final int DISPLAY_ENERGY = 1;
-    public static final int CARD_TYPE = 4;
+    public static final UUID CARD_TYPE = new UUID(0, 4);;
 
     public ItemCardCounterSensorLocation(int i, int iconIndex)
     {
@@ -32,86 +32,45 @@ public class ItemCardCounterSensorLocation extends ItemCardBase
     }
     
     @Override
-    public void update(TileEntityInfoPanel panel, ItemStack stack, int range)
+    public CardState update(TileEntity panel, ICardWrapper card, int range)
     {
-        NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(stack);
-        int[] coordinates = getCoordinates(stack);
-        Map<String, Integer> updateSet = new HashMap<String, Integer>();
-        if(coordinates == null)
+        ChunkCoordinates target = card.getTarget();
+        TileEntity tileEntity = panel.worldObj.getBlockTileEntity(target.posX, target.posY, target.posZ);
+        if(tileEntity != null && tileEntity instanceof TileEntityEnergyCounter)
         {
-            setField("state", STATE_INVALID_CARD, nbtTagCompound, panel, updateSet);
+            TileEntityEnergyCounter counter  = (TileEntityEnergyCounter)tileEntity;
+            card.setLong("energy", counter.counter);
+            return CardState.OK;
+        }
+        else if(tileEntity != null && tileEntity instanceof TileEntityAverageCounter)
+        {
+            TileEntityAverageCounter avgCounter  = (TileEntityAverageCounter)tileEntity;
+            card.setInt("average", avgCounter.getClientAverage());
+            return CardState.OK;
         }
         else
         {
-            int dx = coordinates[0] - panel.xCoord;
-            int dy = coordinates[1] - panel.yCoord;
-            int dz = coordinates[2] - panel.zCoord;
-            if(Math.abs(dx) > range || 
-                Math.abs(dy) > range || 
-                Math.abs(dz) > range)
-            {
-                setField("state", STATE_OUT_OF_RANGE, nbtTagCompound, panel, updateSet);
-            }
-            else
-            {
-                TileEntity tileEntity = panel.worldObj.getBlockTileEntity(coordinates[0], coordinates[1], coordinates[2]);
-                if(tileEntity != null && tileEntity instanceof TileEntityEnergyCounter)
-                {
-                    TileEntityEnergyCounter counter  = (TileEntityEnergyCounter)tileEntity;
-                    setField("state", STATE_OK, nbtTagCompound, panel, updateSet);
-                    setField("energy", counter.counter, nbtTagCompound, panel, updateSet);
-                }
-                else if(tileEntity != null && tileEntity instanceof TileEntityAverageCounter)
-                {
-                    TileEntityAverageCounter avgCounter  = (TileEntityAverageCounter)tileEntity;
-                    setField("state", STATE_OK, nbtTagCompound, panel, updateSet);
-                    setField("average", avgCounter.getClientAverage(), nbtTagCompound, panel, updateSet);
-                }
-                else
-                {
-                    setField("state", STATE_NO_TARGET, nbtTagCompound, panel, updateSet);
-                }
-            }
+            return CardState.NO_TARGET;
         }
-        if(!updateSet.isEmpty())
-            NuclearNetworkHelper.setSensorCardField(panel, updateSet);
     }
 
     @Override
-    public int getCardType()
+    public UUID getCardType()
     {
         return CARD_TYPE;
     }
-
-    @Override
-    public void networkUpdate(String fieldName, int value, ItemStack itemStack)
-    {
-        NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(itemStack);
-        nbtTagCompound.setInteger(fieldName, value);
-    }
     
     @Override
-    public List<PanelString> getStringData(int displaySettings, ItemStack itemStack, boolean showLabels)
+    public List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels)
     {
-        NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(itemStack);
-        int state = nbtTagCompound.getInteger("state");
-        if(state != STATE_OK)
-            return StringUtils.getStateMessage(state);
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
-        String title = nbtTagCompound.getString("title");
-        if(title!=null && !title.isEmpty())
-        {
-            line = new PanelString();
-            line.textCenter = title; 
-            result.add(line);
-        }
-        if(nbtTagCompound.hasKey("average"))
+        if(card.hasField("average"))
         {//average counter
             if((displaySettings & DISPLAY_ENERGY) > 0)
             {
                 line = new PanelString();
-                line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelOutput", nbtTagCompound.getInteger("average"), showLabels); 
+                line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelOutput", card.getInt("average"), showLabels); 
                 result.add(line);
             }
         }
@@ -119,10 +78,7 @@ public class ItemCardCounterSensorLocation extends ItemCardBase
         {//energy counter
             if((displaySettings & DISPLAY_ENERGY) > 0)
             {
-                long lo =  nbtTagCompound.getInteger("energy-lo");
-                long hi =  nbtTagCompound.getInteger("energy-hi");
-                long energy = (hi<<32) | lo;
-
+                long energy = card.getLong("energy");
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelEnergy", energy, showLabels); 
                 result.add(line);
@@ -144,16 +100,16 @@ public class ItemCardCounterSensorLocation extends ItemCardBase
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void addInformation(ItemStack itemStack, List info) 
     {
-        int[] coordinates = getCoordinates(itemStack);
-        if(coordinates!=null)
+        CardWrapperImpl helper = new CardWrapperImpl(itemStack);
+        ChunkCoordinates target = helper.getTarget();
+        if(target != null)
         {
-            NBTTagCompound nbtTagCompound = itemStack.getTagCompound();
-            String title = nbtTagCompound.getString("title");
+            String title = helper.getTitle();
             if(title != null && !title.isEmpty())
             {
                 info.add(title);
             }
-            String hint = String.format(HINT_TEMPLATE, coordinates[0], coordinates[1], coordinates[2]);
+            String hint = String.format(HINT_TEMPLATE, target.posX, target.posY, target.posZ);
             info.add(hint);
         }
     }

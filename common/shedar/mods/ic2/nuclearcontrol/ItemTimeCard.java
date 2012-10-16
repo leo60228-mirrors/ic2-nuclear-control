@@ -2,18 +2,20 @@ package shedar.mods.ic2.nuclearcontrol;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-import shedar.mods.ic2.nuclearcontrol.panel.PanelSetting;
-import shedar.mods.ic2.nuclearcontrol.panel.PanelString;
+import net.minecraft.src.TileEntity;
+import shedar.mods.ic2.nuclearcontrol.api.CardState;
+import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
+import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
+import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
-
-import net.minecraft.src.ItemStack;
 import cpw.mods.fml.client.FMLClientHandler;
 
 public class ItemTimeCard extends ItemCardBase
 {
 
-    public static final int CARD_TYPE = 1;
+    public static final UUID CARD_TYPE =  new UUID(0, 1);
     
     public ItemTimeCard(int i, int iconIndex)
     {
@@ -21,8 +23,9 @@ public class ItemTimeCard extends ItemCardBase
     }
 
     @Override
-    public void update(TileEntityInfoPanel panel, ItemStack stack, int range)
+    public CardState update(TileEntity panel, ICardWrapper card, int range)
     {
+        return CardState.OK;
     }
 
     @Override
@@ -32,12 +35,7 @@ public class ItemTimeCard extends ItemCardBase
     }
     
     @Override
-    public void networkUpdate(String fieldName, int value, ItemStack stack)
-    {
-    }
-
-    @Override
-    public List<PanelString> getStringData(int displaySettings, ItemStack itemStack, boolean showLabels)
+    public List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels)
     {
         List<PanelString> result = new ArrayList<PanelString>(1);
         PanelString item = new PanelString();
@@ -56,7 +54,7 @@ public class ItemTimeCard extends ItemCardBase
     }
 
     @Override
-    public int getCardType()
+    public UUID getCardType()
     {
         return CARD_TYPE;
     }

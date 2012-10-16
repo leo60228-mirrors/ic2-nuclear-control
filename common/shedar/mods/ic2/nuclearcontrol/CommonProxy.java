@@ -1,6 +1,7 @@
 package shedar.mods.ic2.nuclearcontrol;
 
-import shedar.mods.ic2.nuclearcontrol.panel.IPanelDataSource;
+import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
+import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
@@ -72,25 +73,36 @@ public class CommonProxy implements IGuiHandler
         {
             // used to set sound alarm from client's GUI
             ByteArrayDataInput dat = ByteStreams.newDataInput(packet.data);
+            byte packetId = dat.readByte();
             int x = dat.readInt();
             int y = dat.readInt();
             int z = dat.readInt();
-            String soundName = dat.readUTF();
-            TileEntity tileEntity = ((EntityPlayerMP) player).worldObj.getBlockTileEntity(x, y, z);
-            if (tileEntity instanceof TileEntityHowlerAlarm)
+            switch (packetId)
             {
-                ((TileEntityHowlerAlarm) tileEntity).setSoundName(soundName);
-            } 
-            else if (tileEntity instanceof TileEntityInfoPanel)
-            {
-                ItemStack stack = ((TileEntityInfoPanel) tileEntity).getStackInSlot(TileEntityInfoPanel.SLOT_CARD);
-                if (stack == null || !(stack.getItem() instanceof IPanelDataSource))
+            case PacketHandler.PACKET_CLIENT_SOUND:
+                String soundName = dat.readUTF();
+                TileEntity tileEntity = ((EntityPlayerMP) player).worldObj.getBlockTileEntity(x, y, z);
+                if (tileEntity instanceof TileEntityHowlerAlarm)
                 {
-                    return;
+                    ((TileEntityHowlerAlarm) tileEntity).setSoundName(soundName);
+                } 
+                else if (tileEntity instanceof TileEntityInfoPanel)
+                {
+                    ItemStack stack = ((TileEntityInfoPanel) tileEntity).getStackInSlot(TileEntityInfoPanel.SLOT_CARD);
+                    if (stack == null || !(stack.getItem() instanceof IPanelDataSource))
+                    {
+                        return;
+                    }
+                    new CardWrapperImpl(stack).setTitle(soundName);
+                    NuclearNetworkHelper.setSensorCardTitle((TileEntityInfoPanel)tileEntity, soundName);
                 }
-                IPanelDataSource card = (IPanelDataSource) stack.getItem();
-                card.setTitle(stack, soundName);
-                NuclearNetworkHelper.setSensorCardTitle((TileEntityInfoPanel)tileEntity, soundName);
+                break;
+            case PacketHandler.PACKET_CLIENT_REQUEST:
+                NuclearNetworkHelper.sendDisplaySettingsToPlayer(x, y, z, (EntityPlayerMP)player);
+                break;
+
+            default:
+                break;
             }
         }
     }

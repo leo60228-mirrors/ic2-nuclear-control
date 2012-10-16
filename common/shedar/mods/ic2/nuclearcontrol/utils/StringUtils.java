@@ -5,10 +5,9 @@ import java.text.DecimalFormatSymbols;
 import java.util.LinkedList;
 import java.util.List;
 
-import shedar.mods.ic2.nuclearcontrol.ItemCardBase;
-import shedar.mods.ic2.nuclearcontrol.panel.PanelString;
-
 import net.minecraft.src.StringTranslate;
+import shedar.mods.ic2.nuclearcontrol.api.CardState;
+import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 
 public class StringUtils
 {
@@ -40,19 +39,19 @@ public class StringUtils
         return getFormatted(resourceName, getFormatter().format(value), showLabels);
     }
     
-    public static List<PanelString> getStateMessage(int state)
+    public static List<PanelString> getStateMessage(CardState state)
     { 
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line= new PanelString();
         switch (state)
         {
-            case ItemCardBase.STATE_OUT_OF_RANGE:
+            case OUT_OF_RANGE:
                 line.textCenter = StringTranslate.getInstance().translateKey("msg.nc.InfoPanelOutOfRange"); 
                 break;
-            case ItemCardBase.STATE_INVALID_CARD:
+            case INVALID_CARD:
                 line.textCenter = StringTranslate.getInstance().translateKey("msg.nc.InfoPanelInvalidCard"); 
                 break;
-            case ItemCardBase.STATE_NO_TARGET:
+            case NO_TARGET:
                 line.textCenter = StringTranslate.getInstance().translateKey("msg.nc.InfoPanelNoTarget"); 
                 break;
         }

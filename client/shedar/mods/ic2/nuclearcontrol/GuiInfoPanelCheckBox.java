@@ -6,7 +6,7 @@ import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 
 import shedar.mods.ic2.nuclearcontrol.TileEntityInfoPanel;
-import shedar.mods.ic2.nuclearcontrol.panel.PanelSetting;
+import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.FontRenderer;

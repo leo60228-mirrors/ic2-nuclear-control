@@ -1,25 +1,28 @@
 package shedar.mods.ic2.nuclearcontrol;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
+import net.minecraft.src.ChunkCoordinates;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
-import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.StringTranslate;
+import net.minecraft.src.TileEntity;
 import net.minecraft.src.ic2.api.IReactor;
 import net.minecraft.src.ic2.api.Items;
-import shedar.mods.ic2.nuclearcontrol.panel.PanelSetting;
-import shedar.mods.ic2.nuclearcontrol.panel.PanelString;
-import shedar.mods.ic2.nuclearcontrol.utils.ItemStackUtils;
+import shedar.mods.ic2.nuclearcontrol.api.CardHelper;
+import shedar.mods.ic2.nuclearcontrol.api.CardState;
+import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
+import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
+import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
+import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 
-public class ItemCardReactorSensorLocation extends ItemCardBase
+public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemoteSensor
 {
     protected static final String HINT_TEMPLATE = "x: %d, y: %d, z: %d";
 
@@ -30,7 +33,7 @@ public class ItemCardReactorSensorLocation extends ItemCardBase
     public static final int DISPLAY_TIME = 16;
     public static final int DISPLAY_MELTING = 32;
     
-    public static final int CARD_TYPE = 0;
+    public static final UUID CARD_TYPE = new UUID(0, 0);
     
     public ItemCardReactorSensorLocation(int i, int iconIndex)
     {
@@ -38,73 +41,45 @@ public class ItemCardReactorSensorLocation extends ItemCardBase
     }
 
     @Override
-    public void update(TileEntityInfoPanel panel, ItemStack stack, int range)
+    public CardState update(TileEntity panel, ICardWrapper card, int range)
     {
-        NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(stack);
-        int[] coordinates = getCoordinates(stack);
-        Map<String, Integer> updateSet = new HashMap<String, Integer>();
-        if(coordinates == null)
+        ChunkCoordinates target = card.getTarget();
+        IReactor reactor = NuclearHelper.getReactorAt(panel.worldObj, 
+                target.posX, target.posY, target.posZ);
+        if(reactor != null)
         {
-            setField("state", STATE_INVALID_CARD, nbtTagCompound, panel, updateSet);
-            return;
-        }
-        int dx = coordinates[0] - panel.xCoord;
-        int dy = coordinates[1] - panel.yCoord;
-        int dz = coordinates[2] - panel.zCoord;
-        if(Math.abs(dx) > range || 
-            Math.abs(dy) > range || 
-            Math.abs(dz) > range)
-        {
-            setField("state", STATE_OUT_OF_RANGE, nbtTagCompound, panel, updateSet);
+            card.setInt("heat", reactor.getHeat());
+            card.setInt("maxHeat", reactor.getMaxHeat());
+            card.setBoolean("reactorPoweredB", NuclearHelper.isProducing(reactor));
+            card.setInt("output", reactor.getOutput());
+
+            IInventory inventory = (IInventory)reactor; 
+            int slotCount = inventory.getSizeInventory();
+            int timeLeft = 0;
+            int uraniumId1 = Items.getItem("reactorUraniumSimple").itemID;
+            int uraniumId2 = Items.getItem("reactorUraniumDual").itemID;
+            int uraniumId3 = Items.getItem("reactorUraniumQuad").itemID;
+            for(int i = 0; i < slotCount; i++)
+            {
+                ItemStack rStack = inventory.getStackInSlot(i);
+                if(rStack!=null && (rStack.itemID == uraniumId1 || rStack.itemID == uraniumId2 || rStack.itemID == uraniumId3))
+                {
+                    timeLeft = Math.max(timeLeft, rStack.getMaxDamage() - rStack.getItemDamage());
+                }
+            }
+            card.setInt("timeLeft", timeLeft*reactor.getTickRate()/20);
+            return CardState.OK;
         }
         else
         {
-            IReactor reactor = NuclearHelper.getReactorAt(panel.worldObj, 
-                    coordinates[0], coordinates[1], coordinates[2]);
-            if(reactor != null)
-            {
-                setField("state", STATE_OK, nbtTagCompound, panel, updateSet);
-                setField("heat", reactor.getHeat(), nbtTagCompound, panel, updateSet);
-                setField("maxHeat", reactor.getMaxHeat(), nbtTagCompound, panel, updateSet);
-                setField("reactorPowered", NuclearHelper.isProducing(reactor), nbtTagCompound, panel, updateSet);
-                setField("output", reactor.getOutput(), nbtTagCompound, panel, updateSet);
-
-                IInventory inventory = (IInventory)reactor; 
-                int slotCount = inventory.getSizeInventory();
-                int timeLeft = 0;
-                int uraniumId1 = Items.getItem("reactorUraniumSimple").itemID;
-                int uraniumId2 = Items.getItem("reactorUraniumDual").itemID;
-                int uraniumId3 = Items.getItem("reactorUraniumQuad").itemID;
-                for(int i = 0; i < slotCount; i++)
-                {
-                    ItemStack rStack = inventory.getStackInSlot(i);
-                    if(rStack!=null && (rStack.itemID == uraniumId1 || rStack.itemID == uraniumId2 || rStack.itemID == uraniumId3))
-                    {
-                        timeLeft = Math.max(timeLeft, rStack.getMaxDamage() - rStack.getItemDamage());
-                    }
-                }
-                setField("timeLeft", timeLeft*reactor.getTickRate()/20, nbtTagCompound, panel, updateSet);
-            }
-            else
-            {
-                setField("state", STATE_NO_TARGET, nbtTagCompound, panel, updateSet);
-            }
+            return CardState.NO_TARGET;
         }
-        if(!updateSet.isEmpty())
-            NuclearNetworkHelper.setSensorCardField(panel, updateSet);
     }
 
     @Override
-    public int getCardType()
+    public UUID getCardType()
     {
         return CARD_TYPE;
-    }
-
-    @Override
-    public void networkUpdate(String fieldName, int value, ItemStack itemStack)
-    {
-        NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(itemStack);
-        nbtTagCompound.setInteger(fieldName, value);
     }
 
     @Override
@@ -112,62 +87,52 @@ public class ItemCardReactorSensorLocation extends ItemCardBase
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void addInformation(ItemStack itemStack, List info) 
     {
-        int[] coordinates = getCoordinates(itemStack);
-        if(coordinates!=null)
+        //CardWrapperImpl helper = new CardWrapperImpl(itemStack);
+        ICardWrapper helper = CardHelper.getWrapper(itemStack);
+        ChunkCoordinates target = helper.getTarget();
+        if(target != null)
         {
-            NBTTagCompound nbtTagCompound = itemStack.getTagCompound();
-            String title = nbtTagCompound.getString("title");
+            String title = helper.getTitle();
             if(title != null && !title.isEmpty())
             {
                 info.add(title);
             }
-            String hint = String.format(HINT_TEMPLATE, coordinates[0], coordinates[1], coordinates[2]);
+            String hint = String.format(HINT_TEMPLATE, target.posX, target.posY, target.posZ);
             info.add(hint);
         }
     }
     
     @Override
-    public List<PanelString> getStringData(int displaySettings, ItemStack itemStack, boolean showLabels)
+    public List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels)
     {
-        NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(itemStack);
-        int state = nbtTagCompound.getInteger("state");
-        if(state != STATE_OK)
-            return StringUtils.getStateMessage(state);
         List<PanelString> result = new LinkedList<PanelString>();
         String text;
         PanelString line;
-        String title = nbtTagCompound.getString("title");
-        if(title!=null && !title.isEmpty())
-        {
-            line = new PanelString();
-            line.textCenter = title; 
-            result.add(line);
-        }
         if((displaySettings & DISPLAY_HEAT) > 0)
         {
             line = new PanelString();
-            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelHeat", nbtTagCompound.getInteger("heat"), showLabels); 
+            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelHeat", card.getInt("heat"), showLabels); 
             result.add(line);
         }
         if((displaySettings & DISPLAY_MAXHEAT) > 0)
         {
             line = new PanelString();
-            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelMaxHeat", nbtTagCompound.getInteger("maxHeat"), showLabels); 
+            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelMaxHeat", card.getInt("maxHeat"), showLabels); 
             result.add(line);
         }
         if((displaySettings & DISPLAY_MELTING) > 0)
         {
             line = new PanelString();
-            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelMelting", nbtTagCompound.getInteger("maxHeat")*85/100, showLabels); 
+            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelMelting", card.getInt("maxHeat")*85/100, showLabels); 
             result.add(line);
         }
         if((displaySettings & DISPLAY_OUTPUT) > 0)
         {
             line = new PanelString();
-            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelOutput", nbtTagCompound.getInteger("output"), showLabels); 
+            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelOutput", card.getInt("output"), showLabels); 
             result.add(line);
         }
-        int timeLeft = nbtTagCompound.getInteger("timeLeft");
+        int timeLeft = card.getInt("timeLeft");
         if((displaySettings & DISPLAY_TIME) > 0)
         {
             int hours = timeLeft / 3600;
@@ -183,8 +148,7 @@ public class ItemCardReactorSensorLocation extends ItemCardBase
         int txtColor = 0;
         if((displaySettings & DISPLAY_ONOFF) > 0)
         {
-            int shift = title!=null && !title.isEmpty()?1:0;
-            boolean reactorPowered = nbtTagCompound.getInteger("reactorPowered")==1;
+            boolean reactorPowered = card.getBoolean("reactorPoweredB");
             if(reactorPowered)
             {
                 txtColor = 0x00ff00;
@@ -195,9 +159,9 @@ public class ItemCardReactorSensorLocation extends ItemCardBase
                 txtColor = 0xff0000;
                 text = StringTranslate.getInstance().translateKey("msg.nc.InfoPanelOff");
             }
-            if(result.size()>shift)
+            if(result.size()>0)
             {
-                PanelString firstLine = result.get(shift);
+                PanelString firstLine = result.get(0);
                 firstLine.textRight = text;
                 firstLine.colorRight = txtColor;
             }
