@@ -130,7 +130,7 @@ public class TileEntityAverageCounter extends TileEntity implements
         {
             if (updateTicker-- == 0)
             {
-                updateTicker = tickRate;
+                updateTicker = tickRate-1;
                 index = (index+1) % DATA_POINTS;
                 data[index] = 0;
                 getAverage();
