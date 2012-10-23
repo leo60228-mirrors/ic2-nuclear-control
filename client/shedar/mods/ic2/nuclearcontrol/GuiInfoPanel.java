@@ -101,6 +101,14 @@ public class GuiInfoPanel extends GuiContainer
     }
     
     @Override
+    protected void mouseClicked(int x, int y, int par3)
+    {
+        super.mouseClicked(x, y, par3);
+        if(textboxTitle!=null)
+            textboxTitle.mouseClicked(x-guiLeft, y-guiTop, par3);
+    }
+    
+    @Override
     protected void mouseMovedOrUp(int mouseX, int mouseY, int which)
     {
         super.mouseMovedOrUp(mouseX, mouseY, which);
