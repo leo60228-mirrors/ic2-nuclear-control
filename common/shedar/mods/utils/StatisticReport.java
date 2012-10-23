@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.NetworkInterface;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +68,18 @@ public class StatisticReport
         data.add(new StatisticObject(prefix, version));
     }
     
+    private static String toHexString(byte[] bytes) {
+        char[] hexArray = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+        char[] hexChars = new char[bytes.length * 2];
+        int v;
+        for ( int j = 0; j < bytes.length; j++ ) {
+            v = bytes[j] & 0xFF;
+            hexChars[j*2] = hexArray[v/16];
+            hexChars[j*2 + 1] = hexArray[v%16];
+        }
+        return new String(hexChars);
+    }
+    
     private String getPlayerId() throws IOException
     {
         File statDir =  new File(Minecraft.getMinecraftDir(), "stats");
@@ -73,16 +87,34 @@ public class StatisticReport
         {
             statDir.mkdirs();
         }
-        File uidFile = new File(statDir, "player.uid");
-        if(uidFile.exists() && uidFile.canRead() && uidFile.length() == 32)
+        String mac = "";
+        try
         {
-                return Files.toString(uidFile, Charsets.US_ASCII);
+            InetAddress address = InetAddress.getLocalHost();
+            NetworkInterface ni = NetworkInterface.getByInetAddress(address);
+            byte[] macArray = ni.getHardwareAddress();
+            if(macArray != null)
+            {
+                mac = toHexString(macArray);
+            }
         }
-        if(uidFile.createNewFile() && uidFile.canWrite())
+        catch(Exception ex)
+        {
+        }
+        File uidFile = new File(statDir, "player.uid");
+        if(uidFile.exists() && uidFile.canRead() && uidFile.length() == 32+mac.length())
+        {
+            String data = Files.toString(uidFile, Charsets.US_ASCII);
+            String storedMac = data.substring(32);
+            if(storedMac.equalsIgnoreCase(mac))
+                return data.substring(0, 32);
+        }
+        uidFile.createNewFile();
+        if(uidFile.canWrite())
         {
             String uid = UUID.randomUUID().toString().replace("-", "");
             FileOutputStream output = new FileOutputStream(uidFile);
-            output.write(uid.getBytes());
+            output.write((uid+mac).getBytes());
             output.close();
             return uid;
         }
