@@ -52,7 +52,8 @@ public class TileEntityIC2Thermo extends TileEntity implements
 
     protected void initData()
     {
-    	if(worldObj.isRemote){
+    	if(worldObj.isRemote)
+    	{
     		NetworkHelper.requestInitialData(this);
     	}
     	else

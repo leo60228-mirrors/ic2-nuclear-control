@@ -43,8 +43,8 @@ public class ItemCardEnergySensorLocation extends ItemCardBase implements IRemot
         IEnergyStorage storage = EnergyStorageHelper.getStorageAt(panel.worldObj, target.posX, target.posY, target.posZ);
         if(storage != null)
         {
-            card.setInt("energy", storage.getStored());
-            card.setInt("maxStorage", storage.getCapacity());
+            card.setLong("energyL", (long)storage.getStored());
+            card.setLong("maxStorageL", (long)storage.getCapacity());
             return CardState.OK;
         }
         else
@@ -84,8 +84,8 @@ public class ItemCardEnergySensorLocation extends ItemCardBase implements IRemot
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
 
-        long energy =  card.getInt("energy");
-        long storage =  card.getInt("maxStorage");
+        long energy =  card.getLong("energyL");
+        long storage =  card.getLong("maxStorageL");
 
         if((displaySettings & DISPLAY_ENERGY) > 0)
         {

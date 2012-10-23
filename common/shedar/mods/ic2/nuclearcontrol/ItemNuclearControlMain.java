@@ -47,6 +47,8 @@ public class ItemNuclearControlMain extends ItemBlock
                 return "tile.blockEnergyCounter";
             case BlockNuclearControlMain.DAMAGE_AVERAGE_COUNTER:
                 return "tile.blockAverageCounter";
+            case BlockNuclearControlMain.DAMAGE_RANGE_TRIGGER:
+                return "tile.blockRangeTrigger";
         
         }
         return "";

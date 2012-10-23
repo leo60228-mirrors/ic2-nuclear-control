@@ -109,7 +109,8 @@ public class GuiRemoteThermo extends GuiContainer
         super.onGuiClosed();
     }  
     
-    @Override protected void actionPerformed(GuiButton button)
+    @Override 
+    protected void actionPerformed(GuiButton button)
     {
         if(button.id>=10)
             return;

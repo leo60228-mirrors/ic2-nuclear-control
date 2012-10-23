@@ -51,6 +51,7 @@ public class LanguageHelper
             setPhrase(configuration, "tile.blockInfoPanelExtender.name", "Information Panel Extender");
             setPhrase(configuration, "tile.blockEnergyCounter.name", "Energy Counter");
             setPhrase(configuration, "tile.blockAverageCounter.name", "Average Counter");
+            setPhrase(configuration, "tile.blockRangeTrigger.name", "Range Trigger");
 
             setPhrase(configuration, "msg.nc.HowlerAlarmSoundRange", "Sound range: %s");
             setPhrase(configuration, "msg.nc.HowlerAlarmSound", "Sound");

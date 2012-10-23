@@ -30,8 +30,9 @@ public class BlockNuclearControlMain extends BlockContainer
     public static final int DAMAGE_INFO_PANEL_EXTENDER = 5;
     public static final int DAMAGE_ENERGY_COUNTER = 6;
     public static final int DAMAGE_AVERAGE_COUNTER = 7;
+    public static final int DAMAGE_RANGE_TRIGGER = 8;
 
-    public static final int DAMAGE_MAX = 7;
+    public static final int DAMAGE_MAX = 8;
     
     public static final float[][] blockSize = {
         {0.0625F, 0, 0.0625F, 0.9375F, 0.4375F, 0.9375F},//Thermal Monitor
@@ -41,12 +42,13 @@ public class BlockNuclearControlMain extends BlockContainer
         {0, 0, 0, 1, 1, 1},//Info Panel
         {0, 0, 0, 1, 1, 1},//Info Panel Extender
         {0, 0, 0, 1, 1, 1},//Energy Counter
-        {0, 0, 0, 1, 1, 1}//Average Counter
+        {0, 0, 0, 1, 1, 1},//Average Counter
+        {0, 0, 0, 1, 1, 1}//Range Trigger
         
     };
     
     private static final boolean[] solidBlockRequired =
-        {true, true, true, false, false, false, false, false};
+        {true, true, true, false, false, false, false, false, false};
     
     private static final byte[][][] sideMapping = 
         {
@@ -113,7 +115,15 @@ public class BlockNuclearControlMain extends BlockContainer
                 {43, 43, 41, 43, 43, 43},
                 {43, 43, 43, 43, 43, 41},
                 {43, 43, 43, 43, 41, 43}
-            }
+            },
+            {//Range Trigger
+                {23, 27, 24, 24, 24, 24},
+                {27, 23, 24, 24, 24, 24},
+                {24, 24, 23, 27, 24, 24},
+                {24, 24, 27, 23, 24, 24},
+                {24, 24, 24, 24, 23, 27},
+                {24, 24, 24, 24, 27, 23}
+            },
         };
     
 
@@ -485,6 +495,7 @@ public class BlockNuclearControlMain extends BlockContainer
             case DAMAGE_INFO_PANEL:
             case DAMAGE_ENERGY_COUNTER:
             case DAMAGE_AVERAGE_COUNTER:
+            case DAMAGE_RANGE_TRIGGER:
                 if(player instanceof EntityPlayerMP)
                     player.openGui(IC2NuclearControl.instance, blockType, world, x, y, z);
                 return true;
@@ -513,7 +524,7 @@ public class BlockNuclearControlMain extends BlockContainer
     public boolean isPoweringTo(IBlockAccess iblockaccess, int x, int y, int z, int direction)
     {
         TileEntity tileentity = iblockaccess.getBlockTileEntity(x, y, z);
-        if(!(tileentity instanceof TileEntityIC2Thermo))
+        if(!(tileentity instanceof TileEntityIC2Thermo) && !(tileentity instanceof TileEntityRangeTrigger))
             return false;
         
         int targetX = x;
@@ -540,7 +551,8 @@ public class BlockNuclearControlMain extends BlockContainer
 			break;
 		}
         TileEntity targetEntity = iblockaccess.getBlockTileEntity(targetX, targetY, targetZ);
-        if (targetEntity!=null && (NuclearHelper.getReactorAt(tileentity.worldObj, targetX, targetY, targetZ)!=null || 
+        if (tileentity instanceof TileEntityIC2Thermo && targetEntity!=null && 
+            (NuclearHelper.getReactorAt(tileentity.worldObj, targetX, targetY, targetZ)!=null || 
     		NuclearHelper.getReactorChamberAt(tileentity.worldObj, targetX, targetY, targetZ)!=null))
         {
             return false;
@@ -550,6 +562,8 @@ public class BlockNuclearControlMain extends BlockContainer
             TileEntityRemoteThermo thermo = (TileEntityRemoteThermo)tileentity;
             return thermo.getOnFire() >= thermo.getHeatLevel() ^ thermo.isInvertRedstone();
         }
+        if(tileentity instanceof TileEntityRangeTrigger)
+            return ((TileEntityRangeTrigger)tileentity).getOnFire() > 0 ^ ((TileEntityRangeTrigger)tileentity).isInvertRedstone();
     	return ((TileEntityIC2Thermo)tileentity).getOnFire() > 0 ^ ((TileEntityIC2Thermo)tileentity).isInvertRedstone();
     }
 
@@ -646,6 +660,7 @@ public class BlockNuclearControlMain extends BlockContainer
         itemList.add(new ItemStack(this, 1, DAMAGE_INFO_PANEL_EXTENDER));
         itemList.add(new ItemStack(this, 1, DAMAGE_ENERGY_COUNTER));
         itemList.add(new ItemStack(this, 1, DAMAGE_AVERAGE_COUNTER));
+        itemList.add(new ItemStack(this, 1, DAMAGE_RANGE_TRIGGER));
     }
 
     @Override
@@ -675,6 +690,8 @@ public class BlockNuclearControlMain extends BlockContainer
             return new TileEntityEnergyCounter();
         case DAMAGE_AVERAGE_COUNTER:
             return new TileEntityAverageCounter();
+        case DAMAGE_RANGE_TRIGGER:
+            return new TileEntityRangeTrigger();
         }
         return null;
     }

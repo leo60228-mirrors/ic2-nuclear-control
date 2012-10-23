@@ -72,6 +72,7 @@ public class IC2NuclearControl
     public int remoteThermalMonitorEnergyConsumption;
     public ScreenManager screenManager = new ScreenManager();
     public int screenRefreshPeriod;
+    public int rangeTriggerRefreshPeriod;
 
     public int IC2WrenchId;
     public int IC2ElectricWrenchId;
@@ -185,6 +186,17 @@ public class IC2NuclearControl
                         Character.valueOf('A'), Items.getItem("advancedCircuit"), 
                         Character.valueOf('F'), Items.getItem("glassFiberCableItem"), 
                         Character.valueOf('T'), Items.getItem("mvTransformer")
+                });
+        ItemStack rangeTrigger = new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_RANGE_TRIGGER);
+        Ic2Recipes.addCraftingRecipe(rangeTrigger, new Object[]
+                {
+                "EFE", "AMA",  " R ",
+                        
+                        Character.valueOf('E'), Items.getItem("detectorCableItem"), 
+                        Character.valueOf('F'), Items.getItem("frequencyTransmitter"),
+                        Character.valueOf('A'), Items.getItem("advancedCircuit"), 
+                        Character.valueOf('M'), Items.getItem("machine"), 
+                        Character.valueOf('R'), Item.redstone 
                 });
         Ic2Recipes.addCraftingRecipe(new ItemStack(itemCounterSensorKit, 1), new Object[] 
                 {
@@ -308,6 +320,7 @@ public class IC2NuclearControl
         allowedAlarms = configuration.getOrCreateProperty("allowedAlarms", Configuration.CATEGORY_GENERAL, "default,sci-fi").value.replaceAll(" ", "");
         remoteThermalMonitorEnergyConsumption = new Integer(configuration.getOrCreateIntProperty("remoteThermalMonitorEnergyConsumption", Configuration.CATEGORY_GENERAL, 1).value).intValue();
         screenRefreshPeriod = new Integer(configuration.getOrCreateIntProperty("infoPanelRefreshPeriod", Configuration.CATEGORY_GENERAL, 20).value).intValue();
+        rangeTriggerRefreshPeriod = new Integer(configuration.getOrCreateIntProperty("rangeTriggerRefreshPeriod", Configuration.CATEGORY_GENERAL, 20).value).intValue();
         SMPMaxAlarmRange = new Integer(configuration.getOrCreateIntProperty("SMPMaxAlarmRange", Configuration.CATEGORY_GENERAL, 256).value).intValue();
 
         proxy.registerTileEntities();

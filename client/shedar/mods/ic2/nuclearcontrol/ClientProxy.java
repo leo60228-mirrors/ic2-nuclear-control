@@ -138,6 +138,7 @@ public class ClientProxy extends CommonProxy
         GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityInfoPanelExtender.class, "IC2NCInfoPanelExtender");
         GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityEnergyCounter.class, "IC2NCEnergyCounter");
         GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityAverageCounter.class, "IC2NCAverageCounter");
+        GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityRangeTrigger.class, "IC2NCRangeTrigger");
         int modelId = RenderingRegistry.getNextAvailableRenderId();
         IC2NuclearControl.instance.modelId = modelId;
         RenderingRegistry.registerBlockHandler(new MainBlockRenderer(modelId));
@@ -327,6 +328,9 @@ public class ClientProxy extends CommonProxy
             case BlockNuclearControlMain.DAMAGE_AVERAGE_COUNTER:
                 ContainerAverageCounter containerAverageCounter = new ContainerAverageCounter(player, (TileEntityAverageCounter)tileEntity);
                 return new GuiAverageCounter(containerAverageCounter);
+            case BlockNuclearControlMain.DAMAGE_RANGE_TRIGGER:
+                ContainerRangeTrigger containerRangeTrigger = new ContainerRangeTrigger(player, (TileEntityRangeTrigger)tileEntity);
+                return new GuiRangeTrigger(containerRangeTrigger);
             default:
                 return null;
         }

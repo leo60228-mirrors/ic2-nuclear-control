@@ -75,6 +75,7 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
     public CardState update(TileEntity panel, ICardWrapper card, int range)
     {
         int cardCount = getCardCount(card);
+        long totalEnergy =  0;
         if(cardCount == 0)
         {
             return CardState.INVALID_CARD;
@@ -97,6 +98,7 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
                             coordinates[0], coordinates[1], coordinates[2]);
                     if(storage != null)
                     {
+                        totalEnergy += storage.getStored();
                         card.setInt(String.format("_%denergy", i), storage.getStored());
                         card.setInt(String.format("_%dmaxStorage", i), storage.getCapacity());
                         foundAny = true;
@@ -107,6 +109,7 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
                     outOfRange = true;
                 }
             }
+            card.setLong("energyL", totalEnergy);
             if(!foundAny)
             {
                 if(outOfRange)

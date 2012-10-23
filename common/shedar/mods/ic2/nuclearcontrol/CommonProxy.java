@@ -42,6 +42,7 @@ public class CommonProxy implements IGuiHandler
         GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityInfoPanelExtender.class, "IC2NCInfoPanelExtender");
         GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityEnergyCounter.class, "IC2NCEnergyCounter");
         GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityAverageCounter.class, "IC2NCAverageCounter");
+        GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.TileEntityRangeTrigger.class, "IC2NCRangeTrigger");
     }
 
     @Override
@@ -58,6 +59,8 @@ public class CommonProxy implements IGuiHandler
                 return new ContainerEnergyCounter(player, (TileEntityEnergyCounter)tileEntity);
             case BlockNuclearControlMain.DAMAGE_AVERAGE_COUNTER:
                 return new ContainerAverageCounter(player, (TileEntityAverageCounter)tileEntity);
+            case BlockNuclearControlMain.DAMAGE_RANGE_TRIGGER:
+                return new ContainerRangeTrigger(player, (TileEntityRangeTrigger)tileEntity);
             case BlockNuclearControlMain.DAMAGE_HOWLER_ALARM:
             case BlockNuclearControlMain.DAMAGE_INDUSTRIAL_ALARM:
             case BlockNuclearControlMain.DAMAGE_THERMAL_MONITOR:
@@ -99,6 +102,22 @@ public class CommonProxy implements IGuiHandler
                 break;
             case PacketHandler.PACKET_CLIENT_REQUEST:
                 NuclearNetworkHelper.sendDisplaySettingsToPlayer(x, y, z, (EntityPlayerMP)player);
+                break;
+            case PacketHandler.PACKET_CLIENT_RANGE_TRIGGER:
+                long value = dat.readLong();
+                boolean isEnd = dat.readBoolean();
+                tileEntity = ((EntityPlayerMP) player).worldObj.getBlockTileEntity(x, y, z);
+                if (tileEntity instanceof TileEntityRangeTrigger)
+                {
+                    if(isEnd)
+                    {
+                        ((TileEntityRangeTrigger)tileEntity).setLevelEnd(value);
+                    }
+                    else
+                    {
+                        ((TileEntityRangeTrigger)tileEntity).setLevelStart(value);
+                    }
+                }
                 break;
 
             default:

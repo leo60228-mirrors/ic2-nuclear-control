@@ -1,16 +1,13 @@
 package shedar.mods.ic2.nuclearcontrol;
 
-import org.lwjgl.opengl.GL11;
-
-import shedar.mods.ic2.nuclearcontrol.BlockNuclearControlMain;
-import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
-import shedar.mods.ic2.nuclearcontrol.IRotation;
-
 import net.minecraft.src.Block;
 import net.minecraft.src.IBlockAccess;
 import net.minecraft.src.RenderBlocks;
 import net.minecraft.src.Tessellator;
 import net.minecraft.src.TileEntity;
+
+import org.lwjgl.opengl.GL11;
+
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;

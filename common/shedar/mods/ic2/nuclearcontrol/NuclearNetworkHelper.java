@@ -66,6 +66,7 @@ public class NuclearNetworkHelper
         player.serverForThisPlayer.sendPacketToPlayer(packet);
     }
     
+    //server
     private static void sendPacketToAllAround(int x, int y, int z, int dist, World world, Packet packet)
     {
         @SuppressWarnings("unchecked")
@@ -178,6 +179,24 @@ public class NuclearNetworkHelper
         output.writeInt(y);
         output.writeInt(z);
         output.writeUTF(soundName);
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = IC2NuclearControl.NETWORK_CHANNEL_NAME;
+        packet.isChunkDataPacket = false;
+        packet.data = output.toByteArray();
+        packet.length = packet.data.length;
+        FMLClientHandler.instance().getClient().getSendQueue().addToSendQueue(packet);
+    }
+    
+    //client
+    public static void setRangeTrigger(int x, int y, int z, long value, boolean isEnd)
+    {
+        ByteArrayDataOutput output = ByteStreams.newDataOutput();
+        output.writeByte(PacketHandler.PACKET_CLIENT_RANGE_TRIGGER);
+        output.writeInt(x);
+        output.writeInt(y);
+        output.writeInt(z);
+        output.writeLong(value);
+        output.writeBoolean(isEnd);
         Packet250CustomPayload packet = new Packet250CustomPayload();
         packet.channel = IC2NuclearControl.NETWORK_CHANNEL_NAME;
         packet.isChunkDataPacket = false;
