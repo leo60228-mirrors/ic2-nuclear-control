@@ -59,7 +59,11 @@ public class CardSettingsWrapperImpl implements ICardSettingsWrapper
     public void commit()
     {
         if(!updateSet.isEmpty())
+        {
             NuclearNetworkHelper.setCardSettings(card, panel, updateSet);
+            updateSet = new HashMap<String, Object>();
+        }
+            
     }
     
     @Override
