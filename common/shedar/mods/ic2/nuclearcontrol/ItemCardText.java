@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.GuiScreen;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.TileEntity;
 import shedar.mods.ic2.nuclearcontrol.api.CardHelper;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.IAdvancedCardSettings;
+import shedar.mods.ic2.nuclearcontrol.api.ICardGui;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
@@ -76,7 +76,7 @@ public class ItemCardText extends ItemCardBase implements IAdvancedCardSettings
     }
 
     @Override
-    public GuiScreen getSettingsScreen(ICardWrapper wrapper)
+    public ICardGui getSettingsScreen(ICardWrapper wrapper)
     {
         return new GuiCardText(wrapper);
     }

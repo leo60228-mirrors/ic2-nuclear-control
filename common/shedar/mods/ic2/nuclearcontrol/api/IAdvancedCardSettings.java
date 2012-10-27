@@ -1,7 +1,5 @@
 package shedar.mods.ic2.nuclearcontrol.api;
 
-import net.minecraft.src.GuiScreen;
-
 /**
  * Interface is used to define, that card has own advanced settings (custom GUI), like Text Card.
  * If card implements this interface, Information Panel displays "..." button in its GUI.  
@@ -17,5 +15,5 @@ public interface IAdvancedCardSettings
      * @param wrapper
      * @return instance of card's Gui. 
      */
-    GuiScreen getSettingsScreen(ICardWrapper wrapper);
+    ICardGui getSettingsScreen(ICardWrapper wrapper);
 }

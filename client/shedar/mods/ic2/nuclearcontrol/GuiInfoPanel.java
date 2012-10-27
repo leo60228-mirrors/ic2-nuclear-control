@@ -20,6 +20,7 @@ import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.panel.CardSettingsWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 
@@ -163,7 +164,13 @@ public class GuiInfoPanel extends GuiContainer
             if(card != null && card.getItem() instanceof IAdvancedCardSettings)
             {
                 ICardWrapper helper = new CardWrapperImpl(card);
-                GuiScreen gui = ((IAdvancedCardSettings)card.getItem()).getSettingsScreen(helper);
+                Object guiObject = ((IAdvancedCardSettings)card.getItem()).getSettingsScreen(helper);
+                if(!(guiObject instanceof GuiScreen))
+                {
+                    FMLLog.warning("Invalid card, getSettingsScreen method should return GuiScreen object");
+                    return;
+                }
+                GuiScreen gui = (GuiScreen)guiObject;
                 ICardSettingsWrapper wrapper = new CardSettingsWrapperImpl(card, container.panel, this);
                 ((ICardGui)gui).setCardSettingsHelper(wrapper);
                 mc.displayGuiScreen(gui);
