@@ -8,4 +8,5 @@ public interface ICardSettingsWrapper
     void setString(String name, String value);
     void setBoolean(String name, Boolean value);
     void commit();
+    void closeGui();
 }

@@ -77,6 +77,7 @@ public class GuiCardText extends GuiScreen implements ICardGui
             }
         }
         wrapper.commit();
+        wrapper.closeGui();
     }
     
     @Override

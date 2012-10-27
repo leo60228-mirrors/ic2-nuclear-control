@@ -60,6 +60,11 @@ public class CardSettingsWrapperImpl implements ICardSettingsWrapper
     {
         if(!updateSet.isEmpty())
             NuclearNetworkHelper.setCardSettings(card, panel, updateSet);
+    }
+    
+    @Override
+    public void closeGui()
+    {
         gui.prevCard = null;
         FMLClientHandler.instance().getClient().displayGuiScreen(gui);
     }
