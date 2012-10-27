@@ -28,12 +28,12 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod( modid = "IC2NuclearControl", name="Nuclear Control", version="1.3.2", dependencies = "after:IC2")
+@Mod( modid = "IC2NuclearControl", name="Nuclear Control", version="1.4.1", dependencies = "after:IC2")
 @NetworkMod(channels = { "NuclearControl" }, clientSideRequired = true, serverSideRequired = false, 
             packetHandler = PacketHandler.class, connectionHandler = ConnectionHandler.class)
 public class IC2NuclearControl
 {
-    public static final String  VER = "1.3.2";
+    public static final String  VER = "1.4.1";
     
     public static final String LOG_PREFIX = "[IC2NuclearControl] ";
     public static final String NETWORK_CHANNEL_NAME = "NuclearControl";
