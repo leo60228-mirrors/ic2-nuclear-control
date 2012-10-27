@@ -7,6 +7,7 @@ import java.util.UUID;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.ICrafting;
+import net.minecraft.src.ItemStack;
 import net.minecraft.src.Packet;
 import net.minecraft.src.Packet250CustomPayload;
 import net.minecraft.src.TileEntity;
@@ -16,6 +17,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class NuclearNetworkHelper
 {
@@ -132,6 +134,55 @@ public class NuclearNetworkHelper
         packet.data = output.toByteArray();
         packet.length = packet.data.length;
         sendPacketToAllAround(panel.xCoord, panel.yCoord, panel.zCoord, 64, panel.worldObj, packet);
+    }
+    
+    //client
+    public static void setCardSettings(ItemStack card, TileEntity panel, Map<String, Object> fields)
+    {
+        if(card == null || fields==null || fields.isEmpty() || panel==null || !(panel instanceof TileEntityInfoPanel))
+            return;
+            
+        if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+            return;
+
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        ByteArrayDataOutput output = ByteStreams.newDataOutput();
+        output.writeByte(PacketHandler.PACKET_CLIENT_SENSOR);
+        output.writeInt(panel.xCoord);
+        output.writeInt(panel.yCoord);
+        output.writeInt(panel.zCoord);
+        output.writeUTF(card.getItem().getClass().getName());
+        output.writeShort(fields.size());
+        for (Map.Entry<String, Object> entry : fields.entrySet())
+        {
+            output.writeUTF(entry.getKey());
+            Object value = entry.getValue();
+            if(value instanceof Long)
+            {
+                output.writeByte(FIELD_LONG);
+                output.writeLong((Long)value);
+            }
+            else if(value instanceof Integer)
+            {
+                output.writeByte(FIELD_INT);
+                output.writeInt((Integer)value);
+            }
+            else if(value instanceof String)
+            {
+                output.writeByte(FIELD_STRING);
+                output.writeUTF((String)value);
+            }
+            else if(value instanceof Boolean)
+            {
+                output.writeByte(FIELD_BOOLEAN);
+                output.writeBoolean((Boolean)value);
+            }
+        }
+        packet.channel = IC2NuclearControl.NETWORK_CHANNEL_NAME;
+        packet.isChunkDataPacket = false;
+        packet.data = output.toByteArray();
+        packet.length = packet.data.length;
+        FMLClientHandler.instance().getClient().getSendQueue().addToSendQueue(packet);
     }
     
     //server

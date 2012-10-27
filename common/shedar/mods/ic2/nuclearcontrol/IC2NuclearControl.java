@@ -63,6 +63,7 @@ public class IC2NuclearControl
     public Item itemEnergyArrayLocationCard;
     public Item itemTimeCard;
     public Item itemRangeUpgrade;
+    public Item itemTextCard;
     public Block blockNuclearControlMain;
     public int modelId;
     public int alarmRange;
@@ -205,6 +206,13 @@ public class IC2NuclearControl
                         Character.valueOf('C'), Items.getItem("electronicCircuit"), 
                         Character.valueOf('F'), Items.getItem("frequencyTransmitter")
                 });
+        Ic2Recipes.addCraftingRecipe(new ItemStack(itemTextCard, 1), new Object[] 
+                {
+                    " C ", "PFP", " C ", 
+                        Character.valueOf('P'), Item.paper, 
+                        Character.valueOf('C'), Items.getItem("electronicCircuit"), 
+                        Character.valueOf('F'), Items.getItem("insulatedCopperCableItem")
+                });
         Ic2Recipes.addShapelessCraftingRecipe(new ItemStack(itemTimeCard, 1),  
                 Items.getItem("electronicCircuit"), Item.pocketSundial);
         Ic2Recipes.addShapelessCraftingRecipe(new ItemStack(Items.getItem("electronicCircuit").getItem(), 2),  
@@ -254,6 +262,9 @@ public class IC2NuclearControl
         itemTimeCard = new ItemTimeCard(
                 getIdFor(configuration, "itemTimeCard", 31005, false), 48)
                 .setItemName("ItemTimeCard");
+        itemTextCard = new ItemCardText(
+                getIdFor(configuration, "itemTextCard", 31011, false), 53)
+                .setItemName("ItemTextCard");
         itemEnergySensorLocationCard = new ItemCardEnergySensorLocation(
                 getIdFor(configuration, "itemEnergySensorLocationCard", 31007, false), 49)
                 .setItemName("ItemEnergySensorLocationCard");

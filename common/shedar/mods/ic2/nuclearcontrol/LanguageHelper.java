@@ -43,6 +43,7 @@ public class LanguageHelper
             setPhrase(configuration, "item.ItemEnergyArrayLocationCard.name", "Energy Array Location Card");
             setPhrase(configuration, "item.ItemRangeUpgrade.name", "Range Upgrade");
             setPhrase(configuration, "item.ItemTimeCard.name", "Time Card");
+            setPhrase(configuration, "item.ItemTextCard.name", "Text Card");
             setPhrase(configuration, "tile.blockThermalMonitor.name", "Thermal Monitor");
             setPhrase(configuration, "tile.blockIndustrialAlarm.name", "Industrial Alarm");
             setPhrase(configuration, "tile.blockHowlerAlarm.name", "Howler Alarm");
@@ -100,8 +101,6 @@ public class LanguageHelper
             setPhrase(configuration, "msg.nc.cbInfoPanelEnergyPercentage", "Fill percentage");
             setPhrase(configuration, "msg.nc.EnergyCardQuantity", "Cards quantity: %d");
             setPhrase(configuration, "msg.nc.AverageCounterPeriod", "Period: %ssec");
-            
-            
             
             setPhrase(configuration, "msg.nc.Reset", "Reset");
             

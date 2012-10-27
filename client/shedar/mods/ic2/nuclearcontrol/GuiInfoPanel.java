@@ -3,29 +3,32 @@ package shedar.mods.ic2.nuclearcontrol;
 import java.util.List;
 
 import net.minecraft.src.Container;
+import net.minecraft.src.GuiButton;
 import net.minecraft.src.GuiContainer;
+import net.minecraft.src.GuiScreen;
 import net.minecraft.src.GuiTextField;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
-
-import shedar.mods.ic2.nuclearcontrol.ContainerInfoPanel;
-import shedar.mods.ic2.nuclearcontrol.NuclearNetworkHelper;
-import shedar.mods.ic2.nuclearcontrol.TileEntityInfoPanel;
+import shedar.mods.ic2.nuclearcontrol.api.IAdvancedCardSettings;
+import shedar.mods.ic2.nuclearcontrol.api.ICardGui;
+import shedar.mods.ic2.nuclearcontrol.api.ICardSettingsWrapper;
+import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
+import shedar.mods.ic2.nuclearcontrol.panel.CardSettingsWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
+import cpw.mods.fml.common.Side;
+import cpw.mods.fml.common.asm.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiInfoPanel extends GuiContainer
 {
     private String name;
     private ContainerInfoPanel container;
-    private ItemStack prevCard;
+    public ItemStack prevCard;
     private GuiTextField textboxTitle;
     private boolean modified;
 
@@ -47,10 +50,14 @@ public class GuiInfoPanel extends GuiContainer
         int h = fontRenderer.FONT_HEIGHT + 1;
         controlList.clear();
         prevCard = card;
-        controlList.add(new GuiInfoPanelShowLabels(0, guiLeft + 7, guiTop + 80, container.panel));
+        controlList.add(new GuiInfoPanelShowLabels(0, guiLeft + xSize - 25, guiTop + 42, container.panel));
         if(card!=null && card.getItem() instanceof IPanelDataSource)
         {
             IPanelDataSource source = (IPanelDataSource)card.getItem();
+            if(source instanceof IAdvancedCardSettings)
+            {
+                controlList.add(new CompactButton(111, guiLeft + xSize - 25, guiTop + 55, 18, 12, "..."));
+            }
             int row = 0;
             List<PanelSetting> settingsList = source.getSettingsList();
             if(settingsList!=null)
@@ -144,6 +151,25 @@ public class GuiInfoPanel extends GuiContainer
         updateTitle();
         super.onGuiClosed();
     }    
+    
+    @Override
+    protected void actionPerformed(GuiButton button) 
+    {
+        if(button.id == 111)
+        {
+            ItemStack card = container.getSlot(TileEntityInfoPanel.SLOT_CARD).getStack();
+            if(card == null)
+                return;
+            if(card != null && card.getItem() instanceof IAdvancedCardSettings)
+            {
+                ICardWrapper helper = new CardWrapperImpl(card);
+                GuiScreen gui = ((IAdvancedCardSettings)card.getItem()).getSettingsScreen(helper);
+                ICardSettingsWrapper wrapper = new CardSettingsWrapperImpl(card, container.panel, this);
+                ((ICardGui)gui).setCardSettingsHelper(wrapper);
+                mc.displayGuiScreen(gui);
+            }        
+        }
+    }
 
     @Override
     protected void keyTyped(char par1, int par2)
