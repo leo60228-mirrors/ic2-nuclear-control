@@ -6,8 +6,8 @@ import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;
-import net.minecraft.src.ic2.api.IReactor;
-import net.minecraft.src.ic2.api.IReactorChamber;
+import ic2.api.IReactor;
+import ic2.api.IReactorChamber;
 
 public class ItemToolThermometer extends Item
 {
@@ -18,7 +18,7 @@ public class ItemToolThermometer extends Item
         setIconIndex(j);
         setMaxDamage(102);
         setMaxStackSize(1);
-        setTabToDisplayOn(CreativeTabs.tabMisc);
+        setCreativeTab(CreativeTabs.tabMisc);
     }
 
     public boolean canTakeDamage(ItemStack itemstack, int i)

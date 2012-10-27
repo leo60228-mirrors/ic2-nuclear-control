@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.src.ChunkCoordinates;
+import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.StringTranslate;
 import net.minecraft.src.TileEntity;
@@ -98,7 +99,7 @@ public class ItemCardCounterSensorLocation extends ItemCardBase implements IRemo
     @Override
     @SideOnly(Side.CLIENT)
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void addInformation(ItemStack itemStack, List info) 
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean advanced) 
     {
         CardWrapperImpl helper = new CardWrapperImpl(itemStack);
         ChunkCoordinates target = helper.getTarget();

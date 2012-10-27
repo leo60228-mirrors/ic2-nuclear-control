@@ -7,13 +7,13 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.Facing;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.TileEntity;
-import net.minecraft.src.ic2.api.INetworkClientTileEntityEventListener;
-import net.minecraft.src.ic2.api.INetworkDataProvider;
-import net.minecraft.src.ic2.api.INetworkUpdateListener;
-import net.minecraft.src.ic2.api.IReactor;
-import net.minecraft.src.ic2.api.IReactorChamber;
-import net.minecraft.src.ic2.api.IWrenchable;
-import net.minecraft.src.ic2.api.NetworkHelper;
+import ic2.api.INetworkClientTileEntityEventListener;
+import ic2.api.INetworkDataProvider;
+import ic2.api.INetworkUpdateListener;
+import ic2.api.IReactor;
+import ic2.api.IReactorChamber;
+import ic2.api.IWrenchable;
+import ic2.api.NetworkHelper;
 
 public class TileEntityIC2Thermo extends TileEntity implements 
         INetworkDataProvider, INetworkUpdateListener, 

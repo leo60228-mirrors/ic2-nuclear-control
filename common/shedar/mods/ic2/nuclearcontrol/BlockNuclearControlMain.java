@@ -17,7 +17,7 @@ import net.minecraft.src.Material;
 import net.minecraft.src.MathHelper;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
-import net.minecraft.src.ic2.api.IWrenchable;
+import ic2.api.IWrenchable;
 import net.minecraftforge.common.ForgeDirection;
 
 public class BlockNuclearControlMain extends BlockContainer
@@ -132,7 +132,7 @@ public class BlockNuclearControlMain extends BlockContainer
         super(i, j, Material.iron);
         setHardness(0.5F);
         setRequiresSelfNotify();
-        setCreativeTab(CreativeTabs.tabDeco);
+        setCreativeTab(CreativeTabs.tabRedstone);
     }
 
     @Override
@@ -372,18 +372,11 @@ public class BlockNuclearControlMain extends BlockContainer
             return true;
         }
     }
-
-    @Override
-    public void setBlockBoundsForItemRender()
-    {
-        setBlockBounds( blockSize[0][0], blockSize[0][1], blockSize[0][2], 
-                        blockSize[0][3], blockSize[0][4], blockSize[0][5]);
-    }
-    
     
     /**
      * Updates the blocks bounds based on its current state.
      */
+    @Override
     public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, int x, int y, int z)
     {
         int blockType = blockAccess.getBlockMetadata(x, y, z);
@@ -602,9 +595,9 @@ public class BlockNuclearControlMain extends BlockContainer
     }
 
     @Override
-    protected int damageDropped(int i)
+    public int damageDropped(int i)
     {
-        if(i >0 && i<=DAMAGE_MAX)
+        if(i > 0 && i <= DAMAGE_MAX)
             return i;
         else
             return 0;

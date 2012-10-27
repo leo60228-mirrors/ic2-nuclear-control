@@ -25,9 +25,11 @@ public class MainBlockRenderer implements ISimpleBlockRenderingHandler
     @Override
     public void renderInventoryBlock(Block block, int metadata, int model, RenderBlocks renderer)
     {
-        if(model == modelId){
+        if(model == modelId)
+        {
             float[] size = BlockNuclearControlMain.blockSize[metadata];
             block.setBlockBounds(size[0], size[1], size[2], size[3], size[4], size[5]);
+            renderer.func_83018_a(block);
             Tessellator tesselator = Tessellator.instance;
             GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
             tesselator.startDrawingQuads();

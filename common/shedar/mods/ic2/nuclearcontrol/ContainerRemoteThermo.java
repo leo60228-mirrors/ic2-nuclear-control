@@ -76,7 +76,7 @@ public class ContainerRemoteThermo extends Container
     }
     
     @Override
-    public ItemStack transferStackInSlot(int slotId)
+    public ItemStack func_82846_b(EntityPlayer p, int slotId)
     {
         Slot slot = (Slot)this.inventorySlots.get(slotId);
         if(slot!=null)

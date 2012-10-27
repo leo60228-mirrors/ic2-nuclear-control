@@ -7,8 +7,8 @@ import net.minecraft.src.Block;
 import net.minecraft.src.CraftingManager;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
-import net.minecraft.src.ic2.api.Ic2Recipes;
-import net.minecraft.src.ic2.api.Items;
+import ic2.api.Ic2Recipes;
+import ic2.api.Items;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
@@ -229,9 +229,9 @@ public class IC2NuclearControl
         try
         {
             if (block)
-                return new Integer(configuration.getOrCreateBlockIdProperty(name, i).value).intValue();
+                return new Integer(configuration.getBlock(name, i).value).intValue();
             else
-                return new Integer(configuration.getOrCreateIntProperty(name, "item", i).value).intValue();
+                return new Integer(configuration.get("item", name, i).value).intValue();
         } 
         catch (Exception exception)
         {
@@ -318,7 +318,7 @@ public class IC2NuclearControl
         {
             MinecraftForgeClient.preloadTexture("/img/texture_thermo.png");
             LanguageHelper.addNames(new File(configDir, CONFIG_NUCLEAR_CONTROL_LANG));
-            statEnabled = configuration.getOrCreateBooleanProperty("stat", Configuration.CATEGORY_GENERAL, true).getBoolean(true);
+            statEnabled = configuration.get(Configuration.CATEGORY_GENERAL, "stat", true).getBoolean(true);
             if(statEnabled)
             {
                 StatisticReport.instance.add("nc", VER);
@@ -326,13 +326,13 @@ public class IC2NuclearControl
         }
         initBlocks(configuration);
         registerBlocks();
-        alarmRange = new Integer(configuration.getOrCreateIntProperty("alarmRange", Configuration.CATEGORY_GENERAL, 64).value).intValue();
-        maxAlarmRange = new Integer(configuration.getOrCreateIntProperty("maxAlarmRange", Configuration.CATEGORY_GENERAL, 128).value).intValue();
-        allowedAlarms = configuration.getOrCreateProperty("allowedAlarms", Configuration.CATEGORY_GENERAL, "default,sci-fi").value.replaceAll(" ", "");
-        remoteThermalMonitorEnergyConsumption = new Integer(configuration.getOrCreateIntProperty("remoteThermalMonitorEnergyConsumption", Configuration.CATEGORY_GENERAL, 1).value).intValue();
-        screenRefreshPeriod = new Integer(configuration.getOrCreateIntProperty("infoPanelRefreshPeriod", Configuration.CATEGORY_GENERAL, 20).value).intValue();
-        rangeTriggerRefreshPeriod = new Integer(configuration.getOrCreateIntProperty("rangeTriggerRefreshPeriod", Configuration.CATEGORY_GENERAL, 20).value).intValue();
-        SMPMaxAlarmRange = new Integer(configuration.getOrCreateIntProperty("SMPMaxAlarmRange", Configuration.CATEGORY_GENERAL, 256).value).intValue();
+        alarmRange = new Integer(configuration.get(Configuration.CATEGORY_GENERAL, "alarmRange", 64).value).intValue();
+        maxAlarmRange = new Integer(configuration.get(Configuration.CATEGORY_GENERAL, "maxAlarmRange", 128).value).intValue();
+        allowedAlarms = configuration.get(Configuration.CATEGORY_GENERAL, "allowedAlarms", "default,sci-fi").value.replaceAll(" ", "");
+        remoteThermalMonitorEnergyConsumption = new Integer(configuration.get(Configuration.CATEGORY_GENERAL, "remoteThermalMonitorEnergyConsumption", 1).value).intValue();
+        screenRefreshPeriod = new Integer(configuration.get(Configuration.CATEGORY_GENERAL, "infoPanelRefreshPeriod", 20).value).intValue();
+        rangeTriggerRefreshPeriod = new Integer(configuration.get(Configuration.CATEGORY_GENERAL, "rangeTriggerRefreshPeriod", 20).value).intValue();
+        SMPMaxAlarmRange = new Integer(configuration.get(Configuration.CATEGORY_GENERAL, "SMPMaxAlarmRange", 256).value).intValue();
 
         proxy.registerTileEntities();
         NetworkRegistry.instance().registerGuiHandler(instance, proxy);

@@ -1,20 +1,21 @@
 package shedar.mods.ic2.nuclearcontrol;
 
-import java.util.Vector;
+import ic2.api.Items;
 
-import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
+import java.util.Vector;
 
 import net.minecraft.src.IRecipe;
 import net.minecraft.src.InventoryCrafting;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.ic2.api.Items;
+import net.minecraft.src.World;
+import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 
 public class StorageArrayRecipe implements IRecipe
 {
 
     @Override
-    public boolean matches(InventoryCrafting inventory)
+    public boolean matches(InventoryCrafting inventory, World world)
     {
         return getCraftingResult(inventory) != null;
     }

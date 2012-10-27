@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.GuiScreen;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.TileEntity;
@@ -60,7 +61,7 @@ public class ItemCardText extends ItemCardBase implements IAdvancedCardSettings
     @Override
     @SideOnly(Side.CLIENT)
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void addInformation(ItemStack itemStack, List info) 
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean advanced) 
     {
         ICardWrapper helper = CardHelper.getWrapper(itemStack);
         String title = helper.getTitle();

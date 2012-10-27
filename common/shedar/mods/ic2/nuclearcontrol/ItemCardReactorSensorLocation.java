@@ -6,12 +6,13 @@ import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.src.ChunkCoordinates;
+import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.StringTranslate;
 import net.minecraft.src.TileEntity;
-import net.minecraft.src.ic2.api.IReactor;
-import net.minecraft.src.ic2.api.Items;
+import ic2.api.IReactor;
+import ic2.api.Items;
 import shedar.mods.ic2.nuclearcontrol.api.CardHelper;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
@@ -85,7 +86,7 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
     @Override
     @SideOnly(Side.CLIENT)
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void addInformation(ItemStack itemStack, List info) 
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean advanced) 
     {
         //CardWrapperImpl helper = new CardWrapperImpl(itemStack);
         ICardWrapper helper = CardHelper.getWrapper(itemStack);

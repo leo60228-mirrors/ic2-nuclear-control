@@ -2,7 +2,7 @@ package shedar.mods.ic2.nuclearcontrol;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.GuiButton;
-import net.minecraft.src.ic2.api.NetworkHelper;
+import ic2.api.NetworkHelper;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;

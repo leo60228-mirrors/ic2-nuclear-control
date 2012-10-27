@@ -21,8 +21,8 @@ import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
+import net.minecraft.src.INetworkManager;
 import net.minecraft.src.ItemStack;
-import net.minecraft.src.NetworkManager;
 import net.minecraft.src.Packet250CustomPayload;
 import net.minecraft.src.SoundPool;
 import net.minecraft.src.StringTranslate;
@@ -145,7 +145,7 @@ public class ClientProxy extends CommonProxy
     }
     
     @Override
-    public void onPacketData(NetworkManager manager, Packet250CustomPayload packet, Player player)
+    public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player)
     {
         super.onPacketData(manager, packet, player);
         if (!(player instanceof EntityPlayerMP))

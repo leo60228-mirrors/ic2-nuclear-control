@@ -24,7 +24,7 @@ public class ScreenManager
     
     private int getWorldKey(World world)
     {
-        return world.getWorldInfo().getDimension()==0?world.provider.worldType:world.getWorldInfo().getDimension();
+        return world.getWorldInfo().getDimension()==0?world.provider.dimensionId:world.getWorldInfo().getDimension();
     }
     
     private boolean isValidExtender(World world, int x, int y, int z, int facing)

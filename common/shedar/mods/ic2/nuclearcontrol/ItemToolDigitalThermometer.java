@@ -5,8 +5,9 @@ import java.util.List;
 import net.minecraft.src.CreativeTabs;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ItemStack;
-import net.minecraft.src.ic2.api.ElectricItem;
-import net.minecraft.src.ic2.api.IElectricItem;
+import ic2.api.ElectricItem;
+import ic2.api.IElectricItem;
+import ic2.api.IReactor;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 
@@ -35,7 +36,7 @@ public class ItemToolDigitalThermometer extends ItemToolThermometer
     }
     
     @Override
-    protected void messagePlayer(EntityPlayer entityplayer, net.minecraft.src.ic2.api.IReactor reactor) {
+    protected void messagePlayer(EntityPlayer entityplayer, IReactor reactor) {
         int heat = reactor.getHeat();
         int maxHeat = reactor.getMaxHeat();
         NuclearNetworkHelper.chatMessage(entityplayer, 

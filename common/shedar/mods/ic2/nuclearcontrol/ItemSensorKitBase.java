@@ -19,7 +19,7 @@ public abstract class ItemSensorKitBase extends Item
         super(i);
         setIconIndex(iconIndex);
         setMaxStackSize(1);
-        setTabToDisplayOn(CreativeTabs.tabMisc);
+        setCreativeTab(CreativeTabs.tabMisc);
         this.item = item;
     }
 

@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.src.ChunkCoordinates;
+import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.StringTranslate;
 import net.minecraft.src.TileEntity;
-import net.minecraft.src.ic2.api.IEnergyStorage;
+import ic2.api.IEnergyStorage;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
@@ -62,7 +63,7 @@ public class ItemCardEnergySensorLocation extends ItemCardBase implements IRemot
     @Override
     @SideOnly(Side.CLIENT)
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void addInformation(ItemStack itemStack, List info) 
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean advanced) 
     {
         CardWrapperImpl helper = new CardWrapperImpl(itemStack);
         ChunkCoordinates target = helper.getTarget();

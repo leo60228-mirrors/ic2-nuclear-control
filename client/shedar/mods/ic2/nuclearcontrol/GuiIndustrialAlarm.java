@@ -44,7 +44,7 @@ public class GuiIndustrialAlarm extends GuiContainer
     }
     
     @Override
-    protected void drawGuiContainerForegroundLayer()
+    protected void drawGuiContainerForegroundLayer(int par1, int par2)
     {
         fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
     }

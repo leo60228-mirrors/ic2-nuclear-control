@@ -44,7 +44,7 @@ public class NuclearNetworkHelper
         packet.length = packet.data.length;
         
         EntityPlayerMP player = (EntityPlayerMP)crafter;
-        player.serverForThisPlayer.sendPacketToPlayer(packet);
+        player.playerNetServerHandler.sendPacketToPlayer(packet);
     }
 
     //server
@@ -65,7 +65,7 @@ public class NuclearNetworkHelper
         packet.length = packet.data.length;
         
         EntityPlayerMP player = (EntityPlayerMP)crafter;
-        player.serverForThisPlayer.sendPacketToPlayer(packet);
+        player.playerNetServerHandler.sendPacketToPlayer(packet);
     }
     
     //server
@@ -81,7 +81,7 @@ public class NuclearNetworkHelper
 
             if (dx*dx + dy*dy + dz*dz < dist * dist)
             {
-                player.serverForThisPlayer.sendPacketToPlayer(packet);
+                player.playerNetServerHandler.sendPacketToPlayer(packet);
             }        
         }
         
@@ -217,7 +217,7 @@ public class NuclearNetworkHelper
             packet.isChunkDataPacket = false;
             packet.data = output.toByteArray();
             packet.length = packet.data.length;
-            ((EntityPlayerMP)player).serverForThisPlayer.sendPacketToPlayer(packet);
+            ((EntityPlayerMP)player).playerNetServerHandler.sendPacketToPlayer(packet);
         }
     }
     
@@ -298,7 +298,7 @@ public class NuclearNetworkHelper
         packet.isChunkDataPacket = false;
         packet.data = output.toByteArray();
         packet.length = packet.data.length;
-        ((EntityPlayerMP)player).serverForThisPlayer.sendPacketToPlayer(packet);
+        ((EntityPlayerMP)player).playerNetServerHandler.sendPacketToPlayer(packet);
     }
     
     //server

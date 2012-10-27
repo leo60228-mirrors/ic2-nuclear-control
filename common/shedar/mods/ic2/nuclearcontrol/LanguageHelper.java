@@ -14,12 +14,12 @@ public class LanguageHelper
     
     private static void setPhrase(Configuration configuration, String key, String defaultValue)
     {
-        configuration.getOrCreateProperty(key, "locale.en.US", defaultValue);
+        configuration.get("locale.en.US", key, defaultValue);
     }
     
     private static void setPhraseRename(Configuration configuration, String key, String oldValue, String defaultValue)
     {
-        Property property = configuration.getOrCreateProperty(key, "locale.en.US", defaultValue);
+        Property property = configuration.get("locale.en.US", key, defaultValue);
         if(oldValue.equals(property.value))
         {
             property.value = defaultValue;

@@ -10,14 +10,14 @@ import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.NBTTagList;
 import net.minecraft.src.TileEntity;
-import net.minecraft.src.ic2.api.Direction;
-import net.minecraft.src.ic2.api.ElectricItem;
-import net.minecraft.src.ic2.api.EnergyNet;
-import net.minecraft.src.ic2.api.IElectricItem;
-import net.minecraft.src.ic2.api.IEnergySink;
-import net.minecraft.src.ic2.api.IReactor;
-import net.minecraft.src.ic2.api.Items;
-import net.minecraft.src.ic2.api.NetworkHelper;
+import ic2.api.Direction;
+import ic2.api.ElectricItem;
+import ic2.api.EnergyNet;
+import ic2.api.IElectricItem;
+import ic2.api.IEnergySink;
+import ic2.api.IReactor;
+import ic2.api.Items;
+import ic2.api.NetworkHelper;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 
@@ -461,7 +461,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
         if (amount > maxPacketSize)
         {
             worldObj.setBlockWithNotify(xCoord, yCoord, zCoord, 0);
-            worldObj.createExplosion(null, xCoord, yCoord, zCoord, 0.8F);
+            worldObj.createExplosion(null, xCoord, yCoord, zCoord, 0.8F, false);
             return 0;
         }
 

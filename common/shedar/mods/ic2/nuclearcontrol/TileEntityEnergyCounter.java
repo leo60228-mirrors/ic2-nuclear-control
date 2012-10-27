@@ -10,16 +10,16 @@ import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.NBTTagList;
 import net.minecraft.src.TileEntity;
-import net.minecraft.src.ic2.api.Direction;
-import net.minecraft.src.ic2.api.EnergyNet;
-import net.minecraft.src.ic2.api.IEnergySink;
-import net.minecraft.src.ic2.api.IEnergySource;
-import net.minecraft.src.ic2.api.INetworkClientTileEntityEventListener;
-import net.minecraft.src.ic2.api.INetworkDataProvider;
-import net.minecraft.src.ic2.api.INetworkUpdateListener;
-import net.minecraft.src.ic2.api.IWrenchable;
-import net.minecraft.src.ic2.api.Items;
-import net.minecraft.src.ic2.api.NetworkHelper;
+import ic2.api.Direction;
+import ic2.api.EnergyNet;
+import ic2.api.IEnergySink;
+import ic2.api.IEnergySource;
+import ic2.api.INetworkClientTileEntityEventListener;
+import ic2.api.INetworkDataProvider;
+import ic2.api.INetworkUpdateListener;
+import ic2.api.IWrenchable;
+import ic2.api.Items;
+import ic2.api.NetworkHelper;
 
 
 public class TileEntityEnergyCounter extends TileEntity implements 
@@ -314,7 +314,7 @@ public class TileEntityEnergyCounter extends TileEntity implements
         if (amount > packetSize)
         {
             worldObj.setBlockWithNotify(xCoord, yCoord, zCoord, 0);
-            worldObj.createExplosion(null, xCoord, yCoord, zCoord, 0.8F);
+            worldObj.createExplosion(null, xCoord, yCoord, zCoord, 0.8F, false);
             return 0;
         }
 

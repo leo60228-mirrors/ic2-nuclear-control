@@ -2,7 +2,7 @@ package shedar.mods.ic2.nuclearcontrol;
 
 import net.minecraft.src.ChunkCoordinates;
 import net.minecraft.src.World;
-import net.minecraft.src.ic2.api.IEnergyStorage;
+import ic2.api.IEnergyStorage;
 
 public class ItemKitEnergySensor extends ItemSensorKitBase
 {

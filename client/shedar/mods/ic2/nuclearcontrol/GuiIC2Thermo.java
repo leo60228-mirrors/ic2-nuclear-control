@@ -4,7 +4,7 @@ import net.minecraft.src.GuiButton;
 import net.minecraft.src.GuiContainer;
 import net.minecraft.src.GuiTextField;
 import net.minecraft.src.StatCollector;
-import net.minecraft.src.ic2.api.NetworkHelper;
+import ic2.api.NetworkHelper;
 
 import org.lwjgl.opengl.GL11;
 
@@ -93,7 +93,7 @@ public class GuiIC2Thermo extends GuiContainer
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer()
+    protected void drawGuiContainerForegroundLayer(int par1, int par2)
     {
         fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
         if(textboxHeat != null)

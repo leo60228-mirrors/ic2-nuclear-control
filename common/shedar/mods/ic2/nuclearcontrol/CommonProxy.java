@@ -1,18 +1,18 @@
 package shedar.mods.ic2.nuclearcontrol;
 
+import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.EntityPlayerMP;
+import net.minecraft.src.INetworkManager;
+import net.minecraft.src.ItemStack;
+import net.minecraft.src.Packet250CustomPayload;
+import net.minecraft.src.TileEntity;
+import net.minecraft.src.World;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.NetworkManager;
-import net.minecraft.src.Packet250CustomPayload;
-import net.minecraft.src.TileEntity;
-import net.minecraft.src.World;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.Player;
@@ -71,7 +71,7 @@ public class CommonProxy implements IGuiHandler
         }
     }
     
-    public void onPacketData(NetworkManager manager, Packet250CustomPayload packet, Player player)
+    public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player)
     {
         if (player instanceof EntityPlayerMP)//server
         {

@@ -11,7 +11,7 @@ import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.FontRenderer;
 import net.minecraft.src.GuiButton;
-import net.minecraft.src.ic2.api.NetworkHelper;
+import ic2.api.NetworkHelper;
 
 @SideOnly(Side.CLIENT)
 public class GuiInfoPanelCheckBox extends GuiButton

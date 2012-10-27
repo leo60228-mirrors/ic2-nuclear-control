@@ -21,11 +21,11 @@ import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.NBTTagList;
 import net.minecraft.src.TileEntity;
-import net.minecraft.src.ic2.api.INetworkClientTileEntityEventListener;
-import net.minecraft.src.ic2.api.INetworkDataProvider;
-import net.minecraft.src.ic2.api.INetworkUpdateListener;
-import net.minecraft.src.ic2.api.IWrenchable;
-import net.minecraft.src.ic2.api.NetworkHelper;
+import ic2.api.INetworkClientTileEntityEventListener;
+import ic2.api.INetworkDataProvider;
+import ic2.api.INetworkUpdateListener;
+import ic2.api.IWrenchable;
+import ic2.api.NetworkHelper;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 

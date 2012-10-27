@@ -68,7 +68,7 @@ public class ContainerEnergyCounter extends Container
     }
     
     @Override
-    public ItemStack slotClick(int par1, int par2, boolean par3, EntityPlayer player)
+    public ItemStack slotClick(int par1, int par2, int par3, EntityPlayer player)
     {
         ItemStack stack = super.slotClick(par1, par2, par3, player);
         energyCounter.onInventoryChanged();
@@ -76,7 +76,7 @@ public class ContainerEnergyCounter extends Container
     }
     
     @Override
-    public ItemStack transferStackInSlot(int slotId)
+    public ItemStack func_82846_b(EntityPlayer p, int slotId)
     {
         Slot slot = (Slot)this.inventorySlots.get(slotId);
         if(slot!=null)

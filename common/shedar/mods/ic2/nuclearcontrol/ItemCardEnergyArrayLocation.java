@@ -1,5 +1,7 @@
 package shedar.mods.ic2.nuclearcontrol;
 
+import ic2.api.IEnergyStorage;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -7,10 +9,10 @@ import java.util.UUID;
 import java.util.Vector;
 
 import net.minecraft.src.ChunkCoordinates;
+import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.StringTranslate;
 import net.minecraft.src.TileEntity;
-import net.minecraft.src.ic2.api.IEnergyStorage;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
@@ -238,7 +240,7 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
     @Override
     @SideOnly(Side.CLIENT)
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void addInformation(ItemStack itemStack, List info) 
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean advanced) 
     {
         CardWrapperImpl card = new CardWrapperImpl(itemStack);
         int cardCount = getCardCount(card);
