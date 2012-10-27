@@ -3,6 +3,10 @@ package shedar.mods.ic2.nuclearcontrol.api;
 import net.minecraft.src.ItemStack;
 import cpw.mods.fml.common.FMLLog;
 
+/**
+ * Helper class, if you need {@link ICardWrapper} object somewhere. 
+ * @author Shedar
+ */
 public final class CardHelper
 {
     private static final String className = "shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl";
@@ -16,7 +20,7 @@ public final class CardHelper
             return (ICardWrapper)c.getConstructor(ItemStack.class).newInstance(card);
         } catch (Exception e)
         {
-            FMLLog.severe("Can't crate Nuclear Control Card Wrapper: %s", e.toString());
+            FMLLog.severe("Can't create Nuclear Control Card Wrapper: %s", e.toString());
         } 
         return null;
         
