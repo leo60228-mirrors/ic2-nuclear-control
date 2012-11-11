@@ -233,12 +233,12 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
             for (PanelString panelString : data)
             {
                 if(panelString.textLeft != null)
-                    fontRenderer.drawString(panelString.textLeft, offsetX-realWidth/2, 1+offsetY-realHeight/2 + row * lineHeight, panelString.colorLeft);
+                    fontRenderer.drawString(panelString.textLeft, offsetX-realWidth/2, 1+offsetY-realHeight/2 + row * lineHeight, panelString.colorLeft!=0?panelString.colorLeft:panel.getColorTextHex());
                 if(panelString.textCenter != null)
-                    fontRenderer.drawString(panelString.textCenter, -fontRenderer.getStringWidth(panelString.textCenter)/2, offsetY - realHeight/2  + row * lineHeight, panelString.colorCenter);
+                    fontRenderer.drawString(panelString.textCenter, -fontRenderer.getStringWidth(panelString.textCenter)/2, offsetY - realHeight/2  + row * lineHeight, panelString.colorCenter!=0?panelString.colorCenter:panel.getColorTextHex());
                 if(panelString.textRight != null)
                     fontRenderer.drawString(panelString.textRight, realWidth/2-fontRenderer.getStringWidth(panelString.textRight), 
-                                            offsetY - realHeight/2  + row * lineHeight, panelString.colorRight);
+                                            offsetY - realHeight/2  + row * lineHeight, panelString.colorRight!=0?panelString.colorRight:panel.getColorTextHex());
                 row++;
             }
 

@@ -149,7 +149,7 @@ public class TileEntityInfoPanelExtender extends TileEntity implements
     @Override
     public int modifyTextureIndex(int texture)
     {
-        if(texture!=80)
+        if(texture!=47)
             return texture;
         if(screen!=null)
         {
@@ -159,7 +159,7 @@ public class TileEntityInfoPanelExtender extends TileEntity implements
                 return core.modifyTextureIndex(texture, xCoord, yCoord, zCoord);
             }
         }
-        return texture + 15;
+        return texture;
     }
 
     @Override

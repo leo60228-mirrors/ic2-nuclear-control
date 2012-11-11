@@ -257,6 +257,23 @@ public class NuclearNetworkHelper
     }
     
     //client
+    public static void setScreenColor(int x, int y, int z, int back, int text)
+    {
+        ByteArrayDataOutput output = ByteStreams.newDataOutput();
+        output.writeByte(PacketHandler.PACKET_CLIENT_COLOR);
+        output.writeInt(x);
+        output.writeInt(y);
+        output.writeInt(z);
+        output.writeInt((back<<4) | text);
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = IC2NuclearControl.NETWORK_CHANNEL_NAME;
+        packet.isChunkDataPacket = false;
+        packet.data = output.toByteArray();
+        packet.length = packet.data.length;
+        FMLClientHandler.instance().getClient().getSendQueue().addToSendQueue(packet);
+    }
+    
+    //client
     public static void requestDisplaySettings(TileEntityInfoPanel panel)
     {
         ByteArrayDataOutput output = ByteStreams.newDataOutput();

@@ -50,7 +50,7 @@ public class BlockNuclearControlMain extends BlockContainer
     private static final boolean[] solidBlockRequired =
         {true, true, true, false, false, false, false, false, false};
     
-    private static final byte[][][] sideMapping = 
+    private static final short[][][] sideMapping = 
         {
             {//Thermal Monitor
                 {1, 0, 17, 17, 17, 17},
@@ -85,20 +85,20 @@ public class BlockNuclearControlMain extends BlockContainer
                 {24, 24, 24, 24, 25, 23}
             },
             {//Info Panel
-                {23, 80, 24, 24, 24, 24},
-                {80, 23, 24, 24, 24, 24},
-                {24, 24, 23, 80, 24, 24},
-                {24, 24, 80, 23, 24, 24},
-                {24, 24, 24, 24, 23, 80},
-                {24, 24, 24, 24, 80, 23}
+                {242, 47, 243, 243, 243, 243},
+                {47, 242, 243, 243, 243, 243},
+                {243, 243, 242, 47, 243, 243},
+                {243, 243, 47, 242, 243, 243},
+                {243, 243, 243, 243, 242, 47},
+                {243, 243, 243, 243, 47, 242}
             },
             {//Info Panel Extender
-                {39, 80, 40, 40, 40, 40},
-                {80, 39, 40, 40, 40, 40},
-                {40, 40, 39, 80, 40, 40},
-                {40, 40, 80, 39, 40, 40},
-                {40, 40, 40, 40, 39, 80},
-                {40, 40, 40, 40, 80, 39}
+                {240, 47, 241, 241, 241, 241},
+                {47, 240, 241, 241, 241, 241},
+                {241, 241, 240, 47, 241, 241},
+                {241, 241, 47, 240, 241, 241},
+                {241, 241, 241, 241, 240, 47},
+                {241, 241, 241, 241, 47, 240}
             },
             {//Energy Counter
                 {42, 41, 42, 42, 42, 42},

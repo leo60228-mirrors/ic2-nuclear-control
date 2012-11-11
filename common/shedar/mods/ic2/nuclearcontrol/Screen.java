@@ -121,4 +121,18 @@ public class Screen
         }
     }
     
+    public void markUpdate()
+    {
+        for(int x = minX; x<=maxX; x++)
+        {
+            for(int y = minY; y<=maxY; y++)
+            {
+                for(int z = minZ; z<=maxZ; z++)
+                {
+                    coreWorld.markBlockNeedsUpdate(x, y, z);
+                }
+            }
+        }
+    }
+    
 }

@@ -386,7 +386,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
             {
                 upgradeCountStorage += itemStack.stackSize;
             }
-            else if(itemStack.getItem() instanceof ItemRangeUpgrade)
+            else if(itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
             {
                 upgradeCountRange += itemStack.stackSize;
             }
@@ -499,7 +499,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
             default:
                 return  itemstack.isItemEqual(Items.getItem("transformerUpgrade")) ||
                         itemstack.isItemEqual(Items.getItem("energyStorageUpgrade")) ||
-                        itemstack.getItem() instanceof ItemRangeUpgrade; 
+                        (itemstack.getItem() instanceof ItemUpgrade && itemstack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE); 
         }
         
     }

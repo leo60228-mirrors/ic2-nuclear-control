@@ -5,6 +5,7 @@ import net.minecraft.src.IBlockAccess;
 import net.minecraft.src.RenderBlocks;
 import net.minecraft.src.Tessellator;
 import net.minecraft.src.TileEntity;
+import net.minecraftforge.client.ForgeHooksClient;
 
 import org.lwjgl.opengl.GL11;
 
@@ -28,6 +29,10 @@ public class MainBlockRenderer implements ISimpleBlockRenderingHandler
         if(model == modelId)
         {
             float[] size = BlockNuclearControlMain.blockSize[metadata];
+            if(metadata==BlockNuclearControlMain.DAMAGE_INFO_PANEL || metadata==BlockNuclearControlMain.DAMAGE_INFO_PANEL_EXTENDER)
+            {
+                ForgeHooksClient.bindTexture("/img/InfoPanelColorsOff.png", 0);
+            }
             block.setBlockBounds(size[0], size[1], size[2], size[3], size[4], size[5]);
             renderer.func_83018_a(block);
             Tessellator tesselator = Tessellator.instance;
@@ -89,6 +94,31 @@ public class MainBlockRenderer implements ISimpleBlockRenderingHandler
                         renderer.uvRotateSouth = ((IRotation) tileEntity).getRotation();
                         break;
                         
+                }
+            }
+            if(tileEntity instanceof TileEntityInfoPanelExtender)
+            {
+                Screen screen = ((TileEntityInfoPanelExtender)tileEntity).getScreen();
+                if(screen!=null)
+                {
+                    TileEntityInfoPanel core = screen.getCore();
+                    if(core!=null)
+                        tileEntity = core;
+                }
+                else
+                {
+                    ForgeHooksClient.bindTexture("/img/InfoPanelColorsOff.png", 0);
+                }
+            }
+            if(tileEntity instanceof TileEntityInfoPanel)
+            {
+                if(((TileEntityInfoPanel) tileEntity).powered)
+                {
+                    ForgeHooksClient.bindTexture("/img/InfoPanelColorsOn.png", 0);
+                }
+                else
+                {
+                    ForgeHooksClient.bindTexture("/img/InfoPanelColorsOff.png", 0);
                 }
             }
             renderer.renderStandardBlock(block, x, y, z);

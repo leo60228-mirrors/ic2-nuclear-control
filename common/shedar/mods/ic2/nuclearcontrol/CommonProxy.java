@@ -120,6 +120,17 @@ public class CommonProxy implements IGuiHandler
                     }
                 }
                 break;
+            case PacketHandler.PACKET_CLIENT_COLOR:
+                int colors= dat.readInt();
+                tileEntity = ((EntityPlayerMP) player).worldObj.getBlockTileEntity(x, y, z);
+                if (tileEntity instanceof TileEntityInfoPanel)
+                {
+                    int back = colors >> 4;
+                    int text = colors & 0xf;
+                    ((TileEntityInfoPanel)tileEntity).setColorBackground(back);
+                    ((TileEntityInfoPanel)tileEntity).setColorText(text);
+                }
+                break;
             case PacketHandler.PACKET_CLIENT_SENSOR:
                 tileEntity = ((EntityPlayerMP) player).worldObj.getBlockTileEntity(x, y, z);
                 if (tileEntity instanceof TileEntityInfoPanel)

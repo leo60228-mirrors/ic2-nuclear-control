@@ -42,6 +42,7 @@ public class LanguageHelper
             setPhrase(configuration, "item.ItemCounterSensorLocationCard.name", "Counter Sensor Location Card");
             setPhrase(configuration, "item.ItemEnergyArrayLocationCard.name", "Energy Array Location Card");
             setPhrase(configuration, "item.ItemRangeUpgrade.name", "Range Upgrade");
+            setPhrase(configuration, "item.ItemColorUpgrade.name", "Color Upgrade");
             setPhrase(configuration, "item.ItemTimeCard.name", "Time Card");
             setPhrase(configuration, "item.ItemTextCard.name", "Text Card");
             setPhrase(configuration, "tile.blockThermalMonitor.name", "Thermal Monitor");
@@ -103,6 +104,8 @@ public class LanguageHelper
             setPhrase(configuration, "msg.nc.AverageCounterPeriod", "Period: %ssec");
             
             setPhrase(configuration, "msg.nc.Reset", "Reset");
+            setPhrase(configuration, "msg.nc.ScreenColor", "Screen Color");
+            setPhrase(configuration, "msg.nc.TextColor", "Text Color");
             
             for(Map.Entry<String, Map<String, Property>> category : configuration.categories.entrySet())
             {

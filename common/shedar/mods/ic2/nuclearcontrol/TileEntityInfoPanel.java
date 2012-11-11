@@ -35,6 +35,9 @@ public class TileEntityInfoPanel extends TileEntity implements
     INetworkClientTileEntityEventListener, IWrenchable, IRedstoneConsumer,
     ITextureHelper, IScreenPart, ISidedInventory, IRotation
 {
+    private static final int[] COLORS_HEX = {0, 0xe93535, 0x82e306, 0x702b14, 0x1f3ce7, 
+                                            0x8f1fea, 0x1fd7e9, 0xcbcbcb, 0x222222, 0xe60675, 
+                                            0x1fe723, 0xe9cc1f, 0x06aee4, 0xb006e3, 0xe7761f };
 
     public static final int BORDER_NONE = 0;
     public static final int BORDER_LEFT = 1;
@@ -45,7 +48,8 @@ public class TileEntityInfoPanel extends TileEntity implements
     public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE;
     
     public static final int SLOT_CARD = 0;
-    public static final int SLOT_UPGRADE = 1;
+    public static final int SLOT_UPGRADE_RANGE = 1;
+    public static final int SLOT_UPGRADE_COLOR = 2;
     private static final int LOCATION_RANGE = 8;
     
     protected int updateTicker;
@@ -69,6 +73,15 @@ public class TileEntityInfoPanel extends TileEntity implements
     private short prevFacing;
     public short facing;
 
+    private int prevColorBackground;
+    public int colorBackground;
+    
+    private int  prevColorText;
+    public int colorText;
+    
+    private boolean  prevColored;
+    public boolean colored;
+    
     @Override
     public short getFacing()
     {
@@ -118,6 +131,58 @@ public class TileEntityInfoPanel extends TileEntity implements
     }    
     
     
+    public void setColored(boolean c)
+    {
+        colored = c;
+        if (prevColored != c)
+        {
+            NetworkHelper.updateTileEntityField(this, "colored");
+        }
+        prevColored = colored;
+    }
+
+    public boolean getColored()
+    {
+        return colored;
+    }    
+    
+    public void setColorBackground(int c)
+    {
+        c&=0xf;
+        colorBackground = c;
+        if (prevColorBackground != c)
+        {
+            NetworkHelper.updateTileEntityField(this, "colorBackground");
+        }
+        prevColorBackground = colorBackground;
+    }
+
+    public int getColorBackground()
+    {
+        return colorBackground;
+    }    
+    
+    public void setColorText(int c)
+    {
+        c&=0xf;
+        colorText = c;
+        if (prevColorText != c)
+        {
+            NetworkHelper.updateTileEntityField(this, "colorText");
+        }
+        prevColorText = colorText;
+    }
+
+    public int getColorText()
+    {
+        return colorText;
+    }    
+    
+    public int getColorTextHex()
+    {
+        return COLORS_HEX[colorText];
+    }    
+    
     public void setShowLabels(boolean p)
     {
         showLabels = p;
@@ -162,6 +227,19 @@ public class TileEntityInfoPanel extends TileEntity implements
             worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
             prevFacing = facing;
         }
+        if (field.equals("colorBackground") || field.equals("colored"))
+        {
+            if(screen!=null)
+            {
+                screen.markUpdate();
+            }
+            else
+            {
+                worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+            }
+            prevColored = colored;
+            prevColorBackground = colorBackground;
+        }
         if (field.equals("card"))
         {
             inventory[SLOT_CARD] = card;
@@ -205,7 +283,7 @@ public class TileEntityInfoPanel extends TileEntity implements
     public TileEntityInfoPanel()
     {
         super();
-        inventory = new ItemStack[2];//card + range upgrades
+        inventory = new ItemStack[3];//card + range upgrade + color upgrade
         screen = null;
         card = null;
         init = false;
@@ -219,17 +297,22 @@ public class TileEntityInfoPanel extends TileEntity implements
         prevRotation = 0;
         rotation = 0;
         showLabels = true;
+        colored = false;
+        colorBackground = IC2NuclearControl.COLOR_GREEN;
     }
     
     @Override
     public List<String> getNetworkedFields()
     {
-        List<String> list = new ArrayList<String>(5);
+        List<String> list = new ArrayList<String>(8);
         list.add("powered");
         list.add("facing");
         list.add("rotation");
         list.add("card");
         list.add("showLabels");
+        list.add("colorBackground");
+        list.add("colorText");
+        list.add("colored");
         return list;
     }
     
@@ -286,6 +369,18 @@ public class TileEntityInfoPanel extends TileEntity implements
             prevShowLabels = showLabels = true; 
         }
         prevFacing = facing =  nbttagcompound.getShort("facing");
+
+        if(nbttagcompound.hasKey("colorBackground"))
+        {
+            colorText = nbttagcompound.getInteger("colorText");
+            colorBackground = nbttagcompound.getInteger("colorBackground");
+        }
+        else
+        {
+            //1.4.1 compatibility
+            colorText = 0;
+            colorBackground = IC2NuclearControl.COLOR_GREEN;
+        }
 
         if(nbttagcompound.hasKey("dSettings"))
         {
@@ -354,6 +449,8 @@ public class TileEntityInfoPanel extends TileEntity implements
         nbttagcompound.setInteger("rotation", rotation);
         nbttagcompound.setBoolean("showLabels", getShowLabels());
 
+        nbttagcompound.setInteger("colorBackground", colorBackground);
+        nbttagcompound.setInteger("colorText", colorText);
         NBTTagList nbttaglist = new NBTTagList();
         for (int i = 0; i < inventory.length; i++)
         {
@@ -461,8 +558,10 @@ public class TileEntityInfoPanel extends TileEntity implements
         if(worldObj!= null && FMLCommonHandler.instance().getEffectiveSide().isServer())
         {
             int upgradeCountRange = 0;
-            ItemStack itemStack = inventory[SLOT_UPGRADE];
-            if(itemStack != null && itemStack.getItem() instanceof ItemRangeUpgrade)
+            ItemStack itemStack = inventory[SLOT_UPGRADE_COLOR];
+            setColored(itemStack != null && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_COLOR);
+            itemStack = inventory[SLOT_UPGRADE_RANGE];
+            if(itemStack != null && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
             {
                 upgradeCountRange = itemStack.stackSize;
             }
@@ -517,8 +616,12 @@ public class TileEntityInfoPanel extends TileEntity implements
         {
             case SLOT_CARD:
                 return itemstack.getItem() instanceof IPanelDataSource;
+            case SLOT_UPGRADE_RANGE:
+                return itemstack.getItem() instanceof ItemUpgrade && itemstack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE; 
+            case SLOT_UPGRADE_COLOR:
+                return itemstack.getItem() instanceof ItemUpgrade && itemstack.getItemDamage() == ItemUpgrade.DAMAGE_COLOR; 
             default:
-                return itemstack.getItem() instanceof ItemRangeUpgrade; 
+                return false;
         }
         
     }
@@ -542,8 +645,9 @@ public class TileEntityInfoPanel extends TileEntity implements
 
     public int modifyTextureIndex(int texture, int x, int y, int z)
     {
-        if(texture!=80)
+        if(texture!=47)
             return texture;
+        texture -= 15;
         if(screen != null)
         {
             boolean left = false;
@@ -697,8 +801,11 @@ public class TileEntityInfoPanel extends TileEntity implements
         {
             texture+=15;
         }
-        if(powered)
-           texture+=16;
+        if(colored)
+        {
+            texture = texture - 32 + colorBackground*16;
+        }
+
         return texture;
     }
     
@@ -756,6 +863,7 @@ public class TileEntityInfoPanel extends TileEntity implements
     @Override
     public int getStartInventorySide(ForgeDirection side)
     {
+        // upgrade slots  
         if(side == ForgeDirection.DOWN)
             return 1;
         return 0;
@@ -764,7 +872,11 @@ public class TileEntityInfoPanel extends TileEntity implements
     @Override
     public int getSizeInventorySide(ForgeDirection side)
     {
-        if(side == ForgeDirection.DOWN || side == ForgeDirection.UP)
+        //upgrades
+        if(side == ForgeDirection.DOWN)
+            return 2;
+        //card
+        if(side == ForgeDirection.UP)
             return 1;
         return inventory.length;
     }

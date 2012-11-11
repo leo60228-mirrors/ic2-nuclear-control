@@ -20,8 +20,11 @@ public class ContainerInfoPanel extends Container
         //card
         addSlotToContainer(new SlotFilter(panel, 0, 8, 24+18));
         
-        //upgrade
+        //range upgrade
         addSlotToContainer(new SlotFilter(panel, 1, 8, 24+36));
+
+        //color upgrade
+        addSlotToContainer(new SlotFilter(panel, 2, 8, 24+54));
 
         //inventory
         for (int i = 0; i < 3; i++)

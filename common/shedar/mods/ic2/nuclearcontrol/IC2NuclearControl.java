@@ -33,6 +33,23 @@ import cpw.mods.fml.common.registry.GameRegistry;
             packetHandler = PacketHandler.class, connectionHandler = ConnectionHandler.class)
 public class IC2NuclearControl
 {
+    public static final int COLOR_WHITE = 15;
+    public static final int COLOR_ORANGE = 14;
+    public static final int COLOR_MAGENTA = 13;
+    public static final int COLOR_LIGHT_BLUE = 12;
+    public static final int COLOR_YELLOW = 11;
+    public static final int COLOR_LIME = 10;
+    public static final int COLOR_PINK = 9;
+    public static final int COLOR_GRAY = 8;
+    public static final int COLOR_LIGHT_GRAY = 7;
+    public static final int COLOR_CYAN = 6;
+    public static final int COLOR_PURPLE = 5;
+    public static final int COLOR_BLUE = 4;
+    public static final int COLOR_BROWN = 3;
+    public static final int COLOR_GREEN = 2;
+    public static final int COLOR_RED = 1;
+    public static final int COLOR_BLACK = 0;
+    
     public static final String  VER = "1.4.1";
     
     public static final String LOG_PREFIX = "[IC2NuclearControl] ";
@@ -62,7 +79,7 @@ public class IC2NuclearControl
     public Item itemCounterSensorLocationCard;
     public Item itemEnergyArrayLocationCard;
     public Item itemTimeCard;
-    public Item itemRangeUpgrade;
+    public Item itemUpgrade;
     public Item itemTextCard;
     public Block blockNuclearControlMain;
     public int modelId;
@@ -166,11 +183,24 @@ public class IC2NuclearControl
                         Character.valueOf('D'), Items.getItem("ecMeter"), 
                         Character.valueOf('F'), Items.getItem("frequencyTransmitter")
                 });
-        Ic2Recipes.addCraftingRecipe(new ItemStack(itemRangeUpgrade, 1), new Object[] 
+        Ic2Recipes.addCraftingRecipe(new ItemStack(itemUpgrade, 1, ItemUpgrade.DAMAGE_RANGE), new Object[] 
                 {
                     "CFC", 
                         Character.valueOf('C'), Items.getItem("insulatedCopperCableItem"), 
                         Character.valueOf('F'), Items.getItem("frequencyTransmitter")
+                });
+        Ic2Recipes.addCraftingRecipe(new ItemStack(itemUpgrade, 1, ItemUpgrade.DAMAGE_COLOR), new Object[] 
+                {
+                    "RYG","WCM","IAB", 
+                        Character.valueOf('R'), new ItemStack(Item.dyePowder, 1, COLOR_RED),  
+                        Character.valueOf('Y'), new ItemStack(Item.dyePowder, 1, COLOR_YELLOW),  
+                        Character.valueOf('G'), new ItemStack(Item.dyePowder, 1, COLOR_GREEN),  
+                        Character.valueOf('W'), new ItemStack(Item.dyePowder, 1, COLOR_WHITE),  
+                        Character.valueOf('C'), Items.getItem("insulatedCopperCableItem"), 
+                        Character.valueOf('M'), new ItemStack(Item.dyePowder, 1, COLOR_MAGENTA),  
+                        Character.valueOf('I'), new ItemStack(Item.dyePowder, 1, COLOR_BLACK),  
+                        Character.valueOf('A'), new ItemStack(Item.dyePowder, 1, COLOR_CYAN),  
+                        Character.valueOf('B'), new ItemStack(Item.dyePowder, 1, COLOR_BLUE)  
                 });
         ItemStack energyCounter = new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_ENERGY_COUNTER);
         Ic2Recipes.addCraftingRecipe(energyCounter, new Object[]
@@ -256,9 +286,8 @@ public class IC2NuclearControl
         itemSensorLocationCard = new ItemCardReactorSensorLocation(
                 getIdFor(configuration, "itemSensorLocationCard", 31003, false), 50)
                 .setItemName("ItemSensorLocationCard");
-        itemRangeUpgrade = new ItemRangeUpgrade(
-                getIdFor(configuration, "itemRangeUpgrade", 31004, false), 66)
-                .setItemName("ItemRangeUpgrade");
+        itemUpgrade = new ItemUpgrade(
+                getIdFor(configuration, "itemRangeUpgrade", 31004, false), 66);
         itemTimeCard = new ItemTimeCard(
                 getIdFor(configuration, "itemTimeCard", 31005, false), 48)
                 .setItemName("ItemTimeCard");
@@ -317,6 +346,8 @@ public class IC2NuclearControl
         if(isClient)
         {
             MinecraftForgeClient.preloadTexture("/img/texture_thermo.png");
+            MinecraftForgeClient.preloadTexture("/img/InfoPanelColorsOn.png");
+            MinecraftForgeClient.preloadTexture("/img/InfoPanelColorsOff.png");
             LanguageHelper.addNames(new File(configDir, CONFIG_NUCLEAR_CONTROL_LANG));
             statEnabled = configuration.get(Configuration.CATEGORY_GENERAL, "stat", true).getBoolean(true);
             if(statEnabled)

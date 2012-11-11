@@ -411,7 +411,7 @@ public class TileEntityRangeTrigger extends TileEntity implements
         {
             int upgradeCountRange = 0;
             ItemStack itemStack = inventory[SLOT_UPGRADE];
-            if(itemStack != null && itemStack.getItem() instanceof ItemRangeUpgrade)
+            if(itemStack != null && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
             {
                 upgradeCountRange = itemStack.stackSize;
             }
@@ -502,7 +502,7 @@ public class TileEntityRangeTrigger extends TileEntity implements
                 return itemstack.getItem() instanceof ItemCardEnergySensorLocation || 
                        itemstack.getItem() instanceof ItemCardEnergyArrayLocation;
             default:
-                return itemstack.getItem() instanceof ItemRangeUpgrade; 
+                return itemstack.getItem() instanceof ItemUpgrade && itemstack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE; 
         }
         
     }
