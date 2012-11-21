@@ -55,7 +55,7 @@ public class ContainerRemoteThermo extends Container
 
             if (lastEnergy != energy)
             {
-                crafting.updateCraftingInventoryInfo(this, 0, energy);
+                crafting.sendProgressBarUpdate(this, 0, energy);
             }
         }
         lastEnergy = energy;
@@ -76,7 +76,7 @@ public class ContainerRemoteThermo extends Container
     }
     
     @Override
-    public ItemStack func_82846_b(EntityPlayer p, int slotId)
+    public ItemStack transferStackInSlot(EntityPlayer p, int slotId)
     {
         Slot slot = (Slot)this.inventorySlots.get(slotId);
         if(slot!=null)

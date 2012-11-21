@@ -71,7 +71,7 @@ public class Screen
                     ((IScreenPart)tileEntity).setScreen(this); 
                     if(powered)
                     {
-                        coreWorld.markBlockNeedsUpdate(x, y, z);
+                        coreWorld.markBlockForUpdate(x, y, z);
                         coreWorld.updateAllLightTypes(x, y, z);
                     }
                 }
@@ -94,7 +94,7 @@ public class Screen
                     ((IScreenPart)tileEntity).setScreen(null); 
                     if(powered)
                     {
-                        coreWorld.markBlockNeedsUpdate(x, y, z);
+                        coreWorld.markBlockForUpdate(x, y, z);
                         coreWorld.updateAllLightTypes(x, y, z);
                     }
                 }
@@ -113,7 +113,7 @@ public class Screen
                 {
                     for(int z = minZ; z<=maxZ; z++)
                     {
-                        coreWorld.markBlockNeedsUpdate(x, y, z);
+                        coreWorld.markBlockForUpdate(x, y, z);
                         coreWorld.updateAllLightTypes(x, y, z);
                     }
                 }
@@ -129,7 +129,7 @@ public class Screen
             {
                 for(int z = minZ; z<=maxZ; z++)
                 {
-                    coreWorld.markBlockNeedsUpdate(x, y, z);
+                    coreWorld.markBlockForUpdate(x, y, z);
                 }
             }
         }

@@ -45,7 +45,7 @@ public class ContainerRangeTrigger extends Container
     }
     
     @Override
-    public ItemStack func_82846_b(EntityPlayer p, int slotId)
+    public ItemStack transferStackInSlot(EntityPlayer p, int slotId)
     {
         Slot slot = (Slot)this.inventorySlots.get(slotId);
         if(slot!=null)

@@ -184,62 +184,60 @@ public class BlockNuclearControlMain extends BlockContainer
      * called before onBlockPlacedBy by ItemBlock and ItemReed
      */
     @Override
-    public void updateBlockMetadata(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+    public int func_85104_a(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
     {
-        super.updateBlockMetadata(world, x, y, z, side, hitX, hitY, hitZ);
+        super.func_85104_a(world, x, y, z, side, hitX, hitY, hitZ, metadata);
         ForgeDirection dir = ForgeDirection.getOrientation(side);
-        int metadata = world.getBlockMetadata(x, y, z);
+        ForgeDirection oposite = dir.getOpposite();
         if(metadata > DAMAGE_MAX)
         {
             metadata = 0;
         }
-
-        if(!solidBlockRequired[metadata] || world.isBlockSolidOnSide(x + Facing.offsetsXForSide[Facing.faceToSide[side]], 
-				y + Facing.offsetsYForSide[Facing.faceToSide[side]], 
-				z + Facing.offsetsZForSide[Facing.faceToSide[side]], dir))
+        if(solidBlockRequired[metadata] && !world.isBlockSolidOnSide(x + oposite.offsetX, y + oposite.offsetY, z + oposite.offsetZ, dir))
         {
-            TileEntity tileentity = world.getBlockTileEntity(x, y, z);
-            if(tileentity instanceof IWrenchable)
-            {
-            	((IWrenchable)tileentity).setFacing((short)side);
-            }
+            side = 1;
         }
+        return metadata + (side<<8);
     }
     
-    @Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving player) 
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving player, int metadata) 
     {
         TileEntity block = world.getBlockTileEntity(x, y, z);
-        int metadata = world.getBlockMetadata(x, y, z);
+        int side = metadata >> 8;
+        metadata = metadata & 0xff;
         if(metadata > DAMAGE_MAX)
         {
             metadata = 0;
         }
-        if (player != null && !solidBlockRequired[metadata] && block instanceof IWrenchable) 
+        if(block instanceof IWrenchable)
         {
             IWrenchable wrenchable = (IWrenchable)block;
-            int rotationSegment = MathHelper.floor_double((double)(player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-            if (player.rotationPitch >= 65) 
+            wrenchable.setFacing((short)side);
+            if (player != null && !solidBlockRequired[metadata]) 
             {
-                wrenchable.setFacing((short)1);
-            } 
-            else if (player.rotationPitch <= -65) 
-            {
-                wrenchable.setFacing((short)0);
-            } 
-            else 
-            {
-                switch (rotationSegment) 
+                int rotationSegment = MathHelper.floor_double((double)(player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+                if (player.rotationPitch >= 65) 
                 {
-                case 0: wrenchable.setFacing((short)2); break;
-                case 1: wrenchable.setFacing((short)5); break;
-                case 2: wrenchable.setFacing((short)3); break;
-                case 3: wrenchable.setFacing((short)4); break;
-                default:
-                    wrenchable.setFacing((short)0); break;
+                    wrenchable.setFacing((short)1);
+                } 
+                else if (player.rotationPitch <= -65) 
+                {
+                    wrenchable.setFacing((short)0);
+                } 
+                else 
+                {
+                    switch (rotationSegment) 
+                    {
+                    case 0: wrenchable.setFacing((short)2); break;
+                    case 1: wrenchable.setFacing((short)5); break;
+                    case 2: wrenchable.setFacing((short)3); break;
+                    case 3: wrenchable.setFacing((short)4); break;
+                    default:
+                        wrenchable.setFacing((short)0); break;
+                    }
                 }
-            }
-        }        
+            }        
+        }
     }
     
     /**
@@ -514,7 +512,7 @@ public class BlockNuclearControlMain extends BlockContainer
     }
 
     @Override
-    public boolean isPoweringTo(IBlockAccess iblockaccess, int x, int y, int z, int direction)
+    public boolean isProvidingStrongPower(IBlockAccess iblockaccess, int x, int y, int z, int direction)
     {
         TileEntity tileentity = iblockaccess.getBlockTileEntity(x, y, z);
         if(!(tileentity instanceof TileEntityIC2Thermo) && !(tileentity instanceof TileEntityRangeTrigger))

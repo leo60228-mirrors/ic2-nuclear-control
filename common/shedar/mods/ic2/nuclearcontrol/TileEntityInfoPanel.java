@@ -224,7 +224,7 @@ public class TileEntityInfoPanel extends TileEntity implements
                 IC2NuclearControl.instance.screenManager.unregisterScreenPart(this);
                 IC2NuclearControl.instance.screenManager.registerInfoPanel(this);
             }
-            worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             prevFacing = facing;
         }
         if (field.equals("colorBackground") || field.equals("colored"))
@@ -235,7 +235,7 @@ public class TileEntityInfoPanel extends TileEntity implements
             }
             else
             {
-                worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             }
             prevColored = colored;
             prevColorBackground = colorBackground;
@@ -256,14 +256,14 @@ public class TileEntityInfoPanel extends TileEntity implements
             }
             else
             {
-                worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                 worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
             }
             prevPowered = powered;
         }
         if (field.equals("rotation") && prevRotation != rotation)
         {
-            worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             prevRotation = rotation;
         }
         

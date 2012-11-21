@@ -184,7 +184,7 @@ public class TileEntityAverageCounter extends TileEntity implements
     {
         if (field.equals("facing") && prevFacing != facing)
         {
-            worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             prevFacing = facing;
         }
     }    

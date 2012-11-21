@@ -244,7 +244,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
         super.onNetworkUpdate(field);
         if (field.equals("rotation") && prevRotation != rotation)
         {
-            worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             prevRotation = rotation;
         }
     }    

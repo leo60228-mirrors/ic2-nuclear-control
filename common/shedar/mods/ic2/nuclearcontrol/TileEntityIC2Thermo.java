@@ -120,23 +120,23 @@ public class TileEntityIC2Thermo extends TileEntity implements
     {
         if (field.equals("heatLevel") && prevHeatLevel != heatLevel)
         {
-            worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             prevHeatLevel = heatLevel;
         }
         if (field.equals("facing") && prevFacing != facing)
         {
-            worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             prevFacing = facing;
         }
         if (field.equals("onFire") && prevOnFire != onFire)
         {
-            worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
             prevOnFire = onFire;
         }
         if (field.equals("invertRedstone") && prevInvertRedstone != invertRedstone)
         {
-            worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
             prevInvertRedstone = invertRedstone;
         }

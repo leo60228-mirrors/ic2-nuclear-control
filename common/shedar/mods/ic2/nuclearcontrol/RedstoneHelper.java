@@ -10,7 +10,7 @@ public class RedstoneHelper
     private static boolean isPoweredWire(World world, int x, int y, int z)
     {
         return world.getBlockId(x, y, z) == Block.redstoneWire.blockID &&
-                Block.blocksList[Block.redstoneWire.blockID].isPoweringTo(world, x, y, z, 1);
+                Block.blocksList[Block.redstoneWire.blockID].isProvidingStrongPower(world, x, y, z, 1);
     }
     
     public static void checkPowered(World world, TileEntity tileentity)

@@ -226,13 +226,13 @@ public class TileEntityHowlerAlarm extends TileEntity implements
     {
         if (field.equals("facing") && prevFacing != facing)
         {
-            worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             prevFacing = facing;
         }
         if (field.equals("powered") && prevPowered != powered)
         {
             setPoweredNoNotify(powered);
-            worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
         if (worldObj.isRemote && field.equals("soundName") && prevSoundName != soundName)
         {

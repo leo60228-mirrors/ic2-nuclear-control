@@ -115,7 +115,7 @@ public class TileEntityRangeTrigger extends TileEntity implements
     {
         if (field.equals("facing") && prevFacing != facing)
         {
-            worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             prevFacing = facing;
         }
         else if (field.equals("card"))
@@ -124,18 +124,18 @@ public class TileEntityRangeTrigger extends TileEntity implements
         }
         else if (field.equals("rotation") && prevRotation != rotation)
         {
-            worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             prevRotation = rotation;
         }
         else if (field.equals("onFire") && prevOnFire != onFire)
         {
-            worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
             prevOnFire = onFire;
         }
         else if (field.equals("invertRedstone") && prevInvertRedstone != invertRedstone)
         {
-            worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
             prevInvertRedstone = invertRedstone;
         }
