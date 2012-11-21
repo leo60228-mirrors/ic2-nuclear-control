@@ -81,7 +81,7 @@ public class ItemCardCounterSensorLocation extends ItemCardBase implements IRemo
             {
                 long energy = card.getLong("energy");
                 line = new PanelString();
-                line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelEnergy", energy, showLabels); 
+                line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelEnergyCounter", energy, showLabels); 
                 result.add(line);
             }
         }

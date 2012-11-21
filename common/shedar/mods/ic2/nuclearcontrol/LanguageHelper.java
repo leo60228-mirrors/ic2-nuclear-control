@@ -75,6 +75,8 @@ public class LanguageHelper
             setPhrase(configuration, "msg.nc.InfoPanelOutput", "Output: %sEU/t");
             setPhrase(configuration, "msg.nc.InfoPanelTimeRemaining", "Remaining: %s");
 
+            setPhrase(configuration, "msg.nc.InfoPanelEnergyCounter", "Energy: %sEU");
+
             setPhrase(configuration, "msg.nc.InfoPanelEnergy", "Energy: %s");
             setPhrase(configuration, "msg.nc.InfoPanelEnergyFree", "Free: %s");
             setPhrase(configuration, "msg.nc.InfoPanelEnergyStorage", "Storage: %s");
