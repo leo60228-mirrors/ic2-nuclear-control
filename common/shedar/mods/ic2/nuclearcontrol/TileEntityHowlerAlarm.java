@@ -22,6 +22,7 @@ public class TileEntityHowlerAlarm extends TileEntity implements
     private static final String SOUND_PREFIX = "ic2nuclearControl.alarm-";
     
     private boolean init;
+    private boolean soundReceived;
     
     private short prevFacing;
     public short facing;
@@ -50,6 +51,7 @@ public class TileEntityHowlerAlarm extends TileEntity implements
         prevPowered = false;
         soundName = DEFAULT_SOUND_NAME;
         range = IC2NuclearControl.instance.alarmRange;
+        soundReceived = false;
     }
 
     private void initData()
@@ -150,7 +152,7 @@ public class TileEntityHowlerAlarm extends TileEntity implements
         {
             if(powered)
             {
-                if(soundId == null)
+                if(soundId == null && soundReceived)
                     soundId = IC2NuclearControl.proxy.playAlarm(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, 
                             SOUND_PREFIX+soundName, getNormalizedRange());
             }
@@ -177,7 +179,7 @@ public class TileEntityHowlerAlarm extends TileEntity implements
         {
             if(powered)
             {
-                if(soundId == null)
+                if(soundId == null && soundReceived)
                     soundId = IC2NuclearControl.proxy.playAlarm(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, 
                             SOUND_PREFIX+soundName, getNormalizedRange());
             }
@@ -245,6 +247,10 @@ public class TileEntityHowlerAlarm extends TileEntity implements
             }
             prevSoundName = soundName;
         }
+        if(field.equals("soundName"))
+        {
+            soundReceived = true;
+        }
     }
 
     @Override
@@ -298,7 +304,7 @@ public class TileEntityHowlerAlarm extends TileEntity implements
     
     protected void checkStatus()
     {
-        if(powered && (soundId==null || !IC2NuclearControl.proxy.isPlaying(soundId))){
+        if(powered && soundReceived && (soundId==null || !IC2NuclearControl.proxy.isPlaying(soundId))){
             soundId = IC2NuclearControl.proxy.playAlarm(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, 
                     SOUND_PREFIX+soundName, getNormalizedRange());
         }
