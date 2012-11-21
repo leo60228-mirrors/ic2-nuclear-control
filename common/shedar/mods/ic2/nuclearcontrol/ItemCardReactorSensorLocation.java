@@ -11,6 +11,7 @@ import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.StringTranslate;
 import net.minecraft.src.TileEntity;
+import ic2.api.IC2Reactor;
 import ic2.api.IReactor;
 import ic2.api.Items;
 import shedar.mods.ic2.nuclearcontrol.api.CardHelper;
@@ -52,7 +53,7 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
             card.setInt("heat", reactor.getHeat());
             card.setInt("maxHeat", reactor.getMaxHeat());
             card.setBoolean("reactorPoweredB", NuclearHelper.isProducing(reactor));
-            card.setInt("output", reactor.getOutput());
+            card.setInt("output", reactor.getOutput()*new IC2Reactor().getEUOutput());
 
             IInventory inventory = (IInventory)reactor; 
             int slotCount = inventory.getSizeInventory();
