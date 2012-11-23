@@ -166,7 +166,7 @@ public class IC2NuclearControl
                 {
                     "I  ", "IC ", " GI", 
                         Character.valueOf('G'), Item.lightStoneDust, 
-                        Character.valueOf('I'), Items.getItem("refinedIronIngot"), 
+                        Character.valueOf('I'), "ingotRefinedIron", 
                         Character.valueOf('C'), Items.getItem("electronicCircuit")
                 });
         Ic2Recipes.addCraftingRecipe(new ItemStack(itemRemoteSensorKit, 1), new Object[] 
