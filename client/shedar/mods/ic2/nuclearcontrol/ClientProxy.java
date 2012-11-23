@@ -216,6 +216,7 @@ public class ClientProxy extends CommonProxy
                             break;
                         }
                     }
+                    panel.resetCardData();
                     break;
                 case PacketHandler.PACKET_SENSOR_TITLE:
                     world = FMLClientHandler.instance().getClient().theWorld;
@@ -234,6 +235,7 @@ public class ClientProxy extends CommonProxy
                         return;
                     }
                     new CardWrapperImpl(itemStack).setTitle(dat.readUTF());
+                    panel.resetCardData();
                     break;
                 case PacketHandler.PACKET_ECOUNTER:
                     world = FMLClientHandler.instance().getClient().theWorld;
@@ -280,6 +282,7 @@ public class ClientProxy extends CommonProxy
                         settings.put(new UUID(most, least), dat.readInt()); 
                     }
                     ((TileEntityInfoPanel)ent).displaySettings = settings;
+                    ((TileEntityInfoPanel)ent).resetCardData();
                     break;
                 case PacketHandler.PACKET_DISP_SETTINGS_UPDATE:
                     world = FMLClientHandler.instance().getClient().theWorld;
@@ -296,6 +299,7 @@ public class ClientProxy extends CommonProxy
                     long most = dat.readLong();
                     long least = dat.readLong();
                     ((TileEntityInfoPanel)ent).displaySettings.put(new UUID(most, least), dat.readInt()); 
+                    ((TileEntityInfoPanel)ent).resetCardData();
                     break;
                 default:
                     FMLLog.warning("%sUnknown packet type: %d", IC2NuclearControl.LOG_PREFIX, packetType);

@@ -9,8 +9,10 @@ import java.util.UUID;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
+import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
+import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 
 import net.minecraft.src.ChunkCoordinates;
@@ -53,6 +55,7 @@ public class TileEntityInfoPanel extends TileEntity implements
     private static final int LOCATION_RANGE = 8;
     
     protected int updateTicker;
+    protected int dataTicker;
     protected int tickRate;
     protected boolean init;
     private ItemStack inventory[];
@@ -81,6 +84,8 @@ public class TileEntityInfoPanel extends TileEntity implements
     
     private boolean  prevColored;
     public boolean colored;
+    
+    List<PanelString> cardData;
     
     @Override
     public short getFacing()
@@ -289,6 +294,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         init = false;
         tickRate = IC2NuclearControl.instance.screenRefreshPeriod;
         updateTicker = tickRate;
+        dataTicker = 4;
         displaySettings = new HashMap<UUID, Integer>();
         powered = false;
         prevPowered = false;
@@ -299,6 +305,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         showLabels = true;
         colored = false;
         colorBackground = IC2NuclearControl.COLOR_GREEN;
+        cardData = null;
     }
     
     @Override
@@ -333,6 +340,30 @@ public class TileEntityInfoPanel extends TileEntity implements
         }
         init = true;
     }
+
+    public void resetCardData()
+    {
+        cardData = null;
+    }
+    
+    public List<PanelString> getCardData(int settings, IPanelDataSource card, ICardWrapper helper)
+    {
+        List<PanelString> data = cardData;
+        if(data==null)
+        {
+            data = card.getStringData(settings, helper, getShowLabels());
+            String title = helper.getTitle();
+            if( data != null && title!=null && !title.isEmpty())
+            {
+                PanelString titleString = new PanelString();
+                titleString.textCenter = title;
+                data.add(0, titleString);
+            }
+            
+            cardData = data;
+        }
+        return data;
+    }
     
     @Override
     public void updateEntity()
@@ -340,6 +371,12 @@ public class TileEntityInfoPanel extends TileEntity implements
         if (!init)
         {
             initData();
+        }
+        dataTicker--;
+        if(dataTicker <= 0)
+        {
+            cardData = null;
+            dataTicker = 4;
         }
         if (!worldObj.isRemote)
         {

@@ -56,7 +56,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
             if(displaySettings == 0)
                 return;
             ItemStack card = panel.getStackInSlot(TileEntityInfoPanel.SLOT_CARD);
-            if(!(card.getItem() instanceof IPanelDataSource))
+            if(card == null || !(card.getItem() instanceof IPanelDataSource))
                 return;
 
             CardWrapperImpl helper = new CardWrapperImpl(card);
@@ -65,17 +65,9 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
             if(state != CardState.OK && state != CardState.CUSTOM_ERROR)
                 data = StringUtils.getStateMessage(state);
             else
-                data = ((IPanelDataSource)card.getItem()).getStringData(displaySettings, helper, panel.getShowLabels());
+                data = panel.getCardData(displaySettings, (IPanelDataSource)card.getItem(), helper);
             if(data == null)
                 return;
-            
-            String title = helper.getTitle();
-            if(title!=null && !title.isEmpty())
-            {
-                PanelString titleString = new PanelString();
-                titleString.textCenter = title;
-                data.add(0, titleString);
-            }
             
             GL11.glPushMatrix();
             GL11.glPolygonOffset( -10, -10 );
