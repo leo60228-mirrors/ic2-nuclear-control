@@ -126,7 +126,7 @@ public class IC2NuclearControl
                 {
                     "GOG", "GHG", "GRG", 
                         Character.valueOf('G'), Items.getItem("reinforcedGlass"), 
-                        Character.valueOf('O'), new ItemStack(Item.dyePowder, 1, 14), 
+                        Character.valueOf('O'), "dyeOrange", 
                         Character.valueOf('R'), Item.redstone, 
                         Character.valueOf('H'), howler 
                 });
@@ -142,8 +142,8 @@ public class IC2NuclearControl
                 {
                     "PPP", "LCL", "IRI", 
                         Character.valueOf('P'), Block.thinGlass, 
-                        Character.valueOf('L'), new ItemStack(Item.dyePowder, 1, 10), 
-                        Character.valueOf('I'), new ItemStack(Item.dyePowder, 1, 0), 
+                        Character.valueOf('L'), "dyeLime", 
+                        Character.valueOf('I'), "dyeBlack", 
                         Character.valueOf('R'), Item.redstone, 
                         Character.valueOf('C'), Items.getItem("electronicCircuit") 
                 });
@@ -151,7 +151,7 @@ public class IC2NuclearControl
                 {
                     "PPP", "WLW", "WWW", 
                         Character.valueOf('P'), Block.thinGlass, 
-                        Character.valueOf('L'), new ItemStack(Item.dyePowder, 1, 10), 
+                        Character.valueOf('L'), "dyeLime", 
                         Character.valueOf('W'), Block.planks, 
                 });
         Ic2Recipes.addCraftingRecipe(new ItemStack(itemToolThermometer, 1), new Object[] 
@@ -192,15 +192,15 @@ public class IC2NuclearControl
         Ic2Recipes.addCraftingRecipe(new ItemStack(itemUpgrade, 1, ItemUpgrade.DAMAGE_COLOR), new Object[] 
                 {
                     "RYG","WCM","IAB", 
-                        Character.valueOf('R'), new ItemStack(Item.dyePowder, 1, COLOR_RED),  
-                        Character.valueOf('Y'), new ItemStack(Item.dyePowder, 1, COLOR_YELLOW),  
-                        Character.valueOf('G'), new ItemStack(Item.dyePowder, 1, COLOR_GREEN),  
-                        Character.valueOf('W'), new ItemStack(Item.dyePowder, 1, COLOR_WHITE),  
+                        Character.valueOf('R'), "dyeRed",  
+                        Character.valueOf('Y'), "dyeYellow",  
+                        Character.valueOf('G'), "dyeGreen",  
+                        Character.valueOf('W'), "dyeWhite",  
                         Character.valueOf('C'), Items.getItem("insulatedCopperCableItem"), 
-                        Character.valueOf('M'), new ItemStack(Item.dyePowder, 1, COLOR_MAGENTA),  
-                        Character.valueOf('I'), new ItemStack(Item.dyePowder, 1, COLOR_BLACK),  
-                        Character.valueOf('A'), new ItemStack(Item.dyePowder, 1, COLOR_CYAN),  
-                        Character.valueOf('B'), new ItemStack(Item.dyePowder, 1, COLOR_BLUE)  
+                        Character.valueOf('M'), "dyeMagenta",  
+                        Character.valueOf('I'), "dyeBlack",  
+                        Character.valueOf('A'), "dyeCyan",  
+                        Character.valueOf('B'), "dyeBlue"  
                 });
         ItemStack energyCounter = new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_ENERGY_COUNTER);
         Ic2Recipes.addCraftingRecipe(energyCounter, new Object[]
