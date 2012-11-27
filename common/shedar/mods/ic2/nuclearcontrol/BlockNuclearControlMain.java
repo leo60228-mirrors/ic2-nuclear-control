@@ -512,6 +512,12 @@ public class BlockNuclearControlMain extends BlockContainer
     }
 
     @Override
+    public boolean isProvidingWeakPower(IBlockAccess iblockaccess, int x, int y, int z, int direction)
+    {
+        return isProvidingStrongPower(iblockaccess, x, y, z, direction);
+    }
+    
+    @Override
     public boolean isProvidingStrongPower(IBlockAccess iblockaccess, int x, int y, int z, int direction)
     {
         TileEntity tileentity = iblockaccess.getBlockTileEntity(x, y, z);
