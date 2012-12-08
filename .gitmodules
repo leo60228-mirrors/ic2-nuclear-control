@@ -1,0 +1,3 @@
+[submodule "ext/common/modstats"]
+	path = ext/common/modstats
+	url = ../modstats

@@ -1,5 +1,8 @@
 package shedar.mods.ic2.nuclearcontrol;
 
+import ic2.api.Ic2Recipes;
+import ic2.api.Items;
+
 import java.io.File;
 import java.util.List;
 
@@ -7,12 +10,13 @@ import net.minecraft.src.Block;
 import net.minecraft.src.CraftingManager;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
-import ic2.api.Ic2Recipes;
-import ic2.api.Items;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
-import shedar.mods.utils.StatisticReport;
+
+import org.modstats.ModstatInfo;
+import org.modstats.Modstats;
+
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
@@ -31,6 +35,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 @Mod( modid = "IC2NuclearControl", name="Nuclear Control", version="1.4.3", dependencies = "after:IC2")
 @NetworkMod(channels = { "NuclearControl" }, clientSideRequired = true, serverSideRequired = false, 
             packetHandler = PacketHandler.class, connectionHandler = ConnectionHandler.class)
+@ModstatInfo(prefix="nc")
 public class IC2NuclearControl
 {
     public static final int COLOR_WHITE = 15;
@@ -49,8 +54,6 @@ public class IC2NuclearControl
     public static final int COLOR_GREEN = 2;
     public static final int COLOR_RED = 1;
     public static final int COLOR_BLACK = 0;
-    
-    public static final String  VER = "1.4.3";
     
     public static final String LOG_PREFIX = "[IC2NuclearControl] ";
     public static final String NETWORK_CHANNEL_NAME = "NuclearControl";
@@ -95,7 +98,6 @@ public class IC2NuclearControl
     public int IC2WrenchId;
     public int IC2ElectricWrenchId;
     
-    private Boolean statEnabled;
     public boolean isClient;
     
     
@@ -339,6 +341,7 @@ public class IC2NuclearControl
     @Init
     public void init(FMLInitializationEvent evt)
     {
+        Modstats.instance().getReporter().registerMod(this);
         isClient = evt.getSide().equals(Side.CLIENT);
         Configuration configuration;
         configuration = new Configuration(configFile);
@@ -349,11 +352,6 @@ public class IC2NuclearControl
             MinecraftForgeClient.preloadTexture("/img/InfoPanelColorsOn.png");
             MinecraftForgeClient.preloadTexture("/img/InfoPanelColorsOff.png");
             LanguageHelper.addNames(new File(configDir, CONFIG_NUCLEAR_CONTROL_LANG));
-            statEnabled = configuration.get(Configuration.CATEGORY_GENERAL, "stat", true).getBoolean(true);
-            if(statEnabled)
-            {
-                StatisticReport.instance.add("nc", VER);
-            }
         }
         initBlocks(configuration);
         registerBlocks();
