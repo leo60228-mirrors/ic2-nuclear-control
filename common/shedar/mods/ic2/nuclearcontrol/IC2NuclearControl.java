@@ -76,10 +76,11 @@ public class IC2NuclearControl
     public Item itemToolDigitalThermometer;
     public Item itemRemoteSensorKit;
     public Item itemEnergySensorKit;
-    public Item itemCounterSensorKit;
+    public Item itemMultipleSensorKit;
     public Item itemSensorLocationCard;
     public Item itemEnergySensorLocationCard;
     public Item itemCounterSensorLocationCard;
+    public Item itemLiquidSensorLocationCard;
     public Item itemEnergyArrayLocationCard;
     public Item itemTimeCard;
     public Item itemUpgrade;
@@ -231,11 +232,18 @@ public class IC2NuclearControl
                         Character.valueOf('M'), Items.getItem("machine"), 
                         Character.valueOf('R'), Item.redstone 
                 });
-        Ic2Recipes.addCraftingRecipe(new ItemStack(itemCounterSensorKit, 1), new Object[] 
+        Ic2Recipes.addCraftingRecipe(new ItemStack(itemMultipleSensorKit, 1, ItemKitMultipleSensor.TYPE_COUNTER), new Object[] 
                 {
                     "  F", " C ", "P  ", 
                         Character.valueOf('P'), Item.paper, 
                         Character.valueOf('C'), Items.getItem("electronicCircuit"), 
+                        Character.valueOf('F'), Items.getItem("frequencyTransmitter")
+                });
+        Ic2Recipes.addCraftingRecipe(new ItemStack(itemMultipleSensorKit, 1, ItemKitMultipleSensor.TYPE_LIQUID), new Object[] 
+                {
+                    "  F", " C ", "P  ", 
+                        Character.valueOf('P'), Item.paper, 
+                        Character.valueOf('C'), Item.bucketEmpty, 
                         Character.valueOf('F'), Items.getItem("frequencyTransmitter")
                 });
         Ic2Recipes.addCraftingRecipe(new ItemStack(itemTextCard, 1), new Object[] 
@@ -253,6 +261,8 @@ public class IC2NuclearControl
                 itemEnergySensorLocationCard );
         Ic2Recipes.addShapelessCraftingRecipe(new ItemStack(Items.getItem("electronicCircuit").getItem(), 2),  
                 itemCounterSensorLocationCard);
+        Ic2Recipes.addShapelessCraftingRecipe(new ItemStack(Items.getItem("electronicCircuit").getItem(), 1),  
+                itemLiquidSensorLocationCard);
         CraftingManager.getInstance().getRecipeList().add(new StorageArrayRecipe());
     }
     
@@ -305,8 +315,11 @@ public class IC2NuclearControl
         itemCounterSensorLocationCard = new ItemCardCounterSensorLocation(
                 getIdFor(configuration, "itemCounterSensorLocationCard", 31010, false), 52)
                 .setItemName("ItemCounterSensorLocationCard");
-        itemCounterSensorKit = new ItemKitCounterSensor(
-                getIdFor(configuration, "itemCounterSensorKit", 31009, false), 68)
+        itemLiquidSensorLocationCard = new ItemCardLiquidSensorLocation(
+                getIdFor(configuration, "itemLiquidSensorLocationCard", 31013, false), 54)
+                .setItemName("ItemLiquidSensorLocationCard");
+        itemMultipleSensorKit = new ItemKitMultipleSensor(
+                getIdFor(configuration, "itemCounterSensorKit", 31009, false))
                 .setItemName("ItemCounterSensorKit");
         itemEnergySensorKit = new ItemKitEnergySensor(
                 getIdFor(configuration, "itemEnergySensorKit", 31006, false), 65)

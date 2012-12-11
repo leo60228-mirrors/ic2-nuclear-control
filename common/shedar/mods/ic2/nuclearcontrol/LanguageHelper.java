@@ -37,14 +37,17 @@ public class LanguageHelper
             setPhrase(configuration, "item.ItemRemoteSensorKit.name", "Remote Sensor Kit");
             setPhrase(configuration, "item.ItemEnergySensorKit.name", "Energy Sensor Kit");
             setPhrase(configuration, "item.ItemCounterSensorKit.name", "Counter Sensor Kit");
+            setPhrase(configuration, "item.ItemLiquidSensorKit.name", "Liquid Sensor Kit");
             setPhraseRename(configuration, "item.ItemSensorLocationCard.name", "Sensor Location Card", "Reactor Sensor Location Card");
             setPhrase(configuration, "item.ItemEnergySensorLocationCard.name", "Energy Sensor Location Card");
             setPhrase(configuration, "item.ItemCounterSensorLocationCard.name", "Counter Sensor Location Card");
+            setPhrase(configuration, "item.ItemLiquidSensorLocationCard.name", "Liquid Sensor Location Card");
             setPhrase(configuration, "item.ItemEnergyArrayLocationCard.name", "Energy Array Location Card");
             setPhrase(configuration, "item.ItemRangeUpgrade.name", "Range Upgrade");
             setPhrase(configuration, "item.ItemColorUpgrade.name", "Color Upgrade");
             setPhrase(configuration, "item.ItemTimeCard.name", "Time Card");
             setPhrase(configuration, "item.ItemTextCard.name", "Text Card");
+
             setPhrase(configuration, "tile.blockThermalMonitor.name", "Thermal Monitor");
             setPhrase(configuration, "tile.blockIndustrialAlarm.name", "Industrial Alarm");
             setPhrase(configuration, "tile.blockHowlerAlarm.name", "Howler Alarm");
@@ -82,6 +85,18 @@ public class LanguageHelper
             setPhrase(configuration, "msg.nc.InfoPanelEnergyStorage", "Storage: %s");
             setPhrase(configuration, "msg.nc.InfoPanelEnergyPercentage", "Fill: %s%%");
             
+            setPhrase(configuration, "msg.nc.cbInfoPanelLiquidName", "Liquid name");
+            setPhrase(configuration, "msg.nc.cbInfoPanelLiquidAmount", "Amount");
+            setPhrase(configuration, "msg.nc.cbInfoPanelLiquidCapacity", "Capacity");
+            setPhrase(configuration, "msg.nc.cbInfoPanelLiquidFree", "Free");
+            setPhrase(configuration, "msg.nc.cbInfoPanelLiquidPercentage", "Fill percentage");
+            
+            setPhrase(configuration, "msg.nc.InfoPanelLiquidName", "Name: %s");
+            setPhrase(configuration, "msg.nc.InfoPanelLiquidAmount", "Amount: %s");
+            setPhrase(configuration, "msg.nc.InfoPanelLiquidCapacity", "Capacity: %s");
+            setPhrase(configuration, "msg.nc.InfoPanelLiquidFree", "Free: %s");
+            setPhrase(configuration, "msg.nc.InfoPanelLiquidPercentage", "Fill: %s%%");
+            
             setPhrase(configuration, "msg.nc.InfoPanelEnergyN", "#%d Energy: %s");
             setPhrase(configuration, "msg.nc.InfoPanelEnergyFreeN", "#%d Free: %s");
             setPhrase(configuration, "msg.nc.InfoPanelEnergyStorageN", "#%d Storage: %s");
@@ -108,6 +123,7 @@ public class LanguageHelper
             setPhrase(configuration, "msg.nc.Reset", "Reset");
             setPhrase(configuration, "msg.nc.ScreenColor", "Screen Color");
             setPhrase(configuration, "msg.nc.TextColor", "Text Color");
+            setPhrase(configuration, "msg.nc.None", "N/A");
             
             for(Map.Entry<String, Map<String, Property>> category : configuration.categories.entrySet())
             {

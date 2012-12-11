@@ -12,15 +12,11 @@ import net.minecraft.src.World;
 
 public abstract class ItemSensorKitBase extends Item 
 {
-    private Item item;
-
-    public ItemSensorKitBase(int i, int iconIndex, Item item)
+    public ItemSensorKitBase(int i)
     {
         super(i);
-        setIconIndex(iconIndex);
         setMaxStackSize(1);
         setCreativeTab(CreativeTabs.tabMisc);
-        this.item = item;
     }
 
     public String getTextureFile()
@@ -28,7 +24,9 @@ public abstract class ItemSensorKitBase extends Item
         return "/img/texture_thermo.png";
     }
     
-    abstract protected ChunkCoordinates getTargetCoordinates(World world, int x, int y, int z);
+    abstract protected ChunkCoordinates getTargetCoordinates(World world, int x, int y, int z, ItemStack stack);
+    
+    abstract protected ItemStack getItemStackByDamage(int damage);
 
     private void setCoordinates(ItemStack itemStack, int x, int y, int z)
     {
@@ -46,11 +44,11 @@ public abstract class ItemSensorKitBase extends Item
         boolean isServer = player instanceof EntityPlayerMP;
         if(!isServer)
             return false;
-        ChunkCoordinates position = getTargetCoordinates(world, x, y, z);
+        ChunkCoordinates position = getTargetCoordinates(world, x, y, z, stack);
         
         if(position != null)
         {
-            ItemStack sensorLocationCard = new ItemStack(item, 1, 0);
+            ItemStack sensorLocationCard = getItemStackByDamage(stack.getItemDamage());
             setCoordinates(sensorLocationCard, position.posX, position.posY, position.posZ);
             player.inventory.mainInventory[player.inventory.currentItem] = sensorLocationCard;
         	if(!world.isRemote)
