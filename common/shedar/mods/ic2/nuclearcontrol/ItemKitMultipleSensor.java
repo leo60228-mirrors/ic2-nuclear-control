@@ -81,9 +81,9 @@ public class ItemKitMultipleSensor extends ItemSensorKitBase
         switch (damage)
         {
         case TYPE_COUNTER:
-            return new ItemStack(IC2NuclearControl.instance.itemCounterSensorLocationCard, 1, 0);
+            return new ItemStack(IC2NuclearControl.instance.itemMultipleSensorLocationCard, 1, TYPE_COUNTER);
         case TYPE_LIQUID:
-            return new ItemStack(IC2NuclearControl.instance.itemLiquidSensorLocationCard, 1, 0);
+            return new ItemStack(IC2NuclearControl.instance.itemMultipleSensorLocationCard, 1, TYPE_LIQUID);
         }
         return null;
     }

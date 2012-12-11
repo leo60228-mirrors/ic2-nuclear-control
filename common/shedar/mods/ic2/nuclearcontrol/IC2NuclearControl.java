@@ -79,8 +79,7 @@ public class IC2NuclearControl
     public Item itemMultipleSensorKit;
     public Item itemSensorLocationCard;
     public Item itemEnergySensorLocationCard;
-    public Item itemCounterSensorLocationCard;
-    public Item itemLiquidSensorLocationCard;
+    public Item itemMultipleSensorLocationCard;
     public Item itemEnergyArrayLocationCard;
     public Item itemTimeCard;
     public Item itemUpgrade;
@@ -260,9 +259,9 @@ public class IC2NuclearControl
         Ic2Recipes.addShapelessCraftingRecipe(new ItemStack(Items.getItem("electronicCircuit").getItem(), 2),  
                 itemEnergySensorLocationCard );
         Ic2Recipes.addShapelessCraftingRecipe(new ItemStack(Items.getItem("electronicCircuit").getItem(), 2),  
-                itemCounterSensorLocationCard);
+                new  ItemStack(itemMultipleSensorLocationCard, 1, ItemKitMultipleSensor.TYPE_COUNTER));
         Ic2Recipes.addShapelessCraftingRecipe(new ItemStack(Items.getItem("electronicCircuit").getItem(), 1),  
-                itemLiquidSensorLocationCard);
+                new  ItemStack(itemMultipleSensorLocationCard, 1, ItemKitMultipleSensor.TYPE_LIQUID));
         CraftingManager.getInstance().getRecipeList().add(new StorageArrayRecipe());
     }
     
@@ -312,12 +311,8 @@ public class IC2NuclearControl
         itemEnergyArrayLocationCard = new ItemCardEnergyArrayLocation(
                 getIdFor(configuration, "itemEnergyArrayLocationCard", 31008, false), 51)
                 .setItemName("ItemEnergyArrayLocationCard");
-        itemCounterSensorLocationCard = new ItemCardCounterSensorLocation(
-                getIdFor(configuration, "itemCounterSensorLocationCard", 31010, false), 52)
-                .setItemName("ItemCounterSensorLocationCard");
-        itemLiquidSensorLocationCard = new ItemCardLiquidSensorLocation(
-                getIdFor(configuration, "itemLiquidSensorLocationCard", 31013, false), 54)
-                .setItemName("ItemLiquidSensorLocationCard");
+        itemMultipleSensorLocationCard = new ItemCardMultipleSensorLocation(
+                getIdFor(configuration, "itemCounterSensorLocationCard", 31010, false));
         itemMultipleSensorKit = new ItemKitMultipleSensor(
                 getIdFor(configuration, "itemCounterSensorKit", 31009, false))
                 .setItemName("ItemCounterSensorKit");

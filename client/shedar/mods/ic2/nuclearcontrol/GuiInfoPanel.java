@@ -17,6 +17,7 @@ import shedar.mods.ic2.nuclearcontrol.api.ICardGui;
 import shedar.mods.ic2.nuclearcontrol.api.ICardSettingsWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
+import shedar.mods.ic2.nuclearcontrol.api.IPanelMultiCard;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.panel.CardSettingsWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
@@ -69,7 +70,16 @@ public class GuiInfoPanel extends GuiContainer
                 controlList.add(new CompactButton(111, guiLeft + xSize - 25, guiTop + 55 + delta, 18, 12, "..."));
             }
             int row = 0;
-            List<PanelSetting> settingsList = source.getSettingsList();
+            List<PanelSetting> settingsList = null;
+            if(card.getItem() instanceof IPanelMultiCard)
+            {
+                settingsList = ((IPanelMultiCard)source).getSettingsList(new CardWrapperImpl(card));
+            }
+            else
+            {
+                settingsList = source.getSettingsList();
+            }
+            
             if(settingsList!=null)
             for (PanelSetting panelSetting : settingsList)
             {

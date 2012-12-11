@@ -11,6 +11,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
+import shedar.mods.ic2.nuclearcontrol.api.IPanelMultiCard;
 import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
@@ -206,9 +207,17 @@ public class TileEntityInfoPanel extends TileEntity implements
     public void setDisplaySettings(int s)
     {
         UUID cardType = null;
-        if(inventory[0]!=null && inventory[SLOT_CARD].getItem() instanceof IPanelDataSource)
+        ItemStack stack = inventory[SLOT_CARD]; 
+        if(stack!=null)
         {
-            cardType = ((IPanelDataSource)inventory[SLOT_CARD].getItem()).getCardType();
+            if(stack.getItem() instanceof IPanelMultiCard)
+            {
+                cardType = ((IPanelMultiCard)stack.getItem()).getCardType(new CardWrapperImpl(stack));
+            }
+            else if(stack.getItem() instanceof IPanelDataSource)
+            {
+                cardType = ((IPanelDataSource)inventory[SLOT_CARD].getItem()).getCardType();
+            }
         }
         boolean update = !displaySettings.containsKey(cardType)  || displaySettings.get(cardType) != s;
         displaySettings.put(cardType, s);
@@ -966,7 +975,11 @@ public class TileEntityInfoPanel extends TileEntity implements
         if(card == null)
             return 0;
         UUID cardType = null;
-        if(card.getItem() instanceof IPanelDataSource)
+        if(card.getItem() instanceof IPanelMultiCard)
+        {
+            cardType = ((IPanelMultiCard)card.getItem()).getCardType(new CardWrapperImpl(card));
+        }
+        else if(card.getItem() instanceof IPanelDataSource)
         {
             cardType = ((IPanelDataSource)card.getItem()).getCardType();
         }
