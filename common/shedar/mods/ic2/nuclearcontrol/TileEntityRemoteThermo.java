@@ -170,13 +170,10 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     @Override
     public void updateEntity()
     {
+        super.updateEntity();
         if (!worldObj.isRemote)
         {
             int consumption = IC2NuclearControl.instance.remoteThermalMonitorEnergyConsumption; 
-            if(energy>=consumption)
-            {
-                energy-=consumption;
-            }
             if(inventory[SLOT_CHARGER]!= null)
             {
                 if (energy < maxStorage)
@@ -209,9 +206,16 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
                     }
                 }
             }
+            if(energy>=consumption)
+            {
+                energy-=consumption;
+            }
+            else
+            {
+                energy = 0;
+            }
             setEnergy(energy);
         }
-        super.updateEntity();
     }
 
     @Override
@@ -452,7 +456,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     @Override
     public boolean demandsEnergy()
     {
-        return energy <= maxStorage - maxPacketSize || energy == 0;
+        return energy < maxStorage;
     }
 
     @Override
