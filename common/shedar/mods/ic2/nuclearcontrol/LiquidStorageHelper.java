@@ -1,5 +1,7 @@
 package shedar.mods.ic2.nuclearcontrol;
 
+import java.lang.reflect.Method;
+
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -8,6 +10,22 @@ import net.minecraftforge.liquids.ITankContainer;
 
 public class LiquidStorageHelper {
 
+    private static ILiquidTank getRailcraftIronTank(TileEntity entity)
+    {
+        try
+        {
+            Method method = entity.getClass().getMethod("getTank");
+            if(method.getReturnType().equals(ILiquidTank.class))
+            {
+                return (ILiquidTank)method.invoke(entity);
+            }
+            return null;
+        } 
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
 	
     public static ILiquidTank getStorageAt(World world, int x, int y, int z) 
     {
@@ -21,7 +39,7 @@ public class LiquidStorageHelper {
                 return null;
             return tanks[0];
         }
-        return null;
+        return getRailcraftIronTank(entity);
     }    
     
 }
