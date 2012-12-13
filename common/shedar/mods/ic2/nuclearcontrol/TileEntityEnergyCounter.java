@@ -372,4 +372,9 @@ public class TileEntityEnergyCounter extends TileEntity implements
         counter=0;
     }
     
+    @Override
+    public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
+    {
+        return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, BlockNuclearControlMain.DAMAGE_ENERGY_COUNTER);
+    }
 }

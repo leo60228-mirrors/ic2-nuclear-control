@@ -637,4 +637,9 @@ public class TileEntityRangeTrigger extends TileEntity implements
         prevRotation = rotation;
     }
     
+    @Override
+    public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
+    {
+        return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, BlockNuclearControlMain.DAMAGE_RANGE_TRIGGER);
+    }
 }

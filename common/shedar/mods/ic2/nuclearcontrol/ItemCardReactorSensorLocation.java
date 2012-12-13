@@ -53,7 +53,7 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
             card.setInt("heat", reactor.getHeat());
             card.setInt("maxHeat", reactor.getMaxHeat());
             card.setBoolean("reactorPoweredB", NuclearHelper.isProducing(reactor));
-            card.setInt("output", reactor.getOutput()*new IC2Reactor().getEUOutput());
+            card.setInt("output", reactor.getOutput()*IC2Reactor.getEUOutput());
 
             IInventory inventory = (IInventory)reactor; 
             int slotCount = inventory.getSizeInventory();

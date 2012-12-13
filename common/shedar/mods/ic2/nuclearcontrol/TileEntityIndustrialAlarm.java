@@ -1,5 +1,8 @@
 package shedar.mods.ic2.nuclearcontrol;
 
+import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.ItemStack;
+
 public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm implements ITextureHelper
 {
     private static final byte[] lightSteps = {0, 7, 15, 7, 0};
@@ -47,4 +50,9 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm implements 
         return texture;
     }
     
+    @Override
+    public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
+    {
+        return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, BlockNuclearControlMain.DAMAGE_INDUSTRIAL_ALARM);
+    }
 }

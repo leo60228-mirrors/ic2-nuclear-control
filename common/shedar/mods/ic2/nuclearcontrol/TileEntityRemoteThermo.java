@@ -572,4 +572,9 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
         return rotation;
     }
     
+    @Override
+    public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
+    {
+        return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, BlockNuclearControlMain.DAMAGE_REMOTE_THERMO);
+    }
 }

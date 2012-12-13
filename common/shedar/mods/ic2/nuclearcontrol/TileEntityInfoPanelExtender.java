@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.Facing;
+import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.TileEntity;
 import ic2.api.INetworkDataProvider;
@@ -206,5 +207,11 @@ public class TileEntityInfoPanelExtender extends TileEntity implements
             if(core != null)
                 core.setRotation(rotation);
         }
+    }
+
+    @Override
+    public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
+    {
+        return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, BlockNuclearControlMain.DAMAGE_INFO_PANEL_EXTENDER);
     }
 }

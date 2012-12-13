@@ -5,6 +5,7 @@ import java.util.Vector;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.Facing;
+import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.TileEntity;
 import ic2.api.INetworkClientTileEntityEventListener;
@@ -310,4 +311,9 @@ public class TileEntityHowlerAlarm extends TileEntity implements
         }
     }
 
+    @Override
+    public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
+    {
+        return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, BlockNuclearControlMain.DAMAGE_HOWLER_ALARM);
+    }
 }
