@@ -82,19 +82,21 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase implements IRem
         {
             int capacity = storage.getCapacity();
             int amount = 0;
-            String name = "";
+            int liquidId = 0;
+            int liquidMeta = 0;
             if(storage.getLiquid()!=null)
             {
                 amount = storage.getLiquid().amount;
                 if(storage.getLiquid().itemID!=0 && amount > 0)
                 {
-                    ItemStack stack = storage.getLiquid().asItemStack();
-                    name = stack.getItem().getItemDisplayName(stack);
+                    liquidId = storage.getLiquid().itemID;
+                    liquidMeta = storage.getLiquid().itemMeta;
                 }
             }
             card.setInt("capacity", capacity);
             card.setInt("amount", amount);
-            card.setString("liquid", name);
+            card.setInt("liquidId", liquidId);
+            card.setInt("liquidMeta", liquidMeta);
             return CardState.OK;
         }
         else
@@ -174,14 +176,17 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase implements IRem
 
         int capacity =  card.getInt("capacity");
         int amount =  card.getInt("amount");
-        String liquid =  card.getString("liquid");
-        if(liquid == null || "".equals(liquid))
-            liquid = LanguageRegistry.instance().getStringLocalization("msg.nc.None");
 
         if((displaySettings & DISPLAY_LIQUID_NAME) > 0)
         {
+            int liquidId = card.getInt("liquidId");
+            String name;
+            if(liquidId == 0)
+                name = LanguageRegistry.instance().getStringLocalization("msg.nc.None");
+            else
+                name = new ItemStack(liquidId, 1, card.getInt("liquidMeta")).getDisplayName();
             line = new PanelString();
-            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelLiquidName", liquid, showLabels); 
+            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelLiquidName",  name, showLabels); 
             result.add(line);
         }
         if((displaySettings & DISPLAY_LIQUID_AMOUNT) > 0)
