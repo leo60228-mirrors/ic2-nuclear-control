@@ -205,18 +205,25 @@ public class GuiInfoPanel extends GuiContainer
     @Override
     protected void keyTyped(char par1, int par2)
     {
-        if (par2 == 1)
+        if (textboxTitle!=null &&  textboxTitle.isFocused())
         {
-            mc.thePlayer.closeScreen();
+            if (par2 == 1)
+            {
+                mc.thePlayer.closeScreen();
+            }
+            else if(par1 == 13)
+            {
+                updateTitle();
+            }
+            else
+            {
+                modified = true;
+                textboxTitle.textboxKeyTyped(par1, par2);
+            }
         }
-        else if(par1 == 13)
+        else
         {
-            updateTitle();
-        }
-        else if (textboxTitle!=null &&  textboxTitle.isFocused())
-        {
-            modified = true;
-            textboxTitle.textboxKeyTyped(par1, par2);
+            super.keyTyped(par1, par2);
         }
     }
 
