@@ -140,7 +140,7 @@ public class LanguageHelper
                 
                 for(Property property : category.getValue().values())
                 {
-                    LanguageRegistry.instance().addStringLocalization(property.getName(), locale.toString(), new String(property.value.getBytes("8859_1"),"UTF-8"));
+                    LanguageRegistry.instance().addStringLocalization(property.getName(), locale.toString(), property.value);
                 }
             
             }
