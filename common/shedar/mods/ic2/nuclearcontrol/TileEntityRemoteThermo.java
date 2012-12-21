@@ -5,7 +5,8 @@ import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import ic2.api.IReactor;
 import ic2.api.Items;
-import ic2.api.energy.EnergyNet;
+import ic2.api.energy.event.EnergyTileLoadEvent;
+import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.network.NetworkHelper;
 
@@ -19,6 +20,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
+import net.minecraftforge.common.MinecraftForge;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 
 
@@ -81,7 +83,8 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     {
         if (!addedToEnergyNet)
         {
-            EnergyNet.getForWorld(worldObj).addTileEntity(this);
+            EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
+            MinecraftForge.EVENT_BUS.post(event);
             addedToEnergyNet = true;
         }
         onInventoryChanged();
@@ -258,7 +261,8 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     {
         if (!worldObj.isRemote && addedToEnergyNet)
         {
-            EnergyNet.getForWorld(worldObj).removeTileEntity(this);
+            EnergyTileUnloadEvent event = new EnergyTileUnloadEvent(this);
+            MinecraftForge.EVENT_BUS.post(event);
             addedToEnergyNet = false;
         }
 

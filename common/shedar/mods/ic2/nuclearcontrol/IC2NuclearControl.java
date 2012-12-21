@@ -334,7 +334,7 @@ public class IC2NuclearControl
 
     public void registerBlocks()
     {
-        GameRegistry.registerBlock(blockNuclearControlMain, ItemNuclearControlMain.class);
+        GameRegistry.registerBlock(blockNuclearControlMain, ItemNuclearControlMain.class, "blockNuclearControlMain");
     }
     
     @PreInit

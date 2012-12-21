@@ -3,7 +3,9 @@ package shedar.mods.ic2.nuclearcontrol;
 import ic2.api.Direction;
 import ic2.api.IWrenchable;
 import ic2.api.Items;
-import ic2.api.energy.EnergyNet;
+import ic2.api.energy.event.EnergyTileLoadEvent;
+import ic2.api.energy.event.EnergyTileSourceEvent;
+import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
 import ic2.api.network.INetworkClientTileEntityEventListener;
@@ -21,6 +23,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Facing;
+import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 
@@ -84,11 +87,13 @@ public class TileEntityAverageCounter extends TileEntity implements
     {
         if (addedToEnergyNet)
         {
-            EnergyNet.getForWorld(worldObj).removeTileEntity(this);
+            EnergyTileUnloadEvent event = new EnergyTileUnloadEvent(this);
+            MinecraftForge.EVENT_BUS.post(event);
         }
         addedToEnergyNet = false;
         setSide((short)Facing.faceToSide[f]);
-        EnergyNet.getForWorld(worldObj).addTileEntity(this);
+        EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
+        MinecraftForge.EVENT_BUS.post(event);
         addedToEnergyNet = true;
     }
     
@@ -138,13 +143,16 @@ public class TileEntityAverageCounter extends TileEntity implements
 
             if (!addedToEnergyNet)
             {
-                EnergyNet.getForWorld(worldObj).addTileEntity(this);
+                EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
+                MinecraftForge.EVENT_BUS.post(event);
                 addedToEnergyNet = true;
             }
             
             if (storage >= packetSize)
             {
-                int sent = packetSize - EnergyNet.getForWorld(this.worldObj).emitEnergyFrom(this, packetSize);
+                EnergyTileSourceEvent event = new EnergyTileSourceEvent(this, packetSize);
+                MinecraftForge.EVENT_BUS.post(event);
+                int sent = packetSize - event.amount;
                 storage -= sent;
                 data[index] += sent;
             }
@@ -194,7 +202,8 @@ public class TileEntityAverageCounter extends TileEntity implements
     {
         if (!worldObj.isRemote && addedToEnergyNet)
         {
-            EnergyNet.getForWorld(worldObj).removeTileEntity(this);
+            EnergyTileUnloadEvent event = new EnergyTileUnloadEvent(this);
+            MinecraftForge.EVENT_BUS.post(event);
             addedToEnergyNet = false;
         }
 

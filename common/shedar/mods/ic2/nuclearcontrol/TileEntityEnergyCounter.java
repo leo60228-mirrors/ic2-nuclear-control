@@ -1,5 +1,18 @@
 package shedar.mods.ic2.nuclearcontrol;
 
+import ic2.api.Direction;
+import ic2.api.IWrenchable;
+import ic2.api.Items;
+import ic2.api.energy.event.EnergyTileLoadEvent;
+import ic2.api.energy.event.EnergyTileSourceEvent;
+import ic2.api.energy.event.EnergyTileUnloadEvent;
+import ic2.api.energy.tile.IEnergySink;
+import ic2.api.energy.tile.IEnergySource;
+import ic2.api.network.INetworkClientTileEntityEventListener;
+import ic2.api.network.INetworkDataProvider;
+import ic2.api.network.INetworkUpdateListener;
+import ic2.api.network.NetworkHelper;
+
 import java.util.List;
 import java.util.Vector;
 
@@ -10,17 +23,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Facing;
-
-import ic2.api.Direction;
-import ic2.api.IWrenchable;
-import ic2.api.Items;
-import ic2.api.energy.EnergyNet;
-import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergySource;
-import ic2.api.network.INetworkClientTileEntityEventListener;
-import ic2.api.network.INetworkDataProvider;
-import ic2.api.network.INetworkUpdateListener;
-import ic2.api.network.NetworkHelper;
+import net.minecraftforge.common.MinecraftForge;
 
 
 public class TileEntityEnergyCounter extends TileEntity implements 
@@ -72,11 +75,13 @@ public class TileEntityEnergyCounter extends TileEntity implements
     {
         if (addedToEnergyNet)
         {
-            EnergyNet.getForWorld(worldObj).removeTileEntity(this);
+            EnergyTileUnloadEvent event = new EnergyTileUnloadEvent(this);
+            MinecraftForge.EVENT_BUS.post(event);
         }
         addedToEnergyNet = false;
         setSide((short)Facing.faceToSide[f]);
-        EnergyNet.getForWorld(worldObj).addTileEntity(this);
+        EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
+        MinecraftForge.EVENT_BUS.post(event);
         addedToEnergyNet = true;
     }
     
@@ -104,13 +109,16 @@ public class TileEntityEnergyCounter extends TileEntity implements
         {
             if (!addedToEnergyNet)
             {
-                EnergyNet.getForWorld(worldObj).addTileEntity(this);
+                EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
+                MinecraftForge.EVENT_BUS.post(event);
                 addedToEnergyNet = true;
             }
             
             if (storage >= packetSize)
             {
-                int sent = packetSize - EnergyNet.getForWorld(this.worldObj).emitEnergyFrom(this, packetSize);
+                EnergyTileSourceEvent event = new EnergyTileSourceEvent(this,packetSize);
+                MinecraftForge.EVENT_BUS.post(event);
+                int sent = packetSize - event.amount;
                 storage -= sent;
                 counter += sent;
             }
@@ -156,7 +164,8 @@ public class TileEntityEnergyCounter extends TileEntity implements
     {
         if (!worldObj.isRemote && addedToEnergyNet)
         {
-            EnergyNet.getForWorld(worldObj).removeTileEntity(this);
+            EnergyTileUnloadEvent event = new EnergyTileUnloadEvent(this);
+            MinecraftForge.EVENT_BUS.post(event);
             addedToEnergyNet = false;
         }
 
