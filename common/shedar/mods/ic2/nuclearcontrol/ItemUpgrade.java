@@ -2,9 +2,10 @@ package shedar.mods.ic2.nuclearcontrol;
 
 import java.util.List;
 
-import net.minecraft.src.CreativeTabs;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemStack;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+
 
 public class ItemUpgrade extends Item
 {

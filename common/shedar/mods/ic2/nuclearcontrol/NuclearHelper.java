@@ -1,9 +1,9 @@
 package shedar.mods.ic2.nuclearcontrol;
 
-import net.minecraft.src.ChunkCoordinates;
-import net.minecraft.src.ChunkPosition;
-import net.minecraft.src.TileEntity;
-import net.minecraft.src.World;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.world.ChunkPosition;
+import net.minecraft.world.World;
 import ic2.api.IReactor;
 import ic2.api.IReactorChamber;
 

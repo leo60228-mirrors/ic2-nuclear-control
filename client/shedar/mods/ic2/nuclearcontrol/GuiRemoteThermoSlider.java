@@ -1,17 +1,15 @@
 package shedar.mods.ic2.nuclearcontrol;
 
+import ic2.api.network.NetworkHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.GuiButton;
-import ic2.api.NetworkHelper;
+import net.minecraft.client.gui.GuiButton;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
-
-import shedar.mods.ic2.nuclearcontrol.TileEntityIC2Thermo;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiRemoteThermoSlider extends GuiButton

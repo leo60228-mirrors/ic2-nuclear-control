@@ -1,7 +1,7 @@
 package shedar.mods.ic2.nuclearcontrol;
 
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ItemStack;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 
 public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm implements ITextureHelper
 {

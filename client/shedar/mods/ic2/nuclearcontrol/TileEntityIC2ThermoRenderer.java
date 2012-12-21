@@ -1,13 +1,11 @@
 package shedar.mods.ic2.nuclearcontrol;
 
-import net.minecraft.src.Facing;
-import net.minecraft.src.FontRenderer;
-import net.minecraft.src.TileEntity;
-import net.minecraft.src.TileEntitySpecialRenderer;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Facing;
 
 import org.lwjgl.opengl.GL11;
-
-import shedar.mods.ic2.nuclearcontrol.TileEntityIC2Thermo;
 
 public class TileEntityIC2ThermoRenderer extends TileEntitySpecialRenderer
 {

@@ -1,16 +1,13 @@
 package shedar.mods.ic2.nuclearcontrol;
 
+import ic2.api.network.NetworkHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.GuiButton;
-import ic2.api.NetworkHelper;
+import net.minecraft.client.gui.GuiButton;
 
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
-
-import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
-import shedar.mods.ic2.nuclearcontrol.TileEntityHowlerAlarm;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiHowlerAlarmSlider extends GuiButton

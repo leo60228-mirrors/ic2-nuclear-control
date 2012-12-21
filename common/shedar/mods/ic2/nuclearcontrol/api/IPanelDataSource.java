@@ -3,7 +3,7 @@ package shedar.mods.ic2.nuclearcontrol.api;
 import java.util.List;
 import java.util.UUID;
 
-import net.minecraft.src.TileEntity;
+import net.minecraft.tileentity.TileEntity;
 
 /**
  * Custom card for Industrial Information Panel is class, inherited from Item, 

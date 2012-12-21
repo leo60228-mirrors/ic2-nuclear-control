@@ -1,16 +1,16 @@
 package shedar.mods.ic2.nuclearcontrol;
 
-import net.minecraft.src.Container;
-import net.minecraft.src.GuiButton;
-import net.minecraft.src.GuiContainer;
-import net.minecraft.src.StatCollector;
-import ic2.api.NetworkHelper;
+import ic2.api.network.NetworkHelper;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.Container;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiAverageCounter extends GuiContainer

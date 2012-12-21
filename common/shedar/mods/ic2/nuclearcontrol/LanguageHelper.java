@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Locale;
 import java.util.Map;
 
+import net.minecraftforge.common.ConfigCategory;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 import cpw.mods.fml.common.FMLLog;
@@ -125,7 +126,7 @@ public class LanguageHelper
             setPhrase(configuration, "msg.nc.TextColor", "Text Color");
             setPhrase(configuration, "msg.nc.None", "N/A");
             
-            for(Map.Entry<String, Map<String, Property>> category : configuration.categories.entrySet())
+            for(Map.Entry<String, ConfigCategory> category : configuration.categories.entrySet())
             {
                 String rawLocale = category.getKey(); 
                 if(rawLocale == null || !rawLocale.startsWith("locale."))

@@ -3,17 +3,17 @@ package shedar.mods.ic2.nuclearcontrol.panel;
 import java.util.HashMap;
 import java.util.Map;
 
-import cpw.mods.fml.common.FMLLog;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChunkCoordinates;
 import shedar.mods.ic2.nuclearcontrol.NuclearNetworkHelper;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
 import shedar.mods.ic2.nuclearcontrol.utils.ItemStackUtils;
-import net.minecraft.src.ChunkCoordinates;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.TileEntity;
+import cpw.mods.fml.common.FMLLog;
 
 public class CardWrapperImpl implements ICardWrapper
 {

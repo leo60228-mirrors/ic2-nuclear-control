@@ -4,11 +4,11 @@ import ic2.api.Items;
 
 import java.util.Vector;
 
-import net.minecraft.src.IRecipe;
-import net.minecraft.src.InventoryCrafting;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.World;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 
 public class StorageArrayRecipe implements IRecipe

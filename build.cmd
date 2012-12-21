@@ -1,6 +1,6 @@
 @echo off
-xcopy /Q /S /Y common\*  ..\mcp\src\common\
-xcopy /Q /S /Y ext\common\modstats\*  ..\mcp\src\common\
+xcopy /Q /S /Y common\*  ..\mcp\src\minecraft\
+xcopy /Q /S /Y ext\common\modstats\*  ..\mcp\src\minecraft\
 xcopy /Q /S /Y client\*  ..\mcp\src\minecraft\
 
 cd ..\mcp

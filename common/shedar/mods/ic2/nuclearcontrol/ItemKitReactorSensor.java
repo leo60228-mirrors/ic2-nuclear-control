@@ -1,10 +1,10 @@
 package shedar.mods.ic2.nuclearcontrol;
 
-import net.minecraft.src.ChunkCoordinates;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.World;
 import ic2.api.IReactor;
 import ic2.api.IReactorChamber;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.world.World;
 
 public class ItemKitReactorSensor extends ItemSensorKitBase
 {

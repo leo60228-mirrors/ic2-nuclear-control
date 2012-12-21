@@ -1,25 +1,25 @@
 package shedar.mods.ic2.nuclearcontrol;
 
-import java.util.List;
-
-import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
-
-import net.minecraft.src.ChunkCoordinates;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.NBTTagList;
-import net.minecraft.src.TileEntity;
 import ic2.api.Direction;
 import ic2.api.ElectricItem;
-import ic2.api.EnergyNet;
 import ic2.api.IElectricItem;
-import ic2.api.IEnergySink;
 import ic2.api.IReactor;
 import ic2.api.Items;
-import ic2.api.NetworkHelper;
+import ic2.api.energy.EnergyNet;
+import ic2.api.energy.tile.IEnergySink;
+import ic2.api.network.NetworkHelper;
+
+import java.util.List;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
+import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 
 
 public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements 
@@ -454,9 +454,9 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     }
 
     @Override
-    public boolean demandsEnergy()
+    public int demandsEnergy()
     {
-        return energy < maxStorage;
+        return maxStorage-energy;
     }
 
     @Override
@@ -576,5 +576,11 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
     {
         return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, BlockNuclearControlMain.DAMAGE_REMOTE_THERMO);
+    }
+
+    @Override
+    public int getMaxSafeInput()
+    {
+        return maxPacketSize;
     }
 }

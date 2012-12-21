@@ -5,7 +5,8 @@ import java.text.DecimalFormatSymbols;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.minecraft.src.StringTranslate;
+import net.minecraft.util.StringTranslate;
+
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 

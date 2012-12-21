@@ -1,15 +1,16 @@
 package shedar.mods.ic2.nuclearcontrol;
 
-import java.util.List;
-
-import net.minecraft.src.CreativeTabs;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ItemStack;
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import ic2.api.IReactor;
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
+
+import java.util.List;
+
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemToolDigitalThermometer extends ItemToolThermometer
     implements IElectricItem

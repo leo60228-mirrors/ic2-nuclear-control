@@ -1,8 +1,8 @@
 package shedar.mods.ic2.nuclearcontrol;
 
-import net.minecraft.src.Container;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.TileEntity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.tileentity.TileEntity;
 
 public class ContainerEmpty extends Container
 {

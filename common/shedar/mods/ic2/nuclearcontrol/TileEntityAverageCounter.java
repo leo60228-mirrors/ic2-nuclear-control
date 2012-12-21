@@ -1,27 +1,27 @@
 package shedar.mods.ic2.nuclearcontrol;
 
+import ic2.api.Direction;
+import ic2.api.IWrenchable;
+import ic2.api.Items;
+import ic2.api.energy.EnergyNet;
+import ic2.api.energy.tile.IEnergySink;
+import ic2.api.energy.tile.IEnergySource;
+import ic2.api.network.INetworkClientTileEntityEventListener;
+import ic2.api.network.INetworkDataProvider;
+import ic2.api.network.INetworkUpdateListener;
+import ic2.api.network.NetworkHelper;
+
 import java.util.List;
 import java.util.Vector;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Facing;
 import cpw.mods.fml.common.FMLCommonHandler;
-
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.Facing;
-import net.minecraft.src.IInventory;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.NBTTagList;
-import net.minecraft.src.TileEntity;
-import ic2.api.Direction;
-import ic2.api.EnergyNet;
-import ic2.api.IEnergySink;
-import ic2.api.IEnergySource;
-import ic2.api.INetworkClientTileEntityEventListener;
-import ic2.api.INetworkDataProvider;
-import ic2.api.INetworkUpdateListener;
-import ic2.api.IWrenchable;
-import ic2.api.Items;
-import ic2.api.NetworkHelper;
 
 
 public class TileEntityAverageCounter extends TileEntity implements 
@@ -346,9 +346,9 @@ public class TileEntityAverageCounter extends TileEntity implements
     }
 
     @Override
-    public boolean demandsEnergy()
+    public int demandsEnergy()
     {
-        return storage < 2*packetSize;
+        return 2*packetSize - storage;
     }
 
     @Override
@@ -456,5 +456,11 @@ public class TileEntityAverageCounter extends TileEntity implements
     public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
     {
         return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, BlockNuclearControlMain.DAMAGE_AVERAGE_COUNTER);
+    }
+
+    @Override
+    public int getMaxSafeInput()
+    {
+        return packetSize;
     }
 }

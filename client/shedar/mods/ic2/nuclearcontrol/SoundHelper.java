@@ -1,9 +1,9 @@
 package shedar.mods.ic2.nuclearcontrol;
 
-import net.minecraft.src.Entity;
-import net.minecraft.src.GameSettings;
-import net.minecraft.src.SoundManager;
-import net.minecraft.src.SoundPoolEntry;
+import net.minecraft.client.audio.SoundManager;
+import net.minecraft.client.audio.SoundPoolEntry;
+import net.minecraft.client.settings.GameSettings;
+import net.minecraft.entity.Entity;
 import paulscode.sound.SoundSystem;
 import cpw.mods.fml.client.FMLClientHandler;
 

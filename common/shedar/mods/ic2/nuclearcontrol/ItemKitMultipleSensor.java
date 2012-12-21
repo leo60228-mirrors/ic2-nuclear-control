@@ -2,11 +2,11 @@ package shedar.mods.ic2.nuclearcontrol;
 
 import java.util.List;
 
-import net.minecraft.src.ChunkCoordinates;
-import net.minecraft.src.CreativeTabs;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.TileEntity;
-import net.minecraft.src.World;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.world.World;
 import net.minecraftforge.liquids.ILiquidTank;
 
 public class ItemKitMultipleSensor extends ItemSensorKitBase

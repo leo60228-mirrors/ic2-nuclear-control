@@ -1,8 +1,8 @@
 package shedar.mods.ic2.nuclearcontrol;
 
-import net.minecraft.src.Block;
-import net.minecraft.src.TileEntity;
-import net.minecraft.src.World;
+import net.minecraft.block.Block;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 public class RedstoneHelper
 {

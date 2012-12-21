@@ -3,8 +3,8 @@ package shedar.mods.ic2.nuclearcontrol.panel;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.TileEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import shedar.mods.ic2.nuclearcontrol.GuiInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.NuclearNetworkHelper;
 import shedar.mods.ic2.nuclearcontrol.api.ICardSettingsWrapper;

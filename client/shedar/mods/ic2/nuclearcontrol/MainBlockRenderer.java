@@ -1,17 +1,17 @@
 package shedar.mods.ic2.nuclearcontrol;
 
-import net.minecraft.src.Block;
-import net.minecraft.src.IBlockAccess;
-import net.minecraft.src.RenderBlocks;
-import net.minecraft.src.Tessellator;
-import net.minecraft.src.TileEntity;
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.ForgeHooksClient;
 
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class MainBlockRenderer implements ISimpleBlockRenderingHandler
@@ -34,7 +34,7 @@ public class MainBlockRenderer implements ISimpleBlockRenderingHandler
                 ForgeHooksClient.bindTexture("/img/InfoPanelColorsOff.png", 0);
             }
             block.setBlockBounds(size[0], size[1], size[2], size[3], size[4], size[5]);
-            renderer.func_83018_a(block);
+            renderer.updateCustomBlockBounds(block);
             Tessellator tesselator = Tessellator.instance;
             GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
             tesselator.startDrawingQuads();

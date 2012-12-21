@@ -1,8 +1,8 @@
 package shedar.mods.ic2.nuclearcontrol.api;
 
-import net.minecraft.src.ChunkCoordinates;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.TileEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChunkCoordinates;
 
 public interface ICardWrapper
 {

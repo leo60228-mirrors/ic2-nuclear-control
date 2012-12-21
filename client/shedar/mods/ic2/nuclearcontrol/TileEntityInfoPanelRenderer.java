@@ -2,24 +2,21 @@ package shedar.mods.ic2.nuclearcontrol;
 
 import java.util.List;
 
-import net.minecraft.src.Block;
-import net.minecraft.src.Facing;
-import net.minecraft.src.FontRenderer;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.TileEntity;
-import net.minecraft.src.TileEntitySpecialRenderer;
+import net.minecraft.block.Block;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Facing;
 
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.client.FMLClientHandler;
-
-import shedar.mods.ic2.nuclearcontrol.Screen;
-import shedar.mods.ic2.nuclearcontrol.TileEntityInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
+import cpw.mods.fml.client.FMLClientHandler;
 
 public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
 {

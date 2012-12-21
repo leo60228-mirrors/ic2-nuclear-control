@@ -1,17 +1,15 @@
 package shedar.mods.ic2.nuclearcontrol;
 
+import ic2.api.network.NetworkHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiButton;
+
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
-
-import shedar.mods.ic2.nuclearcontrol.TileEntityInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.src.FontRenderer;
-import net.minecraft.src.GuiButton;
-import ic2.api.NetworkHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiInfoPanelCheckBox extends GuiButton

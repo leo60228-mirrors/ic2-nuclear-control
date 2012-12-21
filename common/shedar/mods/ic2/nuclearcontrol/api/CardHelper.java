@@ -1,6 +1,6 @@
 package shedar.mods.ic2.nuclearcontrol.api;
 
-import net.minecraft.src.ItemStack;
+import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.FMLLog;
 
 /**
