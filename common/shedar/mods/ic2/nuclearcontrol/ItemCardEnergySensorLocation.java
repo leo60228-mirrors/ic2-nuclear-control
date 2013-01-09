@@ -1,7 +1,5 @@
 package shedar.mods.ic2.nuclearcontrol;
 
-import ic2.api.IEnergyStorage;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,6 +15,7 @@ import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
+import shedar.mods.ic2.nuclearcontrol.crossmod.data.EnergyStorageData;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 import cpw.mods.fml.relauncher.Side;
@@ -42,11 +41,12 @@ public class ItemCardEnergySensorLocation extends ItemCardBase implements IRemot
     public CardState update(TileEntity panel, ICardWrapper card, int range)
     {
         ChunkCoordinates target = card.getTarget();
-        IEnergyStorage storage = EnergyStorageHelper.getStorageAt(panel.worldObj, target.posX, target.posY, target.posZ);
+        int targetType = card.getInt("targetType");
+        EnergyStorageData storage = EnergyStorageHelper.getStorageAt(panel.worldObj, target.posX, target.posY, target.posZ, targetType);
         if(storage != null)
         {
-            card.setLong("energyL", (long)storage.getStored());
-            card.setLong("maxStorageL", (long)storage.getCapacity());
+            card.setLong("energyL", storage.stored);
+            card.setLong("maxStorageL", storage.capacity);
             return CardState.OK;
         }
         else

@@ -1,7 +1,5 @@
 package shedar.mods.ic2.nuclearcontrol;
 
-import ic2.api.IEnergyStorage;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,6 +15,7 @@ import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
+import shedar.mods.ic2.nuclearcontrol.crossmod.data.EnergyStorageData;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 import cpw.mods.fml.relauncher.Side;
@@ -31,7 +30,7 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
     public static final int DISPLAY_TOTAL = 16;
     public static final int DISPLAY_PERCENTAGE = 32;    
     
-    public static final UUID CARD_TYPE = new UUID(0, 3);;
+    public static final UUID CARD_TYPE = new UUID(0, 3);
     
     public ItemCardEnergyArrayLocation(int i, int iconIndex)
     {
@@ -62,12 +61,14 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
         int cardCount = getCardCount(card); 
         for (ItemStack subCard : cards)
         {
-            ChunkCoordinates target = new CardWrapperImpl(subCard).getTarget();
+            CardWrapperImpl wrapper = new CardWrapperImpl(subCard);
+            ChunkCoordinates target = wrapper.getTarget();
             if(target == null)
                 continue;
             card.setInt(String.format("_%dx", cardCount), target.posX);
             card.setInt(String.format("_%dy", cardCount), target.posY);
             card.setInt(String.format("_%dz", cardCount), target.posZ);
+            card.setInt(String.format("_%dtargetType", cardCount), wrapper.getInt("targetType"));
             cardCount++;
         }
         card.setInt("cardCount", cardCount);
@@ -96,13 +97,13 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
                         Math.abs(dy) <= range && 
                         Math.abs(dz) <= range)
                 {
-                    IEnergyStorage storage = EnergyStorageHelper.getStorageAt(panel.worldObj, 
-                            coordinates[0], coordinates[1], coordinates[2]);
+                    EnergyStorageData storage = EnergyStorageHelper.getStorageAt(panel.worldObj, 
+                            coordinates[0], coordinates[1], coordinates[2], card.getInt(String.format("_%dtargetType", i)));
                     if(storage != null)
                     {
-                        totalEnergy += storage.getStored();
-                        card.setInt(String.format("_%denergy", i), storage.getStored());
-                        card.setInt(String.format("_%dmaxStorage", i), storage.getCapacity());
+                        totalEnergy += storage.stored;
+                        card.setInt(String.format("_%denergy", i), (int)storage.stored);
+                        card.setInt(String.format("_%dmaxStorage", i), (int)storage.capacity);
                         foundAny = true;
                     }
                 }

@@ -17,6 +17,9 @@ import net.minecraftforge.common.MinecraftForge;
 import org.modstats.ModstatInfo;
 import org.modstats.Modstats;
 
+import shedar.mods.ic2.nuclearcontrol.crossmod.buildcraft.CrossBuildcraft;
+import shedar.mods.ic2.nuclearcontrol.crossmod.ic2.CrossIndustrialCraft2;
+
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
@@ -38,6 +41,7 @@ import cpw.mods.fml.relauncher.Side;
 @ModstatInfo(prefix="nc")
 public class IC2NuclearControl
 {
+    
     public static final int COLOR_WHITE = 15;
     public static final int COLOR_ORANGE = 14;
     public static final int COLOR_MAGENTA = 13;
@@ -99,6 +103,9 @@ public class IC2NuclearControl
     public int IC2ElectricWrenchId;
     
     public boolean isClient;
+    
+    public CrossBuildcraft crossBC;
+    public CrossIndustrialCraft2 crossIC2;
     
     
     
@@ -374,5 +381,9 @@ public class IC2NuclearControl
         proxy.registerTileEntities();
         NetworkRegistry.instance().registerGuiHandler(instance, proxy);
         configuration.save();
+        
+        crossBC = new CrossBuildcraft();
+        crossIC2 = new CrossIndustrialCraft2();
+                
     }
 }

@@ -1,20 +1,30 @@
 package shedar.mods.ic2.nuclearcontrol;
 
-import ic2.api.IEnergyStorage;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import shedar.mods.ic2.nuclearcontrol.crossmod.data.EnergyStorageData;
 
 public class EnergyStorageHelper {
 
 	
-    public static IEnergyStorage getStorageAt(World world, int x, int y, int z) 
+    public static EnergyStorageData getStorageAt(World world, int x, int y, int z, int type) 
     {
         if(world == null)
             return null;
         TileEntity entity = world.getBlockTileEntity(x, y, z);
-        if (entity!=null && entity instanceof IEnergyStorage)
+        switch (type)
         {
-            return (IEnergyStorage)entity;
+        case EnergyStorageData.TARGET_TYPE_IC2:
+            return IC2NuclearControl.instance.crossIC2.getStorageData(entity);
+        case EnergyStorageData.TARGET_TYPE_BC:
+            return IC2NuclearControl.instance.crossBC.getStorageData(entity);
+        case EnergyStorageData.TARGET_TYPE_UNKNOWN:
+            EnergyStorageData data = IC2NuclearControl.instance.crossIC2.getStorageData(entity);
+            if(data == null)
+            {
+                data = IC2NuclearControl.instance.crossBC.getStorageData(entity);
+            }
+            return data;
         }
         return null;
     }    
