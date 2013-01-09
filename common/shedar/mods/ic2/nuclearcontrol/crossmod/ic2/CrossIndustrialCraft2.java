@@ -1,12 +1,29 @@
 package shedar.mods.ic2.nuclearcontrol.crossmod.ic2;
 
 import ic2.api.IEnergyStorage;
+import ic2.api.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import shedar.mods.ic2.nuclearcontrol.crossmod.data.EnergyStorageData;
 
 public class CrossIndustrialCraft2
 {
     private boolean _isApiAvailable = false;
+    private boolean _isIdInitialized = false;
+    
+    private int _uraniumId1;
+    private int _uraniumId2;
+    private int _uraniumId4;
+    
+    private void initIds()
+    {
+        if(!_isApiAvailable || _isIdInitialized)
+            return;
+        _uraniumId1 = Items.getItem("reactorUraniumSimple").itemID;
+        _uraniumId2 = Items.getItem("reactorUraniumDual").itemID;
+        _uraniumId4 = Items.getItem("reactorUraniumQuad").itemID;
+        _isIdInitialized = true;
+    }
     
     public boolean isApiAvailable()
     {
@@ -40,5 +57,18 @@ public class CrossIndustrialCraft2
             return result;
         }
         return null;
-    }    
+    }
+    
+    public int getNuclearCellTimeLeft(ItemStack stack)
+    {
+        if(!_isApiAvailable || stack == null)
+            return -1;
+        initIds();
+        if(stack.itemID == _uraniumId1 || stack.itemID == _uraniumId2 || stack.itemID == _uraniumId4)
+        {
+            return stack.getMaxDamage() - stack.getItemDamage();
+        }
+        return -1;
+    }
+    
 }

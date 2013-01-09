@@ -18,8 +18,8 @@ import org.modstats.ModstatInfo;
 import org.modstats.Modstats;
 
 import shedar.mods.ic2.nuclearcontrol.crossmod.buildcraft.CrossBuildcraft;
+import shedar.mods.ic2.nuclearcontrol.crossmod.gregtech.CrossGregTech;
 import shedar.mods.ic2.nuclearcontrol.crossmod.ic2.CrossIndustrialCraft2;
-
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
@@ -106,6 +106,7 @@ public class IC2NuclearControl
     
     public CrossBuildcraft crossBC;
     public CrossIndustrialCraft2 crossIC2;
+    public CrossGregTech crossGregTech;
     
     
     
@@ -353,6 +354,14 @@ public class IC2NuclearControl
         MinecraftForge.EVENT_BUS.register(proxy);
     }
 
+    @PostInit
+    public void postInit(FMLPostInitializationEvent evt)
+    {
+        crossBC = new CrossBuildcraft();
+        crossIC2 = new CrossIndustrialCraft2();
+        crossGregTech = new CrossGregTech();
+    }
+
     @Init
     public void init(FMLInitializationEvent evt)
     {
@@ -381,9 +390,5 @@ public class IC2NuclearControl
         proxy.registerTileEntities();
         NetworkRegistry.instance().registerGuiHandler(instance, proxy);
         configuration.save();
-        
-        crossBC = new CrossBuildcraft();
-        crossIC2 = new CrossIndustrialCraft2();
-                
     }
 }

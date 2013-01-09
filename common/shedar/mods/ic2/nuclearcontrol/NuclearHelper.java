@@ -1,5 +1,6 @@
 package shedar.mods.ic2.nuclearcontrol;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.ChunkPosition;
@@ -75,6 +76,16 @@ public class NuclearHelper {
 	{
 	    ChunkCoordinates position =  reactor.getPosition();
 	    return reactor.getWorld().isBlockIndirectlyGettingPowered(position.posX, position.posY, position.posZ);
+	}
+	
+	public static int getNuclearCellTimeLeft(ItemStack rStack)
+	{
+	    int val = IC2NuclearControl.instance.crossIC2.getNuclearCellTimeLeft(rStack);
+	    if(val == -1)
+	    {
+	        val = IC2NuclearControl.instance.crossGregTech.getNuclearCellTimeLeft(rStack);
+	    }
+	    return val;
 	}
 	
 }

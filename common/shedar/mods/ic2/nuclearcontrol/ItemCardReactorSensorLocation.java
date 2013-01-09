@@ -2,7 +2,6 @@ package shedar.mods.ic2.nuclearcontrol;
 
 import ic2.api.IC2Reactor;
 import ic2.api.IReactor;
-import ic2.api.Items;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -59,15 +58,12 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
             IInventory inventory = (IInventory)reactor; 
             int slotCount = inventory.getSizeInventory();
             int timeLeft = 0;
-            int uraniumId1 = Items.getItem("reactorUraniumSimple").itemID;
-            int uraniumId2 = Items.getItem("reactorUraniumDual").itemID;
-            int uraniumId3 = Items.getItem("reactorUraniumQuad").itemID;
             for(int i = 0; i < slotCount; i++)
             {
                 ItemStack rStack = inventory.getStackInSlot(i);
-                if(rStack!=null && (rStack.itemID == uraniumId1 || rStack.itemID == uraniumId2 || rStack.itemID == uraniumId3))
+                if(rStack!=null)
                 {
-                    timeLeft = Math.max(timeLeft, rStack.getMaxDamage() - rStack.getItemDamage());
+                    timeLeft = Math.max(timeLeft, NuclearHelper.getNuclearCellTimeLeft(rStack));
                 }
             }
             card.setInt("timeLeft", timeLeft*reactor.getTickRate()/20);
