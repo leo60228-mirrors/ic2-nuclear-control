@@ -9,6 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import shedar.mods.ic2.nuclearcontrol.items.ItemCardEnergyArrayLocation;
+import shedar.mods.ic2.nuclearcontrol.items.ItemCardEnergySensorLocation;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 
 public class StorageArrayRecipe implements IRecipe

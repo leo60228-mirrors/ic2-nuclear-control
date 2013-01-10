@@ -5,10 +5,10 @@ import java.util.Map;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import shedar.mods.ic2.nuclearcontrol.GuiInfoPanel;
-import shedar.mods.ic2.nuclearcontrol.NuclearNetworkHelper;
 import shedar.mods.ic2.nuclearcontrol.api.ICardSettingsWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
+import shedar.mods.ic2.nuclearcontrol.gui.GuiInfoPanel;
+import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLLog;
 

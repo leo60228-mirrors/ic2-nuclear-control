@@ -7,12 +7,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
-import shedar.mods.ic2.nuclearcontrol.NuclearNetworkHelper;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
 import shedar.mods.ic2.nuclearcontrol.utils.ItemStackUtils;
+import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 import cpw.mods.fml.common.FMLLog;
 
 public class CardWrapperImpl implements ICardWrapper
