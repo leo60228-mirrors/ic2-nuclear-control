@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.FMLLog;
 
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
@@ -219,11 +220,14 @@ public class TileEntityInfoPanel extends TileEntity implements
                 cardType = ((IPanelDataSource)inventory[SLOT_CARD].getItem()).getCardType();
             }
         }
-        boolean update = !displaySettings.containsKey(cardType)  || displaySettings.get(cardType) != s;
-        displaySettings.put(cardType, s);
-        if (update && FMLCommonHandler.instance().getEffectiveSide().isServer())
+        if(cardType != null)
         {
-            NuclearNetworkHelper.sendDisplaySettingsUpdate(this, cardType, s);
+            boolean update = !displaySettings.containsKey(cardType)  || displaySettings.get(cardType) != s;
+            displaySettings.put(cardType, s);
+            if (update && FMLCommonHandler.instance().getEffectiveSide().isServer())
+            {
+                NuclearNetworkHelper.sendDisplaySettingsUpdate(this, cardType, s);
+            }
         }
     }
     
@@ -434,9 +438,13 @@ public class TileEntityInfoPanel extends TileEntity implements
             for (int i = 0; i < settingsList.tagCount(); i++)
             {
                 NBTTagCompound compound = (NBTTagCompound)settingsList.tagAt(i);
-                UUID key = UUID.fromString(compound.getString("key"));
-                int value = compound.getInteger("value");
-                displaySettings.put(key, value);
+                try{
+                    UUID key = UUID.fromString(compound.getString("key"));
+                    int value = compound.getInteger("value");
+                    displaySettings.put(key, value);
+                }catch (IllegalArgumentException e) {
+                    FMLLog.warning("Ivalid display settings for Information Panel");
+                }
             }
         }
       

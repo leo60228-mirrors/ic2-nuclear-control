@@ -307,8 +307,11 @@ public class NuclearNetworkHelper
         output.writeInt(settings.size());
         for (Map.Entry<UUID, Integer> item : settings.entrySet())
         {
-            output.writeLong(item.getKey().getMostSignificantBits());
-            output.writeLong(item.getKey().getLeastSignificantBits());
+            UUID key = item.getKey(); 
+            if(key == null)
+                continue;
+            output.writeLong(key.getMostSignificantBits());
+            output.writeLong(key.getLeastSignificantBits());
             output.writeInt(item.getValue());
         }
         packet.channel = IC2NuclearControl.NETWORK_CHANNEL_NAME;
