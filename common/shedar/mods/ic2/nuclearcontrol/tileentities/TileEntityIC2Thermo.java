@@ -128,6 +128,7 @@ public class TileEntityIC2Thermo extends TileEntity implements
         if (field.equals("heatLevel") && prevHeatLevel != heatLevel)
         {
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
             prevHeatLevel = heatLevel;
         }
         if (field.equals("facing") && prevFacing != facing)
@@ -193,6 +194,8 @@ public class TileEntityIC2Thermo extends TileEntity implements
         if (prevHeatLevel != h)
         {
             NetworkHelper.updateTileEntityField(this, "heatLevel");
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
         }
         prevHeatLevel = heatLevel;
         mappedHeatLevel = h;
