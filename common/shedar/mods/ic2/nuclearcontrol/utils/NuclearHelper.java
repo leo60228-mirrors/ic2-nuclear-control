@@ -11,7 +11,9 @@ import ic2.api.IReactorChamber;
 
 public class NuclearHelper {
 	
-	public static IReactor getReactorAt(World world, int x, int y, int z) 
+    private static final double STEAM_PER_EU = 3.2D;
+
+    public static IReactor getReactorAt(World world, int x, int y, int z) 
 	{
 	    if(world == null)
 	        return null;
@@ -19,6 +21,16 @@ public class NuclearHelper {
 		if(entity instanceof IReactor)
 		    return (IReactor)entity;
 		return null;
+	}
+	
+	public static boolean isSteam(IReactor reactor)
+	{
+	    return IC2NuclearControl.instance.crossBC.isTankContainer(reactor);
+	}
+	
+	public static int euToSteam(int eu)
+	{
+	    return (int)Math.floor((double)(eu) * STEAM_PER_EU);
 	}
 
 

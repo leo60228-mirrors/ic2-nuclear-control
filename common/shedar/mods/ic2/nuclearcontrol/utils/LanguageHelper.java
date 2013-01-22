@@ -79,6 +79,7 @@ public class LanguageHelper
             setPhrase(configuration, "msg.nc.InfoPanelMaxHeat", "MaxHeat: %s");
             setPhrase(configuration, "msg.nc.InfoPanelMelting", "Melting: %s");
             setPhrase(configuration, "msg.nc.InfoPanelOutput", "Output: %sEU/t");
+            setPhrase(configuration, "msg.nc.InfoPanelOutputSteam", "Output: %smB/t");
             setPhrase(configuration, "msg.nc.InfoPanelTimeRemaining", "Remaining: %s");
 
             setPhrase(configuration, "msg.nc.InfoPanelEnergyCounter", "Energy: %sEU");

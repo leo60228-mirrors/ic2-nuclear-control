@@ -2,6 +2,7 @@ package shedar.mods.ic2.nuclearcontrol.crossmod.buildcraft;
 
 import shedar.mods.ic2.nuclearcontrol.crossmod.data.EnergyStorageData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.liquids.ITankContainer;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 
@@ -24,6 +25,11 @@ public class CrossBuildcraft
         {
             _isApiAvailable = false;
         }
+    }
+    
+    public boolean isTankContainer(Object obj)
+    {
+        return _isApiAvailable && obj instanceof ITankContainer;
     }
     
     public EnergyStorageData getStorageData(TileEntity target)

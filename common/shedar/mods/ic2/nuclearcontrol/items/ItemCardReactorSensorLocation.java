@@ -55,6 +55,7 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
             card.setInt("maxHeat", reactor.getMaxHeat());
             card.setBoolean("reactorPoweredB", NuclearHelper.isProducing(reactor));
             card.setInt("output", reactor.getOutput()*IC2Reactor.getEUOutput());
+            card.setBoolean("isSteam", NuclearHelper.isSteam(reactor));
 
             IInventory inventory = (IInventory)reactor; 
             int slotCount = inventory.getSizeInventory();
@@ -129,7 +130,15 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
         if((displaySettings & DISPLAY_OUTPUT) > 0)
         {
             line = new PanelString();
-            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelOutput", card.getInt("output"), showLabels); 
+            if(card.getBoolean("isSteam"))
+            {
+                line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelOutputSteam", 
+                        NuclearHelper.euToSteam(card.getInt("output")), showLabels); 
+            }
+            else
+            {
+                line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelOutput", card.getInt("output"), showLabels); 
+            }
             result.add(line);
         }
         int timeLeft = card.getInt("timeLeft");
