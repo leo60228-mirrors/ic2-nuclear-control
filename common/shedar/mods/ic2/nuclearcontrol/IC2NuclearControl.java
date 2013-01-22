@@ -50,7 +50,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod( modid = "IC2NuclearControl", name="Nuclear Control", version="1.4.5", dependencies = "after:IC2")
+@Mod( modid = "IC2NuclearControl", name="Nuclear Control", version="1.4.6", dependencies = "after:IC2")
 @NetworkMod(channels = { "NuclearControl" }, clientSideRequired = true, serverSideRequired = false, 
             packetHandler = PacketHandler.class, connectionHandler = ConnectionHandler.class)
 @ModstatInfo(prefix="nc")
