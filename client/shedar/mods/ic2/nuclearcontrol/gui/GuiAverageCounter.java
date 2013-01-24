@@ -9,6 +9,7 @@ import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerAverageCounter;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -49,7 +50,8 @@ public class GuiAverageCounter extends GuiContainer
     {
         fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
         fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-        String value = StringUtils.getFormatted("msg.nc.InfoPanelOutput", container.averageCounter.getClientAverage(), true);
+        String key = container.averageCounter.powerType == TileEntityAverageCounter.POWER_TYPE_EU?"msg.nc.InfoPanelOutput":"msg.nc.InfoPanelOutputMJ";
+        String value = StringUtils.getFormatted(key, container.averageCounter.getClientAverage(), true);
         fontRenderer.drawString(value, (xSize - fontRenderer.getStringWidth(value)) / 2, 22, 0x404040);
         value = StringUtils.getFormatted("msg.nc.AverageCounterPeriod", container.averageCounter.period, true);
         fontRenderer.drawString(value, (xSize - fontRenderer.getStringWidth(value)) / 2, 32, 0x404040);

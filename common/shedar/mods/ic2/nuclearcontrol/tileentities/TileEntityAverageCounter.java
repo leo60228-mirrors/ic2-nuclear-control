@@ -38,16 +38,23 @@ public class TileEntityAverageCounter extends TileEntity implements
     private static final int BASE_PACKET_SIZE = 32;
     private static final int DATA_POINTS = 11;
     
+    public static final byte POWER_TYPE_EU = 0;
+    public static final byte POWER_TYPE_MJ = 1;
+    
     private boolean init;
     private ItemStack inventory[];
+    
+    //0 - EU, 1- MJ
+    private byte prevPowerType;
+    public byte powerType;
 
     private int storage;
     
     private short prevFacing;
     public short facing;
     
-    private long[] data;
-    private int index;
+    protected float[] data;
+    protected int index;
     protected int updateTicker;
     protected int tickRate;
     protected short prevPeriod;
@@ -65,11 +72,12 @@ public class TileEntityAverageCounter extends TileEntity implements
         addedToEnergyNet = false;
         packetSize = BASE_PACKET_SIZE;
         prevFacing = facing = 0;
-        data = new long[DATA_POINTS];
+        data = new float[DATA_POINTS];
         index = 0;
         tickRate = 20;
         updateTicker = tickRate;
         prevPeriod = period = 1;
+        powerType = POWER_TYPE_EU;
     }
 
     private void initData()
@@ -125,6 +133,18 @@ public class TileEntityAverageCounter extends TileEntity implements
         prevPeriod = p;
     }
     
+    public void setPowerType(byte p)
+    {
+        powerType = p;
+
+        if (prevPowerType != p)
+        {
+            NetworkHelper.updateTileEntityField(this, "powerType");
+        }
+
+        prevPowerType = p;
+    }
+    
     @Override
     public void updateEntity()
     {
@@ -159,6 +179,7 @@ public class TileEntityAverageCounter extends TileEntity implements
                 int sent = packetSize - event.amount;
                 storage -= sent;
                 data[index] += sent;
+                setPowerType(POWER_TYPE_EU);
             }
         }
         super.updateEntity();
@@ -224,7 +245,7 @@ public class TileEntityAverageCounter extends TileEntity implements
         nbttagcompound.setInteger("updateTicker", updateTicker);
         nbttagcompound.setShort("period", period);
         for(int i=0;i<DATA_POINTS;i++)
-            nbttagcompound.setLong("point-"+i, data[i]);
+            nbttagcompound.setLong("point-"+i, (long)data[i]);
         
         NBTTagList nbttaglist = new NBTTagList();
         for (int i = 0; i < inventory.length; i++)
@@ -414,6 +435,7 @@ public class TileEntityAverageCounter extends TileEntity implements
         Vector<String> vector = new Vector<String>(2);
         vector.add("facing");
         vector.add("period");
+        vector.add("powerType");
         return vector;    
     }
 

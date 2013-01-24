@@ -1,8 +1,10 @@
 package shedar.mods.ic2.nuclearcontrol.crossmod.buildcraft;
 
-import shedar.mods.ic2.nuclearcontrol.crossmod.data.EnergyStorageData;
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.liquids.ITankContainer;
+import shedar.mods.ic2.nuclearcontrol.crossmod.data.EnergyStorageData;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 
@@ -15,12 +17,25 @@ public class CrossBuildcraft
         return _isApiAvailable;
     }
     
+    @SuppressWarnings("unchecked")
+    public void registerTileEntity()
+    {
+        try
+        {
+            GameRegistry.registerTileEntity((Class<? extends TileEntity>)Class.forName("shedar.mods.ic2.nuclearcontrol.crossmod.buildcraft.TileEntityAverageCounterBC"), "IC2NCAverageCounterBC");
+        } catch (ClassNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
     public CrossBuildcraft()
     {
         try
         {
             Class.forName("buildcraft.api.power.IPowerReceptor", false, this.getClass().getClassLoader());
             _isApiAvailable = true;
+            registerTileEntity();
         } catch (ClassNotFoundException e)
         {
             _isApiAvailable = false;
@@ -30,6 +45,22 @@ public class CrossBuildcraft
     public boolean isTankContainer(Object obj)
     {
         return _isApiAvailable && obj instanceof ITankContainer;
+    }
+    
+    public TileEntityAverageCounter getAverageCounter()
+    {
+        if(_isApiAvailable)
+        {
+            try
+            {
+                //return new TileEntityAverageCounterBC();
+                return (TileEntityAverageCounter)Class.forName("shedar.mods.ic2.nuclearcontrol.crossmod.buildcraft.TileEntityAverageCounterBC").newInstance();
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
     
     public EnergyStorageData getStorageData(TileEntity target)

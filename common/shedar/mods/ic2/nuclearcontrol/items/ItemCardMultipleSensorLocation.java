@@ -122,6 +122,7 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase implements IRem
         {
             TileEntityAverageCounter avgCounter  = (TileEntityAverageCounter)tileEntity;
             card.setInt("average", avgCounter.getClientAverage());
+            card.setInt("powerType", (int)avgCounter.powerType);
             return CardState.OK;
         }
         else
@@ -228,7 +229,8 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase implements IRem
             if((displaySettings & DISPLAY_ENERGY) > 0)
             {
                 line = new PanelString();
-                line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelOutput", card.getInt("average"), showLabels); 
+                String key = card.getInt("powerType") == TileEntityAverageCounter.POWER_TYPE_EU?"msg.nc.InfoPanelOutput":"msg.nc.InfoPanelOutputMJ";
+                line.textLeft = StringUtils.getFormatted(key, card.getInt("average"), showLabels); 
                 result.add(line);
             }
         }

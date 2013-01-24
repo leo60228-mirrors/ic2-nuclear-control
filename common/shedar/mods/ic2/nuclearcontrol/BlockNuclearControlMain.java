@@ -699,7 +699,10 @@ public class BlockNuclearControlMain extends BlockContainer
         case DAMAGE_ENERGY_COUNTER:
             return new TileEntityEnergyCounter();
         case DAMAGE_AVERAGE_COUNTER:
-            return new TileEntityAverageCounter();
+            TileEntity instance = IC2NuclearControl.instance.crossBC.getAverageCounter();
+            if(instance == null)
+                instance = new TileEntityAverageCounter();
+            return instance;
         case DAMAGE_RANGE_TRIGGER:
             return new TileEntityRangeTrigger();
         }
