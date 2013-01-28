@@ -1,6 +1,7 @@
 package shedar.mods.ic2.nuclearcontrol.crossmod.buildcraft;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.liquids.ITankContainer;
 import shedar.mods.ic2.nuclearcontrol.crossmod.data.EnergyStorageData;
@@ -8,6 +9,7 @@ import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
+import buildcraft.api.tools.IToolWrench;
 
 public class CrossBuildcraft
 {
@@ -42,6 +44,11 @@ public class CrossBuildcraft
         {
             _isApiAvailable = false;
         }
+    }
+    
+    public boolean isWrench(ItemStack itemStack)
+    {
+        return _isApiAvailable && itemStack.getItem() instanceof IToolWrench;
     }
     
     public boolean isTankContainer(Object obj)

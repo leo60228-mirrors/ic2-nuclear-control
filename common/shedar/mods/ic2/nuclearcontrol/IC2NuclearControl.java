@@ -114,9 +114,6 @@ public class IC2NuclearControl
     public int screenRefreshPeriod;
     public int rangeTriggerRefreshPeriod;
 
-    public int IC2WrenchId;
-    public int IC2ElectricWrenchId;
-    
     public boolean isClient;
     
     public CrossBuildcraft crossBC;
@@ -350,8 +347,6 @@ public class IC2NuclearControl
     @PostInit
     public void modsLoaded(FMLPostInitializationEvent evt)
     {
-        IC2WrenchId = Items.getItem("wrench").itemID;
-        IC2ElectricWrenchId = Items.getItem("electricWrench").itemID;
         addRecipes();
     }    
 

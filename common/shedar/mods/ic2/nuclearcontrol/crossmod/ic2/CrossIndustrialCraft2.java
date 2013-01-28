@@ -8,6 +8,11 @@ import shedar.mods.ic2.nuclearcontrol.crossmod.data.EnergyStorageData;
 
 public class CrossIndustrialCraft2
 {
+
+    private int _IC2WrenchId;
+    private int _IC2ElectricWrenchId;
+    
+    
     private boolean _isApiAvailable = false;
     private boolean _isIdInitialized = false;
     
@@ -22,12 +27,20 @@ public class CrossIndustrialCraft2
         _uraniumId1 = Items.getItem("reactorUraniumSimple").itemID;
         _uraniumId2 = Items.getItem("reactorUraniumDual").itemID;
         _uraniumId4 = Items.getItem("reactorUraniumQuad").itemID;
+        _IC2WrenchId = Items.getItem("wrench").itemID;
+        _IC2ElectricWrenchId = Items.getItem("electricWrench").itemID;
         _isIdInitialized = true;
     }
     
     public boolean isApiAvailable()
     {
         return _isApiAvailable;
+    }
+    
+    public boolean isWrench(ItemStack itemStack)
+    {
+        initIds();
+        return _isApiAvailable && (itemStack.itemID == _IC2WrenchId || itemStack.itemID==_IC2ElectricWrenchId);
     }
     
     public CrossIndustrialCraft2()

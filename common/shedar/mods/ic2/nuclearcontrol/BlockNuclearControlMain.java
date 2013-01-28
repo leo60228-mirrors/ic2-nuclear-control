@@ -15,6 +15,7 @@ import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityRangeTrigger;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityRemoteThermo;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.RedstoneHelper;
+import shedar.mods.ic2.nuclearcontrol.utils.WrenchHelper;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -475,19 +476,17 @@ public class BlockNuclearControlMain extends BlockContainer
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int i1, float f1, float f2, float f3)
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float f1, float f2, float f3)
     {
         int blockType = world.getBlockMetadata(x, y, z);
         TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+        
+        if(WrenchHelper.isWrenchClicked(tileEntity, player, side))
+        {
+            return true;
+        }
         if (player!=null && player.isSneaking())
         {
-            if(tileEntity!=null && tileEntity instanceof IRotation && player.getCurrentEquippedItem()!=null
-                    && (player.getCurrentEquippedItem().itemID == IC2NuclearControl.instance.IC2WrenchId ||
-                            player.getCurrentEquippedItem().itemID == IC2NuclearControl.instance.IC2ElectricWrenchId ))
-            {
-                ((IRotation)tileEntity).rotate();
-                return true;
-            }
             return false;
         }
         switch(blockType)
