@@ -1,6 +1,6 @@
 package shedar.mods.ic2.nuclearcontrol.crossmod.buildcraft;
 
-import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.liquids.ITankContainer;
@@ -10,6 +10,7 @@ import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.tools.IToolWrench;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CrossBuildcraft
 {
@@ -46,9 +47,19 @@ public class CrossBuildcraft
         }
     }
     
-    public boolean isWrench(ItemStack itemStack)
+    public void useWrench(ItemStack itemStack, TileEntity target, EntityPlayer player)
     {
-        return _isApiAvailable && itemStack.getItem() instanceof IToolWrench;
+        if(_isApiAvailable)
+        {
+            ((IToolWrench) itemStack.getItem()).wrenchUsed(player, target.xCoord, target.yCoord, target.zCoord);
+        }
+    }
+    
+    public boolean isWrench(ItemStack itemStack, TileEntity target, EntityPlayer player)
+    {
+        return _isApiAvailable && 
+                itemStack.getItem() instanceof IToolWrench && 
+                ((IToolWrench)itemStack.getItem()).canWrench(player, target.xCoord, target.yCoord, target.zCoord);
     }
     
     public boolean isTankContainer(Object obj)

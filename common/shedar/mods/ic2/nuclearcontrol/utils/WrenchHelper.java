@@ -19,11 +19,16 @@ public class WrenchHelper
             if(equipped!=null)
             {
                 boolean ic2Wrench = IC2NuclearControl.instance.crossIC2.isWrench(equipped);
-                boolean bcWrench = IC2NuclearControl.instance.crossBC.isWrench(equipped);
+                boolean bcWrench = IC2NuclearControl.instance.crossBC.isWrench(equipped, tileEntity, player);
                 if(player.isSneaking() && tileEntity instanceof IRotation)
                 {
                     if(ic2Wrench || bcWrench)
                     {
+                        if(bcWrench)
+                        {
+                            IC2NuclearControl.instance.crossBC.useWrench(equipped, tileEntity, player);
+                        }
+                        
                         if(FMLCommonHandler.instance().getEffectiveSide().isServer())
                         {
                             ((IRotation)tileEntity).rotate();
@@ -42,6 +47,7 @@ public class WrenchHelper
 
                     if (wrenchable.wrenchCanSetFacing(player, side))
                     {
+                        IC2NuclearControl.instance.crossBC.useWrench(equipped, tileEntity, player);
                         if(FMLCommonHandler.instance().getEffectiveSide().isServer())
                         {
                             wrenchable.setFacing((short)side);
