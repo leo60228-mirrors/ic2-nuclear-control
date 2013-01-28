@@ -45,6 +45,9 @@ public class TileEntityEnergyCounter extends TileEntity implements
     private short prevFacing;
     public short facing;
     
+    //0 - EU, 1- MJ
+    private byte prevPowerType;
+    public byte powerType;
 
     public int packetSize;
 
@@ -66,6 +69,18 @@ public class TileEntityEnergyCounter extends TileEntity implements
             NetworkHelper.requestInitialData(this);
         }
         init = true;
+    }
+    
+    public void setPowerType(byte p)
+    {
+        powerType = p;
+
+        if (prevPowerType != p)
+        {
+            NetworkHelper.updateTileEntityField(this, "powerType");
+        }
+
+        prevPowerType = p;
     }
     
     @Override
@@ -125,6 +140,7 @@ public class TileEntityEnergyCounter extends TileEntity implements
                 int sent = packetSize - event.amount;
                 storage -= sent;
                 counter += sent;
+                setPowerType(TileEntityAverageCounter.POWER_TYPE_EU);
             }
         }
         super.updateEntity();
@@ -137,6 +153,7 @@ public class TileEntityEnergyCounter extends TileEntity implements
         storage = nbttagcompound.getInteger("storage");
         facing = nbttagcompound.getShort("facing");
         counter = nbttagcompound.getLong("counter");
+        powerType = nbttagcompound.getByte("powerType");
         
         NBTTagList nbttaglist = nbttagcompound.getTagList("Items");
         inventory = new ItemStack[getSizeInventory()];
@@ -183,6 +200,7 @@ public class TileEntityEnergyCounter extends TileEntity implements
         nbttagcompound.setInteger("storage", storage);
         nbttagcompound.setShort("facing", facing);
         nbttagcompound.setLong("counter", counter);
+        nbttagcompound.setByte("powerType", powerType);
         
         NBTTagList nbttaglist = new NBTTagList();
         for (int i = 0; i < inventory.length; i++)
@@ -369,8 +387,9 @@ public class TileEntityEnergyCounter extends TileEntity implements
     @Override
     public List<String> getNetworkedFields()
     {
-        Vector<String> vector = new Vector<String>(1);
+        Vector<String> vector = new Vector<String>(2);
         vector.add("facing");
+        vector.add("powerType");
         return vector;    
     }
 

@@ -194,6 +194,8 @@ public class TileEntityAverageCounter extends TileEntity implements
         index = nbttagcompound.getInteger("dataIndex");
         updateTicker = nbttagcompound.getInteger("updateTicker");
         prevPeriod = period = nbttagcompound.getShort("period");
+        powerType = nbttagcompound.getByte("powerType");
+        
         for(int i=0;i<DATA_POINTS;i++)
             data[i] = nbttagcompound.getLong("point-"+i);
         
@@ -244,6 +246,8 @@ public class TileEntityAverageCounter extends TileEntity implements
         nbttagcompound.setInteger("dataIndex", index);
         nbttagcompound.setInteger("updateTicker", updateTicker);
         nbttagcompound.setShort("period", period);
+        nbttagcompound.setByte("powerType", powerType);
+
         for(int i=0;i<DATA_POINTS;i++)
             nbttagcompound.setLong("point-"+i, (long)data[i]);
         
@@ -432,7 +436,7 @@ public class TileEntityAverageCounter extends TileEntity implements
     @Override
     public List<String> getNetworkedFields()
     {
-        Vector<String> vector = new Vector<String>(2);
+        Vector<String> vector = new Vector<String>(3);
         vector.add("facing");
         vector.add("period");
         vector.add("powerType");

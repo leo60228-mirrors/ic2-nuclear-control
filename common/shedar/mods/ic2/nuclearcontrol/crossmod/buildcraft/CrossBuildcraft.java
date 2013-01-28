@@ -5,6 +5,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.liquids.ITankContainer;
 import shedar.mods.ic2.nuclearcontrol.crossmod.data.EnergyStorageData;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 
@@ -23,6 +24,7 @@ public class CrossBuildcraft
         try
         {
             GameRegistry.registerTileEntity((Class<? extends TileEntity>)Class.forName("shedar.mods.ic2.nuclearcontrol.crossmod.buildcraft.TileEntityAverageCounterBC"), "IC2NCAverageCounterBC");
+            GameRegistry.registerTileEntity((Class<? extends TileEntity>)Class.forName("shedar.mods.ic2.nuclearcontrol.crossmod.buildcraft.TileEntityEnergyCounterBC"), "IC2NCEnergyCounterBC");
         } catch (ClassNotFoundException e)
         {
             e.printStackTrace();
@@ -53,8 +55,22 @@ public class CrossBuildcraft
         {
             try
             {
-                //return new TileEntityAverageCounterBC();
                 return (TileEntityAverageCounter)Class.forName("shedar.mods.ic2.nuclearcontrol.crossmod.buildcraft.TileEntityAverageCounterBC").newInstance();
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+    
+    public TileEntityEnergyCounter getEnergyCounter()
+    {
+        if(_isApiAvailable)
+        {
+            try
+            {
+                return (TileEntityEnergyCounter)Class.forName("shedar.mods.ic2.nuclearcontrol.crossmod.buildcraft.TileEntityEnergyCounterBC").newInstance();
             } catch (Exception e)
             {
                 e.printStackTrace();

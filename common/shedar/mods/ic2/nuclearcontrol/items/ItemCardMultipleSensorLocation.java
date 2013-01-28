@@ -116,6 +116,7 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase implements IRem
         {
             TileEntityEnergyCounter counter  = (TileEntityEnergyCounter)tileEntity;
             card.setLong("energy", counter.counter);
+            card.setInt("powerType", (int)counter.powerType);
             return CardState.OK;
         }
         else if(tileEntity != null && tileEntity instanceof TileEntityAverageCounter)
@@ -240,7 +241,8 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase implements IRem
             {
                 long energy = card.getLong("energy");
                 line = new PanelString();
-                line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelEnergyCounter", energy, showLabels); 
+                String key = card.getInt("powerType") == TileEntityAverageCounter.POWER_TYPE_EU?"msg.nc.InfoPanelEnergyCounter":"msg.nc.InfoPanelEnergyCounterMJ";
+                line.textLeft = StringUtils.getFormatted(key, energy, showLabels); 
                 result.add(line);
             }
         }
