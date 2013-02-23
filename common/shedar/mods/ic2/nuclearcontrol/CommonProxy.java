@@ -7,6 +7,8 @@ import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.world.WorldEvent;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerAverageCounter;
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerEmpty;
@@ -83,6 +85,12 @@ public class CommonProxy implements IGuiHandler
                 return null;
         }
     }
+
+    @ForgeSubscribe
+    public void onWorldUnload(WorldEvent.Unload event)
+    {
+        IC2NuclearControl.instance.screenManager.clearWorld(event.world);
+    }
     
     public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player)
     {
@@ -157,7 +165,7 @@ public class CommonProxy implements IGuiHandler
                     String className = dat.readUTF();
                     if(!stack.getItem().getClass().getName().equals(className))
                     {
-                        System.out.println(className+"!="+stack.getItem().getClass().getName());
+                        FMLLog.warning("Class mismatch: '%s'!='%s'", className, stack.getItem().getClass().getName());
                         return;
                     }
                     CardWrapperImpl helper = new CardWrapperImpl(stack);

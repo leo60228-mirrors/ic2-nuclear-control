@@ -1,14 +1,27 @@
 package shedar.mods.ic2.nuclearcontrol.tileentities;
 
+import ic2.api.IWrenchable;
+import ic2.api.network.INetworkClientTileEntityEventListener;
+import ic2.api.network.INetworkDataProvider;
+import ic2.api.network.INetworkUpdateListener;
+import ic2.api.network.NetworkHelper;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.FMLLog;
-
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.Facing;
+import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.ISidedInventory;
 import shedar.mods.ic2.nuclearcontrol.BlockNuclearControlMain;
 import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.IRedstoneConsumer;
@@ -27,22 +40,8 @@ import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.panel.Screen;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.RedstoneHelper;
-
-import ic2.api.IWrenchable;
-import ic2.api.network.INetworkClientTileEntityEventListener;
-import ic2.api.network.INetworkDataProvider;
-import ic2.api.network.INetworkUpdateListener;
-import ic2.api.network.NetworkHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.Facing;
-import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.ISidedInventory;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.FMLLog;
 
 
 public class TileEntityInfoPanel extends TileEntity implements 
@@ -72,6 +71,7 @@ public class TileEntityInfoPanel extends TileEntity implements
     protected int tickRate;
     protected boolean init;
     private ItemStack inventory[];
+    public NBTTagCompound screenData;
     private Screen screen;
     private ItemStack card;
 
@@ -122,9 +122,13 @@ public class TileEntityInfoPanel extends TileEntity implements
     private void setSide(short f)
     {
         facing = f;
-
         if (prevFacing != f)
         {
+            if(FMLCommonHandler.instance().getEffectiveSide().isServer() && !init)
+            {
+                IC2NuclearControl.instance.screenManager.unregisterScreenPart(this);
+                IC2NuclearControl.instance.screenManager.registerInfoPanel(this);
+            }
             NetworkHelper.updateTileEntityField(this, "facing");
         }
 
@@ -246,21 +250,30 @@ public class TileEntityInfoPanel extends TileEntity implements
     @Override
     public void onNetworkUpdate(String field)
     {
+        if (field.equals("screenData"))
+        {
+            if(screen!=null && FMLCommonHandler.instance().getEffectiveSide().isClient())
+            {
+                screen.destroy(true, worldObj);
+            }
+            if(screenData != null)
+            {
+                screen = IC2NuclearControl.instance.screenManager.loadScreen(this);
+                if(screen!=null)
+                    screen.init(true, worldObj);
+            }
+        }
         if (field.equals("facing") && prevFacing != facing)
         {
-            if(FMLCommonHandler.instance().getEffectiveSide().isClient())
-            {
-                IC2NuclearControl.instance.screenManager.unregisterScreenPart(this);
-                IC2NuclearControl.instance.screenManager.registerInfoPanel(this);
-            }
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             prevFacing = facing;
         }
+        
         if (field.equals("colorBackground") || field.equals("colored"))
         {
             if(screen!=null)
             {
-                screen.markUpdate();
+                screen.markUpdate(worldObj);
             }
             else
             {
@@ -281,7 +294,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         {
             if(screen!=null)
             {
-                screen.turnPower(powered);
+                screen.turnPower(powered, worldObj);
             }
             else
             {
@@ -335,7 +348,7 @@ public class TileEntityInfoPanel extends TileEntity implements
     @Override
     public List<String> getNetworkedFields()
     {
-        List<String> list = new ArrayList<String>(8);
+        List<String> list = new ArrayList<String>(9);
         list.add("powered");
         list.add("facing");
         list.add("rotation");
@@ -344,6 +357,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         list.add("colorBackground");
         list.add("colorText");
         list.add("colored");
+        list.add("screenData");
         return list;
     }
     
@@ -358,9 +372,18 @@ public class TileEntityInfoPanel extends TileEntity implements
         {
             RedstoneHelper.checkPowered(worldObj, this);
         }
-        if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+        if(FMLCommonHandler.instance().getEffectiveSide().isServer())
         {
-            IC2NuclearControl.instance.screenManager.registerInfoPanel(this);
+            if(screenData == null)
+            {
+                IC2NuclearControl.instance.screenManager.registerInfoPanel(this);
+            }
+            else
+            {
+                screen = IC2NuclearControl.instance.screenManager.loadScreen(this);
+                if(screen!=null)
+                    screen.init(true, worldObj);
+            }
         }
         init = true;
     }
@@ -443,6 +466,11 @@ public class TileEntityInfoPanel extends TileEntity implements
             colorBackground = IC2NuclearControl.COLOR_GREEN;
         }
 
+        if(nbttagcompound.hasKey("screenData"))
+        {
+            screenData = (NBTTagCompound)nbttagcompound.getTag("screenData");
+        }
+
         if(nbttagcompound.hasKey("dSettings"))
         {
             NBTTagList settingsList = nbttagcompound.getTagList("dSettings");
@@ -490,11 +518,11 @@ public class TileEntityInfoPanel extends TileEntity implements
     @Override
     public void invalidate()
     {
-        super.invalidate();
-        if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+        if(FMLCommonHandler.instance().getEffectiveSide().isServer())
         {
             IC2NuclearControl.instance.screenManager.unregisterScreenPart(this);
         }
+        super.invalidate();
     }
 
     @Override
@@ -516,6 +544,13 @@ public class TileEntityInfoPanel extends TileEntity implements
 
         nbttagcompound.setInteger("colorBackground", colorBackground);
         nbttagcompound.setInteger("colorText", colorText);
+        
+        if(screen!=null)
+        {
+            screenData = screen.toTag(); 
+            nbttagcompound.setTag("screenData", screenData);
+        }
+        
         NBTTagList nbttaglist = new NBTTagList();
         for (int i = 0; i < inventory.length; i++)
         {
@@ -1012,5 +1047,23 @@ public class TileEntityInfoPanel extends TileEntity implements
     public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
     {
         return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, BlockNuclearControlMain.DAMAGE_INFO_PANEL);
+    }
+
+    @Override
+    public void updateData()
+    {
+        if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+        {
+            return;
+        }
+        if(screen == null)
+        {
+            screenData = null;
+        }
+        else
+        {
+            screenData = screen.toTag();
+        }
+        NetworkHelper.updateTileEntityField(this, "screenData");
     }
 }

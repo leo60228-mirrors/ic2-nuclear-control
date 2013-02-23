@@ -48,9 +48,9 @@ public class ContainerAverageCounter extends Container
     }    
 
     @Override
-    public void updateCraftingResults()
+    public void detectAndSendChanges()
     {
-        super.updateCraftingResults();
+        super.detectAndSendChanges();
         int average = averageCounter.getClientAverage();
         for (int i = 0; i < crafters.size(); i++)
         {

@@ -69,7 +69,7 @@ public class ItemNuclearControlMain extends ItemBlock
                ((BlockNuclearControlMain)Block.blocksList[getBlockID()]).onBlockPlacedBy(world, x, y, z, player, metadata);
            else
                Block.blocksList[getBlockID()].onBlockPlacedBy(world, x, y, z, player);
-           Block.blocksList[getBlockID()].func_85105_g(world, x, y, z, metadata);
+           Block.blocksList[getBlockID()].onPostBlockPlaced(world, x, y, z, metadata);
        }
 
        return true;

@@ -198,9 +198,9 @@ public class BlockNuclearControlMain extends BlockContainer
      * called before onBlockPlacedBy by ItemBlock and ItemReed
      */
     @Override
-    public int func_85104_a(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
+    public int onBlockPlaced(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
     {
-        super.func_85104_a(world, x, y, z, side, hitX, hitY, hitZ, metadata);
+        super.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, metadata);
         ForgeDirection dir = ForgeDirection.getOrientation(side);
         ForgeDirection oposite = dir.getOpposite();
         if(metadata > DAMAGE_MAX)
@@ -647,7 +647,7 @@ public class BlockNuclearControlMain extends BlockContainer
             TileEntityInfoPanelExtender extender = (TileEntityInfoPanelExtender)entity; 
             if(extender.getScreen()!=null)
             {
-                TileEntityInfoPanel core = extender.getScreen().getCore(); 
+                TileEntityInfoPanel core = extender.getScreen().getCore(extender.worldObj); 
                 if(core!=null && core.powered)
                     return 7;
                 else

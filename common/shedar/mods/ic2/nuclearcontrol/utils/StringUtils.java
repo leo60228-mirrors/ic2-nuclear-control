@@ -55,6 +55,12 @@ public class StringUtils
             case NO_TARGET:
                 line.textCenter = StringTranslate.getInstance().translateKey("msg.nc.InfoPanelNoTarget"); 
                 break;
+        case CUSTOM_ERROR:
+            break;
+        case OK:
+            break;
+        default:
+            break;
         }
         result.add(line);
         return result;

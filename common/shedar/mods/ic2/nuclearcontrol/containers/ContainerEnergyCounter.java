@@ -48,9 +48,9 @@ public class ContainerEnergyCounter extends Container
     }    
 
     @Override
-    public void updateCraftingResults()
+    public void detectAndSendChanges()
     {
-        super.updateCraftingResults();
+        super.detectAndSendChanges();
         long counter = energyCounter.counter;
         for (int i = 0; i < crafters.size(); i++)
         {

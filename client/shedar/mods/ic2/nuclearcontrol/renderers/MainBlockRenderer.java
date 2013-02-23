@@ -41,7 +41,7 @@ public class MainBlockRenderer implements ISimpleBlockRenderingHandler
                 ForgeHooksClient.bindTexture("/img/InfoPanelColorsOff.png", 0);
             }
             block.setBlockBounds(size[0], size[1], size[2], size[3], size[4], size[5]);
-            renderer.updateCustomBlockBounds(block);
+            renderer.setRenderBoundsFromBlock(block);
             Tessellator tesselator = Tessellator.instance;
             GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
             tesselator.startDrawingQuads();
@@ -108,9 +108,11 @@ public class MainBlockRenderer implements ISimpleBlockRenderingHandler
                 Screen screen = ((TileEntityInfoPanelExtender)tileEntity).getScreen();
                 if(screen!=null)
                 {
-                    TileEntityInfoPanel core = screen.getCore();
+                    TileEntityInfoPanel core = screen.getCore(tileEntity.worldObj);
                     if(core!=null)
                         tileEntity = core;
+                    else
+                        ForgeHooksClient.bindTexture("/img/InfoPanelColorsOff.png", 0);
                 }
                 else
                 {

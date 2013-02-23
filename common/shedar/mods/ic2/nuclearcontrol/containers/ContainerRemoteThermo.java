@@ -47,9 +47,9 @@ public class ContainerRemoteThermo extends Container
 
 
     @Override
-    public void updateCraftingResults()
+    public void detectAndSendChanges()
     {
-        super.updateCraftingResults();
+        super.detectAndSendChanges();
         int energy = remoteThermo.energy;
         for (int i = 0; i < crafters.size(); i++)
         {

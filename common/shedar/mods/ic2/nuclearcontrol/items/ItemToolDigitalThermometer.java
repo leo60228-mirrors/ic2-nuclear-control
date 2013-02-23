@@ -60,12 +60,12 @@ public class ItemToolDigitalThermometer extends ItemToolThermometer
 
 	@Override
 	public int getChargedItemId() {
-		return shiftedIndex;
+		return itemID;
 	}
 
 	@Override
 	public int getEmptyItemId() {
-		return shiftedIndex;
+		return itemID;
 	}
 
 	@Override

@@ -376,6 +376,7 @@ public class IC2NuclearControl
     public void init(FMLInitializationEvent evt)
     {
         Modstats.instance().getReporter().registerMod(this);
+        IC2NuclearControl.instance.screenManager = new ScreenManager();
         isClient = evt.getSide().equals(Side.CLIENT);
         Configuration configuration;
         configuration = new Configuration(configFile);

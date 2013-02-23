@@ -24,7 +24,6 @@ import net.minecraft.util.StringTranslate;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.world.WorldEvent;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerAverageCounter;
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerEnergyCounter;
@@ -40,7 +39,6 @@ import shedar.mods.ic2.nuclearcontrol.gui.GuiInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.gui.GuiRangeTrigger;
 import shedar.mods.ic2.nuclearcontrol.gui.GuiRemoteThermo;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
-import shedar.mods.ic2.nuclearcontrol.panel.ScreenManager;
 import shedar.mods.ic2.nuclearcontrol.renderers.MainBlockRenderer;
 import shedar.mods.ic2.nuclearcontrol.renderers.TileEntityIC2ThermoRenderer;
 import shedar.mods.ic2.nuclearcontrol.renderers.TileEntityInfoPanelRenderer;
@@ -84,12 +82,6 @@ public class ClientProxy extends CommonProxy
         return SoundHelper.isPlaying(soundId);
     }
     
-    @ForgeSubscribe
-    public void onWorldLoad(WorldEvent.Load event)
-    {
-        IC2NuclearControl.instance.screenManager = new ScreenManager();
-    }
-
     @ForgeSubscribe
     public void importSound(SoundLoadEvent event)
     {

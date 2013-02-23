@@ -1,9 +1,10 @@
 package shedar.mods.ic2.nuclearcontrol.panel;
 
-import shedar.mods.ic2.nuclearcontrol.IScreenPart;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import shedar.mods.ic2.nuclearcontrol.IScreenPart;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
 
 public class Screen
 {
@@ -16,12 +17,11 @@ public class Screen
     private int coreX;
     private int coreY;
     private int coreZ;
-    public World coreWorld;
     private boolean powered = false;
 
-    public TileEntityInfoPanel getCore()
+    public TileEntityInfoPanel getCore(World world)
     {
-        TileEntity tileEntity = coreWorld.getBlockTileEntity(coreX, coreY, coreZ);
+        TileEntity tileEntity = world.getBlockTileEntity(coreX, coreY, coreZ);
         if(tileEntity == null || !(tileEntity instanceof TileEntityInfoPanel))
             return null;
         return (TileEntityInfoPanel)tileEntity;
@@ -29,7 +29,6 @@ public class Screen
     
     public void setCore(TileEntityInfoPanel core)
     {
-        coreWorld = core.worldObj;
         coreX = core.xCoord;
         coreY = core.yCoord;
         coreZ = core.zCoord;
@@ -59,7 +58,7 @@ public class Screen
                 z >= minZ && z <= maxZ;
     }
     
-    public void init()
+    public void init(boolean force, World world)
     {
         for(int x = minX; x<=maxX; x++)
         {
@@ -67,14 +66,14 @@ public class Screen
             {
                 for(int z = minZ; z<=maxZ; z++)
                 {
-                    TileEntity tileEntity = coreWorld.getBlockTileEntity(x, y, z);
+                    TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
                     if(tileEntity == null || !(tileEntity instanceof IScreenPart))
                         continue;
                     ((IScreenPart)tileEntity).setScreen(this); 
-                    if(powered)
+                    if(powered || force)
                     {
-                        coreWorld.markBlockForUpdate(x, y, z);
-                        coreWorld.updateAllLightTypes(x, y, z);
+                        world.markBlockForUpdate(x, y, z);
+                        world.updateAllLightTypes(x, y, z);
                     }
                 }
             }
@@ -82,7 +81,7 @@ public class Screen
     }
     
     
-    public void destroy()
+    public void destroy(boolean force, World world)
     {
         for(int x = minX; x<=maxX; x++)
         {
@@ -90,21 +89,22 @@ public class Screen
             {
                 for(int z = minZ; z<=maxZ; z++)
                 {
-                    TileEntity tileEntity = coreWorld.getBlockTileEntity(x, y, z);
+                    TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
                     if(tileEntity == null || !(tileEntity instanceof IScreenPart))
                         continue;
-                    ((IScreenPart)tileEntity).setScreen(null); 
-                    if(powered)
+                    ((IScreenPart)tileEntity).setScreen(null);
+                    ((IScreenPart)tileEntity).updateData();
+                    if(powered || force)
                     {
-                        coreWorld.markBlockForUpdate(x, y, z);
-                        coreWorld.updateAllLightTypes(x, y, z);
+                        world.markBlockForUpdate(x, y, z);
+                        world.updateAllLightTypes(x, y, z);
                     }
                 }
             }
         }
     }
     
-    public void turnPower(boolean on)
+    public void turnPower(boolean on, World world)
     {
         if(powered!=on)
         {
@@ -115,15 +115,15 @@ public class Screen
                 {
                     for(int z = minZ; z<=maxZ; z++)
                     {
-                        coreWorld.markBlockForUpdate(x, y, z);
-                        coreWorld.updateAllLightTypes(x, y, z);
+                        world.markBlockForUpdate(x, y, z);
+                        world.updateAllLightTypes(x, y, z);
                     }
                 }
             }
         }
     }
     
-    public void markUpdate()
+    public void markUpdate(World world)
     {
         for(int x = minX; x<=maxX; x++)
         {
@@ -131,10 +131,77 @@ public class Screen
             {
                 for(int z = minZ; z<=maxZ; z++)
                 {
-                    coreWorld.markBlockForUpdate(x, y, z);
+                    world.markBlockForUpdate(x, y, z);
                 }
             }
         }
     }
     
+    public NBTTagCompound toTag()
+    {
+        NBTTagCompound tag = new NBTTagCompound();
+
+        tag.setInteger("minX", minX);
+        tag.setInteger("minY", minY);
+        tag.setInteger("minZ", minZ);
+
+        tag.setInteger("maxX", maxX);
+        tag.setInteger("maxY", maxY);
+        tag.setInteger("maxZ", maxZ);
+        
+        return tag;
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + coreX;
+        result = prime * result + coreY;
+        result = prime * result + coreZ;
+        result = prime * result + maxX;
+        result = prime * result + maxY;
+        result = prime * result + maxZ;
+        result = prime * result + minX;
+        result = prime * result + minY;
+        result = prime * result + minZ;
+        return result;
+    }
+    
+    public boolean isCore(int x, int y, int z)
+    {
+        return x == coreX && y == coreY && z == coreZ;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Screen other = (Screen) obj;
+        if (coreX != other.coreX)
+            return false;
+        if (coreY != other.coreY)
+            return false;
+        if (coreZ != other.coreZ)
+            return false;
+        if (maxX != other.maxX)
+            return false;
+        if (maxY != other.maxY)
+            return false;
+        if (maxZ != other.maxZ)
+            return false;
+        if (minX != other.minX)
+            return false;
+        if (minY != other.minY)
+            return false;
+        if (minZ != other.minZ)
+            return false;
+        return true;
+    }
 }
