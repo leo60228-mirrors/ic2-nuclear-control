@@ -103,6 +103,8 @@ public class LanguageHelper
             setPhrase(configuration, "msg.nc.InfoPanelLiquidFree", "Free: %s");
             setPhrase(configuration, "msg.nc.InfoPanelLiquidPercentage", "Fill: %s%%");
             
+            setPhrase(configuration, "msg.nc.InfoPanelNotFoundN", "#%d Not Found");
+            setPhrase(configuration, "msg.nc.InfoPanelOutOfRangeN", "#%d Out Of Range");
             setPhrase(configuration, "msg.nc.InfoPanelEnergyN", "#%d Energy: %s");
             setPhrase(configuration, "msg.nc.InfoPanelEnergyFreeN", "#%d Free: %s");
             setPhrase(configuration, "msg.nc.InfoPanelEnergyStorageN", "#%d Storage: %s");

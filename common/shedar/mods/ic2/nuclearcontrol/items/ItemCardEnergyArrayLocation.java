@@ -29,7 +29,10 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
     public static final int DISPLAY_STORAGE = 4;
     public static final int DISPLAY_EACH = 8;
     public static final int DISPLAY_TOTAL = 16;
-    public static final int DISPLAY_PERCENTAGE = 32;    
+    public static final int DISPLAY_PERCENTAGE = 32;
+    
+    private static final int STATUS_NOT_FOUND = Integer.MIN_VALUE;
+    private static final int STATUS_OUT_OF_RANGE = Integer.MIN_VALUE+1;
     
     public static final UUID CARD_TYPE = new UUID(0, 3);
     
@@ -107,9 +110,14 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
                         card.setInt(String.format("_%dmaxStorage", i), (int)storage.capacity);
                         foundAny = true;
                     }
+                    else
+                    {
+                        card.setInt(String.format("_%denergy", i), STATUS_NOT_FOUND);
+                    }
                 }
                 else
                 {
+                    card.setInt(String.format("_%denergy", i), STATUS_OUT_OF_RANGE);
                     outOfRange = true;
                 }
             }
@@ -149,7 +157,9 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
         {
             int energy =  card.getInt(String.format("_%denergy",i));
             int storage =  card.getInt(String.format("_%dmaxStorage",i));
-            if(showSummary)
+            boolean isOutOfRange = energy == STATUS_OUT_OF_RANGE;
+            boolean isNotFound = energy == STATUS_NOT_FOUND;
+            if(showSummary && !isOutOfRange && !isNotFound)
             {
                 totalEnergy += energy;
                 totalStorage += storage;
@@ -157,43 +167,58 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
             
             if(showEach)
             {
-                if(showEnergy)
+                if(isOutOfRange)
                 {
                     line = new PanelString();
-                    if(showLabels)
-                        line.textLeft = StringTranslate.getInstance().translateKeyFormat("msg.nc.InfoPanelEnergyN", i+1, StringUtils.getFormatted("", energy, false));
-                    else
-                        line.textLeft = StringUtils.getFormatted("", energy, false);
+                    line.textLeft = StringTranslate.getInstance().translateKeyFormat("msg.nc.InfoPanelOutOfRangeN", i+1);
                     result.add(line);
                 }
-                if(showFree)
+                else if(isNotFound)
                 {
                     line = new PanelString();
-                    if(showLabels)
-                        line.textLeft = StringTranslate.getInstance().translateKeyFormat("msg.nc.InfoPanelEnergyFreeN", i+1, StringUtils.getFormatted("", storage - energy, false));
-                    else
-                        line.textLeft = StringUtils.getFormatted("", storage - energy, false);
-
+                    line.textLeft = StringTranslate.getInstance().translateKeyFormat("msg.nc.InfoPanelNotFoundN", i+1);
                     result.add(line);
                 }
-                if(showStorage)
+                else
                 {
-                    line = new PanelString();
-                    if(showLabels)
-                        line.textLeft = StringTranslate.getInstance().translateKeyFormat("msg.nc.InfoPanelEnergyStorageN", i+1, StringUtils.getFormatted("", storage, false));
-                    else
-                        line.textLeft = StringUtils.getFormatted("", storage, false);
-                    result.add(line);
+                    if(showEnergy)
+                    {
+                        line = new PanelString();
+                        if(showLabels)
+                            line.textLeft = StringTranslate.getInstance().translateKeyFormat("msg.nc.InfoPanelEnergyN", i+1, StringUtils.getFormatted("", energy, false));
+                        else
+                            line.textLeft = StringUtils.getFormatted("", energy, false);
+                        result.add(line);
+                    }
+                    if(showFree)
+                    {
+                        line = new PanelString();
+                        if(showLabels)
+                            line.textLeft = StringTranslate.getInstance().translateKeyFormat("msg.nc.InfoPanelEnergyFreeN", i+1, StringUtils.getFormatted("", storage - energy, false));
+                        else
+                            line.textLeft = StringUtils.getFormatted("", storage - energy, false);
+    
+                        result.add(line);
+                    }
+                    if(showStorage)
+                    {
+                        line = new PanelString();
+                        if(showLabels)
+                            line.textLeft = StringTranslate.getInstance().translateKeyFormat("msg.nc.InfoPanelEnergyStorageN", i+1, StringUtils.getFormatted("", storage, false));
+                        else
+                            line.textLeft = StringUtils.getFormatted("", storage, false);
+                        result.add(line);
+                    }
+                    if(showPercentage)
+                    {
+                        line = new PanelString();
+                        if(showLabels)
+                            line.textLeft = StringTranslate.getInstance().translateKeyFormat("msg.nc.InfoPanelEnergyPercentageN", i+1, StringUtils.getFormatted("", storage==0? 100:(((long)energy)*100L/storage), false));
+                        else
+                            line.textLeft = StringUtils.getFormatted("", storage==0? 100:(((long)energy)*100L/storage), false);
+                        result.add(line);
+                    }    
                 }
-                if(showPercentage)
-                {
-                    line = new PanelString();
-                    if(showLabels)
-                        line.textLeft = StringTranslate.getInstance().translateKeyFormat("msg.nc.InfoPanelEnergyPercentageN", i+1, StringUtils.getFormatted("", storage==0? 100:(((long)energy)*100L/storage), false));
-                    else
-                        line.textLeft = StringUtils.getFormatted("", storage==0? 100:(((long)energy)*100L/storage), false);
-                    result.add(line);
-                }                
             }
         }
         if(showSummary)
