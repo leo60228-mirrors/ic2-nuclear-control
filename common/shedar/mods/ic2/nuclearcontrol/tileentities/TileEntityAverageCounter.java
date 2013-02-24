@@ -3,11 +3,10 @@ package shedar.mods.ic2.nuclearcontrol.tileentities;
 import ic2.api.Direction;
 import ic2.api.IWrenchable;
 import ic2.api.Items;
+import ic2.api.energy.EnergyNet;
 import ic2.api.energy.event.EnergyTileLoadEvent;
-import ic2.api.energy.event.EnergyTileSourceEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergySource;
+import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.network.INetworkClientTileEntityEventListener;
 import ic2.api.network.INetworkDataProvider;
 import ic2.api.network.INetworkUpdateListener;
@@ -15,10 +14,6 @@ import ic2.api.network.NetworkHelper;
 
 import java.util.List;
 import java.util.Vector;
-
-import shedar.mods.ic2.nuclearcontrol.BlockNuclearControlMain;
-import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
-import shedar.mods.ic2.nuclearcontrol.ISlotItemFilter;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -28,11 +23,14 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Facing;
 import net.minecraftforge.common.MinecraftForge;
+import shedar.mods.ic2.nuclearcontrol.BlockNuclearControlMain;
+import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
+import shedar.mods.ic2.nuclearcontrol.ISlotItemFilter;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 
 public class TileEntityAverageCounter extends TileEntity implements 
-    IEnergySink, IWrenchable, IEnergySource, INetworkClientTileEntityEventListener,
+    IEnergyConductor, IWrenchable, INetworkClientTileEntityEventListener,
     IInventory, ISlotItemFilter, INetworkDataProvider, INetworkUpdateListener 
 {
     private static final int BASE_PACKET_SIZE = 32;
@@ -48,7 +46,7 @@ public class TileEntityAverageCounter extends TileEntity implements
     private byte prevPowerType;
     public byte powerType;
 
-    private int storage;
+    private long prevTotal;
     
     private short prevFacing;
     public short facing;
@@ -157,29 +155,37 @@ public class TileEntityAverageCounter extends TileEntity implements
             return;
         if (!worldObj.isRemote)
         {
+            if (!addedToEnergyNet)
+            {
+                EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
+                MinecraftForge.EVENT_BUS.post(event);
+                EnergyNet enet = EnergyNet.getForWorld(worldObj);
+                prevTotal = enet.getTotalEnergyEmitted(this);
+                addedToEnergyNet = true;
+            }
             if (updateTicker-- == 0)
             {
                 updateTicker = tickRate-1;
                 index = (index+1) % DATA_POINTS;
                 data[index] = 0;
                 getAverage();
-            }
-
-            if (!addedToEnergyNet)
-            {
-                EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
-                MinecraftForge.EVENT_BUS.post(event);
-                addedToEnergyNet = true;
-            }
-            
-            if (storage >= packetSize)
-            {
-                EnergyTileSourceEvent event = new EnergyTileSourceEvent(this, packetSize);
-                MinecraftForge.EVENT_BUS.post(event);
-                int sent = packetSize - event.amount;
-                storage -= sent;
-                data[index] += sent;
-                setPowerType(POWER_TYPE_EU);
+                EnergyNet enet = EnergyNet.getForWorld(worldObj);
+                long total = enet.getTotalEnergyEmitted(this);
+                if(total > 0)
+                {
+                    if(prevTotal!=-1)
+                    {
+                        total = total - prevTotal;
+                        prevTotal += total;
+                    }
+                    else
+                    {
+                        prevTotal = total;
+                    }
+                    if(total>0)
+                        data[index] += total;
+                    setPowerType(POWER_TYPE_EU);
+                }
             }
         }
         super.updateEntity();
@@ -189,7 +195,6 @@ public class TileEntityAverageCounter extends TileEntity implements
     public void readFromNBT(NBTTagCompound nbttagcompound)
     {
         super.readFromNBT(nbttagcompound);
-        storage = nbttagcompound.getInteger("storage");
         facing = nbttagcompound.getShort("facing");
         index = nbttagcompound.getInteger("dataIndex");
         updateTicker = nbttagcompound.getInteger("updateTicker");
@@ -241,7 +246,6 @@ public class TileEntityAverageCounter extends TileEntity implements
     public void writeToNBT(NBTTagCompound nbttagcompound)
     {
         super.writeToNBT(nbttagcompound);
-        nbttagcompound.setInteger("storage", storage);
         nbttagcompound.setShort("facing", facing);
         nbttagcompound.setInteger("dataIndex", index);
         nbttagcompound.setInteger("updateTicker", updateTicker);
@@ -362,6 +366,16 @@ public class TileEntityAverageCounter extends TileEntity implements
         if(worldObj!=null && !worldObj.isRemote)
         {
             packetSize = BASE_PACKET_SIZE * (int)Math.pow(4D, upgradeCountTransormer);
+            
+            if (addedToEnergyNet)
+            {
+                EnergyTileUnloadEvent event = new EnergyTileUnloadEvent(this);
+                MinecraftForge.EVENT_BUS.post(event);
+            }
+            addedToEnergyNet = false;
+            EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
+            MinecraftForge.EVENT_BUS.post(event);
+            addedToEnergyNet = true;
         }
     };
 
@@ -381,33 +395,6 @@ public class TileEntityAverageCounter extends TileEntity implements
     public boolean isAddedToEnergyNet()
     {
         return addedToEnergyNet;
-    }
-
-    @Override
-    public int demandsEnergy()
-    {
-        return 2*packetSize - storage;
-    }
-
-    @Override
-    public int injectEnergy(Direction directionFrom, int amount)
-    {
-        if (amount > packetSize)
-        {
-            worldObj.setBlockWithNotify(xCoord, yCoord, zCoord, 0);
-            worldObj.createExplosion(null, xCoord, yCoord, zCoord, 0.8F, false);
-            return 0;
-        }
-
-        storage += amount;
-        int left = 0;
-
-        if (storage > 2*packetSize)
-        {
-            left = storage - 2*packetSize;
-            storage = 2*packetSize;
-        }
-        return left;
     }
 
     @Override
@@ -443,12 +430,6 @@ public class TileEntityAverageCounter extends TileEntity implements
         return vector;    
     }
 
-    @Override
-    public int getMaxEnergyOutput()
-    {
-        return 4096;
-    }
-    
     public void setClientAverage(int value)
     {
         clientAverage = value;
@@ -498,8 +479,39 @@ public class TileEntityAverageCounter extends TileEntity implements
     }
 
     @Override
-    public int getMaxSafeInput()
+    public double getConductionLoss()
     {
-        return packetSize;
+        return 0.025D;
     }
+
+    @Override
+    public int getInsulationEnergyAbsorption()
+    {
+        return 16384;
+    }
+
+    @Override
+    public int getInsulationBreakdownEnergy()
+    {
+        return packetSize+1;
+    }
+
+    @Override
+    public int getConductorBreakdownEnergy()
+    {
+        return packetSize+1;
+    }
+
+    @Override
+    public void removeInsulation()
+    {
+    }
+
+    @Override
+    public void removeConductor()
+    {
+        worldObj.setBlockWithNotify(xCoord, yCoord, zCoord, 0);
+        worldObj.createExplosion(null, xCoord, yCoord, zCoord, 0.8F, false);
+    }
+
 }
