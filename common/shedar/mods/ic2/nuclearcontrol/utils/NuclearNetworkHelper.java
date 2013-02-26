@@ -94,7 +94,7 @@ public class NuclearNetworkHelper
     }
     
     //server
-    public static void setSensorCardField(TileEntity panel, Map<String, Object> fields)
+    public static void setSensorCardField(TileEntity panel, byte slot, Map<String, Object> fields)
     {
         if(fields==null || fields.isEmpty() || panel==null || !(panel instanceof TileEntityInfoPanel))
             return;
@@ -108,6 +108,7 @@ public class NuclearNetworkHelper
         output.writeInt(panel.xCoord);
         output.writeInt(panel.yCoord);
         output.writeInt(panel.zCoord);
+        output.writeByte(slot);
         output.writeShort(fields.size());
         for (Map.Entry<String, Object> entry : fields.entrySet())
         {
@@ -143,20 +144,48 @@ public class NuclearNetworkHelper
     }
     
     //client
-    public static void setCardSettings(ItemStack card, TileEntity panel, Map<String, Object> fields)
+    public static void setDisplaySettings(TileEntityInfoPanel panel, byte slot, int settings)
     {
-        if(card == null || fields==null || fields.isEmpty() || panel==null || !(panel instanceof TileEntityInfoPanel))
+        if(panel==null)
             return;
             
         if(FMLCommonHandler.instance().getEffectiveSide().isServer())
             return;
 
-        Packet250CustomPayload packet = new Packet250CustomPayload();
         ByteArrayDataOutput output = ByteStreams.newDataOutput();
-        output.writeByte(PacketHandler.PACKET_CLIENT_SENSOR);
+        output.writeByte(PacketHandler.PACKET_CLIENT_DISPLAY_SETTINGS);
         output.writeInt(panel.xCoord);
         output.writeInt(panel.yCoord);
         output.writeInt(panel.zCoord);
+        output.writeByte(slot);
+        output.writeInt(settings);
+
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = IC2NuclearControl.NETWORK_CHANNEL_NAME;
+        packet.isChunkDataPacket = false;
+        packet.data = output.toByteArray();
+        packet.length = packet.data.length;
+        FMLClientHandler.instance().getClient().getSendQueue().addToSendQueue(packet);
+    }
+    
+    //client
+    public static void setCardSettings(ItemStack card, TileEntity panelTE, Map<String, Object> fields)
+    {
+        if(card == null || fields==null || fields.isEmpty() || panelTE==null || !(panelTE instanceof TileEntityInfoPanel))
+            return;
+            
+        if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+            return;
+
+        byte slot = ((TileEntityInfoPanel)panelTE).getIndexOfCard(card);
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        ByteArrayDataOutput output = ByteStreams.newDataOutput();
+        output.writeByte(PacketHandler.PACKET_CLIENT_SENSOR);
+        output.writeInt(panelTE.xCoord);
+        output.writeInt(panelTE.yCoord);
+        output.writeInt(panelTE.zCoord);
+        output.writeByte(slot);
         output.writeUTF(card.getItem().getClass().getName());
         output.writeShort(fields.size());
         for (Map.Entry<String, Object> entry : fields.entrySet())
@@ -192,7 +221,7 @@ public class NuclearNetworkHelper
     }
     
     //server
-    public static void setSensorCardTitle(TileEntityInfoPanel panel, String title)
+    public static void setSensorCardTitle(TileEntityInfoPanel panel, byte slot, String title)
     {
         if(title==null || panel==null)
             return;
@@ -202,6 +231,7 @@ public class NuclearNetworkHelper
         output.writeInt(panel.xCoord);
         output.writeInt(panel.yCoord);
         output.writeInt(panel.zCoord);
+        output.writeByte(slot);
         output.writeUTF(title);
         packet.channel = IC2NuclearControl.NETWORK_CHANNEL_NAME;
         packet.isChunkDataPacket = false;
@@ -228,13 +258,14 @@ public class NuclearNetworkHelper
     }
     
     //client
-    public static void setNewAlarmSound(int x, int y, int z, String soundName)
+    public static void setNewAlarmSound(int x, int y, int z, byte slot, String soundName)
     {
         ByteArrayDataOutput output = ByteStreams.newDataOutput();
         output.writeByte(PacketHandler.PACKET_CLIENT_SOUND);
         output.writeInt(x);
         output.writeInt(y);
         output.writeInt(z);
+        output.writeByte(slot);
         output.writeUTF(soundName);
         Packet250CustomPayload packet = new Packet250CustomPayload();
         packet.channel = IC2NuclearControl.NETWORK_CHANNEL_NAME;

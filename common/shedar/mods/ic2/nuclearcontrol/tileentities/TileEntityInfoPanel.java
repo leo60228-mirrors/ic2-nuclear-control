@@ -61,19 +61,19 @@ public class TileEntityInfoPanel extends TileEntity implements
     
     public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE;
     
-    public static final int SLOT_CARD = 0;
-    public static final int SLOT_UPGRADE_RANGE = 1;
-    public static final int SLOT_UPGRADE_COLOR = 2;
+    private static final int SLOT_CARD = 0;
+    private static final int SLOT_UPGRADE_RANGE = 1;
+    private static final int SLOT_UPGRADE_COLOR = 2;
     private static final int LOCATION_RANGE = 8;
     
     protected int updateTicker;
     protected int dataTicker;
     protected int tickRate;
     protected boolean init;
-    private ItemStack inventory[];
+    protected ItemStack inventory[];
     public NBTTagCompound screenData;
     private Screen screen;
-    private ItemStack card;
+    protected ItemStack card;
 
     private boolean prevPowered;
     public boolean powered;
@@ -98,7 +98,7 @@ public class TileEntityInfoPanel extends TileEntity implements
     private boolean  prevColored;
     public boolean colored;
     
-    List<PanelString> cardData;
+    private List<PanelString> cardData;
     
     @Override
     public short getFacing()
@@ -220,8 +220,10 @@ public class TileEntityInfoPanel extends TileEntity implements
         return showLabels;
     }    
     
-    public void setDisplaySettings(int s)
+    public void setDisplaySettings(int slot, int settings)
     {
+        if(slot != SLOT_CARD)
+            return;
         UUID cardType = null;
         ItemStack stack = inventory[SLOT_CARD]; 
         if(stack!=null)
@@ -237,11 +239,11 @@ public class TileEntityInfoPanel extends TileEntity implements
         }
         if(cardType != null)
         {
-            boolean update = !displaySettings.containsKey(cardType)  || displaySettings.get(cardType) != s;
-            displaySettings.put(cardType, s);
+            boolean update = !displaySettings.containsKey(cardType)  || displaySettings.get(cardType) != settings;
+            displaySettings.put(cardType, settings);
             if (update && FMLCommonHandler.instance().getEffectiveSide().isServer())
             {
-                NuclearNetworkHelper.sendDisplaySettingsUpdate(this, cardType, s);
+                NuclearNetworkHelper.sendDisplaySettingsUpdate(this, cardType, settings);
             }
         }
     }
@@ -318,14 +320,12 @@ public class TileEntityInfoPanel extends TileEntity implements
             setShowLabels(true);
         else if(i == -2)
             setShowLabels(false);
-        else
-            setDisplaySettings(i);
     }
-    
-    public TileEntityInfoPanel()
+
+    public TileEntityInfoPanel(int inventorySize)
     {
         super();
-        inventory = new ItemStack[3];//card + range upgrade + color upgrade
+        inventory = new ItemStack[inventorySize];
         screen = null;
         card = null;
         init = false;
@@ -343,6 +343,11 @@ public class TileEntityInfoPanel extends TileEntity implements
         colored = false;
         colorBackground = IC2NuclearControl.COLOR_GREEN;
         cardData = null;
+    }
+    
+    public TileEntityInfoPanel()
+    {
+        this(3);//card + range upgrade + color upgrade
     }
     
     @Override
@@ -651,6 +656,85 @@ public class TileEntityInfoPanel extends TileEntity implements
     {
     }
     
+    protected ItemStack getRangeUpgrade()
+    {
+        return inventory[SLOT_UPGRADE_RANGE];
+    }
+    
+    protected boolean isColoredEval()
+    {
+        ItemStack itemStack = inventory[SLOT_UPGRADE_COLOR];
+        return itemStack != null && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_COLOR;
+    }
+    
+    public List<ItemStack> getCards()
+    {
+        List<ItemStack> data = new ArrayList<ItemStack>(1);
+        data.add(inventory[SLOT_CARD]);
+        return data;
+    }
+    
+    public byte getIndexOfCard(ItemStack card)
+    {
+        if(card == null)
+            return 0;
+        byte slot = 0;
+        for(byte i=0;i<getSizeInventory();i++)
+        {
+            ItemStack stack = getStackInSlot(i);
+            if(stack!=null && stack.equals(card))
+            {
+                slot = i;
+                break;
+            }
+        }
+        return slot;
+    }
+    
+    private void processCard(ItemStack card, int upgradeCountRange)
+    {
+        if(card == null)
+            return;
+        Item item = card.getItem();
+        if(item instanceof IPanelDataSource)
+        {
+            boolean needUpdate = true;
+            if(upgradeCountRange > 7)
+                upgradeCountRange = 7;
+            int range = LOCATION_RANGE * (int)Math.pow(2, upgradeCountRange);
+            CardWrapperImpl cardHelper = new CardWrapperImpl(card);
+            if(item instanceof IRemoteSensor)
+            {
+                ChunkCoordinates target = cardHelper.getTarget();
+                if(target == null)
+                {
+                    needUpdate = false;
+                    cardHelper.setState(CardState.INVALID_CARD);
+                }
+                else
+                {
+                    int dx = target.posX - xCoord;
+                    int dy = target.posY - yCoord;
+                    int dz = target.posZ - zCoord;
+                    if (Math.abs(dx) > range || 
+                        Math.abs(dy) > range || 
+                        Math.abs(dz) > range)
+                    {
+                        needUpdate = false;
+                        cardHelper.setState(CardState.OUT_OF_RANGE);
+                    }
+                }
+            }
+            if(needUpdate)
+            {
+                CardState state = ((IPanelDataSource) item).update(this, cardHelper, range);
+                cardHelper.setInt("state", state.getIndex());
+            }
+            cardHelper.commit(this);
+        }
+        
+    }
+    
     @Override
     public void onInventoryChanged() 
     {
@@ -658,53 +742,16 @@ public class TileEntityInfoPanel extends TileEntity implements
         if(worldObj!= null && FMLCommonHandler.instance().getEffectiveSide().isServer())
         {
             int upgradeCountRange = 0;
-            ItemStack itemStack = inventory[SLOT_UPGRADE_COLOR];
-            setColored(itemStack != null && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_COLOR);
-            itemStack = inventory[SLOT_UPGRADE_RANGE];
+            setColored(isColoredEval());
+            ItemStack itemStack = getRangeUpgrade();
             if(itemStack != null && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
             {
                 upgradeCountRange = itemStack.stackSize;
             }
-            ItemStack card = inventory[SLOT_CARD]; 
-            if(card != null)
+            List<ItemStack> cards = getCards();
+            for (ItemStack card : cards)
             {
-                Item item = card.getItem();
-                if(item instanceof IPanelDataSource)
-                {
-                    boolean needUpdate = true;
-                    if(upgradeCountRange > 7)
-                        upgradeCountRange = 7;
-                    int range = LOCATION_RANGE * (int)Math.pow(2, upgradeCountRange);
-                    CardWrapperImpl cardHelper = new CardWrapperImpl(card);
-                    if(item instanceof IRemoteSensor)
-                    {
-                        ChunkCoordinates target = cardHelper.getTarget();
-                        if(target == null)
-                        {
-                            needUpdate = false;
-                            cardHelper.setState(CardState.INVALID_CARD);
-                        }
-                        else
-                        {
-                            int dx = target.posX - xCoord;
-                            int dy = target.posY - yCoord;
-                            int dz = target.posZ - zCoord;
-                            if (Math.abs(dx) > range || 
-                                Math.abs(dy) > range || 
-                                Math.abs(dz) > range)
-                            {
-                                needUpdate = false;
-                                cardHelper.setState(CardState.OUT_OF_RANGE);
-                            }
-                        }
-                    }
-                    if(needUpdate)
-                    {
-                        CardState state = ((IPanelDataSource) item).update(this, cardHelper, range);
-                        cardHelper.setInt("state", state.getIndex());
-                    }
-                    cardHelper.commit(this);
-                }
+                processCard(card, upgradeCountRange);
             }
         }
     };
@@ -727,7 +774,8 @@ public class TileEntityInfoPanel extends TileEntity implements
     }
     
     @Override
-    public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int face) {
+    public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int face) 
+    {
         return !entityPlayer.isSneaking() && getFacing() != face;
     };
 

@@ -25,7 +25,6 @@ import shedar.mods.ic2.nuclearcontrol.gui.controls.GuiInfoPanelCheckBox;
 import shedar.mods.ic2.nuclearcontrol.gui.controls.GuiInfoPanelShowLabels;
 import shedar.mods.ic2.nuclearcontrol.panel.CardSettingsWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.Side;
@@ -52,9 +51,9 @@ public class GuiInfoPanel extends GuiContainer
     }
     
     @SuppressWarnings("unchecked")
-    private void initControls()
+    protected void initControls()
     {
-        ItemStack card = container.getSlot(TileEntityInfoPanel.SLOT_CARD).getStack();
+        ItemStack card = container.panel.getCards().get(0); 
         if(((card == null && prevCard == null) || (card!=null  && card.equals(prevCard))) && this.container.panel.colored == isColored)
             return;
         int h = fontRenderer.FONT_HEIGHT + 1;
@@ -70,6 +69,7 @@ public class GuiInfoPanel extends GuiContainer
         }
         if(card!=null && card.getItem() instanceof IPanelDataSource)
         {
+            byte slot = container.panel.getIndexOfCard(card);
             IPanelDataSource source = (IPanelDataSource)card.getItem();
             if(source instanceof IAdvancedCardSettings)
             {
@@ -89,7 +89,7 @@ public class GuiInfoPanel extends GuiContainer
             if(settingsList!=null)
             for (PanelSetting panelSetting : settingsList)
             {
-                controlList.add(new GuiInfoPanelCheckBox(0, guiLeft + 32, guiTop + 40 + h*row, panelSetting, container.panel, fontRenderer));
+                controlList.add(new GuiInfoPanelCheckBox(0, guiLeft + 32, guiTop + 40 + h*row, panelSetting, container.panel, slot, fontRenderer));
                 row++;
             }
             if(!modified)
@@ -160,11 +160,11 @@ public class GuiInfoPanel extends GuiContainer
     {
         if(textboxTitle == null)
             return;
+        ItemStack card = container.panel.getCards().get(0);
         if(container.panel.worldObj.isRemote)
         {
-            NuclearNetworkHelper.setNewAlarmSound(container.panel.xCoord, container.panel.yCoord, container.panel.zCoord, textboxTitle.getText());
+            NuclearNetworkHelper.setNewAlarmSound(container.panel.xCoord, container.panel.yCoord, container.panel.zCoord, container.panel.getIndexOfCard(card), textboxTitle.getText());
         }
-        ItemStack card = container.getSlot(TileEntityInfoPanel.SLOT_CARD).getStack();
         if(card!=null && card.getItem() instanceof IPanelDataSource)
         {
             new CardWrapperImpl(card).setTitle(textboxTitle.getText());
@@ -188,7 +188,7 @@ public class GuiInfoPanel extends GuiContainer
         }
         else if(button.id == 111)
         {
-            ItemStack card = container.getSlot(TileEntityInfoPanel.SLOT_CARD).getStack();
+            ItemStack card = container.panel.getCards().get(0);
             if(card == null)
                 return;
             if(card != null && card.getItem() instanceof IAdvancedCardSettings)

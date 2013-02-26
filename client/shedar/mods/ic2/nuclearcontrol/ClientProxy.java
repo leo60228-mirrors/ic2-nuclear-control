@@ -25,11 +25,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
+import shedar.mods.ic2.nuclearcontrol.containers.ContainerAdvancedInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerAverageCounter;
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerEnergyCounter;
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerRangeTrigger;
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerRemoteThermo;
+import shedar.mods.ic2.nuclearcontrol.gui.GuiAdvancedInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.gui.GuiAverageCounter;
 import shedar.mods.ic2.nuclearcontrol.gui.GuiEnergyCounter;
 import shedar.mods.ic2.nuclearcontrol.gui.GuiHowlerAlarm;
@@ -43,6 +45,7 @@ import shedar.mods.ic2.nuclearcontrol.renderers.MainBlockRenderer;
 import shedar.mods.ic2.nuclearcontrol.renderers.TileEntityIC2ThermoRenderer;
 import shedar.mods.ic2.nuclearcontrol.renderers.TileEntityInfoPanelRenderer;
 import shedar.mods.ic2.nuclearcontrol.renderers.TileEntityRemoteThermoRenderer;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityHowlerAlarm;
@@ -154,6 +157,8 @@ public class ClientProxy extends CommonProxy
         ClientRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityRemoteThermo.class, "IC2RemoteThermo", renderRemoteThermo);
         ClientRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel.class, "IC2NCInfoPanel", renderInfoPanel);
         GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanelExtender.class, "IC2NCInfoPanelExtender");
+        ClientRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel.class, "IC2NCAdvancedInfoPanel", renderInfoPanel);
+        GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanelExtender.class, "IC2NCAdvancedInfoPanelExtender");
         GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter.class, "IC2NCEnergyCounter");
         GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter.class, "IC2NCAverageCounter");
         GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityRangeTrigger.class, "IC2NCRangeTrigger");
@@ -204,7 +209,8 @@ public class ClientProxy extends CommonProxy
                         return;
                     }
                     panel = (TileEntityInfoPanel)ent;
-                    ItemStack stack = panel.getStackInSlot(TileEntityInfoPanel.SLOT_CARD);
+                    byte slot =  dat.readByte();
+                    ItemStack stack = panel.getStackInSlot(slot);
                     if(stack == null || !(stack.getItem() instanceof IPanelDataSource))
                     {
                         return;
@@ -247,7 +253,8 @@ public class ClientProxy extends CommonProxy
                         return;
                     }
                     panel = (TileEntityInfoPanel)ent;
-                    ItemStack itemStack = panel.getStackInSlot(TileEntityInfoPanel.SLOT_CARD);
+                    slot = dat.readByte();
+                    ItemStack itemStack = panel.getStackInSlot(slot);
                     if(itemStack == null || !(itemStack.getItem() instanceof IPanelDataSource))
                     {
                         return;
@@ -344,6 +351,9 @@ public class ClientProxy extends CommonProxy
             case BlockNuclearControlMain.DAMAGE_INFO_PANEL:
                 ContainerInfoPanel containerPanel = new ContainerInfoPanel(player, (TileEntityInfoPanel)tileEntity);
                 return new GuiInfoPanel(containerPanel);
+            case BlockNuclearControlMain.DAMAGE_ADVANCED_PANEL:
+                ContainerAdvancedInfoPanel containerAdvancedPanel = new ContainerAdvancedInfoPanel(player, (TileEntityAdvancedInfoPanel)tileEntity);
+                return new GuiAdvancedInfoPanel(containerAdvancedPanel);
             case BlockNuclearControlMain.DAMAGE_ENERGY_COUNTER:
                 ContainerEnergyCounter containerCounter = new ContainerEnergyCounter(player, (TileEntityEnergyCounter)tileEntity);
                 return new GuiEnergyCounter(containerCounter);

@@ -12,6 +12,12 @@ public class ContainerInfoPanel extends Container
     public TileEntityInfoPanel panel;
     public EntityPlayer player;
 
+    public ContainerInfoPanel()
+    {
+        super();
+    }
+    
+    
     public ContainerInfoPanel(EntityPlayer player, TileEntityInfoPanel panel)
     {
         super();

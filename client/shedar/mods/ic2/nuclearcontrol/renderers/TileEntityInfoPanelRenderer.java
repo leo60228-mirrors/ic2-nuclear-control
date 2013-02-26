@@ -1,5 +1,6 @@
 package shedar.mods.ic2.nuclearcontrol.renderers;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -54,18 +55,26 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
             int displaySettings = panel.getDisplaySettings();
             if(displaySettings == 0)
                 return;
-            ItemStack card = panel.getStackInSlot(TileEntityInfoPanel.SLOT_CARD);
-            if(card == null || !(card.getItem() instanceof IPanelDataSource))
-                return;
-
-            CardWrapperImpl helper = new CardWrapperImpl(card);
-            CardState state = helper.getState();
-            List<PanelString> data;
-            if(state != CardState.OK && state != CardState.CUSTOM_ERROR)
-                data = StringUtils.getStateMessage(state);
-            else
-                data = panel.getCardData(displaySettings, (IPanelDataSource)card.getItem(), helper);
-            if(data == null)
+            List<ItemStack> cards = panel.getCards();
+            boolean anyCardFound = false;
+            List<PanelString> joinedData = new LinkedList<PanelString>();
+            for (ItemStack card : cards)
+            {
+                if(card == null || !(card.getItem() instanceof IPanelDataSource))
+                    continue;
+                CardWrapperImpl helper = new CardWrapperImpl(card);
+                CardState state = helper.getState();
+                List<PanelString> data;
+                if(state != CardState.OK && state != CardState.CUSTOM_ERROR)
+                    data = StringUtils.getStateMessage(state);
+                else
+                    data = panel.getCardData(displaySettings, (IPanelDataSource)card.getItem(), helper);
+                if(data == null)
+                    continue;
+                joinedData.addAll(data);
+                anyCardFound = true;
+            }
+            if(!anyCardFound)
                 return;
             
             GL11.glPushMatrix();
@@ -181,7 +190,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
             FontRenderer fontRenderer = this.getFontRenderer();
             
             int maxWidth = 1;
-            for (PanelString panelString : data)
+            for (PanelString panelString : joinedData)
             {
                 String currentString = implodeArray(new String[]{panelString.textLeft, panelString.textCenter, panelString.textRight}," ");
                 maxWidth = Math.max(fontRenderer.getStringWidth(currentString), maxWidth);
@@ -189,7 +198,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
             maxWidth+=4;
 
             int lineHeight = fontRenderer.FONT_HEIGHT + 2;
-            int requiredHeight = lineHeight * data.size();
+            int requiredHeight = lineHeight * joinedData.size();
             float scaleX = displayWidth/maxWidth;
             float scaleY = displayHeight/requiredHeight;
             float scale = Math.min(scaleX, scaleY);
@@ -221,7 +230,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
             GL11.glDisable(GL11.GL_LIGHTING);
             
             int row = 0;
-            for (PanelString panelString : data)
+            for (PanelString panelString : joinedData)
             {
                 if(panelString.textLeft != null)
                     fontRenderer.drawString(panelString.textLeft, offsetX-realWidth/2, 1+offsetY-realHeight/2 + row * lineHeight, panelString.colorLeft!=0?panelString.colorLeft:panel.getColorTextHex());

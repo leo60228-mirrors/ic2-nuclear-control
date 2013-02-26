@@ -4,6 +4,8 @@ import ic2.api.IWrenchable;
 
 import java.util.List;
 
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanelExtender;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityHowlerAlarm;
@@ -45,8 +47,10 @@ public class BlockNuclearControlMain extends BlockContainer
     public static final int DAMAGE_ENERGY_COUNTER = 6;
     public static final int DAMAGE_AVERAGE_COUNTER = 7;
     public static final int DAMAGE_RANGE_TRIGGER = 8;
+    public static final int DAMAGE_ADVANCED_PANEL = 9;
+    public static final int DAMAGE_ADVANCED_EXTENDER = 10;
 
-    public static final int DAMAGE_MAX = 8;
+    public static final int DAMAGE_MAX = 10;
     
     public static final float[][] blockSize = {
         {0.0625F, 0, 0.0625F, 0.9375F, 0.4375F, 0.9375F},//Thermal Monitor
@@ -57,12 +61,14 @@ public class BlockNuclearControlMain extends BlockContainer
         {0, 0, 0, 1, 1, 1},//Info Panel Extender
         {0, 0, 0, 1, 1, 1},//Energy Counter
         {0, 0, 0, 1, 1, 1},//Average Counter
-        {0, 0, 0, 1, 1, 1}//Range Trigger
+        {0, 0, 0, 1, 1, 1},//Range Trigger
+        {0, 0, 0, 1, 1, 1},//Advanced Panel
+        {0, 0, 0, 1, 1, 1}//Advanced Extender
         
     };
     
     private static final boolean[] solidBlockRequired =
-        {true, true, true, false, false, false, false, false, false};
+        {true, true, true, false, false, false, false, false, false, false, false};
     
     private static final short[][][] sideMapping = 
         {
@@ -137,6 +143,22 @@ public class BlockNuclearControlMain extends BlockContainer
                 {24, 24, 27, 23, 24, 24},
                 {24, 24, 24, 24, 23, 27},
                 {24, 24, 24, 24, 27, 23}
+            },
+            {//Advanced Info Panel
+                {242, 47, 243, 243, 243, 243},
+                {47, 242, 243, 243, 243, 243},
+                {243, 243, 242, 47, 243, 243},
+                {243, 243, 47, 242, 243, 243},
+                {243, 243, 243, 243, 242, 47},
+                {243, 243, 243, 243, 47, 242}
+            },
+            {//Advanced Info Panel Extender
+                {240, 47, 241, 241, 241, 241},
+                {47, 240, 241, 241, 241, 241},
+                {241, 241, 240, 47, 241, 241},
+                {241, 241, 47, 240, 241, 241},
+                {241, 241, 241, 241, 240, 47},
+                {241, 241, 241, 241, 47, 240}
             },
         };
     
@@ -496,6 +518,7 @@ public class BlockNuclearControlMain extends BlockContainer
             case DAMAGE_THERMAL_MONITOR:
             case DAMAGE_REMOTE_THERMO:
             case DAMAGE_INFO_PANEL:
+            case DAMAGE_ADVANCED_PANEL:
             case DAMAGE_ENERGY_COUNTER:
             case DAMAGE_AVERAGE_COUNTER:
             case DAMAGE_RANGE_TRIGGER:
@@ -670,6 +693,8 @@ public class BlockNuclearControlMain extends BlockContainer
         itemList.add(new ItemStack(this, 1, DAMAGE_ENERGY_COUNTER));
         itemList.add(new ItemStack(this, 1, DAMAGE_AVERAGE_COUNTER));
         itemList.add(new ItemStack(this, 1, DAMAGE_RANGE_TRIGGER));
+        itemList.add(new ItemStack(this, 1, DAMAGE_ADVANCED_PANEL));
+        itemList.add(new ItemStack(this, 1, DAMAGE_ADVANCED_EXTENDER));
     }
 
     @Override
@@ -695,6 +720,10 @@ public class BlockNuclearControlMain extends BlockContainer
             return new TileEntityInfoPanel();
         case DAMAGE_INFO_PANEL_EXTENDER:
             return new TileEntityInfoPanelExtender();
+        case DAMAGE_ADVANCED_PANEL:
+            return new TileEntityAdvancedInfoPanel();
+        case DAMAGE_ADVANCED_EXTENDER:
+            return new TileEntityAdvancedInfoPanelExtender();
         case DAMAGE_ENERGY_COUNTER:
             TileEntity instance = IC2NuclearControl.instance.crossBC.getEnergyCounter();
             if(instance == null)

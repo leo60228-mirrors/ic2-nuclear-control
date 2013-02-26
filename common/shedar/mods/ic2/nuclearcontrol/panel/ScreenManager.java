@@ -11,6 +11,8 @@ import net.minecraft.util.Facing;
 import net.minecraft.world.World;
 import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.IScreenPart;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanelExtender;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanelExtender;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -43,12 +45,14 @@ public class ScreenManager
         }
     }
     
-    private boolean isValidExtender(World world, int x, int y, int z, int facing)
+    private boolean isValidExtender(World world, int x, int y, int z, int facing, boolean advanced)
     {
         if(world.getBlockId(x, y, z) != IC2NuclearControl.instance.blockNuclearControlMain.blockID)
             return false;
         TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
         if(!(tileEntity instanceof TileEntityInfoPanelExtender))
+            return false;
+        if(advanced && !(tileEntity instanceof TileEntityAdvancedInfoPanelExtender))
             return false;
         if(((TileEntityInfoPanelExtender)tileEntity).facing != facing)
             return false;
@@ -57,7 +61,7 @@ public class ScreenManager
         return true;
     }
     
-    private void updateScreenBound(Screen screen, int dx, int dy, int dz, World world)
+    private void updateScreenBound(Screen screen, int dx, int dy, int dz, World world, boolean advanced)
     {
         if(dx == 0 && dy == 0 && dz == 0)
             return;
@@ -92,7 +96,7 @@ public class ScreenManager
                     for(int interZ=0;interZ<=rz && allOk;interZ++)
                     {
                         TileEntityInfoPanel core = screen.getCore(world); 
-                        allOk = core!=null && isValidExtender(world, x+dir*interX, y+dir*interY, z+dir*interZ, core.facing);
+                        allOk = core!=null && isValidExtender(world, x+dir*interX, y+dir*interY, z+dir*interZ, core.facing, advanced);
                     }
                 }
             }
@@ -158,6 +162,7 @@ public class ScreenManager
     
     private Screen tryBuildFromPanel(TileEntityInfoPanel panel)
     {
+        boolean advanced = panel instanceof TileEntityAdvancedInfoPanel;
         Screen screen = new Screen();
         screen.maxX = screen.minX = panel.xCoord; 
         screen.maxY = screen.minY = panel.yCoord; 
@@ -166,12 +171,12 @@ public class ScreenManager
         int dx = Facing.offsetsXForSide[panel.facing]!=0?0:-1;
         int dy = Facing.offsetsYForSide[panel.facing]!=0?0:-1;
         int dz = Facing.offsetsZForSide[panel.facing]!=0?0:-1;
-        updateScreenBound(screen, dx, 0, 0, panel.worldObj);
-        updateScreenBound(screen, -dx, 0, 0, panel.worldObj);
-        updateScreenBound(screen, 0, dy, 0, panel.worldObj);
-        updateScreenBound(screen, 0, -dy, 0, panel.worldObj);
-        updateScreenBound(screen, 0, 0, dz, panel.worldObj);
-        updateScreenBound(screen, 0, 0, -dz, panel.worldObj);
+        updateScreenBound(screen, dx, 0, 0, panel.worldObj, advanced);
+        updateScreenBound(screen, -dx, 0, 0, panel.worldObj, advanced);
+        updateScreenBound(screen, 0, dy, 0, panel.worldObj, advanced);
+        updateScreenBound(screen, 0, -dy, 0, panel.worldObj, advanced);
+        updateScreenBound(screen, 0, 0, dz, panel.worldObj, advanced);
+        updateScreenBound(screen, 0, 0, -dz, panel.worldObj, advanced);
         screen.init(false, panel.worldObj);
         panel.updateData();
         return screen;

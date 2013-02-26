@@ -19,6 +19,7 @@ public class PacketHandler implements IPacketHandler
     public static final int PACKET_CLIENT_RANGE_TRIGGER = 11;
     public static final int PACKET_CLIENT_SENSOR = 12;
     public static final int PACKET_CLIENT_COLOR = 13;
+    public static final int PACKET_CLIENT_DISPLAY_SETTINGS = 14;
     
     public static final int PACKET_DISP_SETTINGS_ALL = 9;
     public static final int PACKET_DISP_SETTINGS_UPDATE = 10;

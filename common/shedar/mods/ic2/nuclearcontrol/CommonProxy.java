@@ -10,6 +10,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
+import shedar.mods.ic2.nuclearcontrol.containers.ContainerAdvancedInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerAverageCounter;
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerEmpty;
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerEnergyCounter;
@@ -17,6 +18,7 @@ import shedar.mods.ic2.nuclearcontrol.containers.ContainerInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerRangeTrigger;
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerRemoteThermo;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityHowlerAlarm;
@@ -56,6 +58,8 @@ public class CommonProxy implements IGuiHandler
         GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityRemoteThermo.class, "IC2RemoteThermo");
         GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel.class, "IC2NCInfoPanel");
         GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanelExtender.class, "IC2NCInfoPanelExtender");
+        GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel.class, "IC2NCAdvancedInfoPanel");
+        GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanelExtender.class, "IC2NCAdvancedInfoPanelExtender");
         GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter.class, "IC2NCEnergyCounter");
         GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter.class, "IC2NCAverageCounter");
         GameRegistry.registerTileEntity(shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityRangeTrigger.class, "IC2NCRangeTrigger");
@@ -71,6 +75,8 @@ public class CommonProxy implements IGuiHandler
                 return new ContainerRemoteThermo(player, (TileEntityRemoteThermo)tileEntity);
             case BlockNuclearControlMain.DAMAGE_INFO_PANEL:
                 return new ContainerInfoPanel(player, (TileEntityInfoPanel)tileEntity);
+            case BlockNuclearControlMain.DAMAGE_ADVANCED_PANEL:
+                return new ContainerAdvancedInfoPanel(player, (TileEntityAdvancedInfoPanel)tileEntity);
             case BlockNuclearControlMain.DAMAGE_ENERGY_COUNTER:
                 return new ContainerEnergyCounter(player, (TileEntityEnergyCounter)tileEntity);
             case BlockNuclearControlMain.DAMAGE_AVERAGE_COUNTER:
@@ -105,6 +111,7 @@ public class CommonProxy implements IGuiHandler
             switch (packetId)
             {
             case PacketHandler.PACKET_CLIENT_SOUND:
+                byte slot = dat.readByte();
                 String soundName = dat.readUTF();
                 TileEntity tileEntity = ((EntityPlayerMP) player).worldObj.getBlockTileEntity(x, y, z);
                 if (tileEntity instanceof TileEntityHowlerAlarm)
@@ -113,13 +120,13 @@ public class CommonProxy implements IGuiHandler
                 } 
                 else if (tileEntity instanceof TileEntityInfoPanel)
                 {
-                    ItemStack stack = ((TileEntityInfoPanel) tileEntity).getStackInSlot(TileEntityInfoPanel.SLOT_CARD);
+                    ItemStack stack = ((TileEntityInfoPanel) tileEntity).getStackInSlot(slot);
                     if (stack == null || !(stack.getItem() instanceof IPanelDataSource))
                     {
                         return;
                     }
                     new CardWrapperImpl(stack).setTitle(soundName);
-                    NuclearNetworkHelper.setSensorCardTitle((TileEntityInfoPanel)tileEntity, soundName);
+                    NuclearNetworkHelper.setSensorCardTitle((TileEntityInfoPanel)tileEntity, slot, soundName);
                 }
                 break;
             case PacketHandler.PACKET_CLIENT_REQUEST:
@@ -152,12 +159,22 @@ public class CommonProxy implements IGuiHandler
                     ((TileEntityInfoPanel)tileEntity).setColorText(text);
                 }
                 break;
+            case PacketHandler.PACKET_CLIENT_DISPLAY_SETTINGS:
+                slot = dat.readByte();
+                int settings = dat.readInt();
+                tileEntity = ((EntityPlayerMP) player).worldObj.getBlockTileEntity(x, y, z);
+                if (tileEntity instanceof TileEntityInfoPanel)
+                {
+                    ((TileEntityInfoPanel)tileEntity).setDisplaySettings(slot, settings);
+                }
+                break;
             case PacketHandler.PACKET_CLIENT_SENSOR:
                 tileEntity = ((EntityPlayerMP) player).worldObj.getBlockTileEntity(x, y, z);
                 if (tileEntity instanceof TileEntityInfoPanel)
                 {
-                    TileEntityInfoPanel panel = (TileEntityInfoPanel) tileEntity; 
-                    ItemStack stack = panel.getStackInSlot(TileEntityInfoPanel.SLOT_CARD);
+                    TileEntityInfoPanel panel = (TileEntityInfoPanel) tileEntity;
+                    slot = dat.readByte();
+                    ItemStack stack = panel.getStackInSlot(slot);
                     if (stack == null || !(stack.getItem() instanceof IPanelDataSource))
                     {
                         return;

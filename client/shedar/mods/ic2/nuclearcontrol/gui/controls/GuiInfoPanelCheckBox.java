@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL11;
 
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
+import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -18,12 +19,14 @@ public class GuiInfoPanelCheckBox extends GuiButton
     private TileEntityInfoPanel panel;
     private boolean checked;
     private PanelSetting setting;
+    private byte slot;
     
 
-    public GuiInfoPanelCheckBox(int id, int x, int y, PanelSetting setting, TileEntityInfoPanel panel, FontRenderer renderer)
+    public GuiInfoPanelCheckBox(int id, int x, int y, PanelSetting setting, TileEntityInfoPanel panel, byte slot, FontRenderer renderer)
     {
         super(id, x, y, 0, 0, setting.title);
         this.setting = setting;
+        this.slot = slot;
         height  = renderer.FONT_HEIGHT+1;
         width = renderer.getStringWidth(setting.title)+8;
         this.panel = panel;
@@ -60,7 +63,8 @@ public class GuiInfoPanelCheckBox extends GuiButton
                 value = panel.getDisplaySettings() | setting.displayBit;
             else
                 value = panel.getDisplaySettings() & (~setting.displayBit);
-            panel.setDisplaySettings(value);
+            NuclearNetworkHelper.setDisplaySettings(panel, slot, value);
+            panel.setDisplaySettings(slot, value);
             NetworkHelper.initiateClientTileEntityEvent(panel, value);
             return true;
         }

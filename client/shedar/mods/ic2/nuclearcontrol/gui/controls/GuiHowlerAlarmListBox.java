@@ -169,7 +169,7 @@ public class GuiHowlerAlarmListBox extends GuiButton
         {
             if(alarm.worldObj.isRemote)
             {
-                NuclearNetworkHelper.setNewAlarmSound(alarm.xCoord, alarm.yCoord, alarm.zCoord, newSound);
+                NuclearNetworkHelper.setNewAlarmSound(alarm.xCoord, alarm.yCoord, alarm.zCoord, (byte)0, newSound);
             }
             alarm.setSoundName(newSound);
         }
