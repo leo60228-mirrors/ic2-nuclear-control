@@ -332,7 +332,7 @@ public class NuclearNetworkHelper
         TileEntity tileEntity = player.worldObj.getBlockTileEntity(x, y, z);
         if(!(tileEntity instanceof TileEntityInfoPanel))
             return;
-        Map<UUID, Integer> settings = ((TileEntityInfoPanel)tileEntity).displaySettings;
+        Map<Integer, Map<UUID, Integer>> settings = ((TileEntityInfoPanel)tileEntity).getDisplaySettings();
         if(settings == null)
             return;
         Packet250CustomPayload packet = new Packet250CustomPayload();
@@ -341,15 +341,20 @@ public class NuclearNetworkHelper
         output.writeInt(x);
         output.writeInt(y);
         output.writeInt(z);
-        output.writeInt(settings.size());
-        for (Map.Entry<UUID, Integer> item : settings.entrySet())
+        output.writeByte(settings.size());
+        for (Map.Entry<Integer, Map<UUID, Integer>> slotData : settings.entrySet())
         {
-            UUID key = item.getKey(); 
-            if(key == null)
-                continue;
-            output.writeLong(key.getMostSignificantBits());
-            output.writeLong(key.getLeastSignificantBits());
-            output.writeInt(item.getValue());
+            output.writeByte(slotData.getKey());
+            output.writeShort(slotData.getValue().size());
+            for(Map.Entry<UUID, Integer> item: slotData.getValue().entrySet())
+            {
+                UUID key = item.getKey(); 
+                if(key == null)
+                    continue;
+                output.writeLong(key.getMostSignificantBits());
+                output.writeLong(key.getLeastSignificantBits());
+                output.writeInt(item.getValue());
+            }
         }
         packet.channel = IC2NuclearControl.NETWORK_CHANNEL_NAME;
         packet.isChunkDataPacket = false;
@@ -359,7 +364,7 @@ public class NuclearNetworkHelper
     }
     
     //server
-    public static void sendDisplaySettingsUpdate(TileEntityInfoPanel panel, UUID key, int value)
+    public static void sendDisplaySettingsUpdate(TileEntityInfoPanel panel, byte slot, UUID key, int value)
     {
         Packet250CustomPayload packet = new Packet250CustomPayload();
         ByteArrayDataOutput output = ByteStreams.newDataOutput();
@@ -367,6 +372,7 @@ public class NuclearNetworkHelper
         output.writeInt(panel.xCoord);
         output.writeInt(panel.yCoord);
         output.writeInt(panel.zCoord);
+        output.writeByte(slot);
         output.writeLong(key.getMostSignificantBits());
         output.writeLong(key.getLeastSignificantBits());
         output.writeInt(value);

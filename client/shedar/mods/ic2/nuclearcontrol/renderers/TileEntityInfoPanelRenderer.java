@@ -50,10 +50,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
         if(isPanel)
         {
             TileEntityInfoPanel panel = (TileEntityInfoPanel)tileEntity;
-            if(!panel.powered)
-                return;
-            int displaySettings = panel.getDisplaySettings();
-            if(displaySettings == 0)
+            if(!panel.getPowered())
                 return;
             List<ItemStack> cards = panel.getCards();
             boolean anyCardFound = false;
@@ -61,6 +58,9 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
             for (ItemStack card : cards)
             {
                 if(card == null || !(card.getItem() instanceof IPanelDataSource))
+                    continue;
+                int displaySettings = panel.getDisplaySettingsByCard(card);
+                if(displaySettings == 0)
                     continue;
                 CardWrapperImpl helper = new CardWrapperImpl(card);
                 CardState state = helper.getState();

@@ -32,7 +32,7 @@ public class Screen
         coreX = core.xCoord;
         coreY = core.yCoord;
         coreZ = core.zCoord;
-        powered = core.powered;
+        powered = core.getPowered();
     }
     
     public boolean isBlockNearby(TileEntity tileEntity)

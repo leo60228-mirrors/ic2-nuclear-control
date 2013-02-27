@@ -3,15 +3,18 @@ package shedar.mods.ic2.nuclearcontrol.tileentities;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.items.ItemUpgrade;
-
-import net.minecraft.item.ItemStack;
 
 public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel
 {
     public float angleHor;
     public float angleVert;
+    private byte prevPowerMode;
+    public byte powerMode;
+    
     public ItemStack card2;
     public ItemStack card3;
 
@@ -19,6 +22,12 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel
     private static final int SLOT_CARD2 = 1;
     private static final int SLOT_CARD3 = 2;
     private static final int SLOT_UPGRADE_RANGE = 3;
+    
+    private static final int POWER_REDSTONE = 0;
+    private static final int POWER_INVERTED = 1;
+    private static final int POWER_ON = 2;
+    private static final int POWER_OFF = 3;
+    
 
     
     public TileEntityAdvancedInfoPanel()
@@ -35,6 +44,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel
         list.add("angleVert");
         list.add("card2");
         list.add("card3");
+        list.add("powerMode");
         return list;
     }
 
@@ -49,7 +59,21 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel
         else if (field.equals("card3"))
         {
             inventory[SLOT_CARD3] = card3;
+        } 
+        else if (field.equals("powerMode") && prevPowerMode != powerMode)
+        {
+            if(screen!=null)
+            {
+                screen.turnPower(getPowered(), worldObj);
+            }
+            else
+            {
+                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+                worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
+            }
+            prevPowerMode = powerMode;
         }
+
     }
     
     @Override
@@ -88,5 +112,62 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel
         data.add(inventory[SLOT_CARD2]);
         data.add(inventory[SLOT_CARD3]);
         return data;
-    }    
+    }
+    
+    @Override
+    protected boolean isCardSlot(int slot)
+    {
+        return slot == SLOT_CARD1 || slot == SLOT_CARD2 || slot == SLOT_CARD3; 
+    }
+
+    @Override
+    protected void saveDisplaySettings(NBTTagCompound nbttagcompound)
+    {
+        nbttagcompound.setTag("dSettings1", serializeSlotSettings(SLOT_CARD1));
+        nbttagcompound.setTag("dSettings2", serializeSlotSettings(SLOT_CARD2));
+        nbttagcompound.setTag("dSettings3", serializeSlotSettings(SLOT_CARD3));
+    }
+    
+    @Override
+    protected void readDisplaySettings(NBTTagCompound nbttagcompound)
+    {
+        deserializeDisplaySettings(nbttagcompound, "dSettings1", SLOT_CARD1);
+        deserializeDisplaySettings(nbttagcompound, "dSettings2", SLOT_CARD2);
+        deserializeDisplaySettings(nbttagcompound, "dSettings3", SLOT_CARD3);
+    }
+    
+    @Override
+    protected void postReadFromNBT()
+    {
+        if(inventory[SLOT_CARD1]!=null)
+        {
+            card = inventory[SLOT_CARD1];
+        }
+        if(inventory[SLOT_CARD2]!=null)
+        {
+            card2 = inventory[SLOT_CARD2];
+        }
+        if(inventory[SLOT_CARD3]!=null)
+        {
+            card3 = inventory[SLOT_CARD3];
+        }
+    }
+    
+    @Override
+    public boolean getPowered()
+    {
+        switch (powerMode)
+        {   
+        case POWER_ON:
+            return true;
+        case POWER_OFF:
+            return false;
+        case POWER_REDSTONE:
+            return powered;
+        case POWER_INVERTED:
+            return !powered;
+        }
+        return false;
+    }
+
 }

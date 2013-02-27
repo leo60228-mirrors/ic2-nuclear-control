@@ -660,7 +660,7 @@ public class BlockNuclearControlMain extends BlockContainer
         }
         else if(entity instanceof TileEntityInfoPanel)
         {
-            if(((TileEntityInfoPanel)entity).powered)
+            if(((TileEntityInfoPanel)entity).getPowered())
                 return 7;
             else
                 return 0;
@@ -671,7 +671,7 @@ public class BlockNuclearControlMain extends BlockContainer
             if(extender.getScreen()!=null)
             {
                 TileEntityInfoPanel core = extender.getScreen().getCore(extender.worldObj); 
-                if(core!=null && core.powered)
+                if(core!=null && core.getPowered())
                     return 7;
                 else
                     return 0;

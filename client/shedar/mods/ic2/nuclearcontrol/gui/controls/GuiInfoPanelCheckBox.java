@@ -30,7 +30,7 @@ public class GuiInfoPanelCheckBox extends GuiButton
         height  = renderer.FONT_HEIGHT+1;
         width = renderer.getStringWidth(setting.title)+8;
         this.panel = panel;
-        checked = (panel.getDisplaySettings() & setting.displayBit) > 0;
+        checked = (panel.getDisplaySettingsForCardInSlot(slot) & setting.displayBit) > 0;
     }
 
     @Override
@@ -60,9 +60,9 @@ public class GuiInfoPanelCheckBox extends GuiButton
             checked = !checked;
             int value; 
             if(checked)
-                value = panel.getDisplaySettings() | setting.displayBit;
+                value = panel.getDisplaySettingsForCardInSlot(slot) | setting.displayBit;
             else
-                value = panel.getDisplaySettings() & (~setting.displayBit);
+                value = panel.getDisplaySettingsForCardInSlot(slot) & (~setting.displayBit);
             NuclearNetworkHelper.setDisplaySettings(panel, slot, value);
             panel.setDisplaySettings(slot, value);
             NetworkHelper.initiateClientTileEntityEvent(panel, value);

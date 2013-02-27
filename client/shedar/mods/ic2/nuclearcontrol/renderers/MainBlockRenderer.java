@@ -121,7 +121,7 @@ public class MainBlockRenderer implements ISimpleBlockRenderingHandler
             }
             if(tileEntity instanceof TileEntityInfoPanel)
             {
-                if(((TileEntityInfoPanel) tileEntity).powered)
+                if(((TileEntityInfoPanel) tileEntity).getPowered())
                 {
                     ForgeHooksClient.bindTexture("/img/InfoPanelColorsOn.png", 0);
                 }

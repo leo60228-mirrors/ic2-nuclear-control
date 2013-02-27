@@ -72,13 +72,13 @@ public class TileEntityInfoPanel extends TileEntity implements
     protected boolean init;
     protected ItemStack inventory[];
     public NBTTagCompound screenData;
-    private Screen screen;
+    protected Screen screen;
     protected ItemStack card;
 
     private boolean prevPowered;
-    public boolean powered;
+    protected boolean powered;
 
-    public Map<UUID, Integer> displaySettings;
+    protected final Map<Integer, Map<UUID, Integer>> displaySettings;
     
     private int prevRotation;
     public int rotation;
@@ -98,7 +98,7 @@ public class TileEntityInfoPanel extends TileEntity implements
     private boolean  prevColored;
     public boolean colored;
     
-    private List<PanelString> cardData;
+    private final Map<Integer, List<PanelString>> cardData;
     
     @Override
     public short getFacing()
@@ -112,7 +112,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         setSide((short)Facing.faceToSide[f]);
     
     }
-    
+
     private void setCard(ItemStack value)
     {
         card = value;
@@ -218,14 +218,19 @@ public class TileEntityInfoPanel extends TileEntity implements
     public boolean getShowLabels()
     {
         return showLabels;
-    }    
+    }
+    
+    protected boolean isCardSlot(int slot)
+    {
+        return slot == SLOT_CARD;
+    }
     
     public void setDisplaySettings(int slot, int settings)
     {
-        if(slot != SLOT_CARD)
+        if(!isCardSlot(slot))
             return;
         UUID cardType = null;
-        ItemStack stack = inventory[SLOT_CARD]; 
+        ItemStack stack = inventory[slot]; 
         if(stack!=null)
         {
             if(stack.getItem() instanceof IPanelMultiCard)
@@ -234,16 +239,19 @@ public class TileEntityInfoPanel extends TileEntity implements
             }
             else if(stack.getItem() instanceof IPanelDataSource)
             {
-                cardType = ((IPanelDataSource)inventory[SLOT_CARD].getItem()).getCardType();
+                cardType = ((IPanelDataSource)inventory[slot].getItem()).getCardType();
             }
         }
         if(cardType != null)
         {
-            boolean update = !displaySettings.containsKey(cardType)  || displaySettings.get(cardType) != settings;
-            displaySettings.put(cardType, settings);
+            if(!displaySettings.containsKey(slot))
+                displaySettings.put(slot, new HashMap<UUID, Integer>());
+            boolean update = !displaySettings.get(slot).containsKey(cardType)  || displaySettings.get(slot).get(cardType) != settings;
+            
+            displaySettings.get(slot).put(cardType, settings);
             if (update && FMLCommonHandler.instance().getEffectiveSide().isServer())
             {
-                NuclearNetworkHelper.sendDisplaySettingsUpdate(this, cardType, settings);
+                NuclearNetworkHelper.sendDisplaySettingsUpdate(this, (byte)slot, cardType, settings);
             }
         }
     }
@@ -296,7 +304,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         {
             if(screen!=null)
             {
-                screen.turnPower(powered, worldObj);
+                screen.turnPower(getPowered(), worldObj);
             }
             else
             {
@@ -329,10 +337,12 @@ public class TileEntityInfoPanel extends TileEntity implements
         screen = null;
         card = null;
         init = false;
+        cardData = new HashMap<Integer, List<PanelString>>();
         tickRate = IC2NuclearControl.instance.screenRefreshPeriod;
         updateTicker = tickRate;
         dataTicker = 4;
-        displaySettings = new HashMap<UUID, Integer>();
+        displaySettings = new HashMap<Integer, Map<UUID,Integer>>(1);
+        displaySettings.put(0, new HashMap<UUID, Integer>());
         powered = false;
         prevPowered = false;
         facing = 0;
@@ -342,7 +352,6 @@ public class TileEntityInfoPanel extends TileEntity implements
         showLabels = true;
         colored = false;
         colorBackground = IC2NuclearControl.COLOR_GREEN;
-        cardData = null;
     }
     
     public TileEntityInfoPanel()
@@ -395,12 +404,13 @@ public class TileEntityInfoPanel extends TileEntity implements
 
     public void resetCardData()
     {
-        cardData = null;
+        cardData.clear();
     }
     
     public List<PanelString> getCardData(int settings, IPanelDataSource card, ICardWrapper helper)
     {
-        List<PanelString> data = cardData;
+        int slot = getIndexOfCard(card);
+        List<PanelString> data = cardData.get(slot);
         if(data==null)
         {
             data = card.getStringData(settings, helper, getShowLabels());
@@ -411,8 +421,7 @@ public class TileEntityInfoPanel extends TileEntity implements
                 titleString.textCenter = title;
                 data.add(0, titleString);
             }
-            
-            cardData = data;
+            cardData.put(slot, data);
         }
         return data;
     }
@@ -427,7 +436,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         dataTicker--;
         if(dataTicker <= 0)
         {
-            cardData = null;
+            resetCardData();
             dataTicker = 4;
         }
         if (!worldObj.isRemote)
@@ -438,6 +447,46 @@ public class TileEntityInfoPanel extends TileEntity implements
             onInventoryChanged();
         }      
         super.updateEntity();
+    }
+    
+    protected void postReadFromNBT()
+    {
+        if(inventory[SLOT_CARD]!=null)
+        {
+            card = inventory[SLOT_CARD];
+        }
+    }
+    
+    protected void deserializeDisplaySettings(NBTTagCompound nbttagcompound, String tagName, int slot)
+    {
+        if(nbttagcompound.hasKey(tagName))
+        {
+            NBTTagList settingsList = nbttagcompound.getTagList(tagName);
+            for (int i = 0; i < settingsList.tagCount(); i++)
+            {
+                NBTTagCompound compound = (NBTTagCompound)settingsList.tagAt(i);
+                try{
+                    UUID key = UUID.fromString(compound.getString("key"));
+                    int value = compound.getInteger("value");
+                    getDisplaySettingsForSlot(slot).put(key, value);
+                }catch (IllegalArgumentException e) {
+                    FMLLog.warning("Ivalid display settings for Information Panel");
+                }
+            }
+        }
+    }
+    
+    protected void readDisplaySettings(NBTTagCompound nbttagcompound)
+    {
+        deserializeDisplaySettings(nbttagcompound, "dSettings", SLOT_CARD);
+        if(nbttagcompound.hasKey("dSets"))
+        {//v.1.3.2 compatibility
+            int[] dSets = nbttagcompound.getIntArray("dSets");
+            for(int i=0; i<dSets.length; i++)
+            {
+                displaySettings.get(SLOT_CARD).put(new UUID(0, i), dSets[i]);
+            }
+        }
     }
 
     @Override
@@ -475,32 +524,8 @@ public class TileEntityInfoPanel extends TileEntity implements
         {
             screenData = (NBTTagCompound)nbttagcompound.getTag("screenData");
         }
+        readDisplaySettings(nbttagcompound);
 
-        if(nbttagcompound.hasKey("dSettings"))
-        {
-            NBTTagList settingsList = nbttagcompound.getTagList("dSettings");
-            for (int i = 0; i < settingsList.tagCount(); i++)
-            {
-                NBTTagCompound compound = (NBTTagCompound)settingsList.tagAt(i);
-                try{
-                    UUID key = UUID.fromString(compound.getString("key"));
-                    int value = compound.getInteger("value");
-                    displaySettings.put(key, value);
-                }catch (IllegalArgumentException e) {
-                    FMLLog.warning("Ivalid display settings for Information Panel");
-                }
-            }
-        }
-      
-        if(nbttagcompound.hasKey("dSets"))
-        {//v.1.3.2 compatibility
-            
-            int[] dSets = nbttagcompound.getIntArray("dSets");
-            for(int i=0; i<dSets.length; i++)
-            {
-                displaySettings.put(new UUID(0, i), dSets[i]);
-            }
-        }
         NBTTagList nbttaglist = nbttagcompound.getTagList("Items");
         inventory = new ItemStack[getSizeInventory()];
         for (int i = 0; i < nbttaglist.tagCount(); i++)
@@ -511,12 +536,9 @@ public class TileEntityInfoPanel extends TileEntity implements
             if (slotNum >= 0 && slotNum < inventory.length)
             {
                 inventory[slotNum] = ItemStack.loadItemStackFromNBT(compound);
-                if(slotNum == SLOT_CARD)
-                {
-                    card = inventory[slotNum];
-                }
             }
         }
+        postReadFromNBT();
         onInventoryChanged();
     }
 
@@ -529,26 +551,38 @@ public class TileEntityInfoPanel extends TileEntity implements
         }
         super.invalidate();
     }
-
-    @Override
-    public void writeToNBT(NBTTagCompound nbttagcompound)
+    
+    protected NBTTagList serializeSlotSettings(int slot)
     {
-        super.writeToNBT(nbttagcompound);
-        nbttagcompound.setShort("facing", facing);
         NBTTagList settingsList = new NBTTagList();
-        for (Map.Entry<UUID, Integer> item : displaySettings.entrySet())
+        for (Map.Entry<UUID, Integer> item : getDisplaySettingsForSlot(slot).entrySet())
         {
             NBTTagCompound compound = new NBTTagCompound();
             compound.setString("key", item.getKey().toString());
             compound.setInteger("value", item.getValue());
             settingsList.appendTag(compound);
         }
-        nbttagcompound.setTag("dSettings", settingsList);
+        return settingsList;
+    }
+    
+    protected void saveDisplaySettings(NBTTagCompound nbttagcompound)
+    {
+        nbttagcompound.setTag("dSettings", serializeSlotSettings(SLOT_CARD));
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound nbttagcompound)
+    {
+        super.writeToNBT(nbttagcompound);
+        nbttagcompound.setShort("facing", facing);
+
         nbttagcompound.setInteger("rotation", rotation);
         nbttagcompound.setBoolean("showLabels", getShowLabels());
 
         nbttagcompound.setInteger("colorBackground", colorBackground);
         nbttagcompound.setInteger("colorText", colorText);
+        
+        saveDisplaySettings(nbttagcompound);
         
         if(screen!=null)
         {
@@ -674,7 +708,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         return data;
     }
     
-    public byte getIndexOfCard(ItemStack card)
+    public byte getIndexOfCard(Object card)
     {
         if(card == null)
             return 0;
@@ -1071,11 +1105,33 @@ public class TileEntityInfoPanel extends TileEntity implements
         prevRotation = rotation;
     }
     
-    public int getDisplaySettings()
+    public Map<Integer, Map<UUID, Integer>> getDisplaySettings()
     {
-        ItemStack card = inventory[SLOT_CARD]; 
+        return displaySettings;
+    }
+    
+    public Map<UUID, Integer> getDisplaySettingsForSlot(int slot)
+    {
+        if(!displaySettings.containsKey(slot))
+            displaySettings.put(slot, new HashMap<UUID, Integer>());
+        return displaySettings.get(slot);
+    }
+    
+    public int getDisplaySettingsForCardInSlot(int slot)
+    {
+        ItemStack card = inventory[slot]; 
         if(card == null)
             return 0;
+        return getDisplaySettingsByCard(card);
+    }
+    
+    public int getDisplaySettingsByCard(ItemStack card)
+    {
+        byte slot = getIndexOfCard(card);
+        if(card == null)
+            return 0;
+        if(!displaySettings.containsKey(slot))
+            return DISPLAY_DEFAULT;
         UUID cardType = null;
         if(card.getItem() instanceof IPanelMultiCard)
         {
@@ -1085,8 +1141,8 @@ public class TileEntityInfoPanel extends TileEntity implements
         {
             cardType = ((IPanelDataSource)card.getItem()).getCardType();
         }
-        if(displaySettings.containsKey(cardType))
-            return displaySettings.get(cardType);
+        if(displaySettings.get(slot).containsKey(cardType))
+            return displaySettings.get(slot).get(cardType);
         return DISPLAY_DEFAULT;
     }
     

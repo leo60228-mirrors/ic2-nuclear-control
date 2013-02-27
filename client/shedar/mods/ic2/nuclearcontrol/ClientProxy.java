@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -298,33 +297,38 @@ public class ClientProxy extends CommonProxy
                     {
                         return;
                     }
-                    int count = dat.readInt();
-                    Map<UUID, Integer> settings = new HashMap<UUID, Integer>();
+                    panel = (TileEntityInfoPanel)ent;
+                    byte count = dat.readByte();
                     for(int i=0; i<count; i++)
                     {
-                        long most = dat.readLong();
-                        long least = dat.readLong();
-                        settings.put(new UUID(most, least), dat.readInt()); 
+                        slot = dat.readByte();
+                        short dCount = dat.readShort();
+                        Map<UUID, Integer> settings = panel.getDisplaySettingsForSlot(slot);
+                        for(int j=0; j<dCount; j++)
+                        {
+                            long most = dat.readLong();
+                            long least = dat.readLong();
+                            settings.put(new UUID(most, least), dat.readInt()); 
+                        }
                     }
-                    ((TileEntityInfoPanel)ent).displaySettings = settings;
-                    ((TileEntityInfoPanel)ent).resetCardData();
+                    panel.resetCardData();
                     break;
                 case PacketHandler.PACKET_DISP_SETTINGS_UPDATE:
                     world = FMLClientHandler.instance().getClient().theWorld;
                     x = dat.readInt();
                     y = dat.readInt();
                     z = dat.readInt();
+                    slot = dat.readByte();
                     ent = world.getBlockTileEntity(x, y, z);
                     if(ent == null || !(ent instanceof TileEntityInfoPanel))
                     {
                         return;
                     }
-                    if(((TileEntityInfoPanel)ent).displaySettings == null)
-                        return;
                     long most = dat.readLong();
                     long least = dat.readLong();
-                    ((TileEntityInfoPanel)ent).displaySettings.put(new UUID(most, least), dat.readInt()); 
-                    ((TileEntityInfoPanel)ent).resetCardData();
+                    panel = (TileEntityInfoPanel)ent;
+                    panel.getDisplaySettingsForSlot(slot).put(new UUID(most, least), dat.readInt());
+                    panel.resetCardData();
                     break;
                 default:
                     FMLLog.warning("%sUnknown packet type: %d", IC2NuclearControl.LOG_PREFIX, packetType);
