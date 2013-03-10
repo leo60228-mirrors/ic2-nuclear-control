@@ -327,7 +327,8 @@ public class ClientProxy extends CommonProxy
                     long most = dat.readLong();
                     long least = dat.readLong();
                     panel = (TileEntityInfoPanel)ent;
-                    panel.getDisplaySettingsForSlot(slot).put(new UUID(most, least), dat.readInt());
+                    int settings = dat.readInt();
+                    panel.getDisplaySettingsForSlot(slot).put(new UUID(most, least), settings);
                     panel.resetCardData();
                     break;
                 default:

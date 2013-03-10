@@ -33,11 +33,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiInfoPanel extends GuiContainer
 {
-    private String name;
-    private ContainerInfoPanel container;
+    protected String name;
+    protected ContainerInfoPanel container;
     public ItemStack prevCard;
-    private GuiTextField textboxTitle;
-    private boolean modified;
+    protected GuiTextField textboxTitle;
+    protected boolean modified;
     public boolean isColored;
 
     public GuiInfoPanel(Container container)
@@ -47,19 +47,20 @@ public class GuiInfoPanel extends GuiContainer
         this.container = (ContainerInfoPanel)container; 
         name = StatCollector.translateToLocal("tile.blockInfoPanel.name");
         modified = false;
-        isColored = !this.container.panel.colored; 
+        //inverted value on start to force initControls
+        isColored = !this.container.panel.getColored(); 
     }
     
     @SuppressWarnings("unchecked")
     protected void initControls()
     {
         ItemStack card = container.panel.getCards().get(0); 
-        if(((card == null && prevCard == null) || (card!=null  && card.equals(prevCard))) && this.container.panel.colored == isColored)
+        if(((card == null && prevCard == null) || (card!=null  && card.equals(prevCard))) && this.container.panel.getColored() == isColored)
             return;
         int h = fontRenderer.FONT_HEIGHT + 1;
         controlList.clear();
         prevCard = card;
-        isColored = this.container.panel.colored;
+        isColored = this.container.panel.getColored();
         controlList.add(new GuiInfoPanelShowLabels(0, guiLeft + xSize - 25, guiTop + 42, container.panel));
         int delta = 0;
         if(isColored)
@@ -156,11 +157,16 @@ public class GuiInfoPanel extends GuiContainer
         initControls();
     }
     
-    private void updateTitle()
+    protected ItemStack getActiveCard()
+    {
+        return container.panel.getCards().get(0);
+    }
+    
+    protected void updateTitle()
     {
         if(textboxTitle == null)
             return;
-        ItemStack card = container.panel.getCards().get(0);
+        ItemStack card = getActiveCard();
         if(container.panel.worldObj.isRemote)
         {
             NuclearNetworkHelper.setNewAlarmSound(container.panel.xCoord, container.panel.yCoord, container.panel.zCoord, container.panel.getIndexOfCard(card), textboxTitle.getText());
@@ -188,7 +194,7 @@ public class GuiInfoPanel extends GuiContainer
         }
         else if(button.id == 111)
         {
-            ItemStack card = container.panel.getCards().get(0);
+            ItemStack card = getActiveCard();
             if(card == null)
                 return;
             if(card != null && card.getItem() instanceof IAdvancedCardSettings)

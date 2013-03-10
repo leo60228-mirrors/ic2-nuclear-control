@@ -36,7 +36,11 @@ public class MainBlockRenderer implements ISimpleBlockRenderingHandler
         if(model == modelId)
         {
             float[] size = BlockNuclearControlMain.blockSize[metadata];
-            if(metadata==BlockNuclearControlMain.DAMAGE_INFO_PANEL || metadata==BlockNuclearControlMain.DAMAGE_INFO_PANEL_EXTENDER)
+            if(metadata==BlockNuclearControlMain.DAMAGE_INFO_PANEL || 
+                metadata==BlockNuclearControlMain.DAMAGE_INFO_PANEL_EXTENDER ||
+                metadata==BlockNuclearControlMain.DAMAGE_ADVANCED_PANEL || 
+                metadata==BlockNuclearControlMain.DAMAGE_ADVANCED_EXTENDER
+                )
             {
                 ForgeHooksClient.bindTexture("/img/InfoPanelColorsOff.png", 0);
             }

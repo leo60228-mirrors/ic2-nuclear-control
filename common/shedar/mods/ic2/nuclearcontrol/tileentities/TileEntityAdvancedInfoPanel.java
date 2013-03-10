@@ -1,8 +1,11 @@
 package shedar.mods.ic2.nuclearcontrol.tileentities;
 
+import ic2.api.network.NetworkHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
@@ -10,41 +13,102 @@ import shedar.mods.ic2.nuclearcontrol.items.ItemUpgrade;
 
 public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel
 {
-    public float angleHor;
-    public float angleVert;
     private byte prevPowerMode;
     public byte powerMode;
+
+    private byte prevThickness;
+    public byte thickness;
+    
+    private byte prevRotateHor;
+    public byte rotateHor;
+    
+    private byte prevRotateVert;
+    public byte rotateVert;
     
     public ItemStack card2;
     public ItemStack card3;
 
-    private static final int SLOT_CARD1 = 0;
-    private static final int SLOT_CARD2 = 1;
-    private static final int SLOT_CARD3 = 2;
-    private static final int SLOT_UPGRADE_RANGE = 3;
+    private static final byte SLOT_CARD1 = 0;
+    private static final byte SLOT_CARD2 = 1;
+    private static final byte SLOT_CARD3 = 2;
+    private static final byte SLOT_UPGRADE_RANGE = 3;
     
-    private static final int POWER_REDSTONE = 0;
-    private static final int POWER_INVERTED = 1;
-    private static final int POWER_ON = 2;
-    private static final int POWER_OFF = 3;
+    public static final int POWER_REDSTONE = 0;
+    public static final int POWER_INVERTED = 1;
+    public static final int POWER_ON = 2;
+    public static final int POWER_OFF = 3;
     
+    public static final int OFFSET_THICKNESS = 100;
+    public static final int OFFSET_ROTATE_HOR = 200;
+    public static final int OFFSET_ROTATE_VERT = 300;
 
     
     public TileEntityAdvancedInfoPanel()
     {
         super(4);//3 cards + range upgrade
         colored = true;
+        thickness = 16;
+    }
+    
+    public byte getPowerMode()
+    {
+        return powerMode;
+    }
+
+    public void setPowerMode(byte p)
+    {
+        powerMode = p;
+        if (prevPowerMode != p)
+        {
+            NetworkHelper.updateTileEntityField(this, "powerMode");
+            
+        }
+        prevPowerMode = powerMode;
+    }
+    
+    public void setThickness(byte p)
+    {
+        thickness = p;
+        if (prevThickness != p)
+        {
+            NetworkHelper.updateTileEntityField(this, "thickness");
+            
+        }
+        prevThickness = thickness;
+    }
+    
+    public void setRotateHor(byte p)
+    {
+        rotateHor = p;
+        if (prevRotateHor != p)
+        {
+            NetworkHelper.updateTileEntityField(this, "rotateHor");
+            
+        }
+        prevRotateHor = rotateHor;
+    }
+    
+    public void setRotateVert(byte p)
+    {
+        rotateVert = p;
+        if (prevRotateVert != p)
+        {
+            NetworkHelper.updateTileEntityField(this, "rotateVert");
+            
+        }
+        prevRotateVert = rotateVert;
     }
     
     @Override
     public List<String> getNetworkedFields()
     {
         List<String> list = super.getNetworkedFields();
-        list.add("angleHor");
-        list.add("angleVert");
         list.add("card2");
         list.add("card3");
         list.add("powerMode");
+        list.add("thickness");
+        list.add("rotateHor");
+        list.add("rotateVert");
         return list;
     }
 
@@ -126,6 +190,9 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel
         nbttagcompound.setTag("dSettings1", serializeSlotSettings(SLOT_CARD1));
         nbttagcompound.setTag("dSettings2", serializeSlotSettings(SLOT_CARD2));
         nbttagcompound.setTag("dSettings3", serializeSlotSettings(SLOT_CARD3));
+        nbttagcompound.setByte("rotateHor", rotateHor);
+        nbttagcompound.setByte("rotateVert", rotateVert);
+        nbttagcompound.setByte("thickness", thickness);
     }
     
     @Override
@@ -134,6 +201,9 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel
         deserializeDisplaySettings(nbttagcompound, "dSettings1", SLOT_CARD1);
         deserializeDisplaySettings(nbttagcompound, "dSettings2", SLOT_CARD2);
         deserializeDisplaySettings(nbttagcompound, "dSettings3", SLOT_CARD3);
+        rotateHor = nbttagcompound.getByte("rotateHor");
+        rotateVert = nbttagcompound.getByte("rotateVert");
+        thickness = nbttagcompound.getByte("thickness");
     }
     
     @Override
@@ -153,6 +223,22 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel
         }
     }
     
+    public byte getNextPowerMode()
+    {
+        switch (powerMode)
+        {   
+        case POWER_REDSTONE:
+            return POWER_INVERTED;
+        case POWER_INVERTED:
+            return POWER_ON;
+        case POWER_ON:
+            return POWER_OFF;
+        case POWER_OFF:
+            return POWER_REDSTONE;
+        }
+        return POWER_REDSTONE;
+    }
+    
     @Override
     public boolean getPowered()
     {
@@ -170,4 +256,37 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel
         return false;
     }
 
+    @Override
+    public void onNetworkEvent(EntityPlayer entityplayer, int i)
+    {
+        super.onNetworkEvent(entityplayer, i);
+        if(i>=0 && i<100)
+        {
+            switch (i)
+            {   
+            case POWER_ON:
+            case POWER_OFF:
+            case POWER_REDSTONE:
+            case POWER_INVERTED:
+                setPowerMode((byte)i);
+            }
+        }
+        else if(i>=OFFSET_THICKNESS && i<OFFSET_THICKNESS+100)
+        {
+            i -= OFFSET_THICKNESS;
+            setThickness((byte)i);
+        }
+        else if(i>=OFFSET_ROTATE_HOR && i<OFFSET_ROTATE_HOR+100)
+        {
+            i -= OFFSET_ROTATE_HOR + 8;
+            i = -(i*7);
+            setRotateHor((byte)i);
+        }
+        else if(i>=OFFSET_ROTATE_VERT && i<OFFSET_ROTATE_VERT+100)
+        {
+            i -= OFFSET_ROTATE_VERT + 8;
+            i = -(i*7);
+            setRotateVert((byte)i);
+        }
+    }    
 }

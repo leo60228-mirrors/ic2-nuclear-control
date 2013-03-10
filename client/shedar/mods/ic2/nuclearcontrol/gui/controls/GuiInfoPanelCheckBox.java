@@ -1,6 +1,5 @@
 package shedar.mods.ic2.nuclearcontrol.gui.controls;
 
-import ic2.api.network.NetworkHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -30,7 +29,6 @@ public class GuiInfoPanelCheckBox extends GuiButton
         height  = renderer.FONT_HEIGHT+1;
         width = renderer.getStringWidth(setting.title)+8;
         this.panel = panel;
-        checked = (panel.getDisplaySettingsForCardInSlot(slot) & setting.displayBit) > 0;
     }
 
     @Override
@@ -38,6 +36,7 @@ public class GuiInfoPanelCheckBox extends GuiButton
     {
         if (this.drawButton)
         {
+            checked = (panel.getDisplaySettingsForCardInSlot(slot) & setting.displayBit) > 0;
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.renderEngine.getTexture("/img/GUIInfoPanel.png"));
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             int delta = checked?6:0;
@@ -53,9 +52,9 @@ public class GuiInfoPanelCheckBox extends GuiButton
     }
 
     @Override
-    public boolean mousePressed(Minecraft minecraft, int i, int j)
+    public boolean mousePressed(Minecraft minecraft, int mouseX, int mouseY)
     {
-        if (super.mousePressed(minecraft, i, j))
+        if (super.mousePressed(minecraft, mouseX, mouseY))
         {
             checked = !checked;
             int value; 
@@ -65,10 +64,9 @@ public class GuiInfoPanelCheckBox extends GuiButton
                 value = panel.getDisplaySettingsForCardInSlot(slot) & (~setting.displayBit);
             NuclearNetworkHelper.setDisplaySettings(panel, slot, value);
             panel.setDisplaySettings(slot, value);
-            NetworkHelper.initiateClientTileEntityEvent(panel, value);
             return true;
         }
-        else
+        else    
         {
             return false;
         }

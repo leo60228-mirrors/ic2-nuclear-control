@@ -68,7 +68,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
                 if(state != CardState.OK && state != CardState.CUSTOM_ERROR)
                     data = StringUtils.getStateMessage(state);
                 else
-                    data = panel.getCardData(displaySettings, (IPanelDataSource)card.getItem(), helper);
+                    data = panel.getCardData(displaySettings, card, helper);
                 if(data == null)
                     continue;
                 joinedData.addAll(data);

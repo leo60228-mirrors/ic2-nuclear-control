@@ -61,10 +61,10 @@ public class TileEntityInfoPanel extends TileEntity implements
     
     public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE;
     
-    private static final int SLOT_CARD = 0;
-    private static final int SLOT_UPGRADE_RANGE = 1;
-    private static final int SLOT_UPGRADE_COLOR = 2;
-    private static final int LOCATION_RANGE = 8;
+    private static final byte SLOT_CARD = 0;
+    private static final byte SLOT_UPGRADE_RANGE = 1;
+    private static final byte SLOT_UPGRADE_COLOR = 2;
+    private static final byte LOCATION_RANGE = 8;
     
     protected int updateTicker;
     protected int dataTicker;
@@ -78,7 +78,7 @@ public class TileEntityInfoPanel extends TileEntity implements
     private boolean prevPowered;
     protected boolean powered;
 
-    protected final Map<Integer, Map<UUID, Integer>> displaySettings;
+    protected final Map<Byte, Map<UUID, Integer>> displaySettings;
     
     private int prevRotation;
     public int rotation;
@@ -225,12 +225,12 @@ public class TileEntityInfoPanel extends TileEntity implements
         return slot == SLOT_CARD;
     }
     
-    public void setDisplaySettings(int slot, int settings)
+    public void setDisplaySettings(byte slot, int settings)
     {
         if(!isCardSlot(slot))
             return;
         UUID cardType = null;
-        ItemStack stack = inventory[slot]; 
+        ItemStack stack = inventory[slot];
         if(stack!=null)
         {
             if(stack.getItem() instanceof IPanelMultiCard)
@@ -246,7 +246,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         {
             if(!displaySettings.containsKey(slot))
                 displaySettings.put(slot, new HashMap<UUID, Integer>());
-            boolean update = !displaySettings.get(slot).containsKey(cardType)  || displaySettings.get(slot).get(cardType) != settings;
+            boolean update = true;// !displaySettings.get(slot).containsKey(cardType)  || displaySettings.get(slot).get(cardType) != settings;
             
             displaySettings.get(slot).put(cardType, settings);
             if (update && FMLCommonHandler.instance().getEffectiveSide().isServer())
@@ -341,8 +341,8 @@ public class TileEntityInfoPanel extends TileEntity implements
         tickRate = IC2NuclearControl.instance.screenRefreshPeriod;
         updateTicker = tickRate;
         dataTicker = 4;
-        displaySettings = new HashMap<Integer, Map<UUID,Integer>>(1);
-        displaySettings.put(0, new HashMap<UUID, Integer>());
+        displaySettings = new HashMap<Byte, Map<UUID,Integer>>(1);
+        displaySettings.put((byte)0, new HashMap<UUID, Integer>());
         powered = false;
         prevPowered = false;
         facing = 0;
@@ -407,9 +407,10 @@ public class TileEntityInfoPanel extends TileEntity implements
         cardData.clear();
     }
     
-    public List<PanelString> getCardData(int settings, IPanelDataSource card, ICardWrapper helper)
+    public List<PanelString> getCardData(int settings, ItemStack cardStack, ICardWrapper helper)
     {
-        int slot = getIndexOfCard(card);
+        IPanelDataSource card = (IPanelDataSource)cardStack.getItem();
+        int slot = getIndexOfCard(cardStack);
         List<PanelString> data = cardData.get(slot);
         if(data==null)
         {
@@ -457,7 +458,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         }
     }
     
-    protected void deserializeDisplaySettings(NBTTagCompound nbttagcompound, String tagName, int slot)
+    protected void deserializeDisplaySettings(NBTTagCompound nbttagcompound, String tagName, byte slot)
     {
         if(nbttagcompound.hasKey(tagName))
         {
@@ -552,7 +553,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         super.invalidate();
     }
     
-    protected NBTTagList serializeSlotSettings(int slot)
+    protected NBTTagList serializeSlotSettings(byte slot)
     {
         NBTTagList settingsList = new NBTTagList();
         for (Map.Entry<UUID, Integer> item : getDisplaySettingsForSlot(slot).entrySet())
@@ -1105,12 +1106,12 @@ public class TileEntityInfoPanel extends TileEntity implements
         prevRotation = rotation;
     }
     
-    public Map<Integer, Map<UUID, Integer>> getDisplaySettings()
+    public Map<Byte, Map<UUID, Integer>> getDisplaySettings()
     {
         return displaySettings;
     }
     
-    public Map<UUID, Integer> getDisplaySettingsForSlot(int slot)
+    public Map<UUID, Integer> getDisplaySettingsForSlot(byte slot)
     {
         if(!displaySettings.containsKey(slot))
             displaySettings.put(slot, new HashMap<UUID, Integer>());
@@ -1121,7 +1122,9 @@ public class TileEntityInfoPanel extends TileEntity implements
     {
         ItemStack card = inventory[slot]; 
         if(card == null)
+        {
             return 0;
+        }
         return getDisplaySettingsByCard(card);
     }
     
@@ -1131,7 +1134,9 @@ public class TileEntityInfoPanel extends TileEntity implements
         if(card == null)
             return 0;
         if(!displaySettings.containsKey(slot))
+        {
             return DISPLAY_DEFAULT;
+        }
         UUID cardType = null;
         if(card.getItem() instanceof IPanelMultiCard)
         {

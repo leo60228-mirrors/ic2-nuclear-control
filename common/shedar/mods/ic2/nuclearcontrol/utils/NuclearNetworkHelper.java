@@ -332,7 +332,7 @@ public class NuclearNetworkHelper
         TileEntity tileEntity = player.worldObj.getBlockTileEntity(x, y, z);
         if(!(tileEntity instanceof TileEntityInfoPanel))
             return;
-        Map<Integer, Map<UUID, Integer>> settings = ((TileEntityInfoPanel)tileEntity).getDisplaySettings();
+        Map<Byte, Map<UUID, Integer>> settings = ((TileEntityInfoPanel)tileEntity).getDisplaySettings();
         if(settings == null)
             return;
         Packet250CustomPayload packet = new Packet250CustomPayload();
@@ -342,7 +342,7 @@ public class NuclearNetworkHelper
         output.writeInt(y);
         output.writeInt(z);
         output.writeByte(settings.size());
-        for (Map.Entry<Integer, Map<UUID, Integer>> slotData : settings.entrySet())
+        for (Map.Entry<Byte, Map<UUID, Integer>> slotData : settings.entrySet())
         {
             output.writeByte(slotData.getKey());
             output.writeShort(slotData.getValue().size());

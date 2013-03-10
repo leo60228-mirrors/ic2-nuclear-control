@@ -7,9 +7,6 @@ import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 
 public class ContainerAdvancedInfoPanel extends ContainerInfoPanel
 {
-    public TileEntityAdvancedInfoPanel panel;
-    public EntityPlayer player;
-
     public ContainerAdvancedInfoPanel(EntityPlayer player, TileEntityAdvancedInfoPanel panel)
     {
         super();
@@ -19,11 +16,11 @@ public class ContainerAdvancedInfoPanel extends ContainerInfoPanel
         
         //cards
         addSlotToContainer(new SlotFilter(panel, 0, 8, 24+18));
-        addSlotToContainer(new SlotFilter(panel, 0, 8+18, 24+18));
-        addSlotToContainer(new SlotFilter(panel, 0, 8+36, 24+18));
+        addSlotToContainer(new SlotFilter(panel, 1, 8+18, 24+18));
+        addSlotToContainer(new SlotFilter(panel, 2, 8+36, 24+18));
         
         //range upgrade
-        addSlotToContainer(new SlotFilter(panel, 1, 8+54, 24+18));
+        addSlotToContainer(new SlotFilter(panel, 3, 8+54, 24+18));
 
         //inventory
         for (int i = 0; i < 3; i++)

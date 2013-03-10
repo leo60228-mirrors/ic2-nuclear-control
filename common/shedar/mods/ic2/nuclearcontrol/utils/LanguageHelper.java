@@ -57,6 +57,9 @@ public class LanguageHelper
             setPhrase(configuration, "tile.blockRemoteThermo.name", "Remote Thermal Monitor");
             setPhraseRename(configuration, "tile.blockInfoPanel.name", "Reactor Information Panel", "Industrial Information Panel");
             setPhrase(configuration, "tile.blockInfoPanelExtender.name", "Information Panel Extender");
+            setPhrase(configuration, "tile.blockAdvancedInfoPanel.name", "Advanced Information Panel");
+            setPhrase(configuration, "tile.blockAdvancedInfoPanelExtender.name", "Advanced Panel Extender");
+            
             setPhrase(configuration, "tile.blockEnergyCounter.name", "Energy Counter");
             setPhrase(configuration, "tile.blockAverageCounter.name", "Average Counter");
             setPhrase(configuration, "tile.blockRangeTrigger.name", "Range Trigger");
