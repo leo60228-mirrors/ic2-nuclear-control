@@ -4,6 +4,7 @@ import ic2.api.IWrenchable;
 
 import java.util.List;
 
+import shedar.mods.ic2.nuclearcontrol.panel.Screen;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanelExtender;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
@@ -428,10 +429,28 @@ public class BlockNuclearControlMain extends BlockContainer
         float baseY2 = blockSize[blockType][4];
         float baseZ2 = blockSize[blockType][5]; 
 
+        TileEntity tileentity = blockAccess.getBlockTileEntity(x, y, z);
+
+        if((blockType == DAMAGE_ADVANCED_PANEL || blockType == DAMAGE_ADVANCED_EXTENDER) && tileentity!=null)
+        {
+            Screen screen = ((IScreenPart)tileentity).getScreen();
+            if(screen!=null)
+            {
+                TileEntityAdvancedInfoPanel core = (TileEntityAdvancedInfoPanel)screen.getCore(blockAccess);
+                if(core!=null)
+                {
+                    int thickness = core.thickness;
+                    if(thickness!=16)
+                    {
+                        baseY2 = Math.max(thickness,1)/16F;
+                    }
+                }
+            }
+        }
+        
         float tmp;
         
         int side = 0;
-        TileEntity tileentity = blockAccess.getBlockTileEntity(x, y, z);
         if(tileentity instanceof IWrenchable)
         {
         	side = Facing.faceToSide[((IWrenchable)tileentity).getFacing()];

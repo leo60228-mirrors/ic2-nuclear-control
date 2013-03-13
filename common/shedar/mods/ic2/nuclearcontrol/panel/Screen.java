@@ -2,6 +2,7 @@ package shedar.mods.ic2.nuclearcontrol.panel;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import shedar.mods.ic2.nuclearcontrol.IScreenPart;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
@@ -19,7 +20,7 @@ public class Screen
     private int coreZ;
     private boolean powered = false;
 
-    public TileEntityInfoPanel getCore(World world)
+    public TileEntityInfoPanel getCore(IBlockAccess world)
     {
         TileEntity tileEntity = world.getBlockTileEntity(coreX, coreY, coreZ);
         if(tileEntity == null || !(tileEntity instanceof TileEntityInfoPanel))
@@ -173,7 +174,80 @@ public class Screen
     {
         return x == coreX && y == coreY && z == coreZ;
     }
+    
+    public int getDx()
+    {
+        return maxX-minX;
+    }
 
+    public int getDy()
+    {
+        return maxY-minY;
+    }
+
+    public int getDz()
+    {
+        return maxZ-minZ;
+    }
+    
+    public int getHeight(TileEntityInfoPanel core)
+    {
+        if(core == null)
+            return 0;
+        int rotation = core.getRotation();
+        switch (core.getFacing())
+        {
+        case 0:
+        case 1:
+            if( rotation == 0 || rotation == 3)
+                return getDz()+1;
+            else
+                return getDx()+1;
+        case 2:
+        case 3:
+            if( rotation == 0 || rotation == 3)
+                return getDy()+1;
+            else
+                return getDx()+1;
+        case 4:
+        case 5:
+            if( rotation == 0 || rotation == 3)
+                return getDy()+1;
+            else
+                return getDz()+1;
+        }
+        return 1;
+    }
+    
+    public int getWidth(TileEntityInfoPanel core)
+    {
+        if(core == null)
+            return 0;
+        int rotation = core.getRotation();
+        switch (core.getFacing())
+        {
+        case 0:
+        case 1:
+            if( rotation == 0 || rotation == 3)
+                return getDx()+1;
+            else
+                return getDz()+1;
+        case 2:
+        case 3:
+            if( rotation == 0 || rotation == 3)
+                return getDx()+1;
+            else
+                return getDy()+1;
+        case 4:
+        case 5:
+            if( rotation == 0 || rotation == 3)
+                return getDz()+1;
+            else
+                return getDy()+1;
+        }
+        return 1;
+    }
+    
     @Override
     public boolean equals(Object obj)
     {

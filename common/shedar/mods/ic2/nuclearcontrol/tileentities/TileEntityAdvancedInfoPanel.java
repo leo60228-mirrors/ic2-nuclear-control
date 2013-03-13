@@ -137,6 +137,10 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel
             }
             prevPowerMode = powerMode;
         }
+        else  if (field.equals("thickness") || field.equals("rotateHor") || field.equals("rotateVert"))
+        {
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        }
 
     }
     
@@ -193,6 +197,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel
         nbttagcompound.setByte("rotateHor", rotateHor);
         nbttagcompound.setByte("rotateVert", rotateVert);
         nbttagcompound.setByte("thickness", thickness);
+        nbttagcompound.setByte("powerMode", powerMode);
     }
     
     @Override
@@ -204,6 +209,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel
         rotateHor = nbttagcompound.getByte("rotateHor");
         rotateVert = nbttagcompound.getByte("rotateVert");
         thickness = nbttagcompound.getByte("thickness");
+        powerMode = nbttagcompound.getByte("powerMode");
     }
     
     @Override

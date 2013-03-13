@@ -13,6 +13,9 @@ import shedar.mods.ic2.nuclearcontrol.BlockNuclearControlMain;
 import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.IRotation;
 import shedar.mods.ic2.nuclearcontrol.panel.Screen;
+import shedar.mods.ic2.nuclearcontrol.renderers.model.ModelInfoPanel;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanelExtender;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanelExtender;
 
@@ -134,7 +137,25 @@ public class MainBlockRenderer implements ISimpleBlockRenderingHandler
                     ForgeHooksClient.bindTexture("/img/InfoPanelColorsOff.png", 0);
                 }
             }
-            renderer.renderStandardBlock(block, x, y, z);
+            if(tileEntity instanceof TileEntityAdvancedInfoPanel)
+            {
+                TileEntityAdvancedInfoPanel advancedCore = (TileEntityAdvancedInfoPanel)tileEntity;
+                if(advancedCore.getScreen()!=null)
+                    new ModelInfoPanel().renderScreen(block, advancedCore, x, y, z);
+                else
+                    renderer.renderStandardBlock(block, x, y, z);
+            }
+            else if(tileEntity instanceof TileEntityAdvancedInfoPanelExtender)
+            {
+                TileEntityAdvancedInfoPanelExtender advancedExtender = (TileEntityAdvancedInfoPanelExtender)tileEntity;
+                if(advancedExtender.getScreen()==null)
+                    renderer.renderStandardBlock(block, x, y, z);
+            }
+            else
+            {
+                renderer.renderStandardBlock(block, x, y, z);
+            }
+                
             renderer.uvRotateBottom = 0;
             renderer.uvRotateEast = 0;
             renderer.uvRotateNorth= 0;

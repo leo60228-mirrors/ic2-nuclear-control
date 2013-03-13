@@ -17,6 +17,8 @@ import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.panel.Screen;
+import shedar.mods.ic2.nuclearcontrol.renderers.model.ModelInfoPanel;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -161,11 +163,22 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
                     }
                     break;
             }
+            float thickness = 1;
+            double angleHor = 0;
+            double angleVert = 0;
+            double[] deltas = null;
+            if(panel instanceof TileEntityAdvancedInfoPanel && screen!=null)
+            {
+                TileEntityAdvancedInfoPanel advPanel = (TileEntityAdvancedInfoPanel)panel;
+                ModelInfoPanel model = new ModelInfoPanel();
+                deltas = model.getDeltas(advPanel, screen);
+                thickness = (float) (advPanel.thickness/16F - (deltas[0]+deltas[1]+deltas[2]+deltas[3])/4);
+            }
 
-            GL11.glTranslatef(dx+displayWidth/2, 1F, dz+displayHeight/2);
+            GL11.glTranslatef(dx+displayWidth/2, thickness, dz+displayHeight/2);
             GL11.glRotatef(-90, 1, 0, 0);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            
+
             switch (panel.rotation)
             {
                 case 0:
@@ -185,8 +198,36 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
                 case 3:
                     GL11.glRotatef(180, 0, 0, 1);
                     break;
-            }            
-            
+            }
+            if(deltas!=null)
+            {
+                if(deltas[0] == 0)
+                {
+                    //+1,-2
+                    angleHor = 180/Math.PI*Math.atan(deltas[1]/(displayWidth+2F/16));
+                    angleVert = -180/Math.PI*Math.atan(deltas[2]/(displayHeight+2F/16));
+                }
+                else if(deltas[1] == 0)
+                {
+                    //-0,-3
+                    angleHor = -180/Math.PI*Math.atan(deltas[0]/(displayWidth+2F/16));
+                    angleVert = -180/Math.PI*Math.atan(deltas[3]/(displayHeight+2F/16));
+                }
+                else if(deltas[2] == 0)
+                {
+                    //+3,+0
+                    angleHor = 180/Math.PI*Math.atan(deltas[3]/(displayWidth+2F/16));
+                    angleVert = 180/Math.PI*Math.atan(deltas[0]/(displayHeight+2F/16));
+                }
+                else
+                {
+                    //-2,+1
+                    angleHor = -180/Math.PI*Math.atan(deltas[2]/(displayWidth+2F/16));
+                    angleVert = 180/Math.PI*Math.atan(deltas[1]/(displayHeight+2F/16));
+                }
+            }
+            GL11.glRotatef((float)-angleVert, 1, 0, 0);
+            GL11.glRotatef((float)angleHor, 0, 1, 0);
             FontRenderer fontRenderer = this.getFontRenderer();
             
             int maxWidth = 1;

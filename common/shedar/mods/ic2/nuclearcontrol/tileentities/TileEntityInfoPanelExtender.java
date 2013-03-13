@@ -206,6 +206,7 @@ public class TileEntityInfoPanelExtender extends TileEntity implements
     {
         this.screen = screen;
         partOfScreen = screen != null;
+            
     }
 
     @Override
