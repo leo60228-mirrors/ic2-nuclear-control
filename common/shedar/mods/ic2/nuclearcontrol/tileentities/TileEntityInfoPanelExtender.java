@@ -103,7 +103,6 @@ public class TileEntityInfoPanelExtender extends TileEntity implements
         }
         if(FMLCommonHandler.instance().getEffectiveSide().isServer() && !partOfScreen)
         {
-            System.out.println("initData on server");
             IC2NuclearControl.instance.screenManager.registerInfoPanelExtender(this);
         }
         if(partOfScreen && screen == null)
@@ -206,7 +205,6 @@ public class TileEntityInfoPanelExtender extends TileEntity implements
     {
         this.screen = screen;
         partOfScreen = screen != null;
-            
     }
 
     @Override

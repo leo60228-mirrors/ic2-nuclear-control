@@ -384,6 +384,7 @@ public class IC2NuclearControl
         if(isClient)
         {
             MinecraftForgeClient.preloadTexture("/img/texture_thermo.png");
+            MinecraftForgeClient.preloadTexture("/img/AdvInfoPanelSide.png");
             MinecraftForgeClient.preloadTexture("/img/InfoPanelColorsOn.png");
             MinecraftForgeClient.preloadTexture("/img/InfoPanelColorsOff.png");
             LanguageHelper.addNames(new File(configDir, CONFIG_NUCLEAR_CONTROL_LANG));

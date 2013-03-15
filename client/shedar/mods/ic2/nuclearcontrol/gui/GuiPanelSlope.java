@@ -44,17 +44,22 @@ public class GuiPanelSlope  extends GuiScreen
             if(x>=21 && x<=34)
             {
                 offset = TileEntityAdvancedInfoPanel.OFFSET_THICKNESS;
+                if(amount<1)
+                    amount = 1;
             }
             else if(x>=79 && x<=92)
             {
                 offset = TileEntityAdvancedInfoPanel.OFFSET_ROTATE_HOR;
+                if(amount<0)
+                    amount = 0;
             }
             else if(x>=137 && x<=150)
             {
                 offset = TileEntityAdvancedInfoPanel.OFFSET_ROTATE_VERT;
+                if(amount<0)
+                    amount = 0;
             }
             NetworkHelper.initiateClientTileEntityEvent(panel, offset+amount);
-            panel.onNetworkEvent(null, offset+amount);
         }
     }
     

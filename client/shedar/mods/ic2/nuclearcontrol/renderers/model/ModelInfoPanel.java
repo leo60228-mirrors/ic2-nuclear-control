@@ -2,9 +2,7 @@ package shedar.mods.ic2.nuclearcontrol.renderers.model;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.Tessellator;
-
-import org.lwjgl.opengl.GL11;
-
+import net.minecraftforge.client.ForgeHooksClient;
 import shedar.mods.ic2.nuclearcontrol.panel.Screen;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 import cpw.mods.fml.relauncher.Side;
@@ -13,7 +11,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ModelInfoPanel
 {
-    private double[] coordinates = new double[24];;
+    private double[] coordinates = new double[24];
     
     private void assignWithRotation(int rotation, int offset, int sign, int tl, int tr, int br, int bl, double dtl, double dtr, double dbr, double dbl)
     {
@@ -118,11 +116,10 @@ public class ModelInfoPanel
         return res;
     }
     
-    private void addSlopes(TileEntityAdvancedInfoPanel panel, Screen screen)
+    private void addSlopes(TileEntityAdvancedInfoPanel panel, Screen screen, double[] deltas)
     {
-        if(panel.rotateVert == 0 && panel.rotateHor == 0)
-            return;
-        double[] deltas = getDeltas(panel, screen);
+        //if(panel.rotateVert == 0 && panel.rotateHor == 0)
+        //    return;
         double dTopLeft = deltas[0];
         double dTopRight = deltas[1];
         double dBottomLeft = deltas[2];
@@ -208,72 +205,256 @@ public class ModelInfoPanel
         Tessellator.instance.addVertexWithUV(coordinates[point*3], coordinates[point*3+1], coordinates[point*3+2], u, v);
     }
     
+    private void drawFacing(int facing, int rotation, Screen screen, TileEntityAdvancedInfoPanel panel, Block block)
+    {
+        //TODO: refactor here
+        Tessellator tessellator = Tessellator.instance;
+        int point = 0;
+        int pointR = 0;
+        int pointB = 0;
+        int pointRB = 0;
+        
+        int offsetH = 0;
+        int offsetV = 0;
+        int offsetD = 0;
+
+        boolean ccw = false;
+        switch (facing)
+        {
+        case 0:
+            Tessellator.instance.setNormal(0,  -1,  0);
+            point = 3;
+            pointR = 0;
+            pointB = 2;
+            pointRB = 1;
+            
+            offsetH = 0;
+            offsetV = 2;
+            offsetD = 1;
+            ccw = true;
+            break;
+        case 1:
+            Tessellator.instance.setNormal(0,  1,  0);
+            point = 4;
+            pointR = 7;
+            pointB = 5;
+            pointRB = 6;
+            
+            offsetH = 0;
+            offsetV = 2;
+            offsetD = 1;
+            break;
+        case 2:
+            Tessellator.instance.setNormal(0,  0,  -1);
+            point = 7;
+            pointR = 4;
+            pointB = 3;
+            pointRB = 0;
+            
+            offsetH = 0;
+            offsetV = 1;
+            offsetD = 2;
+            ccw = rotation == 1 || rotation == 2;
+            break;
+        case 3:
+            Tessellator.instance.setNormal(0,  0,  1);
+            point = 5;
+            pointR = 6;
+            pointB = 1;
+            pointRB = 2;
+            
+            offsetH = 0;
+            offsetV = 1;
+            offsetD = 2;
+            break;
+        case 4:
+            Tessellator.instance.setNormal(-1,  0,  0);
+            point = 4;
+            pointR = 5;
+            pointB = 0;
+            pointRB = 1;
+            
+            offsetH = 2;
+            offsetV = 1;
+            offsetD = 0;
+            break;
+        case 5:
+            Tessellator.instance.setNormal(1,  0,  0);
+            point = 6;
+            pointR = 7;
+            pointB = 2;
+            pointRB = 3;
+            
+            offsetH = 2;
+            offsetV = 1;
+            offsetD = 0;
+            ccw = rotation == 1 || rotation == 2;
+            break;
+        }
+        switch (rotation)
+        {
+        case 1:
+            int tmp = offsetH;
+            offsetH = offsetV;
+            offsetV = tmp;
+            
+            pointB = point;
+            point = pointR;
+            pointR = pointRB;
+            break;
+        case 2:
+            tmp = offsetH;
+            offsetH = offsetV;
+            offsetV = tmp;
+            
+            pointR = point;
+            point = pointB;
+            pointB = pointRB;
+            break;
+        case 3:
+            point = pointRB;
+            tmp = pointR;
+            pointR = pointB;
+            pointB = tmp;
+            break;
+        }
+        
+        
+        int stepsHor = screen.getWidth(panel);
+        int stepsVert = screen.getHeight(panel);
+        int sh = 0;
+        double dh = (coordinates[pointR*3+offsetH]-coordinates[point*3+offsetH])/stepsHor;
+        double dv = (coordinates[pointB*3+offsetV]-coordinates[point*3+offsetV])/stepsVert;
+        double ddh = (coordinates[pointR*3+offsetD]-coordinates[point*3+offsetD])/stepsHor; 
+        double ddv = (coordinates[pointB*3+offsetD]-coordinates[point*3+offsetD])/stepsVert;
+        double[] base = new double[]{coordinates[point*3], coordinates[point*3+1], coordinates[point*3+2]};
+        double[] midpoint = new double[3];
+        while(sh<stepsHor)
+        {
+            int sv = 0;
+            while(sv<stepsVert)
+            {
+                double[] p = base.clone();
+                p[offsetH]+=dh*sh;
+                p[offsetV]+=dv*sv;
+                p[offsetD]+=ddh*sh+ddv*sv;
+                
+                midpoint[offsetH] = p[offsetH]+dh/2;
+                midpoint[offsetV] = p[offsetV]+dv/2;
+                midpoint[offsetD] = p[offsetD]+(ddh+ddv)/2;
+
+                int texture = block.getBlockTexture(panel.worldObj, (int)Math.floor(midpoint[0]), (int)Math.floor(midpoint[1]), (int)Math.floor(midpoint[2]), facing);
+                int u = (texture & 15) << 4;
+                int v = texture & 240;
+
+                double u1 = u/256D;
+                double u2 = (u+16)/256D;
+                double v1 = v/256D;
+                double v2 = (v+16)/256D;
+                if(ccw)
+                {
+                    double tu = u1;
+                    u1 = u2;
+                    u2 = tu;
+                }
+                tessellator.addVertexWithUV(p[0], p[1], p[2], u1, v1);
+                p[offsetV]+=dv;
+                p[offsetD]+=ddv;
+                tessellator.addVertexWithUV(p[0], p[1], p[2], u1, v2);
+                p[offsetH]+=dh;
+                p[offsetD]+=ddh;
+                tessellator.addVertexWithUV(p[0], p[1], p[2], u2, v2);
+                p[offsetV]-=dv;
+                p[offsetD]-=ddv;
+                tessellator.addVertexWithUV(p[0], p[1], p[2], u2, v1);
+                
+                sv++;
+            }
+            sh++;
+        }
+        
+    }
+    
     public void renderScreen(Block block, TileEntityAdvancedInfoPanel panel, double x, double y, double z)
     {
         Screen screen = panel.getScreen();
         if(screen == null)
             return;
-        GL11.glPushMatrix();
         initCoordinates(block, screen);
-        addSlopes(panel, screen);
-        Tessellator tessellator = Tessellator.instance;
+        double[] deltas = getDeltas(panel, screen);
+        addSlopes(panel, screen, deltas);
         
-        tessellator.setColorOpaque(255,255,255);
-        //bottom
-        int texture = block.getBlockTexture(panel.worldObj, panel.xCoord, panel.yCoord, panel.zCoord, 0);
-        int u = (texture & 15) << 4;
-        int v = texture & 240;
-        //tessellator.setNormal(0, -1, 0);
-        addPoint(0, u/256D, v/256D);
-        addPoint(3, (u+16D)/256, v/256D);
-        addPoint(2, (u+16D)/256,(v+16D)/256);
-        addPoint(1, u/256D, (v+16D)/256);
+        int facing = panel.getFacing();
 
-        texture = block.getBlockTexture(panel.worldObj, panel.xCoord, panel.yCoord, panel.zCoord, 1);
-        u = (texture & 15) << 4;
-        v = texture & 240;
-        //tessellator.setNormal(0, 1, 0);
-        addPoint(4, u/256D, v/256D);
-        addPoint(5, (u+16D)/256, v/256D);
-        addPoint(6, (u+16D)/256,(v+16D)/256);
-        addPoint(7, u/256D, (v+16D)/256);
+        
+        Tessellator.instance.setBrightness(block.getMixedBrightnessForBlock(panel.worldObj, panel.xCoord, panel.yCoord, panel.zCoord));
+        Tessellator.instance.setColorOpaque_F(0.5F, 0.5F, 0.5F);
+        drawFacing(facing, panel.getRotation(), screen, panel, block);
+
+        ForgeHooksClient.bindTexture("/img/AdvInfoPanelSide.png", 0);
+        Tessellator.instance.setBrightness(block.getMixedBrightnessForBlock(panel.worldObj, panel.xCoord, panel.yCoord, panel.zCoord));
+        Tessellator.instance.setColorOpaque_F(0.5F, 0.5F, 0.5F);
+        
+        int dx = screen.getDx()+1;
+        int dy = screen.getDy()+1;
+        int dz = screen.getDz()+1;
+        
+        //bottom
+        if(facing!=0)
+        {
+            Tessellator.instance.setNormal(0,  -1,  0);
+            addPoint(0, 0, 0);
+            addPoint(3, dx, 0);
+            addPoint(2, dx, dz);
+            addPoint(1, 0, dz);
+        }
+
+        if(facing!=1)
+        {
+            Tessellator.instance.setNormal(0,  1,  0);
+            addPoint(4, 0, 0);
+            addPoint(5, dz, 0);
+            addPoint(6, dz, dx);
+            addPoint(7, 0, dx);
+        }
        
-        texture = block.getBlockTexture(panel.worldObj, panel.xCoord, panel.yCoord, panel.zCoord, 4);
-        u = (texture & 15) << 4;
-        v = texture & 240;
-        //Tessellator.instance.setNormal(-1, 0, 0);
-        addPoint(5, u/256D, v/256D);
-        addPoint(4, (u+16D)/256, v/256D);
-        addPoint(0, (u+16D)/256,(v+16D)/256);
-        addPoint(1, u/256D, (v+16D)/256);
+        if(facing!=2)
+        {
+            Tessellator.instance.setNormal(0,  0,  -1);
+            addPoint(0, 0, 0);
+            addPoint(4, dy, 0);
+            addPoint(7, dy, dx);
+            addPoint(3, 0, dx);
+        }
         
-        texture = block.getBlockTexture(panel.worldObj, panel.xCoord, panel.yCoord, panel.zCoord, 5);
-        u = (texture & 15) << 4;
-        v = texture & 240;
-        //Tessellator.instance.setNormal(1, 0, 0);
-        addPoint(2, u/256D, v/256D);
-        addPoint(3, (u+16D)/256, v/256D);
-        addPoint(7, (u+16D)/256,(v+16D)/256);
-        addPoint(6, u/256D, (v+16D)/256);
-         
-        texture = block.getBlockTexture(panel.worldObj, panel.xCoord, panel.yCoord, panel.zCoord, 2);
-        u = (texture & 15) << 4;
-        v = texture & 240;
-        Tessellator.instance.setNormal(0, 0, -1);
-        addPoint(0, u/256D, v/256D);
-        addPoint(4, (u+16D)/256, v/256D);
-        addPoint(7, (u+16D)/256,(v+16D)/256);
-        addPoint(3, u/256D, (v+16D)/256);
+        if(facing!=3)
+        {
+            Tessellator.instance.setNormal(0,  0,  1);
+            addPoint(6, 0, 0);
+            addPoint(5, dx, 0);
+            addPoint(1, dx, dy);
+            addPoint(2, 0, dy);
+        }
         
-        texture = block.getBlockTexture(panel.worldObj, panel.xCoord, panel.yCoord, panel.zCoord, 3);
-        u = (texture & 15) << 4;
-        v = texture & 240;
-        Tessellator.instance.setNormal(0, 0, 1);
-        addPoint(6, u/256D, v/256D);
-        addPoint(5, (u+16D)/256, v/256D);
-        addPoint(1, (u+16D)/256,(v+16D)/256);
-        addPoint(2, u/256D, (v+16D)/256);
+        if(facing!=4)
+        {
+            Tessellator.instance.setNormal(-1,  0,  0);
+            addPoint(5, 0, 0);
+            addPoint(4, dz, 0);
+            addPoint(0, dz, dy);
+            addPoint(1, 0, dy);
+        }
         
-        GL11.glPopMatrix();
+        if(facing!=5)
+        {
+            Tessellator.instance.setNormal(1,  0,  0);
+            addPoint(2, 0, 0);
+            addPoint(3, dz, 0);
+            addPoint(7, dz, dy);
+            addPoint(6, 0, dy);
+        }
+        //Tessellator.instance.draw();
+        //GL11.glPopAttrib();
+        //GL11.glPopMatrix();
     }
 }

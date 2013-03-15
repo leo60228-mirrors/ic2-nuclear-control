@@ -444,6 +444,10 @@ public class BlockNuclearControlMain extends BlockContainer
                     {
                         baseY2 = Math.max(thickness,1)/16F;
                     }
+                    else
+                    {
+                        baseY2 = 0.98F;
+                    }
                 }
             }
         }
