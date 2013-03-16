@@ -2,13 +2,10 @@ package shedar.mods.ic2.nuclearcontrol.utils;
 
 import java.io.File;
 import java.util.Locale;
-import java.util.Map;
 
-import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
-
-import net.minecraftforge.common.ConfigCategory;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
+import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
@@ -23,9 +20,9 @@ public class LanguageHelper
     private static void setPhraseRename(Configuration configuration, String key, String oldValue, String defaultValue)
     {
         Property property = configuration.get("locale.en.US", key, defaultValue);
-        if(oldValue.equals(property.value))
+        if(oldValue.equals(property.getString()))
         {
-            property.value = defaultValue;
+            property.set(defaultValue);
         }
     }
     
@@ -136,9 +133,9 @@ public class LanguageHelper
             setPhrase(configuration, "msg.nc.TextColor", "Text Color");
             setPhrase(configuration, "msg.nc.None", "N/A");
             
-            for(Map.Entry<String, ConfigCategory> category : configuration.categories.entrySet())
+            for(String categoryName : configuration.getCategoryNames())
             {
-                String rawLocale = category.getKey(); 
+                String rawLocale = categoryName; 
                 if(rawLocale == null || !rawLocale.startsWith("locale."))
                     continue;
                 rawLocale = rawLocale.substring(7);
@@ -149,9 +146,9 @@ public class LanguageHelper
                 else
                     locale = new Locale(chunks[0]);
                 
-                for(Property property : category.getValue().values())
+                for(Property property : configuration.getCategory(categoryName).values())
                 {
-                    LanguageRegistry.instance().addStringLocalization(property.getName(), locale.toString(), property.value);
+                    LanguageRegistry.instance().addStringLocalization(property.getName(), locale.toString(), property.getString());
                 }
             
             }

@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,8 +21,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Facing;
-import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.ISidedInventory;
 import shedar.mods.ic2.nuclearcontrol.BlockNuclearControlMain;
 import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.IRedstoneConsumer;
@@ -1042,24 +1041,26 @@ public class TileEntityInfoPanel extends TileEntity implements
             return false;
         return true;
     }
-
+    
     @Override
-    public int getStartInventorySide(ForgeDirection side)
+    //getStartInventorySide
+    public int func_94127_c(int side)
     {
-        // upgrade slots  
-        if(side == ForgeDirection.DOWN)
+        // upgrade slots //DOWN  
+        if(side == 0)
             return 1;
         return 0;
     }
 
     @Override
-    public int getSizeInventorySide(ForgeDirection side)
+    // getSizeInventorySide
+    public int func_94128_d(int side)
     {
-        //upgrades
-        if(side == ForgeDirection.DOWN)
+        //upgrades //DOWN
+        if(side == 0)
             return 2;
-        //card
-        if(side == ForgeDirection.UP)
+        //card //UP
+        if(side == 1)
             return 1;
         return inventory.length;
     }
@@ -1174,5 +1175,20 @@ public class TileEntityInfoPanel extends TileEntity implements
             screenData = screen.toTag();
         }
         NetworkHelper.updateTileEntityField(this, "screenData");
+    }
+
+    @Override
+    //getHasCustomName
+    public boolean func_94042_c()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    //acceptsItemStack
+    public boolean func_94041_b(int slot, ItemStack itemstack)
+    {
+        return isItemValid(slot, itemstack);
     }
 }

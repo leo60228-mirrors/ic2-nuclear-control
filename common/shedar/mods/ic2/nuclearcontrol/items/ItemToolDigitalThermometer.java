@@ -7,7 +7,9 @@ import ic2.api.IReactor;
 import java.util.List;
 
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
+import shedar.mods.ic2.nuclearcontrol.utils.TextureResolver;
 
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -22,9 +24,9 @@ public class ItemToolDigitalThermometer extends ItemToolThermometer
     public int ratio;
     public int transfer;
 
-    public ItemToolDigitalThermometer(int i, int j, int k, int l, int i1)
+    public ItemToolDigitalThermometer(int i, int k, int l, int i1)
     {
-        super(i, j);
+        super(i);
         setMaxDamage(101);
         tier = k;
         ratio = l;
@@ -32,7 +34,14 @@ public class ItemToolDigitalThermometer extends ItemToolThermometer
         
     }
 
-    public boolean canTakeDamage(ItemStack itemstack, int i)
+    @Override
+    public void func_94581_a(IconRegister iconRegister)
+    {
+             iconIndex = iconRegister.func_94245_a(TextureResolver.getItemTexture("thermometerDigital"));
+    }    
+
+    @Override
+    protected boolean canTakeDamage(ItemStack itemstack, int i)
     {
         i *= 50;
         return ElectricItem.discharge(itemstack, i, 0x7fffffff, true, true) == i;

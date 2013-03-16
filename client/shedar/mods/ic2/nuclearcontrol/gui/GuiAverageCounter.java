@@ -30,12 +30,11 @@ public class GuiAverageCounter extends GuiContainer
     @SuppressWarnings("unchecked")
     private void initControls()
     {
-        controlList.clear();
-        //controlList.add(new GuiButton(0, guiLeft+35, guiTop+42, 127, 20, StatCollector.translateToLocal("msg.nc.Reset")));
-        controlList.add(new GuiButton(1, guiLeft+35, guiTop+42, 30, 20, StatCollector.translateToLocal("1")));
-        controlList.add(new GuiButton(2, guiLeft+35+30, guiTop+42, 30, 20, StatCollector.translateToLocal("3")));
-        controlList.add(new GuiButton(3, guiLeft+35+60, guiTop+42, 30, 20, StatCollector.translateToLocal("5")));
-        controlList.add(new GuiButton(4, guiLeft+35+90, guiTop+42, 30, 20, StatCollector.translateToLocal("10")));
+        buttonList.clear();
+        buttonList.add(new GuiButton(1, guiLeft+35, guiTop+42, 30, 20, StatCollector.translateToLocal("1")));
+        buttonList.add(new GuiButton(2, guiLeft+35+30, guiTop+42, 30, 20, StatCollector.translateToLocal("3")));
+        buttonList.add(new GuiButton(3, guiLeft+35+60, guiTop+42, 30, 20, StatCollector.translateToLocal("5")));
+        buttonList.add(new GuiButton(4, guiLeft+35+90, guiTop+42, 30, 20, StatCollector.translateToLocal("10")));
     }
     
     @Override
@@ -61,9 +60,8 @@ public class GuiAverageCounter extends GuiContainer
     @Override
     protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3)
     {
-        int texture = mc.renderEngine.getTexture("/img/GUIEnergyCounter.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture(texture);
+        mc.renderEngine.func_98187_b("/mods/nuclearControl/textures/gui/GUIEnergyCounter.png");
         int left = (width - xSize) / 2;
         int top = (height - ySize) / 2;
         drawTexturedModalRect(left, top, 0, 0, xSize, ySize);

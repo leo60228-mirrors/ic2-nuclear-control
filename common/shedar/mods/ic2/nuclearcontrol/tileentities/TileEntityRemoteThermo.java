@@ -13,13 +13,12 @@ import ic2.api.network.NetworkHelper;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.ISidedInventory;
 import net.minecraftforge.common.MinecraftForge;
 import shedar.mods.ic2.nuclearcontrol.BlockNuclearControlMain;
 import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
@@ -475,7 +474,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     {
         if (amount > maxPacketSize)
         {
-            worldObj.setBlockWithNotify(xCoord, yCoord, zCoord, 0);
+            worldObj.setBlockAndMetadataWithNotify(xCoord, yCoord, zCoord, 0, 0, 3);
             worldObj.createExplosion(null, xCoord, yCoord, zCoord, 0.8F, false);
             return 0;
         }
@@ -537,21 +536,25 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     }
 
     @Override
-    public int getStartInventorySide(ForgeDirection side)
+    //getStartInventorySide
+    public int func_94127_c(int side)
     {
-        if(side == ForgeDirection.UP)
+        //UP  
+        if(side == 1)
             return 1;
-        return 0;    
+        return 0;
     }
 
     @Override
-    public int getSizeInventorySide(ForgeDirection side)
+    // getSizeInventorySide
+    public int func_94128_d(int side)
     {
-        if(side == ForgeDirection.DOWN || side == ForgeDirection.UP)
+        //DOWN || UP
+        if(side == 0 || side == 1)
             return 1;
         return inventory.length;
-    }
-
+    }    
+    
     @Override
     public void rotate()
     {
@@ -593,5 +596,20 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     public int getMaxSafeInput()
     {
         return maxPacketSize;
+    }
+
+    @Override
+    //getHasCustomName
+    public boolean func_94042_c()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    //acceptsItemStack
+    public boolean func_94041_b(int slot, ItemStack itemstack)
+    {
+        return isItemValid(slot, itemstack);
     }
 }

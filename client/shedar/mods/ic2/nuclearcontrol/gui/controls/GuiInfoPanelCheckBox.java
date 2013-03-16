@@ -37,7 +37,7 @@ public class GuiInfoPanelCheckBox extends GuiButton
         if (this.drawButton)
         {
             checked = (panel.getDisplaySettingsForCardInSlot(slot) & setting.displayBit) > 0;
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.renderEngine.getTexture("/img/GUIInfoPanel.png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.renderEngine.getTexture("/mods/nuclearControl/textures/gui/GUIInfoPanel.png"));
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             int delta = checked?6:0;
             drawTexturedModalRect(xPosition, yPosition+1, 176, delta, 6, 6);

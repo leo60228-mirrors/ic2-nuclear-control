@@ -290,9 +290,9 @@ public class IC2NuclearControl
         try
         {
             if (block)
-                return new Integer(configuration.getBlock(name, i).value).intValue();
+                return configuration.getBlock(name, i).getInt();
             else
-                return new Integer(configuration.get("item", name, i).value).intValue();
+                return configuration.getItem(name, i).getInt();
         } 
         catch (Exception exception)
         {
@@ -304,44 +304,42 @@ public class IC2NuclearControl
 
     protected void initBlocks(Configuration configuration)
     {
-        blockNuclearControlMain = new BlockNuclearControlMain(getIdFor(configuration, "blockNuclearControlMain", 192, true), 0)
-                .setBlockName("blockThermalMonitor");
+        blockNuclearControlMain = new BlockNuclearControlMain(getIdFor(configuration, "blockNuclearControlMain", 192, true))
+                .setUnlocalizedName("blockThermalMonitor");
         itemToolThermometer = new ItemToolThermometer(
-                getIdFor(configuration, "itemToolThermometer", 31000, false), 
-                2)
-                .setItemName("ItemToolThermometer");
+                getIdFor(configuration, "itemToolThermometer", 31000, false))
+                .setUnlocalizedName("ItemToolThermometer");
         itemToolDigitalThermometer = new ItemToolDigitalThermometer(
-                getIdFor(configuration, "itemToolDigitalThermometer", 31001, false),
-                18, 1, 80, 80)
-                .setItemName("ItemToolDigitalThermometer");
+                getIdFor(configuration, "itemToolDigitalThermometer", 31001, false), 1, 80, 80)
+                .setUnlocalizedName("ItemToolDigitalThermometer");
         itemSensorLocationCard = new ItemCardReactorSensorLocation(
-                getIdFor(configuration, "itemSensorLocationCard", 31003, false), 50)
-                .setItemName("ItemSensorLocationCard");
+                getIdFor(configuration, "itemSensorLocationCard", 31003, false))
+                .setUnlocalizedName("ItemSensorLocationCard");
         itemUpgrade = new ItemUpgrade(
-                getIdFor(configuration, "itemRangeUpgrade", 31004, false), 66);
+                getIdFor(configuration, "itemRangeUpgrade", 31004, false));
         itemTimeCard = new ItemTimeCard(
-                getIdFor(configuration, "itemTimeCard", 31005, false), 48)
-                .setItemName("ItemTimeCard");
+                getIdFor(configuration, "itemTimeCard", 31005, false))
+                .setUnlocalizedName("ItemTimeCard");
         itemTextCard = new ItemCardText(
-                getIdFor(configuration, "itemTextCard", 31011, false), 53)
-                .setItemName("ItemTextCard");
+                getIdFor(configuration, "itemTextCard", 31011, false))
+                .setUnlocalizedName("ItemTextCard");
         itemEnergySensorLocationCard = new ItemCardEnergySensorLocation(
-                getIdFor(configuration, "itemEnergySensorLocationCard", 31007, false), 49)
-                .setItemName("ItemEnergySensorLocationCard");
+                getIdFor(configuration, "itemEnergySensorLocationCard", 31007, false))
+                .setUnlocalizedName("ItemEnergySensorLocationCard");
         itemEnergyArrayLocationCard = new ItemCardEnergyArrayLocation(
-                getIdFor(configuration, "itemEnergyArrayLocationCard", 31008, false), 51)
-                .setItemName("ItemEnergyArrayLocationCard");
+                getIdFor(configuration, "itemEnergyArrayLocationCard", 31008, false))
+                .setUnlocalizedName("ItemEnergyArrayLocationCard");
         itemMultipleSensorLocationCard = new ItemCardMultipleSensorLocation(
                 getIdFor(configuration, "itemCounterSensorLocationCard", 31010, false));
         itemMultipleSensorKit = new ItemKitMultipleSensor(
                 getIdFor(configuration, "itemCounterSensorKit", 31009, false))
-                .setItemName("ItemCounterSensorKit");
+                .setUnlocalizedName("ItemCounterSensorKit");
         itemEnergySensorKit = new ItemKitEnergySensor(
-                getIdFor(configuration, "itemEnergySensorKit", 31006, false), 65)
-                .setItemName("ItemEnergySensorKit");
+                getIdFor(configuration, "itemEnergySensorKit", 31006, false))
+                .setUnlocalizedName("ItemEnergySensorKit");
         itemRemoteSensorKit = new ItemKitReactorSensor(
-                getIdFor(configuration, "itemRemoteSensorKit", 31002, false),34)
-                .setItemName("ItemRemoteSensorKit");
+                getIdFor(configuration, "itemRemoteSensorKit", 31002, false))
+                .setUnlocalizedName("ItemRemoteSensorKit");
     }
     
     @PostInit
@@ -391,13 +389,13 @@ public class IC2NuclearControl
         }
         initBlocks(configuration);
         registerBlocks();
-        alarmRange = new Integer(configuration.get(Configuration.CATEGORY_GENERAL, "alarmRange", 64).value).intValue();
-        maxAlarmRange = new Integer(configuration.get(Configuration.CATEGORY_GENERAL, "maxAlarmRange", 128).value).intValue();
-        allowedAlarms = configuration.get(Configuration.CATEGORY_GENERAL, "allowedAlarms", "default,sci-fi").value.replaceAll(" ", "");
-        remoteThermalMonitorEnergyConsumption = new Integer(configuration.get(Configuration.CATEGORY_GENERAL, "remoteThermalMonitorEnergyConsumption", 1).value).intValue();
-        screenRefreshPeriod = new Integer(configuration.get(Configuration.CATEGORY_GENERAL, "infoPanelRefreshPeriod", 20).value).intValue();
-        rangeTriggerRefreshPeriod = new Integer(configuration.get(Configuration.CATEGORY_GENERAL, "rangeTriggerRefreshPeriod", 20).value).intValue();
-        SMPMaxAlarmRange = new Integer(configuration.get(Configuration.CATEGORY_GENERAL, "SMPMaxAlarmRange", 256).value).intValue();
+        alarmRange = configuration.get(Configuration.CATEGORY_GENERAL, "alarmRange", 64).getInt();
+        maxAlarmRange = configuration.get(Configuration.CATEGORY_GENERAL, "maxAlarmRange", 128).getInt();
+        allowedAlarms = configuration.get(Configuration.CATEGORY_GENERAL, "allowedAlarms", "default,sci-fi").getString().replaceAll(" ", "");
+        remoteThermalMonitorEnergyConsumption = configuration.get(Configuration.CATEGORY_GENERAL, "remoteThermalMonitorEnergyConsumption", 1).getInt();
+        screenRefreshPeriod = configuration.get(Configuration.CATEGORY_GENERAL, "infoPanelRefreshPeriod", 20).getInt();
+        rangeTriggerRefreshPeriod = configuration.get(Configuration.CATEGORY_GENERAL, "rangeTriggerRefreshPeriod", 20).getInt();
+        SMPMaxAlarmRange = configuration.get(Configuration.CATEGORY_GENERAL, "SMPMaxAlarmRange", 256).getInt();
 
         proxy.registerTileEntities();
         NetworkRegistry.instance().registerGuiHandler(instance, proxy);

@@ -58,14 +58,14 @@ public class GuiInfoPanel extends GuiContainer
         if(((card == null && prevCard == null) || (card!=null  && card.equals(prevCard))) && this.container.panel.getColored() == isColored)
             return;
         int h = fontRenderer.FONT_HEIGHT + 1;
-        controlList.clear();
+        buttonList.clear();
         prevCard = card;
         isColored = this.container.panel.getColored();
-        controlList.add(new GuiInfoPanelShowLabels(0, guiLeft + xSize - 25, guiTop + 42, container.panel));
+        buttonList.add(new GuiInfoPanelShowLabels(0, guiLeft + xSize - 25, guiTop + 42, container.panel));
         int delta = 0;
         if(isColored)
         {
-            controlList.add(new CompactButton(112, guiLeft + xSize - 25, guiTop + 55, 18, 12, "T"));
+            buttonList.add(new CompactButton(112, guiLeft + xSize - 25, guiTop + 55, 18, 12, "T"));
             delta = 15; 
         }
         if(card!=null && card.getItem() instanceof IPanelDataSource)
@@ -74,7 +74,7 @@ public class GuiInfoPanel extends GuiContainer
             IPanelDataSource source = (IPanelDataSource)card.getItem();
             if(source instanceof IAdvancedCardSettings)
             {
-                controlList.add(new CompactButton(111, guiLeft + xSize - 25, guiTop + 55 + delta, 18, 12, "..."));
+                buttonList.add(new CompactButton(111, guiLeft + xSize - 25, guiTop + 55 + delta, 18, 12, "..."));
             }
             int row = 0;
             List<PanelSetting> settingsList = null;
@@ -90,7 +90,7 @@ public class GuiInfoPanel extends GuiContainer
             if(settingsList!=null)
             for (PanelSetting panelSetting : settingsList)
             {
-                controlList.add(new GuiInfoPanelCheckBox(0, guiLeft + 32, guiTop + 40 + h*row, panelSetting, container.panel, slot, fontRenderer));
+                buttonList.add(new GuiInfoPanelCheckBox(0, guiLeft + 32, guiTop + 40 + h*row, panelSetting, container.panel, slot, fontRenderer));
                 row++;
             }
             if(!modified)
@@ -126,9 +126,8 @@ public class GuiInfoPanel extends GuiContainer
     @Override
     protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3)
     {
-        int texture = mc.renderEngine.getTexture("/img/GUIInfoPanel.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture(texture);
+        mc.renderEngine.func_98187_b("/mods/nuclearControl/textures/gui/GUIInfoPanel.png");
         int left = (width - xSize) / 2;
         int top = (height - ySize) / 2;
         drawTexturedModalRect(left, top, 0, 0, xSize, ySize);

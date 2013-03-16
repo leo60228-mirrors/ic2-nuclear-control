@@ -1,5 +1,6 @@
 package shedar.mods.ic2.nuclearcontrol.items;
 
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -10,20 +11,25 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import shedar.mods.ic2.nuclearcontrol.utils.ItemStackUtils;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
+import shedar.mods.ic2.nuclearcontrol.utils.TextureResolver;
 
 public abstract class ItemSensorKitBase extends Item 
 {
-    public ItemSensorKitBase(int i)
+    private String textureItemName;
+    
+    public ItemSensorKitBase(int i, String textureItemName)
     {
         super(i);
+        this.textureItemName = textureItemName;
         setMaxStackSize(1);
         setCreativeTab(CreativeTabs.tabMisc);
     }
 
-    public String getTextureFile()
+    @Override
+    public void func_94581_a(IconRegister iconRegister)
     {
-        return "/img/texture_thermo.png";
-    }
+             iconIndex = iconRegister.func_94245_a(TextureResolver.getItemTexture(textureItemName));
+    }   
     
     abstract protected ChunkCoordinates getTargetCoordinates(World world, int x, int y, int z, ItemStack stack);
     

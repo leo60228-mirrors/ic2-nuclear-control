@@ -42,8 +42,8 @@ public class GuiCardText extends GuiScreen implements ICardGui
     @SuppressWarnings("unchecked")
     private void initControls()
     {
-        controlList.clear();
-        controlList.add(new GuiButton(1, guiLeft+xSize-60-8, guiTop+120, 60, 20, "Ok"));
+        buttonList.clear();
+        buttonList.add(new GuiButton(1, guiLeft+xSize-60-8, guiTop+120, 60, 20, "Ok"));
         textArea = new GuiTextArea(fontRenderer, guiLeft+8, guiTop+5, xSize-16, ySize-35, lineCount);
         textArea.setFocused(true);
         String[] data = textArea.getText();
@@ -83,9 +83,8 @@ public class GuiCardText extends GuiScreen implements ICardGui
     @Override
     public void drawScreen(int par1, int par2, float par3)
     {
-        int texture = mc.renderEngine.getTexture("/img/GUITextCard.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture(texture);
+        mc.renderEngine.func_98187_b("/mods/nuclearControl/textures/gui/GUITextCard.png");
         int left = (width - xSize) / 2;
         int top = (height - ySize) / 2;
         drawTexturedModalRect(left, top, 0, 0, xSize, ySize);

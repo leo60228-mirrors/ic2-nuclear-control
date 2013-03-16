@@ -22,9 +22,9 @@ public class ItemCardText extends ItemCardBase implements IAdvancedCardSettings
 {
     public static final UUID CARD_TYPE = UUID.fromString("90e53ad2-0aae-4937-9078-02a4561259d8");
     
-    public ItemCardText(int i, int iconIndex)
+    public ItemCardText(int i)
     {
-        super(i, iconIndex);
+        super(i, "cardText");
     }
 
     @Override

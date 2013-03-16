@@ -24,7 +24,7 @@ public class CompactButton extends GuiButton
         if (this.drawButton)
         {
             FontRenderer var4 = par1Minecraft.fontRenderer;
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, par1Minecraft.renderEngine.getTexture("/img/GUIThermalMonitor.png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, par1Minecraft.renderEngine.getTexture("/mods/nuclearControl/textures/gui/GUIThermalMonitor.png"));
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             boolean var5 = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
             int var6 = this.getHoverState(var5);

@@ -11,10 +11,9 @@ import net.minecraft.world.World;
 public class ItemKitReactorSensor extends ItemSensorKitBase
 {
 
-    public ItemKitReactorSensor(int i, int iconIndex)
+    public ItemKitReactorSensor(int i)
     {
-        super(i);
-        this.iconIndex = iconIndex;
+        super(i, "kitReactor");
     }
 
     @Override

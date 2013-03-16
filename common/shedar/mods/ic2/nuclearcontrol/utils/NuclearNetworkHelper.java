@@ -165,7 +165,7 @@ public class NuclearNetworkHelper
         packet.isChunkDataPacket = false;
         packet.data = output.toByteArray();
         packet.length = packet.data.length;
-        FMLClientHandler.instance().getClient().getSendQueue().addToSendQueue(packet);
+        FMLClientHandler.instance().getClient().getNetHandler().addToSendQueue(packet);
     }
     
     //client
@@ -217,7 +217,7 @@ public class NuclearNetworkHelper
         packet.isChunkDataPacket = false;
         packet.data = output.toByteArray();
         packet.length = packet.data.length;
-        FMLClientHandler.instance().getClient().getSendQueue().addToSendQueue(packet);
+        FMLClientHandler.instance().getClient().getNetHandler().addToSendQueue(packet);
     }
     
     //server
@@ -272,7 +272,7 @@ public class NuclearNetworkHelper
         packet.isChunkDataPacket = false;
         packet.data = output.toByteArray();
         packet.length = packet.data.length;
-        FMLClientHandler.instance().getClient().getSendQueue().addToSendQueue(packet);
+        FMLClientHandler.instance().getClient().getNetHandler().addToSendQueue(packet);
     }
     
     //client
@@ -290,7 +290,7 @@ public class NuclearNetworkHelper
         packet.isChunkDataPacket = false;
         packet.data = output.toByteArray();
         packet.length = packet.data.length;
-        FMLClientHandler.instance().getClient().getSendQueue().addToSendQueue(packet);
+        FMLClientHandler.instance().getClient().getNetHandler().addToSendQueue(packet);
     }
     
     //client
@@ -307,7 +307,7 @@ public class NuclearNetworkHelper
         packet.isChunkDataPacket = false;
         packet.data = output.toByteArray();
         packet.length = packet.data.length;
-        FMLClientHandler.instance().getClient().getSendQueue().addToSendQueue(packet);
+        FMLClientHandler.instance().getClient().getNetHandler().addToSendQueue(packet);
     }
     
     //client
@@ -323,7 +323,7 @@ public class NuclearNetworkHelper
         packet.isChunkDataPacket = false;
         packet.data = output.toByteArray();
         packet.length = packet.data.length;
-        FMLClientHandler.instance().getClient().getSendQueue().addToSendQueue(packet);
+        FMLClientHandler.instance().getClient().getNetHandler().addToSendQueue(packet);
     }
     
     //server

@@ -29,8 +29,8 @@ public class GuiEnergyCounter extends GuiContainer
     @SuppressWarnings("unchecked")
     private void initControls()
     {
-        controlList.clear();
-        controlList.add(new GuiButton(0, guiLeft+35, guiTop+42, 127, 20, StatCollector.translateToLocal("msg.nc.Reset")));
+        buttonList.clear();
+        buttonList.add(new GuiButton(0, guiLeft+35, guiTop+42, 127, 20, StatCollector.translateToLocal("msg.nc.Reset")));
     }
     
     @Override
@@ -52,9 +52,8 @@ public class GuiEnergyCounter extends GuiContainer
     @Override
     protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3)
     {
-        int texture = mc.renderEngine.getTexture("/img/GUIEnergyCounter.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture(texture);
+        mc.renderEngine.func_98187_b("/mods/nuclearControl/textures/gui/GUIEnergyCounter.png");
         int left = (width - xSize) / 2;
         int top = (height - ySize) / 2;
         drawTexturedModalRect(left, top, 0, 0, xSize, ySize);

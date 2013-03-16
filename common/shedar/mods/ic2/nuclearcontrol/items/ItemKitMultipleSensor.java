@@ -6,11 +6,14 @@ import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter;
 import shedar.mods.ic2.nuclearcontrol.utils.LiquidStorageHelper;
+import shedar.mods.ic2.nuclearcontrol.utils.TextureResolver;
 
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import net.minecraftforge.liquids.ILiquidTank;
 
@@ -19,13 +22,19 @@ public class ItemKitMultipleSensor extends ItemSensorKitBase
     public static final int TYPE_COUNTER = 0;
     public static final int TYPE_LIQUID = 1;
 
+    private static final String TEXTURE_KIT_COUNTER = "kitCounter";
+    private static final String TEXTURE_KIT_LIQUID = "kitLiquid";
+    
+    private Icon iconCounter;
+    private Icon iconLiquid;
+    
     public ItemKitMultipleSensor(int i)
     {
-        super(i);
+        super(i, "");
     }
     
     @Override
-    public String getItemNameIS(ItemStack stack) 
+    public String getUnlocalizedName(ItemStack stack) 
     {
         int damage = stack.getItemDamage();
         switch (damage)
@@ -39,16 +48,23 @@ public class ItemKitMultipleSensor extends ItemSensorKitBase
     }
 
     @Override
-    public int getIconFromDamage(int damage)
+    public void func_94581_a(IconRegister iconRegister)
+    {
+        iconCounter = iconRegister.func_94245_a(TextureResolver.getItemTexture(TEXTURE_KIT_COUNTER));
+        iconLiquid = iconRegister.func_94245_a(TextureResolver.getItemTexture(TEXTURE_KIT_LIQUID));
+    }    
+    
+    @Override
+    public Icon getIconFromDamage(int damage)
     {
         switch (damage)
         {
         case TYPE_COUNTER:
-            return 68;
+            return iconCounter;
         case TYPE_LIQUID:
-            return 70;
+            return iconLiquid;
         }
-        return 0;
+        return null;
     }
     
     @Override

@@ -15,10 +15,9 @@ import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 public class ItemKitEnergySensor extends ItemSensorKitBase
 {
 
-    public ItemKitEnergySensor(int i, int iconIndex)
+    public ItemKitEnergySensor(int i)
     {
-        super(i);
-        this.iconIndex = iconIndex;
+        super(i, "kitEnergy");
     }
     
     @Override

@@ -164,11 +164,10 @@ public class BlockNuclearControlMain extends BlockContainer
         };
     
 
-    public BlockNuclearControlMain(int i, int j)
+    public BlockNuclearControlMain(int i)
     {
-        super(i, j, Material.iron);
+        super(i, Material.iron);
         setHardness(0.5F);
-        setRequiresSelfNotify();
         setCreativeTab(CreativeTabs.tabRedstone);
     }
 
@@ -182,12 +181,6 @@ public class BlockNuclearControlMain extends BlockContainer
     public boolean isBlockNormalCube(World world, int x, int y, int z)
     {
         return false;
-    }
-
-    @Override
-    public String getTextureFile()
-    {
-        return "/img/texture_thermo.png";
     }
 
     @Override
@@ -358,7 +351,7 @@ public class BlockNuclearControlMain extends BlockContainer
 			if(!world.isRemote){
 				dropBlockAsItem(world, x, y, z, metadata, 0);
 			}
-            world.setBlockWithNotify(x, y, z, 0);
+            world.setBlockAndMetadataWithNotify(x, y, z, 0, 0, 3);
 		}
 		else
 		{
@@ -398,7 +391,7 @@ public class BlockNuclearControlMain extends BlockContainer
             if (world.getBlockId(x, y, z) == blockID)
             {
                 dropBlockAsItem(world, x, y, z, metadata, 0);
-                world.setBlockWithNotify(x, y, z, 0);
+                world.setBlockAndMetadataWithNotify(x, y, z, 0, 0, 3);
             }
             return false;
         }
@@ -570,17 +563,17 @@ public class BlockNuclearControlMain extends BlockContainer
     }
 
     @Override
-    public boolean isProvidingWeakPower(IBlockAccess iblockaccess, int x, int y, int z, int direction)
+    public int isProvidingWeakPower(IBlockAccess iblockaccess, int x, int y, int z, int direction)
     {
         return isProvidingStrongPower(iblockaccess, x, y, z, direction);
     }
     
     @Override
-    public boolean isProvidingStrongPower(IBlockAccess iblockaccess, int x, int y, int z, int direction)
+    public int isProvidingStrongPower(IBlockAccess iblockaccess, int x, int y, int z, int direction)
     {
         TileEntity tileentity = iblockaccess.getBlockTileEntity(x, y, z);
         if(!(tileentity instanceof TileEntityIC2Thermo) && !(tileentity instanceof TileEntityRangeTrigger))
-            return false;
+            return 0;
         
         int targetX = x;
         int targetY = y;
@@ -610,16 +603,16 @@ public class BlockNuclearControlMain extends BlockContainer
             (NuclearHelper.getReactorAt(tileentity.worldObj, targetX, targetY, targetZ)!=null || 
     		NuclearHelper.getReactorChamberAt(tileentity.worldObj, targetX, targetY, targetZ)!=null))
         {
-            return false;
+            return 0;
         }
         if(tileentity instanceof TileEntityRemoteThermo)
         {
             TileEntityRemoteThermo thermo = (TileEntityRemoteThermo)tileentity;
-            return thermo.getOnFire() >= thermo.getHeatLevel() ^ thermo.isInvertRedstone();
+            return thermo.getOnFire() >= thermo.getHeatLevel() ^ thermo.isInvertRedstone()?15:0;
         }
         if(tileentity instanceof TileEntityRangeTrigger)
-            return ((TileEntityRangeTrigger)tileentity).getOnFire() > 0 ^ ((TileEntityRangeTrigger)tileentity).isInvertRedstone();
-    	return ((TileEntityIC2Thermo)tileentity).getOnFire() > 0 ^ ((TileEntityIC2Thermo)tileentity).isInvertRedstone();
+            return ((TileEntityRangeTrigger)tileentity).getOnFire() > 0 ^ ((TileEntityRangeTrigger)tileentity).isInvertRedstone()?15:0;
+    	return ((TileEntityIC2Thermo)tileentity).getOnFire() > 0 ^ ((TileEntityIC2Thermo)tileentity).isInvertRedstone()?15:0;
     }
 
     @Override
@@ -707,17 +700,10 @@ public class BlockNuclearControlMain extends BlockContainer
     @Override
     public void getSubBlocks(int id, CreativeTabs tab, List itemList)
     {
-        itemList.add(new ItemStack(this, 1, DAMAGE_THERMAL_MONITOR));
-        itemList.add(new ItemStack(this, 1, DAMAGE_INDUSTRIAL_ALARM));
-        itemList.add(new ItemStack(this, 1, DAMAGE_HOWLER_ALARM));
-        itemList.add(new ItemStack(this, 1, DAMAGE_REMOTE_THERMO));
-        itemList.add(new ItemStack(this, 1, DAMAGE_INFO_PANEL));
-        itemList.add(new ItemStack(this, 1, DAMAGE_INFO_PANEL_EXTENDER));
-        itemList.add(new ItemStack(this, 1, DAMAGE_ENERGY_COUNTER));
-        itemList.add(new ItemStack(this, 1, DAMAGE_AVERAGE_COUNTER));
-        itemList.add(new ItemStack(this, 1, DAMAGE_RANGE_TRIGGER));
-        itemList.add(new ItemStack(this, 1, DAMAGE_ADVANCED_PANEL));
-        itemList.add(new ItemStack(this, 1, DAMAGE_ADVANCED_EXTENDER));
+        for(int i=0;i<=DAMAGE_MAX;i++)
+        {
+            itemList.add(new ItemStack(this, 1, i));
+        }
     }
 
     @Override
@@ -727,7 +713,7 @@ public class BlockNuclearControlMain extends BlockContainer
     }
 
     @Override
-    public TileEntity createNewTileEntity(World world, int metadata)
+    public TileEntity createTileEntity(World world, int metadata)
     {
         switch (metadata)
         {

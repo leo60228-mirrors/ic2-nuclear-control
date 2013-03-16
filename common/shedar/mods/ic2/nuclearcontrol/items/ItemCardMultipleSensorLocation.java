@@ -5,11 +5,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.Icon;
 import net.minecraft.util.StringTranslate;
 import net.minecraftforge.liquids.ILiquidTank;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
@@ -23,6 +25,7 @@ import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter;
 import shedar.mods.ic2.nuclearcontrol.utils.LiquidStorageHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
+import shedar.mods.ic2.nuclearcontrol.utils.TextureResolver;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -43,13 +46,26 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase implements IRem
     private static final UUID CARD_TYPE_COUNTER = new UUID(0, 4);;
     private static final UUID CARD_TYPE_LIQUID = UUID.fromString("210dc1f0-118c-48ee-9d08-42bfbee1ea15");
 
+    private static final String TEXTURE_CARD_COUNTER = "cardCounter";
+    private static final String TEXTURE_CARD_LIQUID = "cardLiquid";
+    
+    private Icon iconCounter;
+    private Icon iconLiquid;
+    
     public ItemCardMultipleSensorLocation(int i)
     {
-        super(i, 0);
+        super(i, "");
     }
     
     @Override
-    public String getItemNameIS(ItemStack stack) 
+    public void func_94581_a(IconRegister iconRegister)
+    {
+        iconCounter = iconRegister.func_94245_a(TextureResolver.getItemTexture(TEXTURE_CARD_COUNTER));
+        iconLiquid = iconRegister.func_94245_a(TextureResolver.getItemTexture(TEXTURE_CARD_LIQUID));
+    }    
+    
+    @Override
+    public String getUnlocalizedName(ItemStack stack) 
     {
         int damage = stack.getItemDamage();
         switch (damage)
@@ -250,16 +266,16 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase implements IRem
     }
     
     @Override
-    public int getIconFromDamage(int damage)
+    public Icon getIconFromDamage(int damage)
     {
         switch (damage)
         {
         case ItemKitMultipleSensor.TYPE_COUNTER:
-            return 52;
+            return iconCounter;
         case ItemKitMultipleSensor.TYPE_LIQUID:
-            return 54;
+            return iconLiquid;
         }
-        return 0;
+        return null;
     }
     
 

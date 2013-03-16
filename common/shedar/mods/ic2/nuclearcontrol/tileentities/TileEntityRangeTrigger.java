@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,8 +18,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Facing;
-import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.ISidedInventory;
 import shedar.mods.ic2.nuclearcontrol.BlockNuclearControlMain;
 import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.IRotation;
@@ -589,17 +588,21 @@ public class TileEntityRangeTrigger extends TileEntity implements
     }
 
     @Override
-    public int getStartInventorySide(ForgeDirection side)
+    //getStartInventorySide
+    public int func_94127_c(int side)
     {
-        if(side == ForgeDirection.DOWN)
+        //DOWN  
+        if(side == 0)
             return 1;
         return 0;
     }
 
     @Override
-    public int getSizeInventorySide(ForgeDirection side)
+    // getSizeInventorySide
+    public int func_94128_d(int side)
     {
-        if(side == ForgeDirection.DOWN || side == ForgeDirection.UP)
+        //DOWN || UP
+        if(side == 0 || side == 1)
             return 1;
         return inventory.length;
     }
@@ -650,5 +653,20 @@ public class TileEntityRangeTrigger extends TileEntity implements
     public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
     {
         return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, BlockNuclearControlMain.DAMAGE_RANGE_TRIGGER);
+    }
+
+    @Override
+    //getHasCustomName
+    public boolean func_94042_c()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    //acceptsItemStack
+    public boolean func_94041_b(int slot, ItemStack itemstack)
+    {
+        return isItemValid(slot, itemstack);
     }
 }

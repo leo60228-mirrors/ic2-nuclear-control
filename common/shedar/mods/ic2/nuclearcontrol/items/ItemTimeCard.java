@@ -18,9 +18,9 @@ public class ItemTimeCard extends ItemCardBase
 
     public static final UUID CARD_TYPE =  new UUID(0, 1);
     
-    public ItemTimeCard(int i, int iconIndex)
+    public ItemTimeCard(int i)
     {
-        super(i, iconIndex);
+        super(i, "cardTime");
     }
 
     @Override

@@ -436,8 +436,23 @@ public class TileEntityEnergyCounter extends TileEntity implements
     @Override
     public void removeConductor()
     {
-        worldObj.setBlockWithNotify(xCoord, yCoord, zCoord, 0);
+        worldObj.setBlockAndMetadataWithNotify(xCoord, yCoord, zCoord, 0, 0, 3);
         worldObj.createExplosion(null, xCoord, yCoord, zCoord, 0.8F, false);
+    }
+
+    @Override
+    //getHasCustomName
+    public boolean func_94042_c()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    //acceptsItemStack
+    public boolean func_94041_b(int slot, ItemStack itemstack)
+    {
+        return isItemValid(slot, itemstack);
     }
 
 }

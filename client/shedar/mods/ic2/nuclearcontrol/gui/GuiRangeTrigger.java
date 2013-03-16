@@ -38,20 +38,20 @@ public class GuiRangeTrigger extends GuiContainer
         ItemStack card = container.getSlot(TileEntityRangeTrigger.SLOT_CARD).getStack();
         if(card!=null  && card.equals(prevCard))
             return;
-        controlList.clear();
+        buttonList.clear();
         prevCard = card;
         // ten digits, up to 10 billions
         for(int i=0; i<10; i++)
         {
-            this.controlList.add(new CompactButton(i*10, guiLeft + 30 + i*12 + (i+2)/3*6, guiTop + 20, 12, 12, "-"));
-            this.controlList.add(new CompactButton(i*10+1, guiLeft + 30 + i*12 + (i+2)/3*6, guiTop + 42, 12, 12, "+"));
+            buttonList.add(new CompactButton(i*10, guiLeft + 30 + i*12 + (i+2)/3*6, guiTop + 20, 12, 12, "-"));
+            buttonList.add(new CompactButton(i*10+1, guiLeft + 30 + i*12 + (i+2)/3*6, guiTop + 42, 12, 12, "+"));
         }
         for(int i=0; i<10; i++)
         {
-            this.controlList.add(new CompactButton(100+i*10, guiLeft + 30 + i*12 + (i+2)/3*6, guiTop + 57, 12, 12, "-"));
-            this.controlList.add(new CompactButton(100+i*10+1, guiLeft + 30 + i*12 + (i+2)/3*6, guiTop + 79, 12, 12, "+"));
+            buttonList.add(new CompactButton(100+i*10, guiLeft + 30 + i*12 + (i+2)/3*6, guiTop + 57, 12, 12, "-"));
+            buttonList.add(new CompactButton(100+i*10+1, guiLeft + 30 + i*12 + (i+2)/3*6, guiTop + 79, 12, 12, "+"));
         }
-        controlList.add(new GuiRangeTriggerInvertRedstone(10, guiLeft + 8, guiTop + 62, container.trigger));
+        buttonList.add(new GuiRangeTriggerInvertRedstone(10, guiLeft + 8, guiTop + 62, container.trigger));
     }
     
     @Override
@@ -119,9 +119,8 @@ public class GuiRangeTrigger extends GuiContainer
     @Override
     protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3)
     {
-        int texture = mc.renderEngine.getTexture("/img/GUIRangeTrigger.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture(texture);
+        mc.renderEngine.func_98187_b("/mods/nuclearControl/textures/gui/GUIRangeTrigger.png");
         int left = (width - xSize) / 2;
         int top = (height - ySize) / 2;
         drawTexturedModalRect(left, top, 0, 0, xSize, ySize);

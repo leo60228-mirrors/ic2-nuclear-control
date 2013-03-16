@@ -33,9 +33,9 @@ public class ItemCardEnergySensorLocation extends ItemCardBase implements IRemot
     
     public static final UUID CARD_TYPE = new UUID(0, 2);
 
-    public ItemCardEnergySensorLocation(int i, int iconIndex)
+    public ItemCardEnergySensorLocation(int i)
     {
-        super(i, iconIndex);
+        super(i, "cardEnergy");
     }
     
     @Override

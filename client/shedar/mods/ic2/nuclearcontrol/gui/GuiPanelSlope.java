@@ -66,9 +66,8 @@ public class GuiPanelSlope  extends GuiScreen
     @Override
     public void drawScreen(int par1, int par2, float par3)
     {
-        int texture = mc.renderEngine.getTexture("/img/GUISlope.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture(texture);
+        mc.renderEngine.func_98187_b("/mods/nuclearControl/textures/gui/GUISlope.png");
         int left = (width - xSize) / 2;
         int top = (height - ySize) / 2;
         drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
@@ -100,7 +99,7 @@ public class GuiPanelSlope  extends GuiScreen
         super.initGui();
         guiLeft = (width - xSize) / 2;
         guiTop = (height - ySize) / 2;
-        controlList.clear();
+        buttonList.clear();
     }    
     
 }

@@ -40,7 +40,7 @@ public class GuiHowlerAlarm extends GuiContainer
         super.initGui();
         guiLeft = (this.width - xSize) / 2;
         guiTop = (this.height - ySize) / 2;
-        controlList.clear();
+        buttonList.clear();
         slider = new GuiHowlerAlarmSlider(3, guiLeft+12, guiTop + 33, 
                 StatCollector.translateToLocal("msg.nc.HowlerAlarmSoundRange"), alarm);
         List<String> items;
@@ -54,8 +54,8 @@ public class GuiHowlerAlarm extends GuiContainer
             items = IC2NuclearControl.instance.availableAlarms;
         }
         listBox = new GuiHowlerAlarmListBox(4, guiLeft+13, guiTop+63, 105, 65, items, alarm);
-        controlList.add(slider);
-        controlList.add(listBox);
+        buttonList.add(slider);
+        buttonList.add(listBox);
         
     };
     
@@ -85,9 +85,8 @@ public class GuiHowlerAlarm extends GuiContainer
     @Override
     protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3)
     {
-        int texture = mc.renderEngine.getTexture("/img/GUIHowlerAlarm.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture(texture);
+        mc.renderEngine.func_98187_b("/mods/nuclearControl/textures/gui/GUIHowlerAlarm.png");
         int left = (width - xSize) / 2;
         int top = (height - ySize) / 2;
         drawTexturedModalRect(left, top, 0, 0, xSize, ySize);

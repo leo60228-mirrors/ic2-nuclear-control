@@ -36,9 +36,9 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
     
     public static final UUID CARD_TYPE = new UUID(0, 3);
     
-    public ItemCardEnergyArrayLocation(int i, int iconIndex)
+    public ItemCardEnergyArrayLocation(int i)
     {
-        super(i, iconIndex);
+        super(i, "cardEnergyArray");
     }
     
     private int[] getCoordinates(ICardWrapper card, int cardNumber)

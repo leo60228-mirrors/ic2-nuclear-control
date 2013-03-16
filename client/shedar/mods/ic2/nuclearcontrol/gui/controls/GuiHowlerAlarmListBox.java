@@ -141,7 +141,7 @@ public class GuiHowlerAlarmListBox extends GuiButton
         //Slider
         int sliderX = xPosition+width-SCROLL_WIDTH+1;
         sliderY = yPosition + SCROLL_BUTTON_HEIGHT + ((height - 2*SCROLL_BUTTON_HEIGHT-sliderHeight)*scrollTop)/(lineHeight*items.size() + BASIC_Y_OFFSET - height);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.renderEngine.getTexture("/img/GUIHowlerAlarm.png"));
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.renderEngine.getTexture("/mods/nuclearControl/textures/gui/GUIHowlerAlarm.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         drawTexturedModalRect(sliderX, sliderY, 131, 16, SCROLL_WIDTH - 1, 1);

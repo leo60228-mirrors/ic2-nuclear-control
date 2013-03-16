@@ -2,27 +2,43 @@ package shedar.mods.ic2.nuclearcontrol.items;
 
 import java.util.List;
 
+import shedar.mods.ic2.nuclearcontrol.utils.TextureResolver;
+
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Icon;
 
 
 public class ItemUpgrade extends Item
 {
     public static final int DAMAGE_RANGE = 0;
     public static final int DAMAGE_COLOR = 1;
+    
+    private static final String TEXTURE_RANGE = "upgradeRange"; 
+    private static final String TEXTURE_COLOR = "upgradeColor"; 
+    
+    private Icon iconRange;
+    private Icon iconColor;
 
-    public ItemUpgrade(int i, int iconIndex)
+    public ItemUpgrade(int i)
     {
         super(i);
-        setIconIndex(iconIndex);
         setMaxDamage(0);
         setHasSubtypes(true);
         setCreativeTab(CreativeTabs.tabMisc);
     }
     
     @Override
-    public String getItemNameIS(ItemStack itemStack) 
+    public void func_94581_a(IconRegister iconRegister)
+    {
+        iconRange = iconRegister.func_94245_a(TextureResolver.getItemTexture(TEXTURE_RANGE));
+        iconColor = iconRegister.func_94245_a(TextureResolver.getItemTexture(TEXTURE_COLOR));
+    }    
+    
+    @Override
+    public String getUnlocalizedName(ItemStack itemStack) 
     {
         int damage = itemStack.getItemDamage();
         switch (damage)
@@ -37,23 +53,17 @@ public class ItemUpgrade extends Item
     }
     
     @Override
-    public int getIconFromDamage(int damage)
+    public Icon getIconFromDamage(int damage)
     {
         switch (damage)
         {
         case DAMAGE_RANGE:
-            return 66;
+            return iconRange;
         case DAMAGE_COLOR:
-            return 67;
+            return iconColor;
         default:
-            return 66;
+            return iconRange;
         }
-    }
-
-
-    public String getTextureFile()
-    {
-        return "/img/texture_thermo.png";
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })

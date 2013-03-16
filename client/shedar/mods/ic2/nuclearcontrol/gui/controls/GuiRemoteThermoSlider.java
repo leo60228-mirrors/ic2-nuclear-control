@@ -100,7 +100,7 @@ public class GuiRemoteThermoSlider extends GuiButton
     public void drawButton(Minecraft minecraft, int targetX, int targetY) {
         if (drawButton)
         {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.renderEngine.getTexture("/img/GUIRemoteThermo.png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.renderEngine.getTexture("/mods/nuclearControl/textures/gui/GUIRemoteThermo.png"));
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             if (dragging && (targetX >= xPosition + ARROW_WIDTH) && (targetX <= xPosition + width - ARROW_WIDTH))
             {

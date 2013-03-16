@@ -2,6 +2,8 @@ package shedar.mods.ic2.nuclearcontrol.items;
 
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
+import shedar.mods.ic2.nuclearcontrol.utils.TextureResolver;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -14,24 +16,24 @@ import ic2.api.IReactorChamber;
 public class ItemToolThermometer extends Item
 {
 
-    public ItemToolThermometer(int i, int j)
+    public ItemToolThermometer(int i)
     {
         super(i);
-        setIconIndex(j);
         setMaxDamage(102);
         setMaxStackSize(1);
         setCreativeTab(CreativeTabs.tabMisc);
     }
 
-    public boolean canTakeDamage(ItemStack itemstack, int i)
+    protected boolean canTakeDamage(ItemStack itemstack, int i)
     {
         return true;
     }
 
-    public String getTextureFile()
+    @Override
+    public void func_94581_a(IconRegister iconRegister)
     {
-        return "/img/texture_thermo.png";
-    }
+             iconIndex = iconRegister.func_94245_a(TextureResolver.getItemTexture("thermometer"));
+    }    
 
     @Override
     public boolean onItemUseFirst(ItemStack itemstack, EntityPlayer player, World world, int x, int y, int z, int side,  float hitX, float hitY, float hitZ)

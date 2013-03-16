@@ -28,7 +28,7 @@ public class ItemNuclearControlMain extends ItemBlock
     }
 
     @Override
-    public String getItemNameIS(ItemStack item)
+    public String getUnlocalizedName(ItemStack item)
     {
         switch(item.getItemDamage())
         {
@@ -62,7 +62,7 @@ public class ItemNuclearControlMain extends ItemBlock
     @Override
     public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
     {
-       if (!world.setBlockAndMetadataWithNotify(x, y, z, getBlockID(), metadata & 0xff))
+       if (!world.setBlockAndMetadataWithNotify(x, y, z, getBlockID(), metadata & 0xff, 3))
        {
                return false;
        }
@@ -72,7 +72,7 @@ public class ItemNuclearControlMain extends ItemBlock
            if(Block.blocksList[getBlockID()] instanceof BlockNuclearControlMain)
                ((BlockNuclearControlMain)Block.blocksList[getBlockID()]).onBlockPlacedBy(world, x, y, z, player, metadata);
            else
-               Block.blocksList[getBlockID()].onBlockPlacedBy(world, x, y, z, player);
+               Block.blocksList[getBlockID()].onBlockPlacedBy(world, x, y, z, player, stack);
            Block.blocksList[getBlockID()].onPostBlockPlaced(world, x, y, z, metadata);
        }
 

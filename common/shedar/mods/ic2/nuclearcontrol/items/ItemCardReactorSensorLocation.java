@@ -38,9 +38,9 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
     
     public static final UUID CARD_TYPE = new UUID(0, 0);
     
-    public ItemCardReactorSensorLocation(int i, int iconIndex)
+    public ItemCardReactorSensorLocation(int i)
     {
-        super(i, iconIndex);
+        super(i, "cardReactor");
     }
 
     @Override

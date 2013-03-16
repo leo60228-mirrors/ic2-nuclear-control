@@ -63,20 +63,20 @@ public class GuiIC2Thermo extends GuiContainer
     public void initGui()
     {
         super.initGui();
-        controlList.clear();
-        this.controlList.add(new CompactButton(0, guiLeft + 47, guiTop + 20, 22, 12, "-1"));
-        this.controlList.add(new CompactButton(1, guiLeft + 47, guiTop + 31, 22, 12, "-10"));
-        this.controlList.add(new CompactButton(2, guiLeft + 12, guiTop + 20, 36, 12, "-100"));
-        this.controlList.add(new CompactButton(3, guiLeft + 12, guiTop + 31, 36, 12, "-1000"));
-        this.controlList.add(new CompactButton(4, guiLeft + 12, guiTop + 42, 57, 12, "-10000"));
+        buttonList.clear();
+        buttonList.add(new CompactButton(0, guiLeft + 47, guiTop + 20, 22, 12, "-1"));
+        buttonList.add(new CompactButton(1, guiLeft + 47, guiTop + 31, 22, 12, "-10"));
+        buttonList.add(new CompactButton(2, guiLeft + 12, guiTop + 20, 36, 12, "-100"));
+        buttonList.add(new CompactButton(3, guiLeft + 12, guiTop + 31, 36, 12, "-1000"));
+        buttonList.add(new CompactButton(4, guiLeft + 12, guiTop + 42, 57, 12, "-10000"));
         
-        this.controlList.add(new CompactButton(5, guiLeft + 122, guiTop + 20, 22, 12, "+1"));
-        this.controlList.add(new CompactButton(6, guiLeft + 122, guiTop + 31, 22, 12, "+10"));
-        this.controlList.add(new CompactButton(7, guiLeft + 143, guiTop + 20, 36, 12, "+100"));
-        this.controlList.add(new CompactButton(8, guiLeft + 143, guiTop + 31, 36, 12, "+1000"));
-        this.controlList.add(new CompactButton(9, guiLeft + 122, guiTop + 42, 57, 12, "+10000"));
+        buttonList.add(new CompactButton(5, guiLeft + 122, guiTop + 20, 22, 12, "+1"));
+        buttonList.add(new CompactButton(6, guiLeft + 122, guiTop + 31, 22, 12, "+10"));
+        buttonList.add(new CompactButton(7, guiLeft + 143, guiTop + 20, 36, 12, "+100"));
+        buttonList.add(new CompactButton(8, guiLeft + 143, guiTop + 31, 36, 12, "+1000"));
+        buttonList.add(new CompactButton(9, guiLeft + 122, guiTop + 42, 57, 12, "+10000"));
         
-        controlList.add(new GuiThermoInvertRedstone(10, guiLeft + 70, guiTop + 38, thermo));
+        buttonList.add(new GuiThermoInvertRedstone(10, guiLeft + 70, guiTop + 38, thermo));
         
         textboxHeat = new GuiTextField(fontRenderer, 70, 21, 51, 12);
         textboxHeat.setFocused(true);
@@ -123,9 +123,8 @@ public class GuiIC2Thermo extends GuiContainer
     @Override
     protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3)
     {
-        int texture = mc.renderEngine.getTexture("/img/GUIThermalMonitor.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture(texture);
+        mc.renderEngine.func_98187_b("/mods/nuclearControl/textures/gui/GUIThermalMonitor.png");
         int left = (width - xSize) / 2;
         int top = (height - ySize) / 2;
         drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
