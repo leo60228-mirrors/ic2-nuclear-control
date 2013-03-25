@@ -35,9 +35,9 @@ public class ItemToolDigitalThermometer extends ItemToolThermometer
     }
 
     @Override
-    public void func_94581_a(IconRegister iconRegister)
+    public void updateIcons(IconRegister iconRegister)
     {
-             iconIndex = iconRegister.func_94245_a(TextureResolver.getItemTexture("thermometerDigital"));
+             iconIndex = iconRegister.registerIcon(TextureResolver.getItemTexture("thermometerDigital"));
     }    
 
     @Override
@@ -63,32 +63,32 @@ public class ItemToolDigitalThermometer extends ItemToolThermometer
     }
     
 	@Override
-	public boolean canProvideEnergy() {
+	public boolean canProvideEnergy(ItemStack itemStack) {
 		return false;
 	}
 
 	@Override
-	public int getChargedItemId() {
+	public int getChargedItemId(ItemStack itemStack) {
 		return itemID;
 	}
 
 	@Override
-	public int getEmptyItemId() {
+	public int getEmptyItemId(ItemStack itemStack) {
 		return itemID;
 	}
 
 	@Override
-	public int getMaxCharge() {
+	public int getMaxCharge(ItemStack itemStack) {
 		return 12000;
 	}
 
 	@Override
-	public int getTier() {
+	public int getTier(ItemStack itemStack) {
 		return tier;
 	}
 
 	@Override
-	public int getTransferLimit() {
+	public int getTransferLimit(ItemStack itemStack) {
 		return 250;
 	}
 

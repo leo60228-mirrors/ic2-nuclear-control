@@ -24,34 +24,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
-import shedar.mods.ic2.nuclearcontrol.containers.ContainerAdvancedInfoPanel;
-import shedar.mods.ic2.nuclearcontrol.containers.ContainerAverageCounter;
-import shedar.mods.ic2.nuclearcontrol.containers.ContainerEnergyCounter;
-import shedar.mods.ic2.nuclearcontrol.containers.ContainerInfoPanel;
-import shedar.mods.ic2.nuclearcontrol.containers.ContainerRangeTrigger;
-import shedar.mods.ic2.nuclearcontrol.containers.ContainerRemoteThermo;
-import shedar.mods.ic2.nuclearcontrol.gui.GuiAdvancedInfoPanel;
-import shedar.mods.ic2.nuclearcontrol.gui.GuiAverageCounter;
-import shedar.mods.ic2.nuclearcontrol.gui.GuiEnergyCounter;
-import shedar.mods.ic2.nuclearcontrol.gui.GuiHowlerAlarm;
-import shedar.mods.ic2.nuclearcontrol.gui.GuiIC2Thermo;
-import shedar.mods.ic2.nuclearcontrol.gui.GuiIndustrialAlarm;
-import shedar.mods.ic2.nuclearcontrol.gui.GuiInfoPanel;
-import shedar.mods.ic2.nuclearcontrol.gui.GuiRangeTrigger;
-import shedar.mods.ic2.nuclearcontrol.gui.GuiRemoteThermo;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.renderers.MainBlockRenderer;
 import shedar.mods.ic2.nuclearcontrol.renderers.TileEntityIC2ThermoRenderer;
 import shedar.mods.ic2.nuclearcontrol.renderers.TileEntityInfoPanelRenderer;
 import shedar.mods.ic2.nuclearcontrol.renderers.TileEntityRemoteThermoRenderer;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
+import shedar.mods.ic2.nuclearcontrol.subblocks.Subblock;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityHowlerAlarm;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityIC2Thermo;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityRangeTrigger;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityRemoteThermo;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -341,36 +322,11 @@ public class ClientProxy extends CommonProxy
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {
-        TileEntity tileEntity= world.getBlockTileEntity(x, y, z);
-        switch (ID)
-        {
-            case BlockNuclearControlMain.DAMAGE_THERMAL_MONITOR:
-                return new GuiIC2Thermo((TileEntityIC2Thermo)tileEntity);
-            case BlockNuclearControlMain.DAMAGE_HOWLER_ALARM:
-                return new GuiHowlerAlarm((TileEntityHowlerAlarm)tileEntity);
-            case BlockNuclearControlMain.DAMAGE_INDUSTRIAL_ALARM:
-                return new GuiIndustrialAlarm((TileEntityHowlerAlarm)tileEntity);
-            case BlockNuclearControlMain.DAMAGE_REMOTE_THERMO:
-                ContainerRemoteThermo container = new ContainerRemoteThermo(player, (TileEntityRemoteThermo)tileEntity);
-                return new GuiRemoteThermo(container);
-            case BlockNuclearControlMain.DAMAGE_INFO_PANEL:
-                ContainerInfoPanel containerPanel = new ContainerInfoPanel(player, (TileEntityInfoPanel)tileEntity);
-                return new GuiInfoPanel(containerPanel);
-            case BlockNuclearControlMain.DAMAGE_ADVANCED_PANEL:
-                ContainerAdvancedInfoPanel containerAdvancedPanel = new ContainerAdvancedInfoPanel(player, (TileEntityAdvancedInfoPanel)tileEntity);
-                return new GuiAdvancedInfoPanel(containerAdvancedPanel);
-            case BlockNuclearControlMain.DAMAGE_ENERGY_COUNTER:
-                ContainerEnergyCounter containerCounter = new ContainerEnergyCounter(player, (TileEntityEnergyCounter)tileEntity);
-                return new GuiEnergyCounter(containerCounter);
-            case BlockNuclearControlMain.DAMAGE_AVERAGE_COUNTER:
-                ContainerAverageCounter containerAverageCounter = new ContainerAverageCounter(player, (TileEntityAverageCounter)tileEntity);
-                return new GuiAverageCounter(containerAverageCounter);
-            case BlockNuclearControlMain.DAMAGE_RANGE_TRIGGER:
-                ContainerRangeTrigger containerRangeTrigger = new ContainerRangeTrigger(player, (TileEntityRangeTrigger)tileEntity);
-                return new GuiRangeTrigger(containerRangeTrigger);
-            default:
-                return null;
-        }
+        TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+        Subblock block = IC2NuclearControl.instance.blockNuclearControlMain.getSubblock(ID);
+        if(block == null)
+            return null;
+        return block.getClientGuiElement(tileEntity, player);
     }    
 
 }

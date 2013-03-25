@@ -13,25 +13,25 @@ import ic2.api.network.NetworkHelper;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.common.MinecraftForge;
-import shedar.mods.ic2.nuclearcontrol.BlockNuclearControlMain;
 import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.IRotation;
 import shedar.mods.ic2.nuclearcontrol.ISlotItemFilter;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardReactorSensorLocation;
 import shedar.mods.ic2.nuclearcontrol.items.ItemUpgrade;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
+import shedar.mods.ic2.nuclearcontrol.utils.Damages;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearHelper;
 
 
 public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements 
-    ISidedInventory, IEnergySink, ISlotItemFilter, IRotation
+    /*ISidedInventory,*/ IEnergySink, ISlotItemFilter, IRotation, IInventory
 {
     public static final int SLOT_CHARGER = 0;
     public static final int SLOT_CARD = 1;
@@ -191,7 +191,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
                     {
                         IElectricItem ielectricitem = (IElectricItem)inventory[SLOT_CHARGER].getItem();
     
-                        if (ielectricitem.canProvideEnergy())
+                        if (ielectricitem.canProvideEnergy(inventory[SLOT_CHARGER]))
                         {
                             int k = ElectricItem.discharge(inventory[SLOT_CHARGER], maxStorage - energy, tier, false, false);
                             energy += k;
@@ -474,7 +474,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     {
         if (amount > maxPacketSize)
         {
-            worldObj.setBlockAndMetadataWithNotify(xCoord, yCoord, zCoord, 0, 0, 3);
+            worldObj.setBlock(xCoord, yCoord, zCoord, 0, 0, 3);
             worldObj.createExplosion(null, xCoord, yCoord, zCoord, 0.8F, false);
             return 0;
         }
@@ -502,7 +502,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
                 if(itemstack.getItem() instanceof IElectricItem)
                 {
                     IElectricItem item = (IElectricItem)itemstack.getItem();
-                    if (item.canProvideEnergy() && item.getTier() <= tier)
+                    if (item.canProvideEnergy(itemstack) && item.getTier(itemstack) <= tier)
                     {
                         return true;
                     }
@@ -535,7 +535,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
         return texture;
     }
 
-    @Override
+/*    @Override
     //getStartInventorySide
     public int func_94127_c(int side)
     {
@@ -553,7 +553,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
         if(side == 0 || side == 1)
             return 1;
         return inventory.length;
-    }    
+    }    */
     
     @Override
     public void rotate()
@@ -589,7 +589,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     @Override
     public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
     {
-        return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, BlockNuclearControlMain.DAMAGE_REMOTE_THERMO);
+        return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, Damages.DAMAGE_REMOTE_THERMO);
     }
 
     @Override
@@ -599,16 +599,13 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     }
 
     @Override
-    //getHasCustomName
-    public boolean func_94042_c()
+    public boolean isInvNameLocalized()
     {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    //acceptsItemStack
-    public boolean func_94041_b(int slot, ItemStack itemstack)
+    public boolean isStackValidForSlot(int slot, ItemStack itemstack)
     {
         return isItemValid(slot, itemstack);
     }

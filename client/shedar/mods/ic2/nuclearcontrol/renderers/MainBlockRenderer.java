@@ -5,20 +5,14 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.client.ForgeHooksClient;
 
 import org.lwjgl.opengl.GL11;
 
-import shedar.mods.ic2.nuclearcontrol.BlockNuclearControlMain;
 import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.IRotation;
-import shedar.mods.ic2.nuclearcontrol.panel.Screen;
 import shedar.mods.ic2.nuclearcontrol.renderers.model.ModelInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanelExtender;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanelExtender;
-
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -38,15 +32,7 @@ public class MainBlockRenderer implements ISimpleBlockRenderingHandler
     {
         if(model == modelId)
         {
-            float[] size = BlockNuclearControlMain.blockSize[metadata];
-            if(metadata==BlockNuclearControlMain.DAMAGE_INFO_PANEL || 
-                metadata==BlockNuclearControlMain.DAMAGE_INFO_PANEL_EXTENDER ||
-                metadata==BlockNuclearControlMain.DAMAGE_ADVANCED_PANEL || 
-                metadata==BlockNuclearControlMain.DAMAGE_ADVANCED_EXTENDER
-                )
-            {
-                ForgeHooksClient.bindTexture("/img/InfoPanelColorsOff.png", 0);
-            }
+            float[] size = IC2NuclearControl.instance.blockNuclearControlMain.getBlockBounds(metadata); 
             block.setBlockBounds(size[0], size[1], size[2], size[3], size[4], size[5]);
             renderer.setRenderBoundsFromBlock(block);
             Tessellator tesselator = Tessellator.instance;
@@ -110,38 +96,11 @@ public class MainBlockRenderer implements ISimpleBlockRenderingHandler
                         
                 }
             }
-            if(tileEntity instanceof TileEntityInfoPanelExtender)
-            {
-                Screen screen = ((TileEntityInfoPanelExtender)tileEntity).getScreen();
-                if(screen!=null)
-                {
-                    TileEntityInfoPanel core = screen.getCore(tileEntity.worldObj);
-                    if(core!=null)
-                        tileEntity = core;
-                    else
-                        ForgeHooksClient.bindTexture("/img/InfoPanelColorsOff.png", 0);
-                }
-                else
-                {
-                    ForgeHooksClient.bindTexture("/img/InfoPanelColorsOff.png", 0);
-                }
-            }
-            if(tileEntity instanceof TileEntityInfoPanel)
-            {
-                if(((TileEntityInfoPanel) tileEntity).getPowered())
-                {
-                    ForgeHooksClient.bindTexture("/img/InfoPanelColorsOn.png", 0);
-                }
-                else
-                {
-                    ForgeHooksClient.bindTexture("/img/InfoPanelColorsOff.png", 0);
-                }
-            }
             if(tileEntity instanceof TileEntityAdvancedInfoPanel)
             {
                 TileEntityAdvancedInfoPanel advancedCore = (TileEntityAdvancedInfoPanel)tileEntity;
                 if(advancedCore.getScreen()!=null)
-                    new ModelInfoPanel().renderScreen(block, advancedCore, x, y, z);
+                    new ModelInfoPanel().renderScreen(block, advancedCore, x, y, z, renderer);
                 else
                     renderer.renderStandardBlock(block, x, y, z);
             }

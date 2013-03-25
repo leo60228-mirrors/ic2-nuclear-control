@@ -1,26 +1,26 @@
 package shedar.mods.ic2.nuclearcontrol.tileentities;
 
+import ic2.api.IReactor;
+import ic2.api.IReactorChamber;
+import ic2.api.IWrenchable;
+import ic2.api.network.INetworkClientTileEntityEventListener;
+import ic2.api.network.INetworkDataProvider;
+import ic2.api.network.INetworkUpdateListener;
+import ic2.api.network.NetworkHelper;
+
 import java.util.List;
 import java.util.Vector;
-
-import shedar.mods.ic2.nuclearcontrol.BlockNuclearControlMain;
-import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
-import shedar.mods.ic2.nuclearcontrol.ITextureHelper;
-import shedar.mods.ic2.nuclearcontrol.utils.NuclearHelper;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Facing;
-
-import ic2.api.network.INetworkClientTileEntityEventListener;
-import ic2.api.network.INetworkDataProvider;
-import ic2.api.network.INetworkUpdateListener;
-import ic2.api.IReactor;
-import ic2.api.IReactorChamber;
-import ic2.api.IWrenchable;
-import ic2.api.network.NetworkHelper;
+import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
+import shedar.mods.ic2.nuclearcontrol.ITextureHelper;
+import shedar.mods.ic2.nuclearcontrol.subblocks.ThermalMonitor;
+import shedar.mods.ic2.nuclearcontrol.utils.Damages;
+import shedar.mods.ic2.nuclearcontrol.utils.NuclearHelper;
 
 public class TileEntityIC2Thermo extends TileEntity implements 
         INetworkDataProvider, INetworkUpdateListener, 
@@ -312,19 +312,19 @@ public class TileEntityIC2Thermo extends TileEntity implements
     @Override
     public int modifyTextureIndex(int texture)
     {
-        if(texture != 0)
+        if(texture != ThermalMonitor.I_FACE_GREEN)
             return texture;
         int fireState = getOnFire();
         switch (fireState)
         {
             case 1:
-                texture = 16;
+                texture = ThermalMonitor.I_FACE_RED;
                 break;
             case 0:
-                texture = 0;
+                texture = ThermalMonitor.I_FACE_GREEN;
                 break;
             default:
-                texture = 32;
+                texture = ThermalMonitor.I_FACE_GRAY;
                 break;
         }
         return texture;
@@ -333,6 +333,6 @@ public class TileEntityIC2Thermo extends TileEntity implements
     @Override
     public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
     {
-        return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, BlockNuclearControlMain.DAMAGE_THERMAL_MONITOR);
+        return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, Damages.DAMAGE_THERMAL_MONITOR);
     }
 }

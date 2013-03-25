@@ -9,16 +9,15 @@ import ic2.api.network.NetworkHelper;
 import java.util.List;
 import java.util.Vector;
 
-import shedar.mods.ic2.nuclearcontrol.BlockNuclearControlMain;
-import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
-import shedar.mods.ic2.nuclearcontrol.IRedstoneConsumer;
-import shedar.mods.ic2.nuclearcontrol.utils.RedstoneHelper;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Facing;
+import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
+import shedar.mods.ic2.nuclearcontrol.IRedstoneConsumer;
+import shedar.mods.ic2.nuclearcontrol.utils.Damages;
+import shedar.mods.ic2.nuclearcontrol.utils.RedstoneHelper;
 import cpw.mods.fml.common.FMLLog;
 
 public class TileEntityHowlerAlarm extends TileEntity implements 
@@ -320,6 +319,6 @@ public class TileEntityHowlerAlarm extends TileEntity implements
     @Override
     public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
     {
-        return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, BlockNuclearControlMain.DAMAGE_HOWLER_ALARM);
+        return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, Damages.DAMAGE_HOWLER_ALARM);
     }
 }

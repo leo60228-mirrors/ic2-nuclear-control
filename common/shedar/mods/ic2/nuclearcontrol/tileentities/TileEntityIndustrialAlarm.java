@@ -1,10 +1,11 @@
 package shedar.mods.ic2.nuclearcontrol.tileentities;
 
-import shedar.mods.ic2.nuclearcontrol.BlockNuclearControlMain;
-import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
-import shedar.mods.ic2.nuclearcontrol.ITextureHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
+import shedar.mods.ic2.nuclearcontrol.ITextureHelper;
+import shedar.mods.ic2.nuclearcontrol.subblocks.IndustrialAlarm;
+import shedar.mods.ic2.nuclearcontrol.utils.Damages;
 
 public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm implements ITextureHelper
 {
@@ -41,13 +42,15 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm implements 
     @Override
     public int modifyTextureIndex(int texture)
     {
+        if(texture == IndustrialAlarm.I_BACK)
+            return texture;
         switch(lightLevel)
         {
-            case 7: 
-                texture +=16;
+            case 7:
+                texture +=1;
                 break;
             case 15: 
-                texture += 32;
+                texture += 2;
                 break;
         }
         return texture;
@@ -56,6 +59,6 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm implements 
     @Override
     public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
     {
-        return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, BlockNuclearControlMain.DAMAGE_INDUSTRIAL_ALARM);
+        return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, Damages.DAMAGE_INDUSTRIAL_ALARM);
     }
 }

@@ -10,21 +10,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
-import shedar.mods.ic2.nuclearcontrol.containers.ContainerAdvancedInfoPanel;
-import shedar.mods.ic2.nuclearcontrol.containers.ContainerAverageCounter;
-import shedar.mods.ic2.nuclearcontrol.containers.ContainerEmpty;
-import shedar.mods.ic2.nuclearcontrol.containers.ContainerEnergyCounter;
-import shedar.mods.ic2.nuclearcontrol.containers.ContainerInfoPanel;
-import shedar.mods.ic2.nuclearcontrol.containers.ContainerRangeTrigger;
-import shedar.mods.ic2.nuclearcontrol.containers.ContainerRemoteThermo;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter;
+import shedar.mods.ic2.nuclearcontrol.subblocks.Subblock;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityHowlerAlarm;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityRangeTrigger;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityRemoteThermo;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -68,28 +58,11 @@ public class CommonProxy implements IGuiHandler
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {
+        Subblock block = IC2NuclearControl.instance.blockNuclearControlMain.getSubblock(ID);
+        if(block == null)
+            return null;
         TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-        switch (ID)
-        {
-            case BlockNuclearControlMain.DAMAGE_REMOTE_THERMO:
-                return new ContainerRemoteThermo(player, (TileEntityRemoteThermo)tileEntity);
-            case BlockNuclearControlMain.DAMAGE_INFO_PANEL:
-                return new ContainerInfoPanel(player, (TileEntityInfoPanel)tileEntity);
-            case BlockNuclearControlMain.DAMAGE_ADVANCED_PANEL:
-                return new ContainerAdvancedInfoPanel(player, (TileEntityAdvancedInfoPanel)tileEntity);
-            case BlockNuclearControlMain.DAMAGE_ENERGY_COUNTER:
-                return new ContainerEnergyCounter(player, (TileEntityEnergyCounter)tileEntity);
-            case BlockNuclearControlMain.DAMAGE_AVERAGE_COUNTER:
-                return new ContainerAverageCounter(player, (TileEntityAverageCounter)tileEntity);
-            case BlockNuclearControlMain.DAMAGE_RANGE_TRIGGER:
-                return new ContainerRangeTrigger(player, (TileEntityRangeTrigger)tileEntity);
-            case BlockNuclearControlMain.DAMAGE_HOWLER_ALARM:
-            case BlockNuclearControlMain.DAMAGE_INDUSTRIAL_ALARM:
-            case BlockNuclearControlMain.DAMAGE_THERMAL_MONITOR:
-                return new ContainerEmpty(tileEntity);
-            default:
-                return null;
-        }
+        return block.getServerGuiElement(tileEntity, player);
     }
 
     @ForgeSubscribe

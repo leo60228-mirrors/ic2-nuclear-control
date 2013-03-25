@@ -31,7 +31,7 @@ public class TileEntityRemoteThermoRenderer extends TileEntitySpecialRenderer
             int heat = thermo.getHeatLevel();
             String text = Integer.toString(heat);
             GL11.glTranslatef((float)x, (float)y, (float)z);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, FMLClientHandler.instance().getClient().renderEngine.getTexture("/img/texture_thermo.png"));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, FMLClientHandler.instance().getClient().renderEngine.getTexture("nuclearControl:remoteThermo/scale"));
             Tessellator tessellator = Tessellator.instance;
             tessellator.startDrawingQuads();
             switch (side)

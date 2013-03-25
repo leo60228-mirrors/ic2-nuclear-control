@@ -26,9 +26,9 @@ public abstract class ItemSensorKitBase extends Item
     }
 
     @Override
-    public void func_94581_a(IconRegister iconRegister)
+    public void updateIcons(IconRegister iconRegister)
     {
-             iconIndex = iconRegister.func_94245_a(TextureResolver.getItemTexture(textureItemName));
+             iconIndex = iconRegister.registerIcon(TextureResolver.getItemTexture(textureItemName));
     }   
     
     abstract protected ChunkCoordinates getTargetCoordinates(World world, int x, int y, int z, ItemStack stack);

@@ -1,6 +1,8 @@
 package shedar.mods.ic2.nuclearcontrol.items;
 
 import shedar.mods.ic2.nuclearcontrol.BlockNuclearControlMain;
+import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
+import shedar.mods.ic2.nuclearcontrol.subblocks.Subblock;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -30,39 +32,16 @@ public class ItemNuclearControlMain extends ItemBlock
     @Override
     public String getUnlocalizedName(ItemStack item)
     {
-        switch(item.getItemDamage())
-        {
-            case BlockNuclearControlMain.DAMAGE_THERMAL_MONITOR:
-                return "tile.blockThermalMonitor";
-            case BlockNuclearControlMain.DAMAGE_INDUSTRIAL_ALARM:
-                return "tile.blockIndustrialAlarm";
-            case BlockNuclearControlMain.DAMAGE_HOWLER_ALARM:
-                return "tile.blockHowlerAlarm";
-            case BlockNuclearControlMain.DAMAGE_REMOTE_THERMO:
-                return "tile.blockRemoteThermo";
-            case BlockNuclearControlMain.DAMAGE_INFO_PANEL:
-                return "tile.blockInfoPanel";
-            case BlockNuclearControlMain.DAMAGE_INFO_PANEL_EXTENDER:
-                return "tile.blockInfoPanelExtender";
-            case BlockNuclearControlMain.DAMAGE_ADVANCED_PANEL:
-                return "tile.blockAdvancedInfoPanel";
-            case BlockNuclearControlMain.DAMAGE_ADVANCED_EXTENDER:
-                return "tile.blockAdvancedInfoPanelExtender";
-            case BlockNuclearControlMain.DAMAGE_ENERGY_COUNTER:
-                return "tile.blockEnergyCounter";
-            case BlockNuclearControlMain.DAMAGE_AVERAGE_COUNTER:
-                return "tile.blockAverageCounter";
-            case BlockNuclearControlMain.DAMAGE_RANGE_TRIGGER:
-                return "tile.blockRangeTrigger";
-        
-        }
-        return "";
+        Subblock subblock = IC2NuclearControl.instance.blockNuclearControlMain.getSubblock(item.getItemDamage());
+        if(subblock == null)
+            return "";
+        return subblock.getName();
     }
     
     @Override
     public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
     {
-       if (!world.setBlockAndMetadataWithNotify(x, y, z, getBlockID(), metadata & 0xff, 3))
+       if (!world.setBlock(x, y, z, getBlockID(), metadata & 0xff, 3))
        {
                return false;
        }
@@ -79,10 +58,8 @@ public class ItemNuclearControlMain extends ItemBlock
        return true;
     }
 
-    
 
     @SideOnly(Side.CLIENT)
-
     /**
      * Returns true if the given ItemBlock can be placed on the given side of the given block position.
      */
@@ -129,7 +106,7 @@ public class ItemNuclearControlMain extends ItemBlock
             }
         }
 
-        return BlockNuclearControlMain.canPlaceBlockOnSide(world, x, y, z, side, item.getItemDamage());
+        return IC2NuclearControl.instance.blockNuclearControlMain.canPlaceBlockOnSide(world, x, y, z, side, item.getItemDamage());
     }
     
 }

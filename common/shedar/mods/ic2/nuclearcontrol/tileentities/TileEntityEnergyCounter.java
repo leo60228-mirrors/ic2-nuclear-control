@@ -23,9 +23,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Facing;
 import net.minecraftforge.common.MinecraftForge;
-import shedar.mods.ic2.nuclearcontrol.BlockNuclearControlMain;
 import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.ISlotItemFilter;
+import shedar.mods.ic2.nuclearcontrol.utils.Damages;
 
 
 public class TileEntityEnergyCounter extends TileEntity implements 
@@ -401,7 +401,7 @@ public class TileEntityEnergyCounter extends TileEntity implements
     @Override
     public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
     {
-        return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, BlockNuclearControlMain.DAMAGE_ENERGY_COUNTER);
+        return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, Damages.DAMAGE_ENERGY_COUNTER);
     }
 
     @Override
@@ -436,21 +436,18 @@ public class TileEntityEnergyCounter extends TileEntity implements
     @Override
     public void removeConductor()
     {
-        worldObj.setBlockAndMetadataWithNotify(xCoord, yCoord, zCoord, 0, 0, 3);
+        worldObj.setBlock(xCoord, yCoord, zCoord, 0, 0, 3);
         worldObj.createExplosion(null, xCoord, yCoord, zCoord, 0.8F, false);
     }
 
     @Override
-    //getHasCustomName
-    public boolean func_94042_c()
+    public boolean isInvNameLocalized()
     {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    //acceptsItemStack
-    public boolean func_94041_b(int slot, ItemStack itemstack)
+    public boolean isStackValidForSlot(int slot, ItemStack itemstack)
     {
         return isItemValid(slot, itemstack);
     }

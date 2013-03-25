@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,7 +21,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Facing;
-import shedar.mods.ic2.nuclearcontrol.BlockNuclearControlMain;
 import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.IRedstoneConsumer;
 import shedar.mods.ic2.nuclearcontrol.IRotation;
@@ -37,6 +36,8 @@ import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.items.ItemUpgrade;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.panel.Screen;
+import shedar.mods.ic2.nuclearcontrol.subblocks.InfoPanel;
+import shedar.mods.ic2.nuclearcontrol.utils.Damages;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.RedstoneHelper;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -46,7 +47,7 @@ import cpw.mods.fml.common.FMLLog;
 public class TileEntityInfoPanel extends TileEntity implements 
     ISlotItemFilter, INetworkDataProvider, INetworkUpdateListener, 
     INetworkClientTileEntityEventListener, IWrenchable, IRedstoneConsumer,
-    ITextureHelper, IScreenPart, ISidedInventory, IRotation
+    ITextureHelper, IScreenPart, /*ISidedInventory, */IRotation, IInventory
 {
     private static final int[] COLORS_HEX = {0, 0xe93535, 0x82e306, 0x702b14, 0x1f3ce7, 
                                             0x8f1fea, 0x1fd7e9, 0xcbcbcb, 0x222222, 0xe60675, 
@@ -827,7 +828,7 @@ public class TileEntityInfoPanel extends TileEntity implements
 
     public int modifyTextureIndex(int texture, int x, int y, int z)
     {
-        if(texture!=47)
+        if(texture!=InfoPanel.I_COLOR_DEFAULT)
             return texture;
         texture -= 15;
         if(screen != null)
@@ -987,6 +988,9 @@ public class TileEntityInfoPanel extends TileEntity implements
         {
             texture = texture - 32 + colorBackground*16;
         }
+        
+        if(getPowered())
+            texture += 240;
 
         return texture;
     }
@@ -1042,7 +1046,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         return true;
     }
     
-    @Override
+    /*@Override
     //getStartInventorySide
     public int func_94127_c(int side)
     {
@@ -1063,7 +1067,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         if(side == 1)
             return 1;
         return inventory.length;
-    }
+    }*/
 
     @Override
     public void rotate()
@@ -1156,7 +1160,7 @@ public class TileEntityInfoPanel extends TileEntity implements
     @Override
     public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
     {
-        return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, BlockNuclearControlMain.DAMAGE_INFO_PANEL);
+        return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, Damages.DAMAGE_INFO_PANEL);
     }
 
     @Override
@@ -1178,16 +1182,13 @@ public class TileEntityInfoPanel extends TileEntity implements
     }
 
     @Override
-    //getHasCustomName
-    public boolean func_94042_c()
+    public boolean isInvNameLocalized()
     {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    //acceptsItemStack
-    public boolean func_94041_b(int slot, ItemStack itemstack)
+    public boolean isStackValidForSlot(int slot, ItemStack itemstack)
     {
         return isItemValid(slot, itemstack);
     }

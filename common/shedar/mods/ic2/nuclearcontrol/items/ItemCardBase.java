@@ -27,9 +27,9 @@ public abstract class ItemCardBase extends Item implements  IPanelDataSource
     }
     
     @Override
-    public void func_94581_a(IconRegister iconRegister)
+    public void updateIcons(IconRegister iconRegister)
     {
-             iconIndex = iconRegister.func_94245_a(TextureResolver.getItemTexture(textureItemName));
+             iconIndex = iconRegister.registerIcon(TextureResolver.getItemTexture(textureItemName));
     }    
 
     @Override

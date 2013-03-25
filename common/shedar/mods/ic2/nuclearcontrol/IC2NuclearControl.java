@@ -34,6 +34,7 @@ import shedar.mods.ic2.nuclearcontrol.items.ItemToolDigitalThermometer;
 import shedar.mods.ic2.nuclearcontrol.items.ItemToolThermometer;
 import shedar.mods.ic2.nuclearcontrol.items.ItemUpgrade;
 import shedar.mods.ic2.nuclearcontrol.panel.ScreenManager;
+import shedar.mods.ic2.nuclearcontrol.utils.Damages;
 import shedar.mods.ic2.nuclearcontrol.utils.LanguageHelper;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
@@ -103,7 +104,7 @@ public class IC2NuclearControl
     public Item itemTimeCard;
     public Item itemUpgrade;
     public Item itemTextCard;
-    public Block blockNuclearControlMain;
+    public BlockNuclearControlMain blockNuclearControlMain;
     public int modelId;
     public int alarmRange;
     public int SMPMaxAlarmRange;
@@ -125,7 +126,7 @@ public class IC2NuclearControl
     @SuppressWarnings("unchecked")
     protected void addRecipes()
     {
-        ItemStack thermalMonitor = new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_THERMAL_MONITOR);
+        ItemStack thermalMonitor = new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_THERMAL_MONITOR);
         Ic2Recipes.addCraftingRecipe(thermalMonitor, new Object[]
                 {
                     "GGG", "GCG", "GRG", 
@@ -133,7 +134,7 @@ public class IC2NuclearControl
                         Character.valueOf('R'), Item.redstone, 
                         Character.valueOf('C'), Items.getItem("advancedCircuit")
                 });
-        ItemStack howler = new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_HOWLER_ALARM);
+        ItemStack howler = new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_HOWLER_ALARM);
         Ic2Recipes.addCraftingRecipe(howler, new Object[]
                 {
                     "NNN", "ICI", "IRI", 
@@ -142,8 +143,7 @@ public class IC2NuclearControl
                         Character.valueOf('N'), Block.music, 
                         Character.valueOf('C'), Items.getItem("electronicCircuit")
                 });
-
-        ItemStack industrialAlarm = new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_INDUSTRIAL_ALARM);
+        ItemStack industrialAlarm = new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_INDUSTRIAL_ALARM);
         Ic2Recipes.addCraftingRecipe(industrialAlarm, new Object[]
                 {
                     "GOG", "GHG", "GRG", 
@@ -153,14 +153,14 @@ public class IC2NuclearControl
                         Character.valueOf('H'), howler 
                 });
 
-        Ic2Recipes.addCraftingRecipe(new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_REMOTE_THERMO), new Object[] 
+        Ic2Recipes.addCraftingRecipe(new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_REMOTE_THERMO), new Object[] 
                 {
                     "F", "M", "T", 
                         Character.valueOf('T'), thermalMonitor, 
                         Character.valueOf('M'), Items.getItem("machine"), 
                         Character.valueOf('F'), Items.getItem("frequencyTransmitter")
                 });
-        Ic2Recipes.addCraftingRecipe(new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_INFO_PANEL), new Object[] 
+        Ic2Recipes.addCraftingRecipe(new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_INFO_PANEL), new Object[] 
                 {
                     "PPP", "LCL", "IRI", 
                         Character.valueOf('P'), Block.thinGlass, 
@@ -169,7 +169,7 @@ public class IC2NuclearControl
                         Character.valueOf('R'), Item.redstone, 
                         Character.valueOf('C'), Items.getItem("electronicCircuit") 
                 });
-        Ic2Recipes.addCraftingRecipe(new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_INFO_PANEL_EXTENDER), new Object[] 
+        Ic2Recipes.addCraftingRecipe(new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_INFO_PANEL_EXTENDER), new Object[] 
                 {
                     "PPP", "WLW", "WWW", 
                         Character.valueOf('P'), Block.thinGlass, 
@@ -224,7 +224,7 @@ public class IC2NuclearControl
                         Character.valueOf('A'), "dyeCyan",  
                         Character.valueOf('B'), "dyeBlue"  
                 });
-        ItemStack energyCounter = new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_ENERGY_COUNTER);
+        ItemStack energyCounter = new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_ENERGY_COUNTER);
         Ic2Recipes.addCraftingRecipe(energyCounter, new Object[]
                 {
                     " A ", "FTF", 
@@ -232,7 +232,7 @@ public class IC2NuclearControl
                         Character.valueOf('F'), Items.getItem("glassFiberCableItem"), 
                         Character.valueOf('T'), Items.getItem("mvTransformer")
                 });
-        ItemStack averageCounter = new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_AVERAGE_COUNTER);
+        ItemStack averageCounter = new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_AVERAGE_COUNTER);
         Ic2Recipes.addCraftingRecipe(averageCounter, new Object[]
                 {
                 "FTF", " A ",  
@@ -240,7 +240,7 @@ public class IC2NuclearControl
                         Character.valueOf('F'), Items.getItem("glassFiberCableItem"), 
                         Character.valueOf('T'), Items.getItem("mvTransformer")
                 });
-        ItemStack rangeTrigger = new ItemStack(blockNuclearControlMain, 1, BlockNuclearControlMain.DAMAGE_RANGE_TRIGGER);
+        ItemStack rangeTrigger = new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_RANGE_TRIGGER);
         Ic2Recipes.addCraftingRecipe(rangeTrigger, new Object[]
                 {
                 "EFE", "AMA",  " R ",
@@ -304,8 +304,8 @@ public class IC2NuclearControl
 
     protected void initBlocks(Configuration configuration)
     {
-        blockNuclearControlMain = new BlockNuclearControlMain(getIdFor(configuration, "blockNuclearControlMain", 192, true))
-                .setUnlocalizedName("blockThermalMonitor");
+        blockNuclearControlMain = new BlockNuclearControlMain(getIdFor(configuration, "blockNuclearControlMain", 192, true));
+        blockNuclearControlMain.setUnlocalizedName("blockThermalMonitor");
         itemToolThermometer = new ItemToolThermometer(
                 getIdFor(configuration, "itemToolThermometer", 31000, false))
                 .setUnlocalizedName("ItemToolThermometer");

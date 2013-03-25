@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,7 +18,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Facing;
-import shedar.mods.ic2.nuclearcontrol.BlockNuclearControlMain;
 import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.IRotation;
 import shedar.mods.ic2.nuclearcontrol.ISlotItemFilter;
@@ -30,12 +29,14 @@ import shedar.mods.ic2.nuclearcontrol.items.ItemCardEnergyArrayLocation;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardEnergySensorLocation;
 import shedar.mods.ic2.nuclearcontrol.items.ItemUpgrade;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
+import shedar.mods.ic2.nuclearcontrol.subblocks.RangeTrigger;
+import shedar.mods.ic2.nuclearcontrol.utils.Damages;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 
 public class TileEntityRangeTrigger extends TileEntity implements 
     ISlotItemFilter, INetworkDataProvider, INetworkUpdateListener, 
-    IWrenchable, ITextureHelper, ISidedInventory, IRotation, 
+    IWrenchable, ITextureHelper,/* ISidedInventory, */IRotation, IInventory, 
     INetworkClientTileEntityEventListener
 {
 
@@ -532,17 +533,17 @@ public class TileEntityRangeTrigger extends TileEntity implements
         return !entityPlayer.isSneaking();
     }
 
-    public int modifyTextureIndex(int texture, int x, int y, int z)
+    private int modifyTextureIndex(int texture, int x, int y, int z)
     {
-        if(texture!=27)
+        if(texture!=RangeTrigger.I_FACE_GRAY)
             return texture;
         switch (getOnFire())
         {
             case STATE_ACTIVE:
-                texture += 2;
+                texture = RangeTrigger.I_FACE_RED;
                 break;
             case STATE_PASSIVE:
-                texture += 1;
+                texture = RangeTrigger.I_FACE_GREEN;
                 break;
         }
         return texture;
@@ -587,7 +588,7 @@ public class TileEntityRangeTrigger extends TileEntity implements
         return true;
     }
 
-    @Override
+/*    @Override
     //getStartInventorySide
     public int func_94127_c(int side)
     {
@@ -605,7 +606,7 @@ public class TileEntityRangeTrigger extends TileEntity implements
         if(side == 0 || side == 1)
             return 1;
         return inventory.length;
-    }
+    }*/
 
     @Override
     public void rotate()
@@ -652,20 +653,17 @@ public class TileEntityRangeTrigger extends TileEntity implements
     @Override
     public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
     {
-        return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, BlockNuclearControlMain.DAMAGE_RANGE_TRIGGER);
+        return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, Damages.DAMAGE_RANGE_TRIGGER);
     }
 
     @Override
-    //getHasCustomName
-    public boolean func_94042_c()
+    public boolean isInvNameLocalized()
     {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    //acceptsItemStack
-    public boolean func_94041_b(int slot, ItemStack itemstack)
+    public boolean isStackValidForSlot(int slot, ItemStack itemstack)
     {
         return isItemValid(slot, itemstack);
     }

@@ -2,26 +2,13 @@ package shedar.mods.ic2.nuclearcontrol;
 
 import ic2.api.IWrenchable;
 
+import java.util.HashMap;
 import java.util.List;
-
-import shedar.mods.ic2.nuclearcontrol.panel.Screen;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanelExtender;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityHowlerAlarm;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityIC2Thermo;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityIndustrialAlarm;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanelExtender;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityRangeTrigger;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityRemoteThermo;
-import shedar.mods.ic2.nuclearcontrol.utils.NuclearHelper;
-import shedar.mods.ic2.nuclearcontrol.utils.RedstoneHelper;
-import shedar.mods.ic2.nuclearcontrol.utils.WrenchHelper;
+import java.util.Map;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
@@ -32,143 +19,61 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Facing;
+import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import shedar.mods.ic2.nuclearcontrol.subblocks.AdvancedInfoPanel;
+import shedar.mods.ic2.nuclearcontrol.subblocks.AdvancedInfoPanelExtender;
+import shedar.mods.ic2.nuclearcontrol.subblocks.AverageCounter;
+import shedar.mods.ic2.nuclearcontrol.subblocks.EnergyCounter;
+import shedar.mods.ic2.nuclearcontrol.subblocks.HowlerAlarm;
+import shedar.mods.ic2.nuclearcontrol.subblocks.IndustrialAlarm;
+import shedar.mods.ic2.nuclearcontrol.subblocks.InfoPanel;
+import shedar.mods.ic2.nuclearcontrol.subblocks.InfoPanelExtender;
+import shedar.mods.ic2.nuclearcontrol.subblocks.RangeTrigger;
+import shedar.mods.ic2.nuclearcontrol.subblocks.RemoteThermo;
+import shedar.mods.ic2.nuclearcontrol.subblocks.Subblock;
+import shedar.mods.ic2.nuclearcontrol.subblocks.ThermalMonitor;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityHowlerAlarm;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityIC2Thermo;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityIndustrialAlarm;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanelExtender;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityRangeTrigger;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityRemoteThermo;
+import shedar.mods.ic2.nuclearcontrol.utils.Damages;
+import shedar.mods.ic2.nuclearcontrol.utils.NuclearHelper;
+import shedar.mods.ic2.nuclearcontrol.utils.RedstoneHelper;
+import shedar.mods.ic2.nuclearcontrol.utils.WrenchHelper;
 
 public class BlockNuclearControlMain extends BlockContainer
 {
-    public static final int DAMAGE_THERMAL_MONITOR = 0;
-    public static final int DAMAGE_INDUSTRIAL_ALARM = 1;
-    public static final int DAMAGE_HOWLER_ALARM = 2;
-    public static final int DAMAGE_REMOTE_THERMO = 3;
-    public static final int DAMAGE_INFO_PANEL = 4;
-    public static final int DAMAGE_INFO_PANEL_EXTENDER = 5;
-    public static final int DAMAGE_ENERGY_COUNTER = 6;
-    public static final int DAMAGE_AVERAGE_COUNTER = 7;
-    public static final int DAMAGE_RANGE_TRIGGER = 8;
-    public static final int DAMAGE_ADVANCED_PANEL = 9;
-    public static final int DAMAGE_ADVANCED_EXTENDER = 10;
-
-    public static final int DAMAGE_MAX = 10;
+    private Map<Integer, Subblock> subblocks;
     
-    public static final float[][] blockSize = {
-        {0.0625F, 0, 0.0625F, 0.9375F, 0.4375F, 0.9375F},//Thermal Monitor
-        {0.125F, 0, 0.125F, 0.875F, 0.4375F, 0.875F},//Industrial  Alarm
-        {0.125F, 0, 0.125F, 0.875F, 0.4375F, 0.875F},//Howler  Alarm
-        {0, 0, 0, 1, 1, 1},//Remote Thermo
-        {0, 0, 0, 1, 1, 1},//Info Panel
-        {0, 0, 0, 1, 1, 1},//Info Panel Extender
-        {0, 0, 0, 1, 1, 1},//Energy Counter
-        {0, 0, 0, 1, 1, 1},//Average Counter
-        {0, 0, 0, 1, 1, 1},//Range Trigger
-        {0, 0, 0, 1, 1, 1},//Advanced Panel
-        {0, 0, 0, 1, 1, 1}//Advanced Extender
-        
-    };
-    
-    private static final boolean[] solidBlockRequired =
-        {true, true, true, false, false, false, false, false, false, false, false};
-    
-    private static final short[][][] sideMapping = 
-        {
-            {//Thermal Monitor
-                {1, 0, 17, 17, 17, 17},
-                {0, 1, 17, 17, 17, 17},
-                {17, 17, 1, 0, 33, 33},
-                {17, 17, 0, 1, 33, 33},
-                {33, 33, 33, 33, 1, 0},
-                {33, 33, 33, 33, 0, 1}
-            },
-            {//Industrial Alarm
-                {4, 3, 5, 5, 5, 5},
-                {3, 4, 5, 5, 5, 5},
-                {5, 5, 4, 3, 6, 6},
-                {5, 5, 3, 4, 6, 6},
-                {6, 6, 6, 6, 4, 3},
-                {6, 6, 6, 6, 3, 4}
-            },
-            {//Howler Alarm
-                {8, 7, 9, 9, 9, 9},
-                {7, 8, 9, 9, 9, 9},
-                {9, 9, 8, 7, 10, 10},
-                {9, 9, 7, 8, 10, 10},
-                {10, 10, 10, 10, 8, 7},
-                {10, 10, 10, 10, 7, 8}
-            },
-            {//Remote Thermo
-                {23, 25, 24, 24, 24, 24},
-                {25, 23, 24, 24, 24, 24},
-                {24, 24, 23, 25, 24, 24},
-                {24, 24, 25, 23, 24, 24},
-                {24, 24, 24, 24, 23, 25},
-                {24, 24, 24, 24, 25, 23}
-            },
-            {//Info Panel
-                {242, 47, 243, 243, 243, 243},
-                {47, 242, 243, 243, 243, 243},
-                {243, 243, 242, 47, 243, 243},
-                {243, 243, 47, 242, 243, 243},
-                {243, 243, 243, 243, 242, 47},
-                {243, 243, 243, 243, 47, 242}
-            },
-            {//Info Panel Extender
-                {240, 47, 241, 241, 241, 241},
-                {47, 240, 241, 241, 241, 241},
-                {241, 241, 240, 47, 241, 241},
-                {241, 241, 47, 240, 241, 241},
-                {241, 241, 241, 241, 240, 47},
-                {241, 241, 241, 241, 47, 240}
-            },
-            {//Energy Counter
-                {42, 41, 42, 42, 42, 42},
-                {41, 42, 42, 42, 42, 42},
-                {42, 42, 42, 41, 42, 42},
-                {42, 42, 41, 42, 42, 42},
-                {42, 42, 42, 42, 42, 41},
-                {42, 42, 42, 42, 41, 42}
-            },
-            {//Average Counter
-                {43, 41, 43, 43, 43, 43},
-                {41, 43, 43, 43, 43, 43},
-                {43, 43, 43, 41, 43, 43},
-                {43, 43, 41, 43, 43, 43},
-                {43, 43, 43, 43, 43, 41},
-                {43, 43, 43, 43, 41, 43}
-            },
-            {//Range Trigger
-                {23, 27, 24, 24, 24, 24},
-                {27, 23, 24, 24, 24, 24},
-                {24, 24, 23, 27, 24, 24},
-                {24, 24, 27, 23, 24, 24},
-                {24, 24, 24, 24, 23, 27},
-                {24, 24, 24, 24, 27, 23}
-            },
-            {//Advanced Info Panel
-                {245, 47, 245, 245, 245, 245},
-                {47, 245, 245, 245, 245, 245},
-                {245, 245, 245, 47, 245, 245},
-                {245, 245, 47, 245, 245, 245},
-                {245, 245, 245, 245, 245, 47},
-                {245, 245, 245, 245, 47, 245}
-            },
-            {//Advanced Info Panel Extender
-                {245, 47, 244, 244, 244, 244},
-                {47, 245, 244, 244, 244, 244},
-                {244, 244, 245, 47, 244, 244},
-                {244, 244, 47, 245, 244, 244},
-                {244, 244, 244, 244, 245, 47},
-                {244, 244, 244, 244, 47, 245}
-            },
-        };
-    
-
     public BlockNuclearControlMain(int i)
     {
         super(i, Material.iron);
         setHardness(0.5F);
         setCreativeTab(CreativeTabs.tabRedstone);
+        subblocks = new HashMap<Integer, Subblock>();
+        register(new ThermalMonitor());
+        register(new IndustrialAlarm());
+        register(new HowlerAlarm());
+        register(new RemoteThermo());
+        register(new InfoPanel());
+        register(new InfoPanelExtender());
+        register(new EnergyCounter());
+        register(new AverageCounter());
+        register(new RangeTrigger());
+        register(new AdvancedInfoPanel());
+        register(new AdvancedInfoPanelExtender());
+    }
+    
+    public void register(Subblock block)
+    {
+        subblocks.put(block.getDamage(), block);
     }
 
     @Override
@@ -195,6 +100,11 @@ public class BlockNuclearControlMain extends BlockContainer
         return false;
     }
     
+    private boolean isSolidBlockRequired(int metadata)
+    {
+        return subblocks.containsKey(metadata) && subblocks.get(metadata).isSolidBlockRequired();
+    }
+    
     /**
      * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
      */
@@ -219,11 +129,11 @@ public class BlockNuclearControlMain extends BlockContainer
         super.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, metadata);
         ForgeDirection dir = ForgeDirection.getOrientation(side);
         ForgeDirection oposite = dir.getOpposite();
-        if(metadata > DAMAGE_MAX)
+        if(metadata > Damages.DAMAGE_MAX)
         {
             metadata = 0;
         }
-        if(solidBlockRequired[metadata] && !world.isBlockSolidOnSide(x + oposite.offsetX, y + oposite.offsetY, z + oposite.offsetZ, dir))
+        if(isSolidBlockRequired(metadata) && !world.isBlockSolidOnSide(x + oposite.offsetX, y + oposite.offsetY, z + oposite.offsetZ, dir))
         {
             side = 1;
         }
@@ -235,7 +145,7 @@ public class BlockNuclearControlMain extends BlockContainer
         TileEntity block = world.getBlockTileEntity(x, y, z);
         int side = metadata >> 8;
         metadata = metadata & 0xff;
-        if(metadata > DAMAGE_MAX)
+        if(metadata > Damages.DAMAGE_MAX)
         {
             metadata = 0;
         }
@@ -243,7 +153,7 @@ public class BlockNuclearControlMain extends BlockContainer
         {
             IWrenchable wrenchable = (IWrenchable)block;
             wrenchable.setFacing((short)side);
-            if (player != null && !solidBlockRequired[metadata]) 
+            if (player != null && !isSolidBlockRequired(metadata)) 
             {
                 int rotationSegment = MathHelper.floor_double((double)(player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
                 if (player.rotationPitch >= 65) 
@@ -278,11 +188,11 @@ public class BlockNuclearControlMain extends BlockContainer
     {
         super.onBlockAdded(world, x, y, z);
         int metadata = world.getBlockMetadata(x, y, z);
-        if(metadata > DAMAGE_MAX)
+        if(metadata > Damages.DAMAGE_MAX)
         {
             metadata = 0;
         }
-        if(solidBlockRequired[metadata])
+        if(isSolidBlockRequired(metadata))
     	for (int face = 0; face < 6; face++){
     		int side = Facing.faceToSide[face];
     		if(world.isBlockSolidOnSide(x + Facing.offsetsXForSide[side], 
@@ -343,7 +253,7 @@ public class BlockNuclearControlMain extends BlockContainer
         }
         int metadata = world.getBlockMetadata(x, y, z);
         
-		if( solidBlockRequired[Math.min(metadata, solidBlockRequired.length-1)] && 
+		if( isSolidBlockRequired(metadata) && 
 	        !world.isBlockSolidOnSide(x + Facing.offsetsXForSide[side], 
 				y + Facing.offsetsYForSide[side], 
 				z + Facing.offsetsZForSide[side],  ForgeDirection.getOrientation(side).getOpposite()))
@@ -351,7 +261,7 @@ public class BlockNuclearControlMain extends BlockContainer
 			if(!world.isRemote){
 				dropBlockAsItem(world, x, y, z, metadata, 0);
 			}
-            world.setBlockAndMetadataWithNotify(x, y, z, 0, 0, 3);
+            world.setBlock(x, y, z, 0, 0, 3);
 		}
 		else
 		{
@@ -360,10 +270,10 @@ public class BlockNuclearControlMain extends BlockContainer
 		super.onNeighborBlockChange(world, x, y, z, neighbor);
     }
     
-    public static boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side, int metadata)
+    public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side, int metadata)
     {
         ForgeDirection dir = ForgeDirection.getOrientation(side);
-        if(!solidBlockRequired[Math.min(metadata, solidBlockRequired.length-1)])
+        if(!isSolidBlockRequired(metadata))
         {
             return true;
         }
@@ -382,7 +292,7 @@ public class BlockNuclearControlMain extends BlockContainer
     private boolean dropBlockIfCantStay(World world, int x, int y, int z)
     {
         int metadata = world.getBlockMetadata(x, y, z);
-        if(!solidBlockRequired[Math.min(metadata, solidBlockRequired.length-1)])
+        if(!isSolidBlockRequired(metadata))
         {
             return true;
         }
@@ -391,7 +301,7 @@ public class BlockNuclearControlMain extends BlockContainer
             if (world.getBlockId(x, y, z) == blockID)
             {
                 dropBlockAsItem(world, x, y, z, metadata, 0);
-                world.setBlockAndMetadataWithNotify(x, y, z, 0, 0, 3);
+                world.setBlock(x, y, z, 0, 0, 3);
             }
             return false;
         }
@@ -399,6 +309,15 @@ public class BlockNuclearControlMain extends BlockContainer
         {
             return true;
         }
+    }
+    
+    public float[] getBlockBounds(int damage)
+    {
+        if(subblocks.containsKey(damage))
+        {
+            return subblocks.get(damage).getBlockBounds(null);
+        }
+        return new float[]{0, 0, 0, 1, 1, 1};
     }
     
     /**
@@ -409,40 +328,26 @@ public class BlockNuclearControlMain extends BlockContainer
     {
         int blockType = blockAccess.getBlockMetadata(x, y, z);
         
-        if(blockType > DAMAGE_MAX)
-        {
-            blockType = 0;
-        }
-            
-        float baseX1 = blockSize[blockType][0];
-        float baseY1 = blockSize[blockType][1];
-        float baseZ1 = blockSize[blockType][2];
+        float baseX1 = 0;
+        float baseY1 = 0;
+        float baseZ1 = 0;
         
-        float baseX2 = blockSize[blockType][3];
-        float baseY2 = blockSize[blockType][4];
-        float baseZ2 = blockSize[blockType][5]; 
+        float baseX2 = 1;
+        float baseY2 = 1;
+        float baseZ2 = 1; 
 
         TileEntity tileentity = blockAccess.getBlockTileEntity(x, y, z);
 
-        if((blockType == DAMAGE_ADVANCED_PANEL || blockType == DAMAGE_ADVANCED_EXTENDER) && tileentity!=null)
+        if(subblocks.containsKey(blockType))
         {
-            Screen screen = ((IScreenPart)tileentity).getScreen();
-            if(screen!=null)
-            {
-                TileEntityAdvancedInfoPanel core = (TileEntityAdvancedInfoPanel)screen.getCore(blockAccess);
-                if(core!=null)
-                {
-                    int thickness = core.thickness;
-                    if(thickness!=16)
-                    {
-                        baseY2 = Math.max(thickness,1)/16F;
-                    }
-                    else
-                    {
-                        baseY2 = 0.98F;
-                    }
-                }
-            }
+            float[] bounds = subblocks.get(blockType).getBlockBounds(tileentity);
+            baseX1 = bounds[0];
+            baseY1 = bounds[1];
+            baseZ1 = bounds[2];
+
+            baseX2 = bounds[3];
+            baseY2 = bounds[4];
+            baseZ2 = bounds[5];
         }
         
         float tmp;
@@ -527,23 +432,13 @@ public class BlockNuclearControlMain extends BlockContainer
         {
             return false;
         }
-        switch(blockType)
+        if(subblocks.containsKey(blockType) && subblocks.get(blockType).hasGui())
         {
-            case DAMAGE_INDUSTRIAL_ALARM:
-            case DAMAGE_HOWLER_ALARM:
-            case DAMAGE_THERMAL_MONITOR:
-            case DAMAGE_REMOTE_THERMO:
-            case DAMAGE_INFO_PANEL:
-            case DAMAGE_ADVANCED_PANEL:
-            case DAMAGE_ENERGY_COUNTER:
-            case DAMAGE_AVERAGE_COUNTER:
-            case DAMAGE_RANGE_TRIGGER:
-                if(player instanceof EntityPlayerMP)
-                    player.openGui(IC2NuclearControl.instance, blockType, world, x, y, z);
-                return true;
-            default:
-                return false;
+            if(player instanceof EntityPlayerMP)
+                player.openGui(IC2NuclearControl.instance, blockType, world, x, y, z);
+            return true;
         }
+        return false;
     }
 
     public boolean isIndirectlyPoweringTo(World world, int i, int j, int k, int l)
@@ -616,43 +511,42 @@ public class BlockNuclearControlMain extends BlockContainer
     }
 
     @Override
-    public int getBlockTextureFromSideAndMetadata(int side, int metadata)
+    public Icon getBlockTextureFromSideAndMetadata(int side, int metadata)
     {
-        if(metadata > DAMAGE_MAX)
-        {
-            metadata = 0;
-        }
-    	int texture = sideMapping[metadata][0][side];
-		return texture;
+        if(subblocks.containsKey(metadata))
+            return subblocks.get(metadata).getBlockTextureFromSide(side);
+		return null;
     }
     
     @Override
-    public int getBlockTexture(IBlockAccess blockaccess, int x, int y, int z, int side)
+    public Icon getBlockTexture(IBlockAccess blockaccess, int x, int y, int z, int side)
     {
-        TileEntity tileentity = blockaccess.getBlockTileEntity(x, y, z);
-        int metaSide = 0;
-        if(tileentity instanceof IWrenchable)
-        {
-        	metaSide = Facing.faceToSide[((IWrenchable)tileentity).getFacing()];
-        }
         int blockType = blockaccess.getBlockMetadata(x, y, z);
-        if(blockType > DAMAGE_MAX)
+        if(subblocks.containsKey(blockType))
+            return subblocks.get(blockType).getBlockTexture(blockaccess, x, y, z, side);
+	    return null;
+    }
+    
+    @Override
+    public void registerIcons(IconRegister iconRegister)
+    {
+        for (Subblock subblock : subblocks.values())
         {
-            blockType = 0;
+            subblock.registerIcons(iconRegister);
         }
-        int texture = sideMapping[blockType][metaSide][side];
-        
-        if(tileentity instanceof ITextureHelper)
-        {
-            texture = ((ITextureHelper)tileentity).modifyTextureIndex(texture); 
-        }
-	    return texture;
+    }
+    
+    public Subblock getSubblock(int metadata)
+    {
+        if(subblocks.containsKey(metadata))
+            return subblocks.get(metadata);
+        return null;
     }
 
     @Override
     public int damageDropped(int i)
     {
-        if(i > 0 && i <= DAMAGE_MAX)
+        if(i > 0 && i <= Damages.DAMAGE_MAX)
             return i;
         else
             return 0;
@@ -662,7 +556,7 @@ public class BlockNuclearControlMain extends BlockContainer
     public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side) 
     {
         int metadata = world.getBlockMetadata(x, y, z);
-        return !solidBlockRequired[metadata];
+        return !isSolidBlockRequired(metadata);
         
     }
     
@@ -700,7 +594,7 @@ public class BlockNuclearControlMain extends BlockContainer
     @Override
     public void getSubBlocks(int id, CreativeTabs tab, List itemList)
     {
-        for(int i=0;i<=DAMAGE_MAX;i++)
+        for(int i=0;i<=Damages.DAMAGE_MAX;i++)
         {
             itemList.add(new ItemStack(this, 1, i));
         }
@@ -715,37 +609,8 @@ public class BlockNuclearControlMain extends BlockContainer
     @Override
     public TileEntity createTileEntity(World world, int metadata)
     {
-        switch (metadata)
-        {
-        case DAMAGE_THERMAL_MONITOR:
-            return new TileEntityIC2Thermo();
-        case DAMAGE_INDUSTRIAL_ALARM:
-            return new TileEntityIndustrialAlarm();
-        case DAMAGE_HOWLER_ALARM:
-            return new TileEntityHowlerAlarm();
-        case DAMAGE_REMOTE_THERMO:
-            return new TileEntityRemoteThermo();
-        case DAMAGE_INFO_PANEL:
-            return new TileEntityInfoPanel();
-        case DAMAGE_INFO_PANEL_EXTENDER:
-            return new TileEntityInfoPanelExtender();
-        case DAMAGE_ADVANCED_PANEL:
-            return new TileEntityAdvancedInfoPanel();
-        case DAMAGE_ADVANCED_EXTENDER:
-            return new TileEntityAdvancedInfoPanelExtender();
-        case DAMAGE_ENERGY_COUNTER:
-            TileEntity instance = IC2NuclearControl.instance.crossBC.getEnergyCounter();
-            if(instance == null)
-                instance = new TileEntityEnergyCounter();
-            return instance;
-        case DAMAGE_AVERAGE_COUNTER:
-            instance = IC2NuclearControl.instance.crossBC.getAverageCounter();
-            if(instance == null)
-                instance = new TileEntityAverageCounter();
-            return instance;
-        case DAMAGE_RANGE_TRIGGER:
-            return new TileEntityRangeTrigger();
-        }
+        if(subblocks.containsKey(metadata))
+            return subblocks.get(metadata).getTileEntity();
         return null;
     }
 }

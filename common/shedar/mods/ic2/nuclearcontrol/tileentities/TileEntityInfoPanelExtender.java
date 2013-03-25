@@ -8,18 +8,17 @@ import ic2.api.network.NetworkHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-import shedar.mods.ic2.nuclearcontrol.BlockNuclearControlMain;
-import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
-import shedar.mods.ic2.nuclearcontrol.IRotation;
-import shedar.mods.ic2.nuclearcontrol.IScreenPart;
-import shedar.mods.ic2.nuclearcontrol.ITextureHelper;
-import shedar.mods.ic2.nuclearcontrol.panel.Screen;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Facing;
+import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
+import shedar.mods.ic2.nuclearcontrol.IRotation;
+import shedar.mods.ic2.nuclearcontrol.IScreenPart;
+import shedar.mods.ic2.nuclearcontrol.ITextureHelper;
+import shedar.mods.ic2.nuclearcontrol.panel.Screen;
+import shedar.mods.ic2.nuclearcontrol.utils.Damages;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 
@@ -250,7 +249,7 @@ public class TileEntityInfoPanelExtender extends TileEntity implements
     @Override
     public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
     {
-        return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, BlockNuclearControlMain.DAMAGE_INFO_PANEL_EXTENDER);
+        return new ItemStack(IC2NuclearControl.instance.blockNuclearControlMain.blockID, 1, Damages.DAMAGE_INFO_PANEL_EXTENDER);
     }
 
     @Override

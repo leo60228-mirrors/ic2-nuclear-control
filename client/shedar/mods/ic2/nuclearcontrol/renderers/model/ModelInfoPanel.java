@@ -1,8 +1,9 @@
 package shedar.mods.ic2.nuclearcontrol.renderers.model;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraft.util.Icon;
 import shedar.mods.ic2.nuclearcontrol.panel.Screen;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 import cpw.mods.fml.relauncher.Side;
@@ -343,14 +344,12 @@ public class ModelInfoPanel
                 midpoint[offsetV] = p[offsetV]+dv/2;
                 midpoint[offsetD] = p[offsetD]+(ddh+ddv)/2;
 
-                int texture = block.getBlockTexture(panel.worldObj, (int)Math.floor(midpoint[0]), (int)Math.floor(midpoint[1]), (int)Math.floor(midpoint[2]), facing);
-                int u = (texture & 15) << 4;
-                int v = texture & 240;
+                Icon texture = block.getBlockTexture(panel.worldObj, (int)Math.floor(midpoint[0]), (int)Math.floor(midpoint[1]), (int)Math.floor(midpoint[2]), facing);
 
-                double u1 = u/256D;
-                double u2 = (u+16)/256D;
-                double v1 = v/256D;
-                double v2 = (v+16)/256D;
+                double u1 = texture.getMinU();
+                double u2 = texture.getMaxU();
+                double v1 = texture.getMinV();
+                double v2 = texture.getMaxV();
                 if(ccw)
                 {
                     double tu = u1;
@@ -375,7 +374,7 @@ public class ModelInfoPanel
         
     }
     
-    public void renderScreen(Block block, TileEntityAdvancedInfoPanel panel, double x, double y, double z)
+    public void renderScreen(Block block, TileEntityAdvancedInfoPanel panel, double x, double y, double z, RenderBlocks renderer)
     {
         Screen screen = panel.getScreen();
         if(screen == null)
@@ -391,7 +390,7 @@ public class ModelInfoPanel
         Tessellator.instance.setColorOpaque_F(0.5F, 0.5F, 0.5F);
         drawFacing(facing, panel.getRotation(), screen, panel, block);
 
-        ForgeHooksClient.bindTexture("/img/AdvInfoPanelSide.png", 0);
+        renderer.minecraftRB.renderEngine.bindTexture("/mods/nuclearControl/textures/blocks/infoPanel/panelAdvancedSide.png");
         Tessellator.instance.setBrightness(block.getMixedBrightnessForBlock(panel.worldObj, panel.xCoord, panel.yCoord, panel.zCoord));
         Tessellator.instance.setColorOpaque_F(0.5F, 0.5F, 0.5F);
         
