@@ -23,15 +23,15 @@ public class CompactButton extends GuiButton
     {
         if (this.drawButton)
         {
-            FontRenderer var4 = par1Minecraft.fontRenderer;
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, par1Minecraft.renderEngine.getTexture("/mods/nuclearControl/textures/gui/GUIThermalMonitor.png"));
+            FontRenderer fontRenderer = par1Minecraft.fontRenderer;
+            par1Minecraft.renderEngine.bindTexture("/mods/nuclearControl/textures/gui/GUIThermalMonitor.png");
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             boolean var5 = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
             int var6 = this.getHoverState(var5);
             this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 64 + var6 * 12, this.width / 2 + width % 2, this.height);
             this.drawTexturedModalRect(this.xPosition + this.width / 2 + width % 2, this.yPosition, 200 - this.width / 2, 64 + var6 * 12, this.width / 2, this.height);
             this.mouseDragged(par1Minecraft, par2, par3);
-            var4.drawString(displayString, xPosition+(width - var4.getStringWidth(displayString)) / 2, yPosition+2, 0x303030);
+            fontRenderer.drawString(displayString, xPosition+(width - fontRenderer.getStringWidth(displayString)) / 2, yPosition+2, 0x303030);
         }
     }
     

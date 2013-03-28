@@ -32,7 +32,7 @@ public class GuiRangeTriggerInvertRedstone extends GuiButton
     {
         if (this.drawButton)
         {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.renderEngine.getTexture("/mods/nuclearControl/textures/gui/GUIRangeTrigger.png"));
+            minecraft.renderEngine.bindTexture("/mods/nuclearControl/textures/gui/GUIRangeTrigger.png");
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             int delta = checked?15:0;
             drawTexturedModalRect(xPosition, yPosition+1, 176, delta, 18, 15);

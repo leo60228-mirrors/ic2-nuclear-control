@@ -11,8 +11,6 @@ import org.lwjgl.opengl.GL11;
 
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityRemoteThermo;
 
-import cpw.mods.fml.client.FMLClientHandler;
-
 public class TileEntityRemoteThermoRenderer extends TileEntitySpecialRenderer
 {
 
@@ -31,40 +29,32 @@ public class TileEntityRemoteThermoRenderer extends TileEntitySpecialRenderer
             int heat = thermo.getHeatLevel();
             String text = Integer.toString(heat);
             GL11.glTranslatef((float)x, (float)y, (float)z);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, FMLClientHandler.instance().getClient().renderEngine.getTexture("nuclearControl:remoteThermo/scale"));
-            Tessellator tessellator = Tessellator.instance;
-            tessellator.startDrawingQuads();
+            bindTextureByName("/mods/nuclearControl/textures/blocks/remoteThermo/scale.png");
             switch (side)
             {
                 case 0:
-                    tessellator.setNormal(0, -1, 0);
                     break;
                 case 1:
-                    tessellator.setNormal(0, 1, 0);
                     GL11.glTranslatef(1, 1, 0);
                     GL11.glRotatef(180, 1, 0, 0);
                     GL11.glRotatef(180, 0, 1, 0);
                     break;
                 case 2:
-                    tessellator.setNormal(0, 0, -1);
-                    GL11.glTranslatef(0, 1, 0);
+                    GL11.glTranslatef(0, 2.5f, 0);
                     GL11.glRotatef(0, 0, 1, 0);
                     GL11.glRotatef(90, 1, 0, 0);
                     break;
                 case 3:
-                    tessellator.setNormal(0, 0, 1);
                     GL11.glTranslatef(1, 1, 1);
                     GL11.glRotatef(180, 0, 1, 0);
                     GL11.glRotatef(90, 1, 0, 0);
                     break;
                 case 4:
-                    tessellator.setNormal(-1, 0, 0);
-                    GL11.glTranslatef(0, 1, 1);
+                    GL11.glTranslatef(0, 1, 2.5f);
                     GL11.glRotatef(90, 0, 1, 0);
                     GL11.glRotatef(90, 1, 0, 0);
                     break;
                 case 5:
-                    tessellator.setNormal(1, 0, 0);
                     GL11.glTranslatef(1, 1, 0);
                     GL11.glRotatef(-90, 0, 1, 0);
                     GL11.glRotatef(90, 1, 0, 0);
@@ -94,6 +84,9 @@ public class TileEntityRemoteThermoRenderer extends TileEntitySpecialRenderer
                 block = Block.stone;
             }
             int fire = thermo.getOnFire();
+            Tessellator tessellator = Tessellator.instance;
+            tessellator.startDrawingQuads();
+            tessellator.setNormal(0, 0, 1);
             if(fire > -2)
             {
                 tessellator.setBrightness(block.getMixedBrightnessForBlock(thermo.worldObj, thermo.xCoord, thermo.yCoord, thermo.zCoord));
@@ -102,12 +95,14 @@ public class TileEntityRemoteThermoRenderer extends TileEntitySpecialRenderer
                 double top = -0.3125;
                 double width = 0.875;
                 double height = 0.25;
-                double u = 161D/256;
+                double deltaU = 1;
+                double deltaV = 1;
+                double u = 1D/16;
                 double v;
                 double middle;
                 if(fire == -1)
                 {
-                    v = 16D/256;
+                    v = 0;
                     middle = width;
                 }
                 else
@@ -116,29 +111,29 @@ public class TileEntityRemoteThermoRenderer extends TileEntitySpecialRenderer
                     if(heatLevel > 1)
                         heatLevel = 1;
                     middle = heatLevel * width;
-                    v = 20D/256;
+                    v = 4D/16;
                 }
-                
                 tessellator.addVertexWithUV(left,        top,        0, u,           v);
-                tessellator.addVertexWithUV(left+middle, top,        0, u+middle/16, v);
-                tessellator.addVertexWithUV(left+middle, top+height, 0, u+middle/16, v+height/16);
-                tessellator.addVertexWithUV(left,        top+height, 0, u,           v+height/16);
+                tessellator.addVertexWithUV(left+middle, top,        0, u+middle*deltaU, v);
+                tessellator.addVertexWithUV(left+middle, top+height, 0, u+middle*deltaU, v+height*deltaV);
+                tessellator.addVertexWithUV(left,        top+height, 0, u,           v+height*deltaV);
+
                 
                 if(middle!=width)
                 {
-                    v = 24D/256;
+                    v = 0.5;
                     tessellator.addVertexWithUV(left+middle, top,        0, u,          v);
-                    tessellator.addVertexWithUV(left+width,  top,        0, u+width/16, v);
-                    tessellator.addVertexWithUV(left+width,  top+height, 0, u+width/16, v+height/16);
-                    tessellator.addVertexWithUV(left+middle, top+height, 0, u,          v+height/16);
+                    tessellator.addVertexWithUV(left+width,  top,        0, u+width*deltaU, v);
+                    tessellator.addVertexWithUV(left+width,  top+height, 0, u+width*deltaU, v+height*deltaV);
+                    tessellator.addVertexWithUV(left+middle, top+height, 0, u,          v+height*deltaV);
                 }
             }
             tessellator.draw();
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             
             FontRenderer fontRenderer = this.getFontRenderer();
-            GL11.glScalef(var12, - var12, var12);
             GL11.glDepthMask(false);
+            GL11.glScalef(var12, - var12, var12);
             fontRenderer.drawString(text, -fontRenderer.getStringWidth(text) / 2, -fontRenderer.FONT_HEIGHT, 0);
             GL11.glDepthMask(true);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

@@ -90,6 +90,12 @@ public class AdvancedInfoPanel extends InfoPanel
         ContainerAdvancedInfoPanel containerAdvancedPanel = new ContainerAdvancedInfoPanel(player, (TileEntityAdvancedInfoPanel)tileEntity);
         return new GuiAdvancedInfoPanel(containerAdvancedPanel);
     }
+    
+    @Override
+    public void registerIcons(net.minecraft.client.renderer.texture.IconRegister iconRegister) 
+    {
+        super.registerIcons(iconRegister);
+    }
 
     @Override
     protected byte[][] getMapping()

@@ -54,7 +54,7 @@ public abstract class Subblock
         return getIcon(texture);
     }
     
-    protected abstract Icon getIcon(int index);
+    public abstract Icon getIcon(int index);
     protected abstract byte[][] getMapping();
     public abstract void registerIcons(IconRegister iconRegister);
     public abstract TileEntity getTileEntity();

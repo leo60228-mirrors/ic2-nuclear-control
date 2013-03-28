@@ -31,7 +31,7 @@ public class GuiInfoPanelShowLabels extends GuiButton
     {
         if (this.drawButton)
         {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.renderEngine.getTexture("/mods/nuclearControl/textures/gui/GUIInfoPanel.png"));
+            minecraft.renderEngine.bindTexture("/mods/nuclearControl/textures/gui/GUIInfoPanel.png");
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             int delta = checked?12:21;
             drawTexturedModalRect(xPosition, yPosition+1, 176, delta, 18, 9);

@@ -66,7 +66,7 @@ public class GuiHowlerAlarmSlider extends GuiButton
     public void drawButton(Minecraft minecraft, int targetX, int targetY) {
         if (drawButton)
         {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.renderEngine.getTexture("/mods/nuclearControl/textures/gui/GUIHowlerAlarm.png"));
+            minecraft.renderEngine.bindTexture("/mods/nuclearControl/textures/gui/GUIHowlerAlarm.png");
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             if (dragging)
             {

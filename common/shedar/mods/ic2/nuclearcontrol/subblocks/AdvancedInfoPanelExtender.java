@@ -57,7 +57,7 @@ public class AdvancedInfoPanelExtender extends InfoPanel
         if(tileEntity!=null)
         {
             Screen screen = ((IScreenPart)tileEntity).getScreen();
-            if(screen!=null)
+            if(screen!=null && screen.getCore(tileEntity.worldObj) instanceof TileEntityAdvancedInfoPanel)
             {
                 TileEntityAdvancedInfoPanel core = (TileEntityAdvancedInfoPanel)screen.getCore(tileEntity.worldObj);
                 if(core!=null)

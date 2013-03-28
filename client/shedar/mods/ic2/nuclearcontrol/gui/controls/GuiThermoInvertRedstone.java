@@ -31,7 +31,7 @@ public class GuiThermoInvertRedstone extends GuiButton
     {
         if (this.drawButton)
         {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.renderEngine.getTexture("/mods/nuclearControl/textures/gui/GUIThermalMonitor.png"));
+            minecraft.renderEngine.bindTexture("/mods/nuclearControl/textures/gui/GUIThermalMonitor.png");
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             int delta = checked?15:0;
             drawTexturedModalRect(xPosition, yPosition+1, 199, delta, 51, 15);

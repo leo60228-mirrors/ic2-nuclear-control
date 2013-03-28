@@ -36,7 +36,7 @@ public class InfoPanel extends Subblock
         {I_PANEL_SIDE, I_PANEL_SIDE, I_PANEL_SIDE, I_PANEL_SIDE, I_PANEL_BACK, I_COLOR_DEFAULT},
         {I_PANEL_SIDE, I_PANEL_SIDE, I_PANEL_SIDE, I_PANEL_SIDE, I_COLOR_DEFAULT, I_PANEL_BACK}
     };
-
+    
     protected Icon[] icons = new Icon[486];
     
     public InfoPanel()
@@ -87,7 +87,7 @@ public class InfoPanel extends Subblock
     }
 
     @Override
-    protected Icon getIcon(int index)
+    public Icon getIcon(int index)
     {
         return icons[index];
     }
@@ -121,7 +121,7 @@ public class InfoPanel extends Subblock
         {
             for(int j=0;j<=15;j++)
             {
-                icons[i*16+j+I_COLORS_OFFSET] = iconRegister.registerIcon("nuclearControl:infoPanel/on/"+i+"/"+j);
+                icons[i*16+j+I_COLORS_OFFSET+240] = iconRegister.registerIcon("nuclearControl:infoPanel/on/"+i+"/"+j);
             }
         }
         

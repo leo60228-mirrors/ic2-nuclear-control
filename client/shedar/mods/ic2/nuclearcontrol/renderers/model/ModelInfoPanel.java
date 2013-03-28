@@ -4,6 +4,9 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Icon;
+
+import org.lwjgl.opengl.GL11;
+
 import shedar.mods.ic2.nuclearcontrol.panel.Screen;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 import cpw.mods.fml.relauncher.Side;
@@ -384,15 +387,18 @@ public class ModelInfoPanel
         addSlopes(panel, screen, deltas);
         
         int facing = panel.getFacing();
-
         
         Tessellator.instance.setBrightness(block.getMixedBrightnessForBlock(panel.worldObj, panel.xCoord, panel.yCoord, panel.zCoord));
         Tessellator.instance.setColorOpaque_F(0.5F, 0.5F, 0.5F);
         drawFacing(facing, panel.getRotation(), screen, panel, block);
 
+        Tessellator.instance.draw();
+        Tessellator.instance.startDrawingQuads();
         renderer.minecraftRB.renderEngine.bindTexture("/mods/nuclearControl/textures/blocks/infoPanel/panelAdvancedSide.png");
         Tessellator.instance.setBrightness(block.getMixedBrightnessForBlock(panel.worldObj, panel.xCoord, panel.yCoord, panel.zCoord));
         Tessellator.instance.setColorOpaque_F(0.5F, 0.5F, 0.5F);
+        
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         
         int dx = screen.getDx()+1;
         int dy = screen.getDy()+1;
@@ -452,8 +458,9 @@ public class ModelInfoPanel
             addPoint(7, dz, dy);
             addPoint(6, 0, dy);
         }
-        //Tessellator.instance.draw();
-        //GL11.glPopAttrib();
-        //GL11.glPopMatrix();
+        Tessellator.instance.draw();
+        Tessellator.instance.startDrawingQuads();
+        renderer.minecraftRB.renderEngine.resetBoundTexture();
+        renderer.minecraftRB.renderEngine.bindTexture("/terrain.png");
     }
 }

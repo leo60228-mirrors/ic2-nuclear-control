@@ -78,7 +78,7 @@ public class AverageCounter extends Subblock
     }
 
     @Override
-    protected Icon getIcon(int index)
+    public Icon getIcon(int index)
     {
         return icons[index];
     }

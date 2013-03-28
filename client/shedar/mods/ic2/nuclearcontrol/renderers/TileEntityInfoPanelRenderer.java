@@ -21,7 +21,6 @@ import shedar.mods.ic2.nuclearcontrol.renderers.model.ModelInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
-import cpw.mods.fml.client.FMLClientHandler;
 
 public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
 {
@@ -81,7 +80,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
             
             GL11.glPushMatrix();
             GL11.glPolygonOffset( -10, -10 );
-            GL11.glEnable ( GL11.GL_POLYGON_OFFSET_FILL );
+            GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
             short side = (short)Facing.faceToSide[panel.getFacing()];
             Screen screen = panel.getScreen();
             float dx = 1F/16;
@@ -102,7 +101,6 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
                     x -= panel.xCoord - screen.maxX;
             }
             GL11.glTranslatef((float)x, (float)y, (float)z);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, FMLClientHandler.instance().getClient().renderEngine.getTexture("/img/texture_thermo.png"));
             switch (side)
             {
                 case 0:

@@ -18,6 +18,7 @@ import shedar.mods.ic2.nuclearcontrol.IRotation;
 import shedar.mods.ic2.nuclearcontrol.IScreenPart;
 import shedar.mods.ic2.nuclearcontrol.ITextureHelper;
 import shedar.mods.ic2.nuclearcontrol.panel.Screen;
+import shedar.mods.ic2.nuclearcontrol.subblocks.InfoPanel;
 import shedar.mods.ic2.nuclearcontrol.utils.Damages;
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -186,7 +187,7 @@ public class TileEntityInfoPanelExtender extends TileEntity implements
     @Override
     public int modifyTextureIndex(int texture)
     {
-        if(texture!=47)
+        if(texture!=InfoPanel.I_COLOR_DEFAULT)
             return texture;
         if(screen!=null)
         {

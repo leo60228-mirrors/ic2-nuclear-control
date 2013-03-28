@@ -10,7 +10,6 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -381,10 +380,6 @@ public class IC2NuclearControl
         configuration.load();
         if(isClient)
         {
-            MinecraftForgeClient.preloadTexture("/img/texture_thermo.png");
-            MinecraftForgeClient.preloadTexture("/img/AdvInfoPanelSide.png");
-            MinecraftForgeClient.preloadTexture("/img/InfoPanelColorsOn.png");
-            MinecraftForgeClient.preloadTexture("/img/InfoPanelColorsOff.png");
             LanguageHelper.addNames(new File(configDir, CONFIG_NUCLEAR_CONTROL_LANG));
         }
         initBlocks(configuration);
