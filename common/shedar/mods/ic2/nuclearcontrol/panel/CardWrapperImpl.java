@@ -11,7 +11,6 @@ import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.utils.ItemStackUtils;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 import cpw.mods.fml.common.FMLLog;
@@ -20,14 +19,16 @@ public class CardWrapperImpl implements ICardWrapper
 {
     private ItemStack card;
     private Map<String, Object> updateSet;
+    private byte slot;
     
-    public CardWrapperImpl(ItemStack card)
+    public CardWrapperImpl(ItemStack card, int slot)
     {
         if(!(card.getItem() instanceof IPanelDataSource))
         {
-            FMLLog.severe("CardHelper sould be used for IPanelDataSource items.");
+            FMLLog.severe("CardHelper should be used for IPanelDataSource items.");
         }
         this.card = card;
+        this.slot = (byte)slot;
         updateSet = new HashMap<String, Object>();
     }
     
@@ -207,7 +208,7 @@ public class CardWrapperImpl implements ICardWrapper
     {
         if(!updateSet.isEmpty())
         {
-            NuclearNetworkHelper.setSensorCardField(panel, ((TileEntityInfoPanel)panel).getIndexOfCard(card), updateSet);
+            NuclearNetworkHelper.setSensorCardField(panel, slot, updateSet);
         }
     }
 

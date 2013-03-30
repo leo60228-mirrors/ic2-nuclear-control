@@ -106,7 +106,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel
             List<PanelSetting> settingsList = null;
             if(card.getItem() instanceof IPanelMultiCard)
             {
-                settingsList = ((IPanelMultiCard)source).getSettingsList(new CardWrapperImpl(card));
+                settingsList = ((IPanelMultiCard)source).getSettingsList(new CardWrapperImpl(card, activeTab));
             }
             else
             {
@@ -121,7 +121,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel
             }
             textboxTitle = new GuiTextField(fontRenderer, 7, 16, 162, 18);
             textboxTitle.setFocused(true);
-            textboxTitle.setText(new CardWrapperImpl(card).getTitle());
+            textboxTitle.setText(new CardWrapperImpl(card, activeTab).getTitle());
         }
         else
         {
@@ -179,7 +179,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel
                 return;
             if(card != null && card.getItem() instanceof IAdvancedCardSettings)
             {
-                ICardWrapper helper = new CardWrapperImpl(card);
+                ICardWrapper helper = new CardWrapperImpl(card, activeTab);
                 Object guiObject = ((IAdvancedCardSettings)card.getItem()).getSettingsScreen(helper);
                 if(!(guiObject instanceof GuiScreen))
                 {
@@ -187,7 +187,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel
                     return;
                 }
                 GuiScreen gui = (GuiScreen)guiObject;
-                ICardSettingsWrapper wrapper = new CardSettingsWrapperImpl(card, container.panel, this);
+                ICardSettingsWrapper wrapper = new CardSettingsWrapperImpl(card, container.panel, this, activeTab);
                 ((ICardGui)gui).setCardSettingsHelper(wrapper);
                 mc.displayGuiScreen(gui);
             }

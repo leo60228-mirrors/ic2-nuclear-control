@@ -98,7 +98,7 @@ public class CommonProxy implements IGuiHandler
                     {
                         return;
                     }
-                    new CardWrapperImpl(stack).setTitle(soundName);
+                    new CardWrapperImpl(stack, -1).setTitle(soundName);
                     NuclearNetworkHelper.setSensorCardTitle((TileEntityInfoPanel)tileEntity, slot, soundName);
                 }
                 break;
@@ -158,7 +158,7 @@ public class CommonProxy implements IGuiHandler
                         FMLLog.warning("Class mismatch: '%s'!='%s'", className, stack.getItem().getClass().getName());
                         return;
                     }
-                    CardWrapperImpl helper = new CardWrapperImpl(stack);
+                    CardWrapperImpl helper = new CardWrapperImpl(stack, slot);
                     int fieldCount =  dat.readShort();
                     for(int i=0; i<fieldCount; i++)
                     {

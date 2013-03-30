@@ -63,7 +63,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
                 int displaySettings = panel.getDisplaySettingsByCard(card);
                 if(displaySettings == 0)
                     continue;
-                CardWrapperImpl helper = new CardWrapperImpl(card);
+                CardWrapperImpl helper = new CardWrapperImpl(card, -1);
                 CardState state = helper.getState();
                 List<PanelString> data;
                 if(state != CardState.OK && state != CardState.CUSTOM_ERROR)

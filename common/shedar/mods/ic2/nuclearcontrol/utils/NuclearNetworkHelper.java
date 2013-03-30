@@ -96,7 +96,7 @@ public class NuclearNetworkHelper
     //server
     public static void setSensorCardField(TileEntity panel, byte slot, Map<String, Object> fields)
     {
-        if(fields==null || fields.isEmpty() || panel==null || !(panel instanceof TileEntityInfoPanel))
+        if(fields==null || fields.isEmpty() || panel==null || !(panel instanceof TileEntityInfoPanel) || slot == -1)
             return;
             
         if(panel.worldObj.isRemote)
@@ -169,7 +169,7 @@ public class NuclearNetworkHelper
     }
     
     //client
-    public static void setCardSettings(ItemStack card, TileEntity panelTE, Map<String, Object> fields)
+    public static void setCardSettings(ItemStack card, TileEntity panelTE, Map<String, Object> fields, int slot)
     {
         if(card == null || fields==null || fields.isEmpty() || panelTE==null || !(panelTE instanceof TileEntityInfoPanel))
             return;
@@ -177,8 +177,6 @@ public class NuclearNetworkHelper
         if(FMLCommonHandler.instance().getEffectiveSide().isServer())
             return;
 
-        byte slot = ((TileEntityInfoPanel)panelTE).getIndexOfCard(card);
-        
         Packet250CustomPayload packet = new Packet250CustomPayload();
         ByteArrayDataOutput output = ByteStreams.newDataOutput();
         output.writeByte(PacketHandler.PACKET_CLIENT_SENSOR);

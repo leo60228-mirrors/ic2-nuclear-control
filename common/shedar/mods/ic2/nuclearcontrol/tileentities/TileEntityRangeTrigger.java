@@ -435,7 +435,7 @@ public class TileEntityRangeTrigger extends TileEntity implements
                     if(upgradeCountRange > 7)
                         upgradeCountRange = 7;
                     int range = LOCATION_RANGE * (int)Math.pow(2, upgradeCountRange);
-                    CardWrapperImpl cardHelper = new CardWrapperImpl(card);
+                    CardWrapperImpl cardHelper = new CardWrapperImpl(card, SLOT_CARD);
                     if(item instanceof IRemoteSensor)
                     {
                         ChunkCoordinates target = cardHelper.getTarget();

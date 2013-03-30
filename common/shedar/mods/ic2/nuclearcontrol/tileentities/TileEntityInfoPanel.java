@@ -235,7 +235,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         {
             if(stack.getItem() instanceof IPanelMultiCard)
             {
-                cardType = ((IPanelMultiCard)stack.getItem()).getCardType(new CardWrapperImpl(stack));
+                cardType = ((IPanelMultiCard)stack.getItem()).getCardType(new CardWrapperImpl(stack, slot));
             }
             else if(stack.getItem() instanceof IPanelDataSource)
             {
@@ -726,7 +726,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         return slot;
     }
     
-    private void processCard(ItemStack card, int upgradeCountRange)
+    private void processCard(ItemStack card, int upgradeCountRange, int slot)
     {
         if(card == null)
             return;
@@ -737,7 +737,7 @@ public class TileEntityInfoPanel extends TileEntity implements
             if(upgradeCountRange > 7)
                 upgradeCountRange = 7;
             int range = LOCATION_RANGE * (int)Math.pow(2, upgradeCountRange);
-            CardWrapperImpl cardHelper = new CardWrapperImpl(card);
+            CardWrapperImpl cardHelper = new CardWrapperImpl(card, slot);
             if(item instanceof IRemoteSensor)
             {
                 ChunkCoordinates target = cardHelper.getTarget();
@@ -786,7 +786,8 @@ public class TileEntityInfoPanel extends TileEntity implements
             List<ItemStack> cards = getCards();
             for (ItemStack card : cards)
             {
-                processCard(card, upgradeCountRange);
+                byte slot = getIndexOfCard(card);
+                processCard(card, upgradeCountRange, slot);
             }
         }
     };
@@ -1145,7 +1146,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         UUID cardType = null;
         if(card.getItem() instanceof IPanelMultiCard)
         {
-            cardType = ((IPanelMultiCard)card.getItem()).getCardType(new CardWrapperImpl(card));
+            cardType = ((IPanelMultiCard)card.getItem()).getCardType(new CardWrapperImpl(card, 0));
         }
         else if(card.getItem() instanceof IPanelDataSource)
         {

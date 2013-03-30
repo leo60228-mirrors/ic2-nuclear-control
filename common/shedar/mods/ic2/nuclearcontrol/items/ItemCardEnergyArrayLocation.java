@@ -65,7 +65,7 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
         int cardCount = getCardCount(card); 
         for (ItemStack subCard : cards)
         {
-            CardWrapperImpl wrapper = new CardWrapperImpl(subCard);
+            CardWrapperImpl wrapper = new CardWrapperImpl(subCard, -1);
             ChunkCoordinates target = wrapper.getTarget();
             if(target == null)
                 continue;
@@ -269,7 +269,7 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean advanced) 
     {
-        CardWrapperImpl card = new CardWrapperImpl(itemStack);
+        CardWrapperImpl card = new CardWrapperImpl(itemStack, -1);
         int cardCount = getCardCount(card);
         if(cardCount > 0)
         {

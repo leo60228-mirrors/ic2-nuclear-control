@@ -67,7 +67,7 @@ public class ItemCardEnergySensorLocation extends ItemCardBase implements IRemot
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean advanced) 
     {
-        CardWrapperImpl helper = new CardWrapperImpl(itemStack);
+        CardWrapperImpl helper = new CardWrapperImpl(itemStack, -1);
         ChunkCoordinates target = helper.getTarget();
         if(target!=null)
         {

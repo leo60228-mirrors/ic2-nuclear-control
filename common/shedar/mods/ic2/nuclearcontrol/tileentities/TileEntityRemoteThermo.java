@@ -407,7 +407,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
         }
         if(inventory[SLOT_CARD]!=null)
         {
-            ChunkCoordinates target = new CardWrapperImpl(inventory[SLOT_CARD]).getTarget();
+            ChunkCoordinates target = new CardWrapperImpl(inventory[SLOT_CARD], SLOT_CARD).getTarget();
             if(target != null)
             {
                 deltaX = target.posX - xCoord;

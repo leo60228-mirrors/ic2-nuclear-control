@@ -18,8 +18,9 @@ public class CardSettingsWrapperImpl implements ICardSettingsWrapper
     private TileEntity panel;
     private Map<String, Object> updateSet;
     private GuiInfoPanel gui;
+    private int slot;
     
-    public CardSettingsWrapperImpl(ItemStack card, TileEntity panel, GuiInfoPanel gui)
+    public CardSettingsWrapperImpl(ItemStack card, TileEntity panel, GuiInfoPanel gui, int slot)
     {
         if(!(card.getItem() instanceof IPanelDataSource))
         {
@@ -29,6 +30,7 @@ public class CardSettingsWrapperImpl implements ICardSettingsWrapper
         this.panel = panel;
         updateSet = new HashMap<String, Object>();
         this.gui = gui;
+        this.slot = slot;
     }
     
     @Override
@@ -60,7 +62,7 @@ public class CardSettingsWrapperImpl implements ICardSettingsWrapper
     {
         if(!updateSet.isEmpty())
         {
-            NuclearNetworkHelper.setCardSettings(card, panel, updateSet);
+            NuclearNetworkHelper.setCardSettings(card, panel, updateSet, slot);
             updateSet = new HashMap<String, Object>();
         }
             

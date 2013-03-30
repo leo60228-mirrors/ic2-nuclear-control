@@ -40,7 +40,7 @@ public class TileEntityRemoteThermoRenderer extends TileEntitySpecialRenderer
                     GL11.glRotatef(180, 0, 1, 0);
                     break;
                 case 2:
-                    GL11.glTranslatef(0, 2.5f, 0);
+                    GL11.glTranslatef(0, 1f, 0);
                     GL11.glRotatef(0, 0, 1, 0);
                     GL11.glRotatef(90, 1, 0, 0);
                     break;
@@ -50,7 +50,7 @@ public class TileEntityRemoteThermoRenderer extends TileEntitySpecialRenderer
                     GL11.glRotatef(90, 1, 0, 0);
                     break;
                 case 4:
-                    GL11.glTranslatef(0, 1, 2.5f);
+                    GL11.glTranslatef(0, 1, 1f);
                     GL11.glRotatef(90, 0, 1, 0);
                     GL11.glRotatef(90, 1, 0, 0);
                     break;

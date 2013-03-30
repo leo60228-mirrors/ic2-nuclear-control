@@ -17,7 +17,7 @@ public final class CardHelper
         try
         {
             Class c = Class.forName(className);
-            return (ICardWrapper)c.getConstructor(ItemStack.class).newInstance(card);
+            return (ICardWrapper)c.getConstructor(ItemStack.class, int.class).newInstance(card, -1);
         } catch (Exception e)
         {
             FMLLog.severe("Can't create Nuclear Control Card Wrapper: %s", e.toString());

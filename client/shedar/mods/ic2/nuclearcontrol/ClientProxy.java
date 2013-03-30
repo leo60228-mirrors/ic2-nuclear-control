@@ -195,7 +195,7 @@ public class ClientProxy extends CommonProxy
                     {
                         return;
                     }
-                    CardWrapperImpl helper = new CardWrapperImpl(stack);
+                    CardWrapperImpl helper = new CardWrapperImpl(stack, slot);
                     int fieldCount =  dat.readShort();
                     for(int i=0; i<fieldCount; i++)
                     {
@@ -239,7 +239,7 @@ public class ClientProxy extends CommonProxy
                     {
                         return;
                     }
-                    new CardWrapperImpl(itemStack).setTitle(dat.readUTF());
+                    new CardWrapperImpl(itemStack, slot).setTitle(dat.readUTF());
                     panel.resetCardData();
                     break;
                 case PacketHandler.PACKET_ECOUNTER:

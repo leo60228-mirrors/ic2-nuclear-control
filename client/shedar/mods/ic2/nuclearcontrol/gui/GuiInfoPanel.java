@@ -80,7 +80,7 @@ public class GuiInfoPanel extends GuiContainer
             List<PanelSetting> settingsList = null;
             if(card.getItem() instanceof IPanelMultiCard)
             {
-                settingsList = ((IPanelMultiCard)source).getSettingsList(new CardWrapperImpl(card));
+                settingsList = ((IPanelMultiCard)source).getSettingsList(new CardWrapperImpl(card, (byte)0));
             }
             else
             {
@@ -97,7 +97,7 @@ public class GuiInfoPanel extends GuiContainer
             {
                 textboxTitle = new GuiTextField(fontRenderer, 7, 16, 162, 18);
                 textboxTitle.setFocused(true);
-                textboxTitle.setText(new CardWrapperImpl(card).getTitle());
+                textboxTitle.setText(new CardWrapperImpl(card, 0).getTitle());
             }
         }
         else
@@ -172,7 +172,7 @@ public class GuiInfoPanel extends GuiContainer
         }
         if(card!=null && card.getItem() instanceof IPanelDataSource)
         {
-            new CardWrapperImpl(card).setTitle(textboxTitle.getText());
+            new CardWrapperImpl(card, 0).setTitle(textboxTitle.getText());
         }
     }
     
@@ -198,7 +198,7 @@ public class GuiInfoPanel extends GuiContainer
                 return;
             if(card != null && card.getItem() instanceof IAdvancedCardSettings)
             {
-                ICardWrapper helper = new CardWrapperImpl(card);
+                ICardWrapper helper = new CardWrapperImpl(card, 0);
                 Object guiObject = ((IAdvancedCardSettings)card.getItem()).getSettingsScreen(helper);
                 if(!(guiObject instanceof GuiScreen))
                 {
@@ -206,7 +206,7 @@ public class GuiInfoPanel extends GuiContainer
                     return;
                 }
                 GuiScreen gui = (GuiScreen)guiObject;
-                ICardSettingsWrapper wrapper = new CardSettingsWrapperImpl(card, container.panel, this);
+                ICardSettingsWrapper wrapper = new CardSettingsWrapperImpl(card, container.panel, this, 0);
                 ((ICardGui)gui).setCardSettingsHelper(wrapper);
                 mc.displayGuiScreen(gui);
             }        
