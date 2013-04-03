@@ -12,6 +12,7 @@ import net.minecraft.util.Facing;
 
 import org.lwjgl.opengl.GL11;
 
+import shedar.mods.ic2.nuclearcontrol.IScreenPart;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
@@ -48,9 +49,29 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float f)
     {
         boolean isPanel = tileEntity instanceof TileEntityInfoPanel;
+        if(!isPanel && tileEntity instanceof IScreenPart)
+        {
+            Screen scr = ((IScreenPart)tileEntity).getScreen();
+            if(scr!=null)
+            {
+                TileEntity core = scr.getCore(tileEntity.worldObj);
+                if(core!=null)
+                {
+                    x += core.xCoord - tileEntity.xCoord;
+                    y += core.yCoord - tileEntity.yCoord;
+                    z += core.zCoord - tileEntity.zCoord;
+                    tileEntity = core;
+                    isPanel = tileEntity instanceof TileEntityInfoPanel;
+                }
+            }
+        }
+            
         if(isPanel)
         {
             TileEntityInfoPanel panel = (TileEntityInfoPanel)tileEntity;
+            if(panel.lastTick == f)
+                return;
+            panel.lastTick = f;
             if(!panel.getPowered())
                 return;
             List<ItemStack> cards = panel.getCards();

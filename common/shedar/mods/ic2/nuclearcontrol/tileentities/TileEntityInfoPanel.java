@@ -66,6 +66,8 @@ public class TileEntityInfoPanel extends TileEntity implements
     private static final byte SLOT_UPGRADE_COLOR = 2;
     private static final byte LOCATION_RANGE = 8;
     
+    public float lastTick = 0;
+    
     protected int updateTicker;
     protected int dataTicker;
     protected int tickRate;
