@@ -175,6 +175,23 @@ public class IC2NuclearControl
                         Character.valueOf('L'), "dyeLime", 
                         Character.valueOf('W'), Block.planks, 
                 });
+        Ic2Recipes.addCraftingRecipe(new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_ADVANCED_PANEL), new Object[] 
+                {
+                    "PPP", "GLG", "CAC", 
+                        Character.valueOf('P'), Block.thinGlass, 
+                        Character.valueOf('L'), "dyeLime", 
+                        Character.valueOf('G'), Items.getItem("goldCableItem"),
+                        Character.valueOf('A'), Items.getItem("advancedCircuit"), 
+                        Character.valueOf('C'), Items.getItem("carbonPlate") 
+                });
+        Ic2Recipes.addCraftingRecipe(new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_ADVANCED_EXTENDER), new Object[] 
+                {
+                    "PPP", "GLG", "GCG", 
+                        Character.valueOf('P'), Block.thinGlass, 
+                        Character.valueOf('L'), "dyeLime", 
+                        Character.valueOf('G'), Items.getItem("goldCableItem"),
+                        Character.valueOf('C'), Items.getItem("carbonPlate") 
+                });
         Ic2Recipes.addCraftingRecipe(new ItemStack(itemToolThermometer, 1), new Object[] 
                 {
                     "IG ", "GWG", " GG", 
