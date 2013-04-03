@@ -1,8 +1,6 @@
 package shedar.mods.ic2.nuclearcontrol.subblocks;
 
-import shedar.mods.ic2.nuclearcontrol.ITextureHelper;
 import ic2.api.IWrenchable;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -10,6 +8,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Facing;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
+import shedar.mods.ic2.nuclearcontrol.ITextureHelper;
 
 public abstract class Subblock
 {
@@ -62,5 +61,5 @@ public abstract class Subblock
     public abstract boolean hasGui();
     public abstract float[] getBlockBounds(TileEntity tileEntity);
     public abstract Container getServerGuiElement(TileEntity tileEntity, EntityPlayer player);
-    public abstract GuiContainer getClientGuiElement(TileEntity tileEntity, EntityPlayer player);
+    public abstract Object getClientGuiElement(TileEntity tileEntity, EntityPlayer player);
 }

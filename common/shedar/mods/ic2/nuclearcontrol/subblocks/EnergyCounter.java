@@ -1,6 +1,5 @@
 package shedar.mods.ic2.nuclearcontrol.subblocks;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -71,7 +70,7 @@ public class EnergyCounter extends Subblock
     }
 
     @Override
-    public GuiContainer getClientGuiElement(TileEntity tileEntity, EntityPlayer player)
+    public Object getClientGuiElement(TileEntity tileEntity, EntityPlayer player)
     {
         ContainerEnergyCounter containerCounter = new ContainerEnergyCounter(player, (TileEntityEnergyCounter)tileEntity);
         return new GuiEnergyCounter(containerCounter);

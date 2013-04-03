@@ -1,6 +1,5 @@
 package shedar.mods.ic2.nuclearcontrol.subblocks;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
@@ -84,7 +83,7 @@ public class AdvancedInfoPanelExtender extends InfoPanel
     }
 
     @Override
-    public GuiContainer getClientGuiElement(TileEntity tileEntity, EntityPlayer player)
+    public Object getClientGuiElement(TileEntity tileEntity, EntityPlayer player)
     {
         return null;
     }

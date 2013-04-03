@@ -1,6 +1,5 @@
 package shedar.mods.ic2.nuclearcontrol.subblocks;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -69,7 +68,7 @@ public class RemoteThermo extends Subblock
     }
 
     @Override
-    public GuiContainer getClientGuiElement(TileEntity tileEntity, EntityPlayer player)
+    public Object getClientGuiElement(TileEntity tileEntity, EntityPlayer player)
     {
         ContainerRemoteThermo container = new ContainerRemoteThermo(player, (TileEntityRemoteThermo)tileEntity);
         return new GuiRemoteThermo(container);
