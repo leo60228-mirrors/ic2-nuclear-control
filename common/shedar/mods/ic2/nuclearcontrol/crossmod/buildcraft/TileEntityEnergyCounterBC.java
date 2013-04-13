@@ -65,7 +65,7 @@ public class TileEntityEnergyCounterBC extends TileEntityEnergyCounter implement
                 IPowerProvider receptor = ((IPowerReceptor) tile).getPowerProvider();
                 if(receptor!=null)
                 {
-                    float powerRequested = (float)((IPowerReceptor)tile).powerRequest();
+                    float powerRequested = (float)((IPowerReceptor)tile).powerRequest(direction);
                     
                     if(powerRequested > 0.0F) 
                     {
@@ -88,12 +88,6 @@ public class TileEntityEnergyCounterBC extends TileEntityEnergyCounter implement
     }
 
     @Override
-    public int powerRequest()
-    {
-        return getPowerProvider().getMaxEnergyReceived();
-    }
-    
-    @Override
     public void writeToNBT(NBTTagCompound nbttagcompound)
     {
         super.writeToNBT(nbttagcompound);
@@ -105,5 +99,11 @@ public class TileEntityEnergyCounterBC extends TileEntityEnergyCounter implement
     {
         super.readFromNBT(nbttagcompound);
         powerProvider.readFromNBT(nbttagcompound);
+    }
+
+    @Override
+    public int powerRequest(ForgeDirection from)
+    {
+        return getPowerProvider().getMaxEnergyReceived();
     }
 }

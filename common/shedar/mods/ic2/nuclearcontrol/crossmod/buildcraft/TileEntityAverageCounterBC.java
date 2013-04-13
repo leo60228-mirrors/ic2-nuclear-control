@@ -64,7 +64,7 @@ public class TileEntityAverageCounterBC extends TileEntityAverageCounter impleme
                 IPowerProvider receptor = ((IPowerReceptor) tile).getPowerProvider();
                 if(receptor!=null)
                 {
-                    float powerRequested = (float)((IPowerReceptor)tile).powerRequest();
+                    float powerRequested = (float)((IPowerReceptor)tile).powerRequest(direction);
                     
                     if(powerRequested > 0.0F) 
                     {
@@ -87,7 +87,7 @@ public class TileEntityAverageCounterBC extends TileEntityAverageCounter impleme
     }
 
     @Override
-    public int powerRequest()
+    public int powerRequest(ForgeDirection direction)
     {
         return getPowerProvider().getMaxEnergyReceived();
     }
