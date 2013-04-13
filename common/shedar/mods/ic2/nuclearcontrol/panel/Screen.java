@@ -93,8 +93,12 @@ public class Screen
                     TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
                     if(tileEntity == null || !(tileEntity instanceof IScreenPart))
                         continue;
-                    ((IScreenPart)tileEntity).setScreen(null);
-                    ((IScreenPart)tileEntity).updateData();
+                    IScreenPart part = (IScreenPart)tileEntity;
+                    if(part.getScreen().equals(this))
+                    {
+                        part.setScreen(null);
+                        part.updateData();
+                    }
                     if(powered || force)
                     {
                         world.markBlockForUpdate(x, y, z);
