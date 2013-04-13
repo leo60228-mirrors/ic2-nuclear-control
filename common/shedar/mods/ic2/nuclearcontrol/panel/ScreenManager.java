@@ -52,7 +52,7 @@ public class ScreenManager
         TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
         if(!(tileEntity instanceof TileEntityInfoPanelExtender))
             return false;
-        if(advanced && !(tileEntity instanceof TileEntityAdvancedInfoPanelExtender))
+        if(advanced ^ (tileEntity instanceof TileEntityAdvancedInfoPanelExtender))
             return false;
         if(((TileEntityInfoPanelExtender)tileEntity).facing != facing)
             return false;
