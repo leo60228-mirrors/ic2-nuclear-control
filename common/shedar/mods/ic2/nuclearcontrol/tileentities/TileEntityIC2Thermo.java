@@ -1,12 +1,12 @@
 package shedar.mods.ic2.nuclearcontrol.tileentities;
 
-import ic2.api.IReactor;
-import ic2.api.IReactorChamber;
-import ic2.api.IWrenchable;
 import ic2.api.network.INetworkClientTileEntityEventListener;
 import ic2.api.network.INetworkDataProvider;
 import ic2.api.network.INetworkUpdateListener;
 import ic2.api.network.NetworkHelper;
+import ic2.api.reactor.IReactor;
+import ic2.api.reactor.IReactorChamber;
+import ic2.api.tile.IWrenchable;
 
 import java.util.List;
 import java.util.Vector;

@@ -104,6 +104,7 @@ public class TileEntityEnergyCounterBC extends TileEntityEnergyCounter implement
     @Override
     public int powerRequest(ForgeDirection from)
     {
-        return getPowerProvider().getMaxEnergyReceived();
+        return (int) Math.floor(Math.min(getPowerProvider().getMaxEnergyReceived(), getPowerProvider().getMaxEnergyStored()
+                - getPowerProvider().getEnergyStored()));
     }
 }

@@ -1,7 +1,7 @@
 package shedar.mods.ic2.nuclearcontrol.crossmod.ic2;
 
-import ic2.api.IEnergyStorage;
-import ic2.api.Items;
+import ic2.api.item.Items;
+import ic2.api.tile.IEnergyStorage;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import shedar.mods.ic2.nuclearcontrol.crossmod.data.EnergyStorageData;

@@ -1,8 +1,7 @@
 package shedar.mods.ic2.nuclearcontrol.items;
 
-import shedar.mods.ic2.nuclearcontrol.utils.NuclearHelper;
-import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
-import shedar.mods.ic2.nuclearcontrol.utils.TextureResolver;
+import ic2.api.reactor.IReactor;
+import ic2.api.reactor.IReactorChamber;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,8 +9,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import ic2.api.IReactor;
-import ic2.api.IReactorChamber;
+import shedar.mods.ic2.nuclearcontrol.utils.NuclearHelper;
+import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
+import shedar.mods.ic2.nuclearcontrol.utils.TextureResolver;
 
 public class ItemToolThermometer extends Item
 {

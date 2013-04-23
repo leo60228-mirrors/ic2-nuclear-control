@@ -1,6 +1,6 @@
 package shedar.mods.ic2.nuclearcontrol.subblocks;
 
-import ic2.api.IWrenchable;
+import ic2.api.tile.IWrenchable;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;

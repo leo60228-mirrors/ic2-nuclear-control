@@ -1,6 +1,7 @@
 package shedar.mods.ic2.nuclearcontrol;
 
-import ic2.api.IWrenchable;
+
+import ic2.api.tile.IWrenchable;
 
 import java.util.HashMap;
 import java.util.List;

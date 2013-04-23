@@ -1,7 +1,8 @@
 package shedar.mods.ic2.nuclearcontrol;
 
-import ic2.api.Ic2Recipes;
-import ic2.api.Items;
+
+import ic2.api.item.Items;
+import ic2.api.recipe.Recipes;
 
 import java.io.File;
 import java.util.List;
@@ -50,7 +51,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod( modid = "IC2NuclearControl", name="Nuclear Control", version="1.5.1", dependencies = "after:IC2")
+@Mod( modid = "IC2NuclearControl", name="Nuclear Control", version="1.5.1b", dependencies = "after:IC2")
 @NetworkMod(channels = { "NuclearControl" }, clientSideRequired = true, serverSideRequired = false, 
             packetHandler = PacketHandler.class, connectionHandler = ConnectionHandler.class)
 @ModstatInfo(prefix="nc")
@@ -126,7 +127,7 @@ public class IC2NuclearControl
     protected void addRecipes()
     {
         ItemStack thermalMonitor = new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_THERMAL_MONITOR);
-        Ic2Recipes.addCraftingRecipe(thermalMonitor, new Object[]
+        Recipes.advRecipes.addRecipe(thermalMonitor, new Object[]
                 {
                     "GGG", "GCG", "GRG", 
                         Character.valueOf('G'), Items.getItem("reinforcedGlass"), 
@@ -134,7 +135,7 @@ public class IC2NuclearControl
                         Character.valueOf('C'), Items.getItem("advancedCircuit")
                 });
         ItemStack howler = new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_HOWLER_ALARM);
-        Ic2Recipes.addCraftingRecipe(howler, new Object[]
+        Recipes.advRecipes.addRecipe(howler, new Object[]
                 {
                     "NNN", "ICI", "IRI", 
                         Character.valueOf('I'), Item.ingotIron, 
@@ -143,7 +144,7 @@ public class IC2NuclearControl
                         Character.valueOf('C'), Items.getItem("electronicCircuit")
                 });
         ItemStack industrialAlarm = new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_INDUSTRIAL_ALARM);
-        Ic2Recipes.addCraftingRecipe(industrialAlarm, new Object[]
+        Recipes.advRecipes.addRecipe(industrialAlarm, new Object[]
                 {
                     "GOG", "GHG", "GRG", 
                         Character.valueOf('G'), Items.getItem("reinforcedGlass"), 
@@ -152,14 +153,14 @@ public class IC2NuclearControl
                         Character.valueOf('H'), howler 
                 });
 
-        Ic2Recipes.addCraftingRecipe(new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_REMOTE_THERMO), new Object[] 
+        Recipes.advRecipes.addRecipe(new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_REMOTE_THERMO), new Object[] 
                 {
                     "F", "M", "T", 
                         Character.valueOf('T'), thermalMonitor, 
                         Character.valueOf('M'), Items.getItem("machine"), 
                         Character.valueOf('F'), Items.getItem("frequencyTransmitter")
                 });
-        Ic2Recipes.addCraftingRecipe(new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_INFO_PANEL), new Object[] 
+        Recipes.advRecipes.addRecipe(new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_INFO_PANEL), new Object[] 
                 {
                     "PPP", "LCL", "IRI", 
                         Character.valueOf('P'), Block.thinGlass, 
@@ -168,14 +169,14 @@ public class IC2NuclearControl
                         Character.valueOf('R'), Item.redstone, 
                         Character.valueOf('C'), Items.getItem("electronicCircuit") 
                 });
-        Ic2Recipes.addCraftingRecipe(new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_INFO_PANEL_EXTENDER), new Object[] 
+        Recipes.advRecipes.addRecipe(new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_INFO_PANEL_EXTENDER), new Object[] 
                 {
                     "PPP", "WLW", "WWW", 
                         Character.valueOf('P'), Block.thinGlass, 
                         Character.valueOf('L'), "dyeLime", 
                         Character.valueOf('W'), Block.planks, 
                 });
-        Ic2Recipes.addCraftingRecipe(new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_ADVANCED_PANEL), new Object[] 
+        Recipes.advRecipes.addRecipe(new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_ADVANCED_PANEL), new Object[] 
                 {
                     "PPP", "GLG", "CAC", 
                         Character.valueOf('P'), Block.thinGlass, 
@@ -184,7 +185,7 @@ public class IC2NuclearControl
                         Character.valueOf('A'), Items.getItem("advancedCircuit"), 
                         Character.valueOf('C'), Items.getItem("carbonPlate") 
                 });
-        Ic2Recipes.addCraftingRecipe(new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_ADVANCED_EXTENDER), new Object[] 
+        Recipes.advRecipes.addRecipe(new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_ADVANCED_EXTENDER), new Object[] 
                 {
                     "PPP", "GLG", "GCG", 
                         Character.valueOf('P'), Block.thinGlass, 
@@ -192,7 +193,7 @@ public class IC2NuclearControl
                         Character.valueOf('G'), Items.getItem("goldCableItem"),
                         Character.valueOf('C'), Items.getItem("carbonPlate") 
                 });
-        Ic2Recipes.addCraftingRecipe(new ItemStack(itemToolThermometer, 1), new Object[] 
+        Recipes.advRecipes.addRecipe(new ItemStack(itemToolThermometer, 1), new Object[] 
                 {
                     "IG ", "GWG", " GG", 
                         Character.valueOf('G'), Block.glass, 
@@ -200,34 +201,34 @@ public class IC2NuclearControl
                         Character.valueOf('W'), Items.getItem("waterCell")
                 });
         ItemStack digitalThermometer = new ItemStack(itemToolDigitalThermometer, 1);
-        Ic2Recipes.addCraftingRecipe(digitalThermometer, new Object[] 
+        Recipes.advRecipes.addRecipe(digitalThermometer, new Object[] 
                 {
                     "I  ", "IC ", " GI", 
                         Character.valueOf('G'), Item.lightStoneDust, 
                         Character.valueOf('I'), "ingotRefinedIron", 
                         Character.valueOf('C'), Items.getItem("electronicCircuit")
                 });
-        Ic2Recipes.addCraftingRecipe(new ItemStack(itemRemoteSensorKit, 1), new Object[] 
+        Recipes.advRecipes.addRecipe(new ItemStack(itemRemoteSensorKit, 1), new Object[] 
                 {
                     "  F", " D ", "P  ", 
                         Character.valueOf('P'), Item.paper, 
                         Character.valueOf('D'), digitalThermometer, 
                         Character.valueOf('F'), Items.getItem("frequencyTransmitter")
                 });
-        Ic2Recipes.addCraftingRecipe(new ItemStack(itemEnergySensorKit, 1), new Object[] 
+        Recipes.advRecipes.addRecipe(new ItemStack(itemEnergySensorKit, 1), new Object[] 
                 {
                     "  F", " D ", "P  ", 
                         Character.valueOf('P'), Item.paper, 
                         Character.valueOf('D'), Items.getItem("ecMeter"), 
                         Character.valueOf('F'), Items.getItem("frequencyTransmitter")
                 });
-        Ic2Recipes.addCraftingRecipe(new ItemStack(itemUpgrade, 1, ItemUpgrade.DAMAGE_RANGE), new Object[] 
+        Recipes.advRecipes.addRecipe(new ItemStack(itemUpgrade, 1, ItemUpgrade.DAMAGE_RANGE), new Object[] 
                 {
                     "CFC", 
                         Character.valueOf('C'), Items.getItem("insulatedCopperCableItem"), 
                         Character.valueOf('F'), Items.getItem("frequencyTransmitter")
                 });
-        Ic2Recipes.addCraftingRecipe(new ItemStack(itemUpgrade, 1, ItemUpgrade.DAMAGE_COLOR), new Object[] 
+        Recipes.advRecipes.addRecipe(new ItemStack(itemUpgrade, 1, ItemUpgrade.DAMAGE_COLOR), new Object[] 
                 {
                     "RYG","WCM","IAB", 
                         Character.valueOf('R'), "dyeRed",  
@@ -241,7 +242,7 @@ public class IC2NuclearControl
                         Character.valueOf('B'), "dyeBlue"  
                 });
         ItemStack energyCounter = new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_ENERGY_COUNTER);
-        Ic2Recipes.addCraftingRecipe(energyCounter, new Object[]
+        Recipes.advRecipes.addRecipe(energyCounter, new Object[]
                 {
                     " A ", "FTF", 
                         Character.valueOf('A'), Items.getItem("advancedCircuit"), 
@@ -249,7 +250,7 @@ public class IC2NuclearControl
                         Character.valueOf('T'), Items.getItem("mvTransformer")
                 });
         ItemStack averageCounter = new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_AVERAGE_COUNTER);
-        Ic2Recipes.addCraftingRecipe(averageCounter, new Object[]
+        Recipes.advRecipes.addRecipe(averageCounter, new Object[]
                 {
                 "FTF", " A ",  
                         Character.valueOf('A'), Items.getItem("advancedCircuit"), 
@@ -257,7 +258,7 @@ public class IC2NuclearControl
                         Character.valueOf('T'), Items.getItem("mvTransformer")
                 });
         ItemStack rangeTrigger = new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_RANGE_TRIGGER);
-        Ic2Recipes.addCraftingRecipe(rangeTrigger, new Object[]
+        Recipes.advRecipes.addRecipe(rangeTrigger, new Object[]
                 {
                 "EFE", "AMA",  " R ",
                         
@@ -267,36 +268,36 @@ public class IC2NuclearControl
                         Character.valueOf('M'), Items.getItem("machine"), 
                         Character.valueOf('R'), Item.redstone 
                 });
-        Ic2Recipes.addCraftingRecipe(new ItemStack(itemMultipleSensorKit, 1, ItemKitMultipleSensor.TYPE_COUNTER), new Object[] 
+        Recipes.advRecipes.addRecipe(new ItemStack(itemMultipleSensorKit, 1, ItemKitMultipleSensor.TYPE_COUNTER), new Object[] 
                 {
                     "  F", " C ", "P  ", 
                         Character.valueOf('P'), Item.paper, 
                         Character.valueOf('C'), Items.getItem("electronicCircuit"), 
                         Character.valueOf('F'), Items.getItem("frequencyTransmitter")
                 });
-        Ic2Recipes.addCraftingRecipe(new ItemStack(itemMultipleSensorKit, 1, ItemKitMultipleSensor.TYPE_LIQUID), new Object[] 
+        Recipes.advRecipes.addRecipe(new ItemStack(itemMultipleSensorKit, 1, ItemKitMultipleSensor.TYPE_LIQUID), new Object[] 
                 {
                     "  F", " C ", "P  ", 
                         Character.valueOf('P'), Item.paper, 
                         Character.valueOf('C'), Item.bucketEmpty, 
                         Character.valueOf('F'), Items.getItem("frequencyTransmitter")
                 });
-        Ic2Recipes.addCraftingRecipe(new ItemStack(itemTextCard, 1), new Object[] 
+        Recipes.advRecipes.addRecipe(new ItemStack(itemTextCard, 1), new Object[] 
                 {
                     " C ", "PFP", " C ", 
                         Character.valueOf('P'), Item.paper, 
                         Character.valueOf('C'), Items.getItem("electronicCircuit"), 
                         Character.valueOf('F'), Items.getItem("insulatedCopperCableItem")
                 });
-        Ic2Recipes.addShapelessCraftingRecipe(new ItemStack(itemTimeCard, 1),  
+        Recipes.advRecipes.addShapelessRecipe(new ItemStack(itemTimeCard, 1),  
                 Items.getItem("electronicCircuit"), Item.pocketSundial);
-        Ic2Recipes.addShapelessCraftingRecipe(new ItemStack(Items.getItem("electronicCircuit").getItem(), 2),  
+        Recipes.advRecipes.addShapelessRecipe(new ItemStack(Items.getItem("electronicCircuit").getItem(), 2),  
                 itemSensorLocationCard );
-        Ic2Recipes.addShapelessCraftingRecipe(new ItemStack(Items.getItem("electronicCircuit").getItem(), 2),  
+        Recipes.advRecipes.addShapelessRecipe(new ItemStack(Items.getItem("electronicCircuit").getItem(), 2),  
                 itemEnergySensorLocationCard );
-        Ic2Recipes.addShapelessCraftingRecipe(new ItemStack(Items.getItem("electronicCircuit").getItem(), 2),  
+        Recipes.advRecipes.addShapelessRecipe(new ItemStack(Items.getItem("electronicCircuit").getItem(), 2),  
                 new  ItemStack(itemMultipleSensorLocationCard, 1, ItemKitMultipleSensor.TYPE_COUNTER));
-        Ic2Recipes.addShapelessCraftingRecipe(new ItemStack(Items.getItem("electronicCircuit").getItem(), 1),  
+        Recipes.advRecipes.addShapelessRecipe(new ItemStack(Items.getItem("electronicCircuit").getItem(), 1),  
                 new  ItemStack(itemMultipleSensorLocationCard, 1, ItemKitMultipleSensor.TYPE_LIQUID));
         CraftingManager.getInstance().getRecipeList().add(new StorageArrayRecipe());
     }

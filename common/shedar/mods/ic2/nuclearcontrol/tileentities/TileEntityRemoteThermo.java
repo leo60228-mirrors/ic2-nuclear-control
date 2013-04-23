@@ -1,14 +1,14 @@
 package shedar.mods.ic2.nuclearcontrol.tileentities;
 
 import ic2.api.Direction;
-import ic2.api.ElectricItem;
-import ic2.api.IElectricItem;
-import ic2.api.IReactor;
-import ic2.api.Items;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
+import ic2.api.item.ElectricItem;
+import ic2.api.item.IElectricItem;
+import ic2.api.item.Items;
 import ic2.api.network.NetworkHelper;
+import ic2.api.reactor.IReactor;
 
 import java.util.List;
 

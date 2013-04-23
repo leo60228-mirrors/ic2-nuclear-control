@@ -1,12 +1,12 @@
 package shedar.mods.ic2.nuclearcontrol.items;
 
-import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
-import shedar.mods.ic2.nuclearcontrol.utils.NuclearHelper;
-import ic2.api.IReactor;
-import ic2.api.IReactorChamber;
+import ic2.api.reactor.IReactor;
+import ic2.api.reactor.IReactorChamber;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
+import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
+import shedar.mods.ic2.nuclearcontrol.utils.NuclearHelper;
 
 public class ItemKitReactorSensor extends ItemSensorKitBase
 {

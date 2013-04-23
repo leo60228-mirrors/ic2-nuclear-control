@@ -89,7 +89,8 @@ public class TileEntityAverageCounterBC extends TileEntityAverageCounter impleme
     @Override
     public int powerRequest(ForgeDirection direction)
     {
-        return getPowerProvider().getMaxEnergyReceived();
+        return (int) Math.floor(Math.min(getPowerProvider().getMaxEnergyReceived(), getPowerProvider().getMaxEnergyStored()
+                - getPowerProvider().getEnergyStored()));
     }
     
     @Override

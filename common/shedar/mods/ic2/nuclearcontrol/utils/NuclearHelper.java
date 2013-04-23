@@ -1,13 +1,13 @@
 package shedar.mods.ic2.nuclearcontrol.utils;
 
-import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
+import ic2.api.reactor.IReactor;
+import ic2.api.reactor.IReactorChamber;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.World;
-import ic2.api.IReactor;
-import ic2.api.IReactorChamber;
+import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 
 public class NuclearHelper {
 	
