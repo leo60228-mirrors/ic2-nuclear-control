@@ -35,9 +35,9 @@ public class ItemToolDigitalThermometer extends ItemToolThermometer
     }
 
     @Override
-    public void updateIcons(IconRegister iconRegister)
+    public void registerIcons(IconRegister iconRegister)
     {
-             iconIndex = iconRegister.registerIcon(TextureResolver.getItemTexture("thermometerDigital"));
+        itemIcon = iconRegister.registerIcon(TextureResolver.getItemTexture("thermometerDigital"));
     }    
 
     @Override

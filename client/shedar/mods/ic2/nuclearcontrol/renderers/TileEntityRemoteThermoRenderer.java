@@ -24,7 +24,7 @@ public class TileEntityRemoteThermoRenderer extends TileEntitySpecialRenderer
             GL11.glPolygonOffset( -10, -10 );
             GL11.glEnable ( GL11.GL_POLYGON_OFFSET_FILL );
             TileEntityRemoteThermo thermo = (TileEntityRemoteThermo)tileEntity;
-            short side = (short)Facing.faceToSide[thermo.getFacing()];
+            short side = (short)Facing.oppositeSide[thermo.getFacing()];
             float var12 = 0.016666668F;
             int heat = thermo.getHeatLevel();
             String text = Integer.toString(heat);

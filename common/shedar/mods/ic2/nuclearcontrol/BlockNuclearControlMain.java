@@ -112,7 +112,7 @@ public class BlockNuclearControlMain extends BlockContainer
     public boolean canPlaceBlockAtlocal(World world, int x, int y, int z)
     {
     	for (int face = 0; face < 6; face++){
-    		int side = Facing.faceToSide[face];
+    		int side = Facing.oppositeSide[face];
     		if(world.isBlockSolidOnSide(x + Facing.offsetsXForSide[side], 
     									y + Facing.offsetsYForSide[side], 
     									z + Facing.offsetsZForSide[side], ForgeDirection.getOrientation(face)))
@@ -195,7 +195,7 @@ public class BlockNuclearControlMain extends BlockContainer
         }
         if(isSolidBlockRequired(metadata))
     	for (int face = 0; face < 6; face++){
-    		int side = Facing.faceToSide[face];
+    		int side = Facing.oppositeSide[face];
     		if(world.isBlockSolidOnSide(x + Facing.offsetsXForSide[side], 
     									y + Facing.offsetsYForSide[side], 
     									z + Facing.offsetsZForSide[side],  ForgeDirection.getOrientation(face)))
@@ -250,7 +250,7 @@ public class BlockNuclearControlMain extends BlockContainer
         TileEntity tileentity = world.getBlockTileEntity(x, y, z);
         if(tileentity instanceof IWrenchable)
         {
-        	side = Facing.faceToSide[((IWrenchable)tileentity).getFacing()];
+        	side = Facing.oppositeSide[((IWrenchable)tileentity).getFacing()];
         }
         int metadata = world.getBlockMetadata(x, y, z);
         
@@ -356,7 +356,7 @@ public class BlockNuclearControlMain extends BlockContainer
         int side = 0;
         if(tileentity instanceof IWrenchable)
         {
-        	side = Facing.faceToSide[((IWrenchable)tileentity).getFacing()];
+        	side = Facing.oppositeSide[((IWrenchable)tileentity).getFacing()];
         }
         switch (side)
         {
@@ -512,7 +512,7 @@ public class BlockNuclearControlMain extends BlockContainer
     }
 
     @Override
-    public Icon getBlockTextureFromSideAndMetadata(int side, int metadata)
+    public Icon getIcon(int side, int metadata)
     {
         if(subblocks.containsKey(metadata))
             return subblocks.get(metadata).getBlockTextureFromSide(side);

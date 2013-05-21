@@ -58,7 +58,7 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase implements IRem
     }
     
     @Override
-    public void updateIcons(IconRegister iconRegister)
+    public void registerIcons(IconRegister iconRegister)
     {
         iconCounter = iconRegister.registerIcon(TextureResolver.getItemTexture(TEXTURE_CARD_COUNTER));
         iconLiquid = iconRegister.registerIcon(TextureResolver.getItemTexture(TEXTURE_CARD_LIQUID));

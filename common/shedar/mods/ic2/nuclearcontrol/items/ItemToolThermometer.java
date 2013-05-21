@@ -30,9 +30,9 @@ public class ItemToolThermometer extends Item
     }
 
     @Override
-    public void updateIcons(IconRegister iconRegister)
+    public void registerIcons(IconRegister iconRegister)
     {
-             iconIndex = iconRegister.registerIcon(TextureResolver.getItemTexture("thermometer"));
+        itemIcon = iconRegister.registerIcon(TextureResolver.getItemTexture("thermometer"));
     }    
 
     @Override

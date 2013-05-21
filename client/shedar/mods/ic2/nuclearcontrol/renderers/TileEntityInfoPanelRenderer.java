@@ -102,7 +102,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer
             GL11.glPushMatrix();
             GL11.glPolygonOffset( -10, -10 );
             GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
-            short side = (short)Facing.faceToSide[panel.getFacing()];
+            short side = (short)Facing.oppositeSide[panel.getFacing()];
             Screen screen = panel.getScreen();
             float dx = 1F/16;
             float dz = 1F/16;

@@ -42,7 +42,7 @@ public abstract class Subblock
         int metaSide = 0;
         if(tileentity instanceof IWrenchable)
         {
-            metaSide = Facing.faceToSide[((IWrenchable)tileentity).getFacing()];
+            metaSide = Facing.oppositeSide[((IWrenchable)tileentity).getFacing()];
         }
         int texture = getMapping()[metaSide][side];
         

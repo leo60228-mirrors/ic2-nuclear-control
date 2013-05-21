@@ -89,13 +89,13 @@ public class TileEntityIC2Thermo extends TileEntity implements
     @Override
     public short getFacing()
     {
-        return (short)Facing.faceToSide[facing];
+        return (short)Facing.oppositeSide[facing];
     }
     
     @Override
     public void setFacing(short f)
     {
-        setSide((short)Facing.faceToSide[f]);
+        setSide((short)Facing.oppositeSide[f]);
     
     }
 

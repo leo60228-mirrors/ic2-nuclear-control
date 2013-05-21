@@ -48,7 +48,7 @@ public class ItemKitMultipleSensor extends ItemSensorKitBase
     }
 
     @Override
-    public void updateIcons(IconRegister iconRegister)
+    public void registerIcons(IconRegister iconRegister)
     {
         iconCounter = iconRegister.registerIcon(TextureResolver.getItemTexture(TEXTURE_KIT_COUNTER));
         iconLiquid = iconRegister.registerIcon(TextureResolver.getItemTexture(TEXTURE_KIT_LIQUID));

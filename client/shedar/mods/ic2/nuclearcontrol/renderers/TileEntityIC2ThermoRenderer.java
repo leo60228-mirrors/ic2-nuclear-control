@@ -20,7 +20,7 @@ public class TileEntityIC2ThermoRenderer extends TileEntitySpecialRenderer
         {
             GL11.glPushMatrix();
             TileEntityIC2Thermo thermo = (TileEntityIC2Thermo)tileEntity;
-            short side = (short)Facing.faceToSide[thermo.getFacing()];
+            short side = (short)Facing.oppositeSide[thermo.getFacing()];
             float var12 = 0.014F;
             int heat = thermo.getHeatLevel();
             String text = Integer.toString(heat);

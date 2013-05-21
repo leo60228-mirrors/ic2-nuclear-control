@@ -89,7 +89,7 @@ public class TileEntityAverageCounter extends TileEntity implements
     @Override
     public short getFacing()
     {
-        return (short)Facing.faceToSide[facing];
+        return (short)Facing.oppositeSide[facing];
     }
     
     @Override
@@ -101,7 +101,7 @@ public class TileEntityAverageCounter extends TileEntity implements
             MinecraftForge.EVENT_BUS.post(event);
         }
         addedToEnergyNet = false;
-        setSide((short)Facing.faceToSide[f]);
+        setSide((short)Facing.oppositeSide[f]);
         EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
         MinecraftForge.EVENT_BUS.post(event);
         addedToEnergyNet = true;

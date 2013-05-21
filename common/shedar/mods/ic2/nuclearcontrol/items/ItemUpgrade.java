@@ -31,7 +31,7 @@ public class ItemUpgrade extends Item
     }
     
     @Override
-    public void updateIcons(IconRegister iconRegister)
+    public void registerIcons(IconRegister iconRegister)
     {
         iconRange = iconRegister.registerIcon(TextureResolver.getItemTexture(TEXTURE_RANGE));
         iconColor = iconRegister.registerIcon(TextureResolver.getItemTexture(TEXTURE_COLOR));
