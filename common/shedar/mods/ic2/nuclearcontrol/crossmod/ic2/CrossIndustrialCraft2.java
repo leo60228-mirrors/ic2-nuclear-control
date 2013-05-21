@@ -47,7 +47,7 @@ public class CrossIndustrialCraft2
     {
         try
         {
-            Class.forName("ic2.api.IEnergyStorage", false, this.getClass().getClassLoader());
+            Class.forName("ic2.api.tile.IEnergyStorage", false, this.getClass().getClassLoader());
             _isApiAvailable = true;
         } catch (ClassNotFoundException e)
         {
