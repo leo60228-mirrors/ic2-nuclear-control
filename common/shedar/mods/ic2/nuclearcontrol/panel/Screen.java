@@ -94,7 +94,8 @@ public class Screen
                     if(tileEntity == null || !(tileEntity instanceof IScreenPart))
                         continue;
                     IScreenPart part = (IScreenPart)tileEntity;
-                    if(part.getScreen().equals(this))
+                    Screen targetScreen = part.getScreen(); 
+                    if(targetScreen!=null && targetScreen.equals(this))
                     {
                         part.setScreen(null);
                         part.updateData();
