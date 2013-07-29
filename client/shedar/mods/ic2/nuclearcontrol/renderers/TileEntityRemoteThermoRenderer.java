@@ -14,7 +14,7 @@ import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityRemoteThermo;
 
 public class TileEntityRemoteThermoRenderer extends TileEntitySpecialRenderer
 {
-    private static final String TEXTURE_FILE = "/mods/nuclearControl/textures/blocks/remoteThermo/scale.png";
+    private static final String TEXTURE_FILE = "nuclearcontrol:textures/blocks/remoteThermo/scale.png";
     private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
     @Override

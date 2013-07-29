@@ -17,7 +17,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiEnergyCounter extends GuiContainer
 {
-    private static final String TEXTURE_FILE = "/mods/nuclearControl/textures/gui/GUIEnergyCounter.png";
+    private static final String TEXTURE_FILE = "nuclearcontrol:textures/gui/GUIEnergyCounter.png";
     private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
     private String name;

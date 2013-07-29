@@ -17,7 +17,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ModelInfoPanel
 {
-    private static final String TEXTURE_FILE = "/mods/nuclearControl/textures/blocks/infoPanel/panelAdvancedSide.png";
+    private static final String TEXTURE_FILE = "nuclearcontrol:textures/blocks/infoPanel/panelAdvancedSide.png";
     private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
     private double[] coordinates = new double[24];

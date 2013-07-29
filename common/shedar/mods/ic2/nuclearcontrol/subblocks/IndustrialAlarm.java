@@ -98,19 +98,19 @@ public class IndustrialAlarm extends Subblock
     @Override
     public void registerIcons(IconRegister iconRegister)
     {
-        icons[I_BACK] = iconRegister.registerIcon("nuclearControl:industrialAlarm/back");
+        icons[I_BACK] = iconRegister.registerIcon("nuclearcontrol:industrialAlarm/back");
 
-        icons[I_SIDES_HOR_DARK] = iconRegister.registerIcon("nuclearControl:industrialAlarm/sidesHor0");
-        icons[I_SIDES_HOR_MID] = iconRegister.registerIcon("nuclearControl:industrialAlarm/sidesHor1");
-        icons[I_SIDES_HOR_BRIGHT] = iconRegister.registerIcon("nuclearControl:industrialAlarm/sidesHor2");
+        icons[I_SIDES_HOR_DARK] = iconRegister.registerIcon("nuclearcontrol:industrialAlarm/sidesHor0");
+        icons[I_SIDES_HOR_MID] = iconRegister.registerIcon("nuclearcontrol:industrialAlarm/sidesHor1");
+        icons[I_SIDES_HOR_BRIGHT] = iconRegister.registerIcon("nuclearcontrol:industrialAlarm/sidesHor2");
 
-        icons[I_SIDES_VERT_DARK] = iconRegister.registerIcon("nuclearControl:industrialAlarm/sidesVert0");
-        icons[I_SIDES_VERT_MID] = iconRegister.registerIcon("nuclearControl:industrialAlarm/sidesVert1");
-        icons[I_SIDES_VERT_BRIGHT] = iconRegister.registerIcon("nuclearControl:industrialAlarm/sidesVert2");
+        icons[I_SIDES_VERT_DARK] = iconRegister.registerIcon("nuclearcontrol:industrialAlarm/sidesVert0");
+        icons[I_SIDES_VERT_MID] = iconRegister.registerIcon("nuclearcontrol:industrialAlarm/sidesVert1");
+        icons[I_SIDES_VERT_BRIGHT] = iconRegister.registerIcon("nuclearcontrol:industrialAlarm/sidesVert2");
 
-        icons[I_FACE_DARK] = iconRegister.registerIcon("nuclearControl:industrialAlarm/face0");
-        icons[I_FACE_MID] = iconRegister.registerIcon("nuclearControl:industrialAlarm/face1");
-        icons[I_FACE_BRIGHT] = iconRegister.registerIcon("nuclearControl:industrialAlarm/face2");
+        icons[I_FACE_DARK] = iconRegister.registerIcon("nuclearcontrol:industrialAlarm/face0");
+        icons[I_FACE_MID] = iconRegister.registerIcon("nuclearcontrol:industrialAlarm/face1");
+        icons[I_FACE_BRIGHT] = iconRegister.registerIcon("nuclearcontrol:industrialAlarm/face2");
     }
 
 }

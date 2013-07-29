@@ -88,10 +88,10 @@ public class HowlerAlarm extends Subblock
     @Override
     public void registerIcons(IconRegister iconRegister)
     {
-        icons[I_BACK] = iconRegister.registerIcon("nuclearControl:howlerAlarm/back");
-        icons[I_FACE] = iconRegister.registerIcon("nuclearControl:howlerAlarm/face");
-        icons[I_SIDE_HOR] = iconRegister.registerIcon("nuclearControl:howlerAlarm/sidesHor");
-        icons[I_SIDE_VERT] = iconRegister.registerIcon("nuclearControl:howlerAlarm/sidesVert");
+        icons[I_BACK] = iconRegister.registerIcon("nuclearcontrol:howlerAlarm/back");
+        icons[I_FACE] = iconRegister.registerIcon("nuclearcontrol:howlerAlarm/face");
+        icons[I_SIDE_HOR] = iconRegister.registerIcon("nuclearcontrol:howlerAlarm/sidesHor");
+        icons[I_SIDE_VERT] = iconRegister.registerIcon("nuclearcontrol:howlerAlarm/sidesVert");
     }
 
 }

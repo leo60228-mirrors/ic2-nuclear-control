@@ -91,8 +91,8 @@ public class EnergyCounter extends Subblock
     @Override
     public void registerIcons(IconRegister iconRegister)
     {
-        icons[I_INPUT] = iconRegister.registerIcon("nuclearControl:energyCounter/input");
-        icons[I_OUTPUT] = iconRegister.registerIcon("nuclearControl:energyCounter/output");
+        icons[I_INPUT] = iconRegister.registerIcon("nuclearcontrol:energyCounter/input");
+        icons[I_OUTPUT] = iconRegister.registerIcon("nuclearcontrol:energyCounter/output");
         
     }
 

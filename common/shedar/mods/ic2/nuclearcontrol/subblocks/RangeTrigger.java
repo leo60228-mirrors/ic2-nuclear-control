@@ -90,11 +90,11 @@ public class RangeTrigger extends Subblock
     @Override
     public void registerIcons(IconRegister iconRegister)
     {
-        icons[I_BACK] = iconRegister.registerIcon("nuclearControl:rangeTrigger/back");
-        icons[I_SIDE] = iconRegister.registerIcon("nuclearControl:rangeTrigger/side");
-        icons[I_FACE_GRAY] = iconRegister.registerIcon("nuclearControl:rangeTrigger/faceGray");
-        icons[I_FACE_GREEN] = iconRegister.registerIcon("nuclearControl:rangeTrigger/faceGreen");
-        icons[I_FACE_RED] = iconRegister.registerIcon("nuclearControl:rangeTrigger/faceRed");
+        icons[I_BACK] = iconRegister.registerIcon("nuclearcontrol:rangeTrigger/back");
+        icons[I_SIDE] = iconRegister.registerIcon("nuclearcontrol:rangeTrigger/side");
+        icons[I_FACE_GRAY] = iconRegister.registerIcon("nuclearcontrol:rangeTrigger/faceGray");
+        icons[I_FACE_GREEN] = iconRegister.registerIcon("nuclearcontrol:rangeTrigger/faceGreen");
+        icons[I_FACE_RED] = iconRegister.registerIcon("nuclearcontrol:rangeTrigger/faceRed");
         
     }
 

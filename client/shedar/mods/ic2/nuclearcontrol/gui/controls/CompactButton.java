@@ -13,7 +13,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class CompactButton extends GuiButton
 {
-    private static final String TEXTURE_FILE = "/mods/nuclearControl/textures/gui/GUIThermalMonitor.png";
+    private static final String TEXTURE_FILE = "nuclearcontrol:textures/gui/GUIThermalMonitor.png";
     private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
     public CompactButton(int par1, int par2, int par3, int par4, int par5, String par6Str)

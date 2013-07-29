@@ -78,12 +78,12 @@ public class ThermalMonitor extends Subblock
     @Override
     public void registerIcons(IconRegister iconRegister)
     {
-        icons[I_BACK] = iconRegister.registerIcon("nuclearControl:thermalMonitor/back");
-        icons[I_SIDES_HOR] = iconRegister.registerIcon("nuclearControl:thermalMonitor/sidesHor");
-        icons[I_SIDES_VERT] = iconRegister.registerIcon("nuclearControl:thermalMonitor/sidesVert");
-        icons[I_FACE_RED] = iconRegister.registerIcon("nuclearControl:thermalMonitor/faceRed");
-        icons[I_FACE_GREEN] = iconRegister.registerIcon("nuclearControl:thermalMonitor/faceGreen");
-        icons[I_FACE_GRAY] = iconRegister.registerIcon("nuclearControl:thermalMonitor/faceGray");
+        icons[I_BACK] = iconRegister.registerIcon("nuclearcontrol:thermalMonitor/back");
+        icons[I_SIDES_HOR] = iconRegister.registerIcon("nuclearcontrol:thermalMonitor/sidesHor");
+        icons[I_SIDES_VERT] = iconRegister.registerIcon("nuclearcontrol:thermalMonitor/sidesVert");
+        icons[I_FACE_RED] = iconRegister.registerIcon("nuclearcontrol:thermalMonitor/faceRed");
+        icons[I_FACE_GREEN] = iconRegister.registerIcon("nuclearcontrol:thermalMonitor/faceGreen");
+        icons[I_FACE_GRAY] = iconRegister.registerIcon("nuclearcontrol:thermalMonitor/faceGray");
     }
 
     @Override

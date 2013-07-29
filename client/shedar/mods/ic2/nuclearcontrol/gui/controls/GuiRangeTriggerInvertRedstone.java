@@ -16,7 +16,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiRangeTriggerInvertRedstone extends GuiButton
 {
-    private static final String TEXTURE_FILE = "/mods/nuclearControl/textures/gui/GUIRangeTrigger.png";
+    private static final String TEXTURE_FILE = "nuclearcontrol:textures/gui/GUIRangeTrigger.png";
     private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
     TileEntityRangeTrigger trigger;

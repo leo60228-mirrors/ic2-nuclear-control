@@ -15,7 +15,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiThermoInvertRedstone extends GuiButton
 {
-    private static final String TEXTURE_FILE = "/mods/nuclearControl/textures/gui/GUIThermalMonitor.png";
+    private static final String TEXTURE_FILE = "nuclearcontrol:textures/gui/GUIThermalMonitor.png";
     private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
     TileEntityIC2Thermo thermo;

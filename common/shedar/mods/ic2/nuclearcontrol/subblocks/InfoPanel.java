@@ -100,19 +100,19 @@ public class InfoPanel extends Subblock
     @Override
     public void registerIcons(IconRegister iconRegister)
     {
-        icons[I_PANEL_BACK] = iconRegister.registerIcon("nuclearControl:infoPanel/panelBack");
-        icons[I_PANEL_SIDE] = iconRegister.registerIcon("nuclearControl:infoPanel/panelSide");
-        icons[I_PANEL_ADV_SIDE] = iconRegister.registerIcon("nuclearControl:infoPanel/panelAdvancedSide");
+        icons[I_PANEL_BACK] = iconRegister.registerIcon("nuclearcontrol:infoPanel/panelBack");
+        icons[I_PANEL_SIDE] = iconRegister.registerIcon("nuclearcontrol:infoPanel/panelSide");
+        icons[I_PANEL_ADV_SIDE] = iconRegister.registerIcon("nuclearcontrol:infoPanel/panelAdvancedSide");
         
-        icons[I_EXTENDER_BACK] = iconRegister.registerIcon("nuclearControl:infoPanel/extenderBack");
-        icons[I_EXTENDER_SIDE] = iconRegister.registerIcon("nuclearControl:infoPanel/extenderSide");
-        icons[I_EXTENDER_ADV_SIDE] = iconRegister.registerIcon("nuclearControl:infoPanel/extenderAdvancedSide");
+        icons[I_EXTENDER_BACK] = iconRegister.registerIcon("nuclearcontrol:infoPanel/extenderBack");
+        icons[I_EXTENDER_SIDE] = iconRegister.registerIcon("nuclearcontrol:infoPanel/extenderSide");
+        icons[I_EXTENDER_ADV_SIDE] = iconRegister.registerIcon("nuclearcontrol:infoPanel/extenderAdvancedSide");
         
         for(int i=0;i<=14;i++)
         {
             for(int j=0;j<=15;j++)
             {
-                icons[i*16+j+I_COLORS_OFFSET] = iconRegister.registerIcon("nuclearControl:infoPanel/off/"+i+"/"+j);
+                icons[i*16+j+I_COLORS_OFFSET] = iconRegister.registerIcon("nuclearcontrol:infoPanel/off/"+i+"/"+j);
             }
         }
         
@@ -120,7 +120,7 @@ public class InfoPanel extends Subblock
         {
             for(int j=0;j<=15;j++)
             {
-                icons[i*16+j+I_COLORS_OFFSET+240] = iconRegister.registerIcon("nuclearControl:infoPanel/on/"+i+"/"+j);
+                icons[i*16+j+I_COLORS_OFFSET+240] = iconRegister.registerIcon("nuclearcontrol:infoPanel/on/"+i+"/"+j);
             }
         }
         

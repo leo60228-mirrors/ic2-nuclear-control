@@ -89,10 +89,10 @@ public class RemoteThermo extends Subblock
     @Override
     public void registerIcons(IconRegister iconRegister)
     {
-        icons[I_BACK] = iconRegister.registerIcon("nuclearControl:remoteThermo/back");
-        icons[I_FACE] = iconRegister.registerIcon("nuclearControl:remoteThermo/face");
-        icons[I_SIDE] = iconRegister.registerIcon("nuclearControl:remoteThermo/side");
-        icons[I_SCALE] = iconRegister.registerIcon("nuclearControl:remoteThermo/scale");
+        icons[I_BACK] = iconRegister.registerIcon("nuclearcontrol:remoteThermo/back");
+        icons[I_FACE] = iconRegister.registerIcon("nuclearcontrol:remoteThermo/face");
+        icons[I_SIDE] = iconRegister.registerIcon("nuclearcontrol:remoteThermo/side");
+        icons[I_SCALE] = iconRegister.registerIcon("nuclearcontrol:remoteThermo/scale");
     }
 
 }

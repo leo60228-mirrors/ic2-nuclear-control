@@ -12,7 +12,7 @@ import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 
 public class GuiCardText extends GuiScreen implements ICardGui
 {
-    private static final String TEXTURE_FILE = "/mods/nuclearControl/textures/gui/GUITextCard.png";
+    private static final String TEXTURE_FILE = "nuclearcontrol:textures/gui/GUITextCard.png";
     private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
     private ICardSettingsWrapper wrapper;

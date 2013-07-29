@@ -91,8 +91,8 @@ public class AverageCounter extends Subblock
     @Override
     public void registerIcons(IconRegister iconRegister)
     {
-        icons[I_INPUT] = iconRegister.registerIcon("nuclearControl:averageCounter/input");
-        icons[I_OUTPUT] = iconRegister.registerIcon("nuclearControl:averageCounter/output");
+        icons[I_INPUT] = iconRegister.registerIcon("nuclearcontrol:averageCounter/input");
+        icons[I_OUTPUT] = iconRegister.registerIcon("nuclearcontrol:averageCounter/output");
         
     }
 

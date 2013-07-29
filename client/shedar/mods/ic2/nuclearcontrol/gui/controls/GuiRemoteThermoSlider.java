@@ -17,7 +17,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiRemoteThermoSlider extends GuiButton
 {
-    private static final String TEXTURE_FILE = "/mods/nuclearControl/textures/gui/GUIRemoteThermo.png";
+    private static final String TEXTURE_FILE = "nuclearcontrol:textures/gui/GUIRemoteThermo.png";
     private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
     private static final int ARROW_WIDTH = 6;

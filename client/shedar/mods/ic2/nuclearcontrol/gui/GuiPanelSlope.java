@@ -11,7 +11,7 @@ import cpw.mods.fml.client.FMLClientHandler;
 
 public class GuiPanelSlope  extends GuiScreen
 {
-    private static final String TEXTURE_FILE = "/mods/nuclearControl/textures/gui/GUISlope.png";
+    private static final String TEXTURE_FILE = "nuclearcontrol:textures/gui/GUISlope.png";
     private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
     protected int xSize = 171;
