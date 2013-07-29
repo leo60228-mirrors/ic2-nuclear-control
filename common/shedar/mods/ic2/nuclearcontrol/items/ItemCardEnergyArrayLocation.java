@@ -10,7 +10,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.StringTranslate;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
@@ -19,6 +18,7 @@ import shedar.mods.ic2.nuclearcontrol.crossmod.data.EnergyStorageData;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.utils.EnergyStorageHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -170,13 +170,13 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
                 if(isOutOfRange)
                 {
                     line = new PanelString();
-                    line.textLeft = StringTranslate.getInstance().translateKeyFormat("msg.nc.InfoPanelOutOfRangeN", i+1);
+                    line.textLeft = StringUtils.getFormattedKey("msg.nc.InfoPanelOutOfRangeN", i+1);
                     result.add(line);
                 }
                 else if(isNotFound)
                 {
                     line = new PanelString();
-                    line.textLeft = StringTranslate.getInstance().translateKeyFormat("msg.nc.InfoPanelNotFoundN", i+1);
+                    line.textLeft = StringUtils.getFormattedKey("msg.nc.InfoPanelNotFoundN", i+1);
                     result.add(line);
                 }
                 else
@@ -185,7 +185,7 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
                     {
                         line = new PanelString();
                         if(showLabels)
-                            line.textLeft = StringTranslate.getInstance().translateKeyFormat("msg.nc.InfoPanelEnergyN", i+1, StringUtils.getFormatted("", energy, false));
+                            line.textLeft = StringUtils.getFormattedKey("msg.nc.InfoPanelEnergyN", i+1, StringUtils.getFormatted("", energy, false));
                         else
                             line.textLeft = StringUtils.getFormatted("", energy, false);
                         result.add(line);
@@ -194,7 +194,7 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
                     {
                         line = new PanelString();
                         if(showLabels)
-                            line.textLeft = StringTranslate.getInstance().translateKeyFormat("msg.nc.InfoPanelEnergyFreeN", i+1, StringUtils.getFormatted("", storage - energy, false));
+                            line.textLeft = StringUtils.getFormattedKey("msg.nc.InfoPanelEnergyFreeN", i+1, StringUtils.getFormatted("", storage - energy, false));
                         else
                             line.textLeft = StringUtils.getFormatted("", storage - energy, false);
     
@@ -204,7 +204,7 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
                     {
                         line = new PanelString();
                         if(showLabels)
-                            line.textLeft = StringTranslate.getInstance().translateKeyFormat("msg.nc.InfoPanelEnergyStorageN", i+1, StringUtils.getFormatted("", storage, false));
+                            line.textLeft = StringUtils.getFormattedKey("msg.nc.InfoPanelEnergyStorageN", i+1, StringUtils.getFormatted("", storage, false));
                         else
                             line.textLeft = StringUtils.getFormatted("", storage, false);
                         result.add(line);
@@ -213,7 +213,7 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
                     {
                         line = new PanelString();
                         if(showLabels)
-                            line.textLeft = StringTranslate.getInstance().translateKeyFormat("msg.nc.InfoPanelEnergyPercentageN", i+1, StringUtils.getFormatted("", storage==0? 100:(((long)energy)*100L/storage), false));
+                            line.textLeft = StringUtils.getFormattedKey("msg.nc.InfoPanelEnergyPercentageN", i+1, StringUtils.getFormatted("", storage==0? 100:(((long)energy)*100L/storage), false));
                         else
                             line.textLeft = StringUtils.getFormatted("", storage==0? 100:(((long)energy)*100L/storage), false);
                         result.add(line);
@@ -255,12 +255,12 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
     public List<PanelSetting> getSettingsList()
     {
         List<PanelSetting> result = new ArrayList<PanelSetting>(3);
-        result.add(new PanelSetting(StringTranslate.getInstance().translateKey("msg.nc.cbInfoPanelEnergyCurrent"), DISPLAY_ENERGY, CARD_TYPE));
-        result.add(new PanelSetting(StringTranslate.getInstance().translateKey("msg.nc.cbInfoPanelEnergyStorage"), DISPLAY_STORAGE, CARD_TYPE));
-        result.add(new PanelSetting(StringTranslate.getInstance().translateKey("msg.nc.cbInfoPanelEnergyFree"), DISPLAY_FREE, CARD_TYPE));
-        result.add(new PanelSetting(StringTranslate.getInstance().translateKey("msg.nc.cbInfoPanelEnergyPercentage"), DISPLAY_PERCENTAGE, CARD_TYPE));
-        result.add(new PanelSetting(StringTranslate.getInstance().translateKey("msg.nc.cbInfoPanelEnergyEach"), DISPLAY_EACH, CARD_TYPE));
-        result.add(new PanelSetting(StringTranslate.getInstance().translateKey("msg.nc.cbInfoPanelEnergyTotal"), DISPLAY_TOTAL, CARD_TYPE));
+        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelEnergyCurrent"), DISPLAY_ENERGY, CARD_TYPE));
+        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelEnergyStorage"), DISPLAY_STORAGE, CARD_TYPE));
+        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelEnergyFree"), DISPLAY_FREE, CARD_TYPE));
+        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelEnergyPercentage"), DISPLAY_PERCENTAGE, CARD_TYPE));
+        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelEnergyEach"), DISPLAY_EACH, CARD_TYPE));
+        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelEnergyTotal"), DISPLAY_TOTAL, CARD_TYPE));
         return result;
     }
 
@@ -278,7 +278,7 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase
             {
                 info.add(title);
             }
-            String hint = String.format(StringTranslate.getInstance().translateKey("msg.nc.EnergyCardQuantity"), cardCount);
+            String hint = String.format(LanguageRegistry.instance().getStringLocalization("msg.nc.EnergyCardQuantity"), cardCount);
             info.add(hint);
         }
     }

@@ -5,19 +5,19 @@ import java.lang.reflect.Method;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.ILiquidTank;
-import net.minecraftforge.liquids.ITankContainer;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
 
 public class LiquidStorageHelper {
 
-    private static ILiquidTank getRailcraftIronTank(TileEntity entity)
+    private static FluidTankInfo getRailcraftIronTank(TileEntity entity)
     {
         try
         {
             Method method = entity.getClass().getMethod("getTank");
-            if(method.getReturnType().equals(ILiquidTank.class))
+            if(FluidTankInfo.class.isAssignableFrom(method.getReturnType()))
             {
-                return (ILiquidTank)method.invoke(entity);
+                return (FluidTankInfo)method.invoke(entity);
             }
             return null;
         } 
@@ -27,14 +27,14 @@ public class LiquidStorageHelper {
         }
     }
 	
-    public static ILiquidTank getStorageAt(World world, int x, int y, int z) 
+    public static FluidTankInfo getStorageAt(World world, int x, int y, int z) 
     {
         if(world == null)
             return null;
         TileEntity entity = world.getBlockTileEntity(x, y, z);
-        if (entity!=null && entity instanceof ITankContainer)
+        if (entity!=null && entity instanceof IFluidHandler)
         {
-            ILiquidTank[] tanks = ((ITankContainer)entity).getTanks(ForgeDirection.UNKNOWN);
+            FluidTankInfo[] tanks = ((IFluidHandler)entity).getTankInfo(ForgeDirection.UNKNOWN);
             if(tanks == null || tanks.length == 0)
                 return null;
             return tanks[0];

@@ -3,6 +3,7 @@ package shedar.mods.ic2.nuclearcontrol.gui.controls;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -15,6 +16,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiInfoPanelCheckBox extends GuiButton
 {
+    private static final String TEXTURE_FILE = "/mods/nuclearControl/textures/gui/GUIInfoPanel.png";
+    private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
+
     private TileEntityInfoPanel panel;
     private boolean checked;
     private PanelSetting setting;
@@ -37,7 +41,7 @@ public class GuiInfoPanelCheckBox extends GuiButton
         if (this.drawButton)
         {
             checked = (panel.getDisplaySettingsForCardInSlot(slot) & setting.displayBit) > 0;
-            minecraft.renderEngine.bindTexture("/mods/nuclearControl/textures/gui/GUIInfoPanel.png");
+            minecraft.renderEngine.func_110577_a/*bindTExture*/(TEXTURE_LOCATION);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             int delta = checked?6:0;
             drawTexturedModalRect(xPosition, yPosition+1, 176, delta, 6, 6);

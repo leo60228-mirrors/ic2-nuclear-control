@@ -3,12 +3,13 @@ package shedar.mods.ic2.nuclearcontrol.crossmod.buildcraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.liquids.ITankContainer;
+import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.fluids.IFluidHandler;
 import shedar.mods.ic2.nuclearcontrol.crossmod.data.EnergyStorageData;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter;
-import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
+import buildcraft.api.power.PowerHandler.PowerReceiver;
 import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -64,7 +65,7 @@ public class CrossBuildcraft
     
     public boolean isTankContainer(Object obj)
     {
-        return _isApiAvailable && obj instanceof ITankContainer;
+        return _isApiAvailable && obj instanceof IFluidHandler;
     }
     
     public TileEntityAverageCounter getAverageCounter()
@@ -101,20 +102,16 @@ public class CrossBuildcraft
     {
         if(!_isApiAvailable || target == null)
             return null;
-        IPowerProvider provider = null;
-        if(target instanceof IPowerProvider)
+        PowerReceiver receiver = null;
+        if (target instanceof IPowerReceptor)
         {
-            provider = (IPowerProvider)provider;
+            receiver = ((IPowerReceptor)target).getPowerReceiver(ForgeDirection.UNKNOWN);
         }
-        else if (target instanceof IPowerReceptor)
-        {
-            provider = ((IPowerReceptor)target).getPowerProvider();
-        }
-        if(provider == null)
+        if(receiver == null)
             return null;
         EnergyStorageData result = new EnergyStorageData();
-        result.capacity = provider.getMaxEnergyStored();
-        result.stored = (int)provider.getEnergyStored();
+        result.capacity = (int)receiver.getMaxEnergyStored();
+        result.stored = (int)receiver.getEnergyStored();
         result.units = "MJ";
         result.type = EnergyStorageData.TARGET_TYPE_BC;
         return result;

@@ -2,12 +2,6 @@ package shedar.mods.ic2.nuclearcontrol.items;
 
 import java.util.List;
 
-import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter;
-import shedar.mods.ic2.nuclearcontrol.utils.LiquidStorageHelper;
-import shedar.mods.ic2.nuclearcontrol.utils.TextureResolver;
-
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
@@ -15,7 +9,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
-import net.minecraftforge.liquids.ILiquidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
+import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter;
+import shedar.mods.ic2.nuclearcontrol.utils.LiquidStorageHelper;
+import shedar.mods.ic2.nuclearcontrol.utils.TextureResolver;
 
 public class ItemKitMultipleSensor extends ItemSensorKitBase
 {
@@ -84,7 +83,7 @@ public class ItemKitMultipleSensor extends ItemSensorKitBase
             }
             break;
         case TYPE_LIQUID:
-            ILiquidTank tank = LiquidStorageHelper.getStorageAt(world, x, y, z);
+            FluidTankInfo tank = LiquidStorageHelper.getStorageAt(world, x, y, z);
             if(tank!=null)
             {
                 return new ChunkCoordinates(x, y, z);

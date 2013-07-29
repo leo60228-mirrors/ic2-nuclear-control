@@ -44,7 +44,7 @@ public class ItemToolDigitalThermometer extends ItemToolThermometer
     protected boolean canTakeDamage(ItemStack itemstack, int i)
     {
         i *= 50;
-        return ElectricItem.discharge(itemstack, i, 0x7fffffff, true, true) == i;
+        return ElectricItem.manager.discharge(itemstack, i, 0x7fffffff, true, true) == i;
     }
     
     @Override
@@ -59,7 +59,7 @@ public class ItemToolDigitalThermometer extends ItemToolThermometer
     @Override
     protected void damage(ItemStack itemstack, int i, EntityPlayer entityplayer)
     {
-        ElectricItem.use(itemstack, 50 * i, entityplayer);
+        ElectricItem.manager.use(itemstack, 50 * i, entityplayer);
     }
     
 	@Override
@@ -101,7 +101,7 @@ public class ItemToolDigitalThermometer extends ItemToolThermometer
     public void getSubItems(int id, CreativeTabs tab, List itemList)
     {
         ItemStack itemstack = new ItemStack(this, 1);
-        ElectricItem.charge(itemstack, 0x7fffffff, 0x7fffffff, true, false);
+        ElectricItem.manager.charge(itemstack, 0x7fffffff, 0x7fffffff, true, false);
         itemList.add(itemstack);
         itemList.add(new ItemStack(this, 1, getMaxDamage()));
     }

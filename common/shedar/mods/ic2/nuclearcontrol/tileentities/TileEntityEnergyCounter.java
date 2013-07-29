@@ -67,11 +67,8 @@ public class TileEntityEnergyCounter extends TileEntity implements
         prevTotal = -1;
     }
 
-    private void initData()
+    protected void initData()
     {
-        if(worldObj.isRemote){
-            NetworkHelper.requestInitialData(this);
-        }
         init = true;
     }
     
@@ -447,7 +444,7 @@ public class TileEntityEnergyCounter extends TileEntity implements
     }
 
     @Override
-    public boolean isStackValidForSlot(int slot, ItemStack itemstack)
+    public boolean isItemValidForSlot(int slot, ItemStack itemstack)
     {
         return isItemValid(slot, itemstack);
     }

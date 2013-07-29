@@ -35,13 +35,13 @@ public class ScreenManager
             return -10;
         if(world.getWorldInfo() == null)
             return -10;
-        if(world.getWorldInfo().getDimension()==0 && world.provider!=null)
+        if(world.getWorldInfo().getVanillaDimension()==0 && world.provider!=null)
         {
             return world.provider.dimensionId;
         }
         else
         {
-            return world.getWorldInfo().getDimension();
+            return world.getWorldInfo().getVanillaDimension();
         }
     }
     

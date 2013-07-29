@@ -3,6 +3,7 @@ package shedar.mods.ic2.nuclearcontrol.gui.controls;
 import ic2.api.network.NetworkHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -14,6 +15,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiInfoPanelShowLabels extends GuiButton
 {
+    private static final String TEXTURE_FILE = "/mods/nuclearControl/textures/gui/GUIInfoPanel.png";
+    private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
+
     private TileEntityInfoPanel panel;
     private boolean checked;
 
@@ -31,7 +35,7 @@ public class GuiInfoPanelShowLabels extends GuiButton
     {
         if (this.drawButton)
         {
-            minecraft.renderEngine.bindTexture("/mods/nuclearControl/textures/gui/GUIInfoPanel.png");
+            minecraft.renderEngine.func_110577_a/*bindTExture*/(TEXTURE_LOCATION);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             int delta = checked?12:21;
             drawTexturedModalRect(xPosition, yPosition+1, 176, delta, 18, 9);

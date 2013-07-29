@@ -11,7 +11,7 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -141,9 +141,11 @@ public class BlockNuclearControlMain extends BlockContainer
         return metadata + (side<<8);
     }
     
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving player, int metadata) 
+    @Override
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack item)
     {
         TileEntity block = world.getBlockTileEntity(x, y, z);
+        int metadata = item.getItemDamage();
         int side = metadata >> 8;
         metadata = metadata & 0xff;
         if(metadata > Damages.DAMAGE_MAX)

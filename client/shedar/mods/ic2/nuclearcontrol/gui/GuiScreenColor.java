@@ -1,6 +1,7 @@
 package shedar.mods.ic2.nuclearcontrol.gui;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -12,6 +13,9 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class GuiScreenColor extends GuiScreen
 {
+    private static final String TEXTURE_FILE = "/mods/nuclearControl/textures/gui/GUIColors.png";
+    private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
+
     private GuiInfoPanel parentGui;
 
     protected int xSize = 226;
@@ -65,7 +69,7 @@ public class GuiScreenColor extends GuiScreen
     public void drawScreen(int par1, int par2, float par3)
     {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture("/mods/nuclearControl/textures/gui/GUIColors.png");
+        mc.renderEngine.func_110577_a/*bindTExture*/(TEXTURE_LOCATION);
         int left = (width - xSize) / 2;
         int top = (height - ySize) / 2;
         drawTexturedModalRect(left, top, 0, 0, xSize, ySize);

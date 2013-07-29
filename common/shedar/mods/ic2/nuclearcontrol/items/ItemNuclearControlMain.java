@@ -1,13 +1,13 @@
 package shedar.mods.ic2.nuclearcontrol.items;
 
-import shedar.mods.ic2.nuclearcontrol.BlockNuclearControlMain;
-import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
-import shedar.mods.ic2.nuclearcontrol.subblocks.Subblock;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import shedar.mods.ic2.nuclearcontrol.BlockNuclearControlMain;
+import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
+import shedar.mods.ic2.nuclearcontrol.subblocks.Subblock;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -49,7 +49,7 @@ public class ItemNuclearControlMain extends ItemBlock
        if (world.getBlockId(x, y, z) == getBlockID())
        {
            if(Block.blocksList[getBlockID()] instanceof BlockNuclearControlMain)
-               ((BlockNuclearControlMain)Block.blocksList[getBlockID()]).onBlockPlacedBy(world, x, y, z, player, metadata);
+               ((BlockNuclearControlMain)Block.blocksList[getBlockID()]).onBlockPlacedBy(world, x, y, z, player, stack);
            else
                Block.blocksList[getBlockID()].onBlockPlacedBy(world, x, y, z, player, stack);
            Block.blocksList[getBlockID()].onPostBlockPlaced(world, x, y, z, metadata);

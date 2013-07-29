@@ -38,10 +38,8 @@ import shedar.mods.ic2.nuclearcontrol.utils.Damages;
 import shedar.mods.ic2.nuclearcontrol.utils.LanguageHelper;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Init;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.Mod.PostInit;
-import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -51,7 +49,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod( modid = "IC2NuclearControl", name="Nuclear Control", version="1.5.1d", dependencies = "after:IC2")
+@Mod( modid = "IC2NuclearControl", name="Nuclear Control", version="1.5.1e", dependencies = "after:IC2")
 @NetworkMod(channels = { "NuclearControl" }, clientSideRequired = true, serverSideRequired = false, 
             packetHandler = PacketHandler.class, connectionHandler = ConnectionHandler.class)
 @ModstatInfo(prefix="nc")
@@ -204,7 +202,7 @@ public class IC2NuclearControl
         Recipes.advRecipes.addRecipe(digitalThermometer, new Object[] 
                 {
                     "I  ", "IC ", " GI", 
-                        Character.valueOf('G'), Item.lightStoneDust, 
+                        Character.valueOf('G'), Item.glowstone, 
                         Character.valueOf('I'), "ingotRefinedIron", 
                         Character.valueOf('C'), Items.getItem("electronicCircuit")
                 });
@@ -359,7 +357,7 @@ public class IC2NuclearControl
                 .setUnlocalizedName("ItemRemoteSensorKit");
     }
     
-    @PostInit
+    @EventHandler
     public void modsLoaded(FMLPostInitializationEvent evt)
     {
         addRecipes();
@@ -370,7 +368,7 @@ public class IC2NuclearControl
         GameRegistry.registerBlock(blockNuclearControlMain, ItemNuclearControlMain.class, "blockNuclearControlMain");
     }
     
-    @PreInit
+    @EventHandler
     public void preInit(FMLPreInitializationEvent event) 
     {
         configFile = event.getSuggestedConfigurationFile();
@@ -379,7 +377,7 @@ public class IC2NuclearControl
         MinecraftForge.EVENT_BUS.register(proxy);
     }
 
-    @PostInit
+    @EventHandler
     public void postInit(FMLPostInitializationEvent evt)
     {
         crossBC = new CrossBuildcraft();
@@ -387,7 +385,7 @@ public class IC2NuclearControl
         crossGregTech = new CrossGregTech();
     }
 
-    @Init
+    @EventHandler
     public void init(FMLInitializationEvent evt)
     {
         Modstats.instance().getReporter().registerMod(this);

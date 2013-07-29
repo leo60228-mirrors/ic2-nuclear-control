@@ -78,11 +78,8 @@ public class TileEntityAverageCounter extends TileEntity implements
         powerType = POWER_TYPE_EU;
     }
 
-    private void initData()
+    protected void initData()
     {
-        if(worldObj.isRemote){
-            NetworkHelper.requestInitialData(this);
-        }
         init = true;
     }
     
@@ -521,7 +518,7 @@ public class TileEntityAverageCounter extends TileEntity implements
     }
 
     @Override
-    public boolean isStackValidForSlot(int slot, ItemStack itemstack)
+    public boolean isItemValidForSlot(int slot, ItemStack itemstack)
     {
         return isItemValid(slot, itemstack);
     }

@@ -1,6 +1,7 @@
 package shedar.mods.ic2.nuclearcontrol.api;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 
@@ -20,6 +21,9 @@ public interface ICardWrapper
      * @return
      */
     ChunkCoordinates getTarget();
+    
+    void setTag(String name, NBTTagCompound value);
+    NBTTagCompound getTag(String name);
     
     void setInt(String name, Integer value);
     Integer getInt(String name);

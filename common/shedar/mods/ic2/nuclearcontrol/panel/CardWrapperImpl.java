@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
@@ -212,4 +213,29 @@ public class CardWrapperImpl implements ICardWrapper
         }
     }
 
+    @Override
+    public void setTag(String name, NBTTagCompound value)
+    {
+        NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(card);
+        if(nbtTagCompound.hasKey(name))
+        {
+            NBTBase prevValue = nbtTagCompound.getTag(name);
+            if(prevValue==null || !prevValue.equals(value))
+                updateSet.put(name, value);
+        }
+        else
+        {
+            updateSet.put(name, value);
+        }
+        nbtTagCompound.setTag(name, value);    
+    }
+
+    @Override
+    public NBTTagCompound getTag(String name)
+    {
+        NBTTagCompound nbtTagCompound = card.getTagCompound();
+        if(nbtTagCompound == null)
+            return null;
+        return (NBTTagCompound)nbtTagCompound.getTag(name);
+    }
 }

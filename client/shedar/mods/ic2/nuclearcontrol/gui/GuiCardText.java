@@ -2,6 +2,7 @@ package shedar.mods.ic2.nuclearcontrol.gui;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -11,6 +12,9 @@ import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 
 public class GuiCardText extends GuiScreen implements ICardGui
 {
+    private static final String TEXTURE_FILE = "/mods/nuclearControl/textures/gui/GUITextCard.png";
+    private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
+
     private ICardSettingsWrapper wrapper;
     private ICardWrapper helper;
     private GuiTextArea textArea;
@@ -84,7 +88,7 @@ public class GuiCardText extends GuiScreen implements ICardGui
     public void drawScreen(int par1, int par2, float par3)
     {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture("/mods/nuclearControl/textures/gui/GUITextCard.png");
+        mc.renderEngine.func_110577_a/*bindTExture*/(TEXTURE_LOCATION);
         int left = (width - xSize) / 2;
         int top = (height - ySize) / 2;
         drawTexturedModalRect(left, top, 0, 0, xSize, ySize);

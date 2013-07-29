@@ -98,9 +98,6 @@ public class TileEntityInfoPanelExtender extends TileEntity implements
     
     protected void initData()
     {
-        if(worldObj.isRemote){
-            NetworkHelper.requestInitialData(this);
-        }
         if(FMLCommonHandler.instance().getEffectiveSide().isServer() && !partOfScreen)
         {
             IC2NuclearControl.instance.screenManager.registerInfoPanelExtender(this);

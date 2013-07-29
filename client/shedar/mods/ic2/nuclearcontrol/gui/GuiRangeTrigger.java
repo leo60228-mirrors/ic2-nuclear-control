@@ -4,6 +4,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
@@ -20,6 +21,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiRangeTrigger extends GuiContainer
 {
+    private static final String TEXTURE_FILE = "/mods/nuclearControl/textures/gui/GUIRangeTrigger.png";
+    private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
+
     private String name;
     private ContainerRangeTrigger container;
     private ItemStack prevCard;
@@ -120,7 +124,7 @@ public class GuiRangeTrigger extends GuiContainer
     protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3)
     {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture("/mods/nuclearControl/textures/gui/GUIRangeTrigger.png");
+        mc.renderEngine.func_110577_a/*bindTExture*/(TEXTURE_LOCATION);
         int left = (width - xSize) / 2;
         int top = (height - ySize) / 2;
         drawTexturedModalRect(left, top, 0, 0, xSize, ySize);

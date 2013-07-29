@@ -9,7 +9,8 @@ import cpw.mods.fml.client.FMLClientHandler;
 
 public class SoundHelper
 {
-    private static final String SOUND_ID_PREFIX = "ic2NuclearControl_";
+    private static final String SOUND_ID_PREFIX = "NuclearControl_";
+    public static final String SOUND_FOLDER = "nuclearControl";
     private static final float DEFAULT_RANGE = 16F; 
     
     private static int internalId = 0;
@@ -21,10 +22,10 @@ public class SoundHelper
         GameSettings settings =  FMLClientHandler.instance().getClient().gameSettings; 
         if (settings.soundVolume != 0.0F)
         {
-            SoundSystem sndSystem = SoundManager.sndSystem;
+            SoundSystem sndSystem = mgr.sndSystem;
             if(sndSystem == null)
                 return null;
-            SoundPoolEntry sound = mgr.soundPoolSounds.getRandomSoundFromSoundPool(name);
+            SoundPoolEntry sound = mgr.soundPoolSounds.getRandomSoundFromSoundPool(SOUND_FOLDER+"/alarm-"+name+".ogg");
 
             if (sound != null && volume > 0.0F)
             {
@@ -37,7 +38,7 @@ public class SoundHelper
                     range *= volume;
                 }
 
-                sndSystem.newSource(volume > 1.0F, soundId, sound.soundUrl, sound.soundName, false, x, y, z, 2, range);
+                sndSystem.newSource(volume > 1.0F, soundId, sound.func_110457_b()/*getSoundUrl*/, sound.func_110458_a()/*getSoundName*/, false, x, y, z, 2, range);
                 sndSystem.setPitch(soundId, 1);
 
                 if (volume > 1.0F)
@@ -73,14 +74,16 @@ public class SoundHelper
     
     public static boolean isPlaying(String soundId)
     {
-        SoundSystem snd = SoundManager.sndSystem;
+        SoundManager mgr = FMLClientHandler.instance().getClient().sndManager;
+        SoundSystem snd =mgr.sndSystem;
         return snd != null && snd.playing(soundId);
     }
     
     public static void stopAlarm(String soundId)
     {
-        SoundManager.sndSystem.stop(soundId);
-        SoundManager.sndSystem.removeSource(soundId);
+        SoundManager mgr = FMLClientHandler.instance().getClient().sndManager;
+        mgr.sndSystem.stop(soundId);
+        mgr.sndSystem.removeSource(soundId);
     }
 
 }

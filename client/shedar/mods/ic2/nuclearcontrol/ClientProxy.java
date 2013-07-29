@@ -12,14 +12,13 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SoundPool;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.StringTranslate;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -44,6 +43,7 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class ClientProxy extends CommonProxy
 {
@@ -68,8 +68,8 @@ public class ClientProxy extends CommonProxy
     @ForgeSubscribe
     public void importSound(SoundLoadEvent event)
     {
-        File soundDir =  new File(new File(Minecraft.getMinecraftDir(), "resources"), "newsound");
-        File ncSoundDir = new File(soundDir, "ic2nuclearControl");
+        File soundDir =  new File(new File(Minecraft.getMinecraft().mcDataDir, "resources"), "newsound");
+        File ncSoundDir = new File(soundDir, SoundHelper.SOUND_FOLDER);
         IC2NuclearControl ncInstance = IC2NuclearControl.instance; 
         if(!ncSoundDir.exists())
         {
@@ -109,18 +109,14 @@ public class ClientProxy extends CommonProxy
         });
         
         ncInstance.availableAlarms = new ArrayList<String>();
-        SoundPool pool = event.manager.soundPoolSounds;
-        
-        boolean isGetRandomSound = pool.isGetRandomSound;
-        pool.isGetRandomSound = false;
+
         for(File alarmItem: alarms)
         {
             String name = alarmItem.getName();
             name = name.substring(6, name.length()-4);
             ncInstance.availableAlarms.add(name);
-            event.manager.addSound("ic2nuclearControl/alarm-"+name+".ogg", alarmItem);
+            event.manager.addSound(SoundHelper.SOUND_FOLDER+"/alarm-"+name+".ogg");
         }
-        pool.isGetRandomSound = isGetRandomSound;
         ncInstance.serverAllowedAlarms = new ArrayList<String>();
     }    
     
@@ -164,7 +160,7 @@ public class ClientProxy extends CommonProxy
                 case PacketHandler.PACKET_CHAT:
                     String message = dat.readUTF();
                     String[] chunks = message.split(":");
-                    message = StringTranslate.getInstance().translateKey("msg.nc."+chunks[0]);
+                    message = LanguageRegistry.instance().getStringLocalization("msg.nc."+chunks[0]);
                     if(chunks.length > 1)
                     {
                         List<String> list = new ArrayList<String>(Arrays.asList(chunks));
@@ -214,6 +210,18 @@ public class ClientProxy extends CommonProxy
                             break;
                         case NuclearNetworkHelper.FIELD_STRING:
                             helper.setString(name, dat.readUTF());
+                            break;
+                        case NuclearNetworkHelper.FIELD_TAG:
+                            NBTTagCompound tag;
+                            try
+                            {
+                                tag = (NBTTagCompound)NBTTagCompound.readNamedTag(dat);
+                                helper.setTag(name, tag);
+                            } catch (IOException e)
+                            {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
                             break;
                         default:
                             FMLLog.warning("Invalid field type: %d", type);

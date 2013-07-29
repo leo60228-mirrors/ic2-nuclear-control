@@ -5,10 +5,9 @@ import java.text.DecimalFormatSymbols;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.minecraft.util.StringTranslate;
-
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class StringUtils
 {
@@ -30,7 +29,7 @@ public class StringUtils
     public static String getFormatted(String resourceName, String value, boolean showLabels)
     {
         if(showLabels)
-            return StringTranslate.getInstance().translateKeyFormat(resourceName, value);
+            return String.format(LanguageRegistry.instance().getStringLocalization(resourceName), value);
         else
             return value;
     }
@@ -39,6 +38,12 @@ public class StringUtils
     {
         return getFormatted(resourceName, getFormatter().format(value), showLabels);
     }
+
+    public static String getFormattedKey(String resourceName, Object... arguments)
+    {
+        return String.format(LanguageRegistry.instance().getStringLocalization(resourceName), arguments);
+    }
+    
     
     public static List<PanelString> getStateMessage(CardState state)
     { 
@@ -47,13 +52,13 @@ public class StringUtils
         switch (state)
         {
             case OUT_OF_RANGE:
-                line.textCenter = StringTranslate.getInstance().translateKey("msg.nc.InfoPanelOutOfRange"); 
+                line.textCenter = LanguageRegistry.instance().getStringLocalization("msg.nc.InfoPanelOutOfRange"); 
                 break;
             case INVALID_CARD:
-                line.textCenter = StringTranslate.getInstance().translateKey("msg.nc.InfoPanelInvalidCard"); 
+                line.textCenter = LanguageRegistry.instance().getStringLocalization("msg.nc.InfoPanelInvalidCard"); 
                 break;
             case NO_TARGET:
-                line.textCenter = StringTranslate.getInstance().translateKey("msg.nc.InfoPanelNoTarget"); 
+                line.textCenter = LanguageRegistry.instance().getStringLocalization("msg.nc.InfoPanelNoTarget"); 
                 break;
         case CUSTOM_ERROR:
             break;

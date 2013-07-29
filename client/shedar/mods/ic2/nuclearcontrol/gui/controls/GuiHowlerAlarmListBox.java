@@ -7,6 +7,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -20,6 +21,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiHowlerAlarmListBox extends GuiButton
 {
+    private static final String TEXTURE_FILE = "/mods/nuclearControl/textures/gui/GUIHowlerAlarm.png";
+    private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
+
     private static final int BASIC_X_OFFSET = 2;
     private static final int BASIC_Y_OFFSET = 2;
     private static final int SCROLL_WIDTH = 10;
@@ -141,7 +145,7 @@ public class GuiHowlerAlarmListBox extends GuiButton
         //Slider
         int sliderX = xPosition+width-SCROLL_WIDTH+1;
         sliderY = yPosition + SCROLL_BUTTON_HEIGHT + ((height - 2*SCROLL_BUTTON_HEIGHT-sliderHeight)*scrollTop)/(lineHeight*items.size() + BASIC_Y_OFFSET - height);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.renderEngine.getTexture("/mods/nuclearControl/textures/gui/GUIHowlerAlarm.png"));
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.renderEngine.func_110581_b/*getTexture*/(TEXTURE_LOCATION).func_110552_b());
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         drawTexturedModalRect(sliderX, sliderY, 131, 16, SCROLL_WIDTH - 1, 1);

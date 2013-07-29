@@ -1,46 +1,37 @@
 package shedar.mods.ic2.nuclearcontrol.crossmod.buildcraft;
 
-import ic2.api.energy.tile.IEnergySink;
 import ic2.api.Direction;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter;
-import buildcraft.api.power.IPowerProvider;
+import buildcraft.api.power.IPowerEmitter;
 import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.power.PowerFramework;
+import buildcraft.api.power.PowerHandler;
+import buildcraft.api.power.PowerHandler.PowerReceiver;
+import buildcraft.api.transport.IPipeConnection;
 
-public class TileEntityEnergyCounterBC extends TileEntityEnergyCounter implements IPowerReceptor
+public class TileEntityEnergyCounterBC extends TileEntityEnergyCounter implements IPowerReceptor, IPowerEmitter, IPipeConnection
 {
     private static final int MAX_SEND = 100;
 
-    private IPowerProvider powerProvider;
+    protected PowerHandler powerHandler;
 
     public TileEntityEnergyCounterBC()
     {
         super();
-        powerProvider = PowerFramework.currentFramework.createPowerProvider();
-        powerProvider.configure(50, 2, 1000, 1, 1000);
-        powerProvider.configurePowerPerdition(1, 100);
-    }
-    
-    @Override
-    public void setPowerProvider(IPowerProvider provider)
-    {
-        powerProvider = provider;
+        powerHandler = new PowerHandler(this, PowerHandler.Type.MACHINE);
+        powerHandler.configurePowerPerdition(1, 100);
     }
 
     @Override
-    public IPowerProvider getPowerProvider()
-    {
-        return powerProvider;
-    }
-
-    @Override
-    public void doWork()
-    {
-        // do nothing
+    public void initData() {
+        super.initData();
+        if (!worldObj.isRemote) {
+            powerHandler.configure(1, MAX_SEND, 1, 1000);
+        }
     }
     
     @Override
@@ -61,27 +52,17 @@ public class TileEntityEnergyCounterBC extends TileEntityEnergyCounter implement
             int y = direction.offsetY + yCoord;
             int z = direction.offsetZ + zCoord;
             TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
-            if (tile!=null && tile instanceof IPowerReceptor) {
-                IPowerProvider receptor = ((IPowerReceptor) tile).getPowerProvider();
-                if(receptor!=null)
+            if (tile!=null && tile instanceof IPowerReceptor && ((IPowerReceptor)tile).getPowerReceiver(direction.getOpposite())!=null) 
+            {
+                PowerReceiver receptor = ((IPowerReceptor) tile).getPowerReceiver(direction.getOpposite());
+                if(powerHandler.getEnergyStored() >= receptor.getMinEnergyReceived() && MAX_SEND >= receptor.getMinEnergyReceived())
                 {
-                    float powerRequested = (float)((IPowerReceptor)tile).powerRequest(direction);
-                    
-                    if(powerRequested > 0.0F) 
-                    {
-                       if(tile instanceof IEnergySink)
-                       {
-                           if(!((IEnergySink)tile).acceptsEnergyFrom(this, apiDirection.getInverse()))
-                               continue;
-                       }
-                       float adjustedEnergyRequest = Math.min(powerRequested, (float)receptor.getMaxEnergyStored() - receptor.getEnergyStored());
-                       float energyMax = Math.min(adjustedEnergyRequest, MAX_SEND);
-                       float energy = powerProvider.useEnergy(0, energyMax, true);
-                       receptor.receiveEnergy(energy, direction.getOpposite());
-                       counter += energy;
-                       if(energy>0)
-                           setPowerType(TileEntityAverageCounter.POWER_TYPE_MJ);
-                    }
+                    float toSend = Math.min(powerHandler.getEnergyStored(), receptor.getMaxEnergyReceived());
+                    float needed = receptor.receiveEnergy(PowerHandler.Type.MACHINE, toSend, direction.getOpposite());
+                    powerHandler.useEnergy(1, needed, true);
+                    counter+=needed;
+                    if(powerHandler.getEnergyStored()>0)
+                        setPowerType(TileEntityAverageCounter.POWER_TYPE_MJ);
                 }
             }
         }
@@ -91,20 +72,45 @@ public class TileEntityEnergyCounterBC extends TileEntityEnergyCounter implement
     public void writeToNBT(NBTTagCompound nbttagcompound)
     {
         super.writeToNBT(nbttagcompound);
-        powerProvider.writeToNBT(nbttagcompound);
+        powerHandler.writeToNBT(nbttagcompound);
     }    
 
     @Override
     public void readFromNBT(NBTTagCompound nbttagcompound)
     {
         super.readFromNBT(nbttagcompound);
-        powerProvider.readFromNBT(nbttagcompound);
+        powerHandler.readFromNBT(nbttagcompound);
     }
 
     @Override
-    public int powerRequest(ForgeDirection from)
+    public boolean canEmitPowerFrom(ForgeDirection side)
     {
-        return (int) Math.floor(Math.min(getPowerProvider().getMaxEnergyReceived(), getPowerProvider().getMaxEnergyStored()
-                - getPowerProvider().getEnergyStored()));
+        return side.ordinal() != getFacing();
     }
+
+    @Override
+    public PowerReceiver getPowerReceiver(ForgeDirection side)
+    {
+        return powerHandler.getPowerReceiver();
+    }
+
+    @Override
+    public void doWork(PowerHandler workProvider)
+    {
+        // do nothing
+        
+    }
+
+    @Override
+    public World getWorld()
+    {
+        return worldObj;
+    }
+
+    @Override
+    public boolean isPipeConnected(ForgeDirection with)
+    {
+        return with.ordinal() == getFacing();
+    }
+
 }

@@ -3,7 +3,9 @@ package shedar.mods.ic2.nuclearcontrol.renderers.model;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.Icon;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -15,6 +17,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ModelInfoPanel
 {
+    private static final String TEXTURE_FILE = "/mods/nuclearControl/textures/blocks/infoPanel/panelAdvancedSide.png";
+    private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
+
     private double[] coordinates = new double[24];
     
     private void assignWithRotation(int rotation, int offset, int sign, int tl, int tr, int br, int bl, double dtl, double dtr, double dbr, double dbl)
@@ -394,7 +399,7 @@ public class ModelInfoPanel
 
         Tessellator.instance.draw();
         Tessellator.instance.startDrawingQuads();
-        renderer.minecraftRB.renderEngine.bindTexture("/mods/nuclearControl/textures/blocks/infoPanel/panelAdvancedSide.png");
+        renderer.minecraftRB.renderEngine.func_110577_a/*bindTExture*/(TEXTURE_LOCATION);
         Tessellator.instance.setBrightness(block.getMixedBrightnessForBlock(panel.worldObj, panel.xCoord, panel.yCoord, panel.zCoord));
         Tessellator.instance.setColorOpaque_F(0.5F, 0.5F, 0.5F);
         
@@ -460,7 +465,6 @@ public class ModelInfoPanel
         }
         Tessellator.instance.draw();
         Tessellator.instance.startDrawingQuads();
-        renderer.minecraftRB.renderEngine.resetBoundTexture();
-        renderer.minecraftRB.renderEngine.bindTexture("/terrain.png");
+        renderer.minecraftRB.renderEngine.func_110577_a/*bindTExture*/(TextureMap.field_110575_b/*blocks texture atlas*/);
     }
 }

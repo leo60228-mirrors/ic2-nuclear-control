@@ -9,6 +9,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
@@ -33,6 +34,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class GuiAdvancedInfoPanel extends GuiInfoPanel
 {
     private static final String TEXTURE_FILE = "/mods/nuclearControl/textures/gui/GUIAdvancedInfoPanel.png";
+    private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
     
     private static final int ID_LABELS = 1;
     private static final int ID_SLOPE = 2;
@@ -57,7 +59,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel
     protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3)
     {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture(TEXTURE_FILE);
+        mc.renderEngine.func_110577_a/*bindTExture*/(TEXTURE_LOCATION);
         int left = (width - xSize) / 2;
         int top = (height - ySize) / 2;
         drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
@@ -83,14 +85,14 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel
         prevCard = card;
 
         //labels
-        buttonList.add(new IconButton(ID_LABELS, guiLeft + 83 , guiTop + 42, 16, 16, TEXTURE_FILE, 192-16, 
+        buttonList.add(new IconButton(ID_LABELS, guiLeft + 83 , guiTop + 42, 16, 16, TEXTURE_LOCATION, 192-16, 
                 getIconLabelsTopOffset(container.panel.getShowLabels())));
         //slope
-        buttonList.add(new IconButton(ID_SLOPE, guiLeft + 83 + 17*1, guiTop + 42, 16, 16, TEXTURE_FILE, 192, 15));
+        buttonList.add(new IconButton(ID_SLOPE, guiLeft + 83 + 17*1, guiTop + 42, 16, 16, TEXTURE_LOCATION, 192, 15));
         //colors
-        buttonList.add(new IconButton(ID_COLORS, guiLeft + 83 + 17*2, guiTop + 42, 16, 16, TEXTURE_FILE, 192, 15 + 16));
+        buttonList.add(new IconButton(ID_COLORS, guiLeft + 83 + 17*2, guiTop + 42, 16, 16, TEXTURE_LOCATION, 192, 15 + 16));
         //power
-        buttonList.add(new IconButton(ID_POWER, guiLeft + 83 + 17*3, guiTop + 42, 16, 16, TEXTURE_FILE, 192-16, 
+        buttonList.add(new IconButton(ID_POWER, guiLeft + 83 + 17*3, guiTop + 42, 16, 16, TEXTURE_LOCATION, 192-16, 
                 getIconPowerTopOffset(((TileEntityAdvancedInfoPanel)container.panel).getPowerMode())));
         
         if(card!=null && card.getItem() instanceof IPanelDataSource)
@@ -100,7 +102,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel
             if(source instanceof IAdvancedCardSettings)
             {
                 //settings
-                buttonList.add(new IconButton(ID_SETTINGS, guiLeft + 83 + 17*4, guiTop + 42, 16, 16, TEXTURE_FILE, 192, 15 + 16*2));
+                buttonList.add(new IconButton(ID_SETTINGS, guiLeft + 83 + 17*4, guiTop + 42, 16, 16, TEXTURE_LOCATION, 192, 15 + 16*2));
             }
             int row = 0;
             List<PanelSetting> settingsList = null;

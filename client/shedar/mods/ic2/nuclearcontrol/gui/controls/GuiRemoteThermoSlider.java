@@ -3,6 +3,7 @@ package shedar.mods.ic2.nuclearcontrol.gui.controls;
 import ic2.api.network.NetworkHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -16,6 +17,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiRemoteThermoSlider extends GuiButton
 {
+    private static final String TEXTURE_FILE = "/mods/nuclearControl/textures/gui/GUIRemoteThermo.png";
+    private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
+
     private static final int ARROW_WIDTH = 6;
     private static final float TEMP_RANGE = 16000;
     private static final int HEAT_STEP = 100;
@@ -100,7 +104,7 @@ public class GuiRemoteThermoSlider extends GuiButton
     public void drawButton(Minecraft minecraft, int targetX, int targetY) {
         if (drawButton)
         {
-            minecraft.renderEngine.bindTexture("/mods/nuclearControl/textures/gui/GUIRemoteThermo.png");
+            minecraft.renderEngine.func_110577_a/*bindTExture*/(TEXTURE_LOCATION);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             if (dragging && (targetX >= xPosition + ARROW_WIDTH) && (targetX <= xPosition + width - ARROW_WIDTH))
             {

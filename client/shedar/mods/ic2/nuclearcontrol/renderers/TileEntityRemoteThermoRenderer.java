@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Facing;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -13,6 +14,8 @@ import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityRemoteThermo;
 
 public class TileEntityRemoteThermoRenderer extends TileEntitySpecialRenderer
 {
+    private static final String TEXTURE_FILE = "/mods/nuclearControl/textures/blocks/remoteThermo/scale.png";
+    private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float f)
@@ -29,7 +32,7 @@ public class TileEntityRemoteThermoRenderer extends TileEntitySpecialRenderer
             int heat = thermo.getHeatLevel();
             String text = Integer.toString(heat);
             GL11.glTranslatef((float)x, (float)y, (float)z);
-            bindTextureByName("/mods/nuclearControl/textures/blocks/remoteThermo/scale.png");
+            func_110628_a/*bindTextureByName*/(TEXTURE_LOCATION);
             switch (side)
             {
                 case 0:

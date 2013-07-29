@@ -1,5 +1,6 @@
 package shedar.mods.ic2.nuclearcontrol.utils;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -14,6 +15,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
@@ -31,6 +33,7 @@ public class NuclearNetworkHelper
     public static final int FIELD_INT = 2;
     public static final int FIELD_STRING = 3;
     public static final int FIELD_BOOLEAN = 4;
+    public static final int FIELD_TAG = 5;
     
     //server
     public static void sendEnergyCounterValue(TileEntityEnergyCounter counter, ICrafting crafter)
@@ -133,6 +136,18 @@ public class NuclearNetworkHelper
             {
                 output.writeByte(FIELD_BOOLEAN);
                 output.writeBoolean((Boolean)value);
+            }
+            else if(value instanceof NBTTagCompound)
+            {
+                output.writeByte(FIELD_TAG);
+                try
+                {
+                    NBTTagCompound.writeNamedTag((NBTTagCompound)value, output);
+                } catch (IOException e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
             
         }

@@ -9,11 +9,11 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Icon;
-import net.minecraft.util.StringTranslate;
-import net.minecraftforge.liquids.ILiquidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelMultiCard;
@@ -96,26 +96,26 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase implements IRem
     public CardState updateLiquid(TileEntity panel, ICardWrapper card, int range)
     {
         ChunkCoordinates target = card.getTarget();
-        ILiquidTank storage = LiquidStorageHelper.getStorageAt(panel.worldObj, target.posX, target.posY, target.posZ);
+        FluidTankInfo storage = LiquidStorageHelper.getStorageAt(panel.worldObj, target.posX, target.posY, target.posZ);
         if(storage != null)
         {
-            int capacity = storage.getCapacity();
+            int capacity = storage.capacity;
             int amount = 0;
             int liquidId = 0;
-            int liquidMeta = 0;
-            if(storage.getLiquid()!=null)
+            NBTTagCompound liquidTag = null;
+            if(storage.fluid!=null)
             {
-                amount = storage.getLiquid().amount;
-                if(storage.getLiquid().itemID!=0 && amount > 0)
+                amount = storage.fluid.amount;
+                if(storage.fluid.fluidID!=0 && amount > 0)
                 {
-                    liquidId = storage.getLiquid().itemID;
-                    liquidMeta = storage.getLiquid().itemMeta;
+                    liquidId = storage.fluid.fluidID;
+                    liquidTag = storage.fluid.tag;
                 }
             }
             card.setInt("capacity", capacity);
             card.setInt("amount", amount);
             card.setInt("liquidId", liquidId);
-            card.setInt("liquidMeta", liquidMeta);
+            card.setTag("liquidTag", liquidTag);
             return CardState.OK;
         }
         else
@@ -282,18 +282,18 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase implements IRem
     public List<PanelSetting> getSettingsListCounter()
     {
         List<PanelSetting> result = new ArrayList<PanelSetting>(3);
-        result.add(new PanelSetting(StringTranslate.getInstance().translateKey("msg.nc.cbInfoPanelEnergyCurrent"), DISPLAY_ENERGY, CARD_TYPE_COUNTER));
+        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelEnergyCurrent"), DISPLAY_ENERGY, CARD_TYPE_COUNTER));
         return result;
     }
 
     public List<PanelSetting> getSettingsListLiquid()
     {
         List<PanelSetting> result = new ArrayList<PanelSetting>(3);
-        result.add(new PanelSetting(StringTranslate.getInstance().translateKey("msg.nc.cbInfoPanelLiquidName"), DISPLAY_LIQUID_NAME, CARD_TYPE_LIQUID));
-        result.add(new PanelSetting(StringTranslate.getInstance().translateKey("msg.nc.cbInfoPanelLiquidAmount"), DISPLAY_LIQUID_AMOUNT, CARD_TYPE_LIQUID));
-        result.add(new PanelSetting(StringTranslate.getInstance().translateKey("msg.nc.cbInfoPanelLiquidFree"), DISPLAY_LIQUID_FREE, CARD_TYPE_LIQUID));
-        result.add(new PanelSetting(StringTranslate.getInstance().translateKey("msg.nc.cbInfoPanelLiquidCapacity"), DISPLAY_LIQUID_CAPACITY, CARD_TYPE_LIQUID));
-        result.add(new PanelSetting(StringTranslate.getInstance().translateKey("msg.nc.cbInfoPanelLiquidPercentage"), DISPLAY_LIQUID_PERCENTAGE, CARD_TYPE_LIQUID));
+        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelLiquidName"), DISPLAY_LIQUID_NAME, CARD_TYPE_LIQUID));
+        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelLiquidAmount"), DISPLAY_LIQUID_AMOUNT, CARD_TYPE_LIQUID));
+        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelLiquidFree"), DISPLAY_LIQUID_FREE, CARD_TYPE_LIQUID));
+        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelLiquidCapacity"), DISPLAY_LIQUID_CAPACITY, CARD_TYPE_LIQUID));
+        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelLiquidPercentage"), DISPLAY_LIQUID_PERCENTAGE, CARD_TYPE_LIQUID));
         return result;
     }
 

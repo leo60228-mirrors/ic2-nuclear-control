@@ -3,6 +3,7 @@ package shedar.mods.ic2.nuclearcontrol.gui.controls;
 import ic2.api.network.NetworkHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -15,6 +16,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiHowlerAlarmSlider extends GuiButton
 {
+    private static final String TEXTURE_FILE = "/mods/nuclearControl/textures/gui/GUIHowlerAlarm.png";
+    private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
+
     public float sliderValue;
     public boolean dragging;
     private int minValue = 0;
@@ -66,7 +70,7 @@ public class GuiHowlerAlarmSlider extends GuiButton
     public void drawButton(Minecraft minecraft, int targetX, int targetY) {
         if (drawButton)
         {
-            minecraft.renderEngine.bindTexture("/mods/nuclearControl/textures/gui/GUIHowlerAlarm.png");
+            minecraft.renderEngine.func_110577_a/*bindTExture*/(TEXTURE_LOCATION);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             if (dragging)
             {

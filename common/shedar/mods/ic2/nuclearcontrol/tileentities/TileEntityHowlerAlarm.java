@@ -62,11 +62,7 @@ public class TileEntityHowlerAlarm extends TileEntity implements
 
     private void initData()
     {
-        if(worldObj.isRemote){
-            NetworkHelper.requestInitialData(this);
-        }
-        else
-        {
+        if(!worldObj.isRemote){
             RedstoneHelper.checkPowered(worldObj, this);
         }
         init = true;

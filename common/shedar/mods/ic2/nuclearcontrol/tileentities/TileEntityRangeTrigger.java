@@ -239,11 +239,7 @@ public class TileEntityRangeTrigger extends TileEntity implements
     
     protected void initData()
     {
-        if(worldObj.isRemote)
-        {
-            NetworkHelper.requestInitialData(this);
-        }
-        else
+        if(!worldObj.isRemote)
         {
             worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
         }
@@ -663,7 +659,7 @@ public class TileEntityRangeTrigger extends TileEntity implements
     }
 
     @Override
-    public boolean isStackValidForSlot(int slot, ItemStack itemstack)
+    public boolean isItemValidForSlot(int slot, ItemStack itemstack)
     {
         return isItemValid(slot, itemstack);
     }

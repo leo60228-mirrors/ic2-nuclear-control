@@ -193,7 +193,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     
                         if (ielectricitem.canProvideEnergy(inventory[SLOT_CHARGER]))
                         {
-                            int k = ElectricItem.discharge(inventory[SLOT_CHARGER], maxStorage - energy, tier, false, false);
+                            int k = ElectricItem.manager.discharge(inventory[SLOT_CHARGER], maxStorage - energy, tier, false, false);
                             energy += k;
                         }
                     }
@@ -605,7 +605,7 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     }
 
     @Override
-    public boolean isStackValidForSlot(int slot, ItemStack itemstack)
+    public boolean isItemValidForSlot(int slot, ItemStack itemstack)
     {
         return isItemValid(slot, itemstack);
     }

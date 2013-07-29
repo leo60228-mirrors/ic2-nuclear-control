@@ -381,7 +381,6 @@ public class TileEntityInfoPanel extends TileEntity implements
     {
         if(worldObj.isRemote)
         {
-            NetworkHelper.requestInitialData(this);
             NuclearNetworkHelper.requestDisplaySettings(this);
         }
         else
@@ -1191,7 +1190,7 @@ public class TileEntityInfoPanel extends TileEntity implements
     }
 
     @Override
-    public boolean isStackValidForSlot(int slot, ItemStack itemstack)
+    public boolean isItemValidForSlot(int slot, ItemStack itemstack)
     {
         return isItemValid(slot, itemstack);
     }
