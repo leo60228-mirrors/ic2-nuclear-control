@@ -25,8 +25,7 @@ public class SoundHelper
             SoundSystem sndSystem = mgr.sndSystem;
             if(sndSystem == null)
                 return null;
-            SoundPoolEntry sound = mgr.soundPoolSounds.getRandomSoundFromSoundPool(SOUND_FOLDER+"/alarm-"+name+".ogg");
-
+            SoundPoolEntry sound = mgr.soundPoolSounds.getRandomSoundFromSoundPool(name);
             if (sound != null && volume > 0.0F)
             {
                 internalId = (internalId + 1) % 256;

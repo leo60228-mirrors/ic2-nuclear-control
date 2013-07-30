@@ -113,8 +113,6 @@ public class IC2NuclearControl
     public int screenRefreshPeriod;
     public int rangeTriggerRefreshPeriod;
 
-    public boolean isClient;
-    
     public CrossBuildcraft crossBC;
     public CrossIndustrialCraft2 crossIC2;
     public CrossGregTech crossGregTech;
@@ -390,11 +388,10 @@ public class IC2NuclearControl
     {
         Modstats.instance().getReporter().registerMod(this);
         IC2NuclearControl.instance.screenManager = new ScreenManager();
-        isClient = evt.getSide().equals(Side.CLIENT);
         Configuration configuration;
         configuration = new Configuration(configFile);
         configuration.load();
-        if(isClient)
+        if(evt.getSide().equals(Side.CLIENT))
         {
             LanguageHelper.addNames(new File(configDir, CONFIG_NUCLEAR_CONTROL_LANG));
         }

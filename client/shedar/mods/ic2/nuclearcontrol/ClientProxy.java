@@ -1,17 +1,16 @@
 package shedar.mods.ic2.nuclearcontrol;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -41,6 +40,8 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -68,55 +69,37 @@ public class ClientProxy extends CommonProxy
     @ForgeSubscribe
     public void importSound(SoundLoadEvent event)
     {
-        File soundDir =  new File(new File(Minecraft.getMinecraft().mcDataDir, "resources"), "newsound");
-        File ncSoundDir = new File(soundDir, SoundHelper.SOUND_FOLDER);
+        ModContainer container = Loader.instance().getIndexedModList().get("IC2NuclearControl");
         IC2NuclearControl ncInstance = IC2NuclearControl.instance; 
-        if(!ncSoundDir.exists())
-        {
-            ncSoundDir.mkdirs();
-        }
-        for (String alarmName : IC2NuclearControl.builtInAlarms)
-        {
-            File alarmFile = new File(ncSoundDir, alarmName);
-            if(!alarmFile.exists())
-            {
-                try
-                {
-                    if(!alarmFile.createNewFile() || !alarmFile.canWrite())
-                        return;
-                    InputStream input = getClass().getResourceAsStream("/sound/"+alarmName);
-                    FileOutputStream output = new FileOutputStream(alarmFile);
-                    byte[] buf = new byte[8192];
-                    while (true) {
-                      int length = input.read(buf);
-                      if (length < 0)
-                        break;
-                      output.write(buf, 0, length);
-                    }
-                    input.close();
-                    output.close();
-                } 
-                catch (IOException e)
-                {
-                    FMLLog.warning(IC2NuclearControl.LOG_PREFIX + "Can't import sound file");
-                }
-            }
-        }
-        
-        File[] alarms = ncSoundDir.listFiles(new FilenameFilter() { 
-            public boolean accept(File dir, String filename)
-            { return filename.endsWith(".ogg") && filename.startsWith("alarm-"); }
-        });
-        
         ncInstance.availableAlarms = new ArrayList<String>();
-
-        for(File alarmItem: alarms)
+        ;
+        try
         {
-            String name = alarmItem.getName();
-            name = name.substring(6, name.length()-4);
-            ncInstance.availableAlarms.add(name);
-            event.manager.addSound(SoundHelper.SOUND_FOLDER+"/alarm-"+name+".ogg");
+            ZipFile zipfile = new ZipFile(container.getSource());
+            Enumeration<?> resources = zipfile.entries();
+            while (resources.hasMoreElements())
+            {
+                ZipEntry zipentry = (ZipEntry)resources.nextElement();
+                String fileName = zipentry.getName();
+                if(fileName.startsWith("assets/nuclearcontrol/sound/alarm-") && fileName.endsWith(".ogg"))
+                {
+                    fileName = fileName.substring(34, fileName.length()-4);
+                    ncInstance.availableAlarms.add(fileName);
+                    event.manager.addSound("nuclearcontrol:alarm-"+fileName+".ogg");
+                }
+                
+            }
+            zipfile.close();
+        } catch (ZipException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
+        
         ncInstance.serverAllowedAlarms = new ArrayList<String>();
     }    
     

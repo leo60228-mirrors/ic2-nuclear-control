@@ -18,6 +18,7 @@ import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.IRedstoneConsumer;
 import shedar.mods.ic2.nuclearcontrol.utils.Damages;
 import shedar.mods.ic2.nuclearcontrol.utils.RedstoneHelper;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
 
 public class TileEntityHowlerAlarm extends TileEntity implements 
@@ -25,7 +26,7 @@ public class TileEntityHowlerAlarm extends TileEntity implements
 {
     private static final String DEFAULT_SOUND_NAME = "default";
     private static final float BASE_SOUND_RANGE = 16F;
-    private static final String SOUND_PREFIX = "ic2nuclearControl.alarm-";
+    private static final String SOUND_PREFIX = "nuclearcontrol:alarm-";
     
     private boolean init;
     private boolean soundReceived;
@@ -274,7 +275,7 @@ public class TileEntityHowlerAlarm extends TileEntity implements
             initData();
         }
         super.updateEntity();
-        if (IC2NuclearControl.instance.isClient)
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
         {
             if (tickRate != -1 && updateTicker-- > 0)
                 return;
