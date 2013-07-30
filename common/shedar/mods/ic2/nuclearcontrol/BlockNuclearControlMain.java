@@ -144,8 +144,14 @@ public class BlockNuclearControlMain extends BlockContainer
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack item)
     {
-        TileEntity block = world.getBlockTileEntity(x, y, z);
         int metadata = item.getItemDamage();
+        onBlockPlacedBy(world, x, y, z, player, item, metadata);
+    }
+    
+    
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack item, int metadata)
+    {
+        TileEntity block = world.getBlockTileEntity(x, y, z);
         int side = metadata >> 8;
         metadata = metadata & 0xff;
         if(metadata > Damages.DAMAGE_MAX)

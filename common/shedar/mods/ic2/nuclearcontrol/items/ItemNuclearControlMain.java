@@ -49,7 +49,7 @@ public class ItemNuclearControlMain extends ItemBlock
        if (world.getBlockId(x, y, z) == getBlockID())
        {
            if(Block.blocksList[getBlockID()] instanceof BlockNuclearControlMain)
-               ((BlockNuclearControlMain)Block.blocksList[getBlockID()]).onBlockPlacedBy(world, x, y, z, player, stack);
+               ((BlockNuclearControlMain)Block.blocksList[getBlockID()]).onBlockPlacedBy(world, x, y, z, player, stack, metadata);
            else
                Block.blocksList[getBlockID()].onBlockPlacedBy(world, x, y, z, player, stack);
            Block.blocksList[getBlockID()].onPostBlockPlaced(world, x, y, z, metadata);
