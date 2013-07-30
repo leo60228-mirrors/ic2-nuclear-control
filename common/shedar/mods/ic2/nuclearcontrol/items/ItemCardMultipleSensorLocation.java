@@ -13,6 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Icon;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidTankInfo;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
@@ -205,7 +206,7 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase implements IRem
             if(liquidId == 0)
                 name = LanguageRegistry.instance().getStringLocalization("msg.nc.None");
             else
-                name = new ItemStack(liquidId, 1, card.getInt("liquidMeta")).getDisplayName();
+                name = FluidRegistry.getFluidName(liquidId); 
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelLiquidName",  name, showLabels); 
             result.add(line);

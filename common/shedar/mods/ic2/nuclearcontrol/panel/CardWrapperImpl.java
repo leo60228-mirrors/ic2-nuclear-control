@@ -227,7 +227,14 @@ public class CardWrapperImpl implements ICardWrapper
         {
             updateSet.put(name, value);
         }
-        nbtTagCompound.setTag(name, value);    
+        if(value == null)
+        {
+            nbtTagCompound.removeTag(name);
+        }
+        else
+        {
+            nbtTagCompound.setTag(name, value);    
+        }
     }
 
     @Override
@@ -238,4 +245,11 @@ public class CardWrapperImpl implements ICardWrapper
             return null;
         return (NBTTagCompound)nbtTagCompound.getTag(name);
     }
+    
+    public void clearField(String name)
+    {
+        NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(card);
+        nbtTagCompound.removeTag(name);
+    }
+    
 }

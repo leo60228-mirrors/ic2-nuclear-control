@@ -223,6 +223,9 @@ public class ClientProxy extends CommonProxy
                                 e.printStackTrace();
                             }
                             break;
+                        case NuclearNetworkHelper.FIELD_NULL:
+                            helper.clearField(name);
+                            break;
                         default:
                             FMLLog.warning("Invalid field type: %d", type);
                             break;
