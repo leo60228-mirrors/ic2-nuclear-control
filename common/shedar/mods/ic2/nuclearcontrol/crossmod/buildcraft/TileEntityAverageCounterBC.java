@@ -60,8 +60,6 @@ public class TileEntityAverageCounterBC extends TileEntityAverageCounter impleme
                     float needed = receptor.receiveEnergy(PowerHandler.Type.MACHINE, toSend, direction.getOpposite());
                     powerHandler.useEnergy(1, needed, true);
                     data[index] += needed;
-                    if(powerHandler.getEnergyStored()>0)
-                        setPowerType(TileEntityAverageCounter.POWER_TYPE_MJ);
                 }
             }
 
@@ -97,8 +95,7 @@ public class TileEntityAverageCounterBC extends TileEntityAverageCounter impleme
     @Override
     public void doWork(PowerHandler workProvider)
     {
-        // do nothing
-        
+        setPowerType(TileEntityAverageCounter.POWER_TYPE_MJ);
     }
 
     @Override

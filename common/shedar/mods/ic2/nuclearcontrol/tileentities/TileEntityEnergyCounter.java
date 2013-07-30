@@ -15,6 +15,8 @@ import ic2.api.tile.IWrenchable;
 import java.util.List;
 import java.util.Vector;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -98,12 +100,14 @@ public class TileEntityEnergyCounter extends TileEntity implements
             EnergyTileUnloadEvent event = new EnergyTileUnloadEvent(this);
             MinecraftForge.EVENT_BUS.post(event);
         }
-        addedToEnergyNet = false;
         setSide((short)Facing.oppositeSide[f]);
-        EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
-        MinecraftForge.EVENT_BUS.post(event);
-        addedToEnergyNet = true;
-    }
+        addedToEnergyNet = false;
+        if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+        {
+            EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
+            MinecraftForge.EVENT_BUS.post(event);
+            addedToEnergyNet = true;
+        }    }
     
     private void setSide(short f)
     {

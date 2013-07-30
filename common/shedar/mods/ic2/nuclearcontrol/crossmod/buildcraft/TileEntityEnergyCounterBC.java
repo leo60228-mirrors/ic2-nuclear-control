@@ -61,8 +61,6 @@ public class TileEntityEnergyCounterBC extends TileEntityEnergyCounter implement
                     float needed = receptor.receiveEnergy(PowerHandler.Type.MACHINE, toSend, direction.getOpposite());
                     powerHandler.useEnergy(1, needed, true);
                     counter+=needed;
-                    if(powerHandler.getEnergyStored()>0)
-                        setPowerType(TileEntityAverageCounter.POWER_TYPE_MJ);
                 }
             }
         }
@@ -97,8 +95,7 @@ public class TileEntityEnergyCounterBC extends TileEntityEnergyCounter implement
     @Override
     public void doWork(PowerHandler workProvider)
     {
-        // do nothing
-        
+        setPowerType(TileEntityAverageCounter.POWER_TYPE_MJ);
     }
 
     @Override

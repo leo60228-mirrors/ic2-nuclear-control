@@ -97,11 +97,14 @@ public class TileEntityAverageCounter extends TileEntity implements
             EnergyTileUnloadEvent event = new EnergyTileUnloadEvent(this);
             MinecraftForge.EVENT_BUS.post(event);
         }
-        addedToEnergyNet = false;
         setSide((short)Facing.oppositeSide[f]);
-        EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
-        MinecraftForge.EVENT_BUS.post(event);
-        addedToEnergyNet = true;
+        addedToEnergyNet = false;
+        if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+        {
+            EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
+            MinecraftForge.EVENT_BUS.post(event);
+            addedToEnergyNet = true;
+        }
     }
     
     private void setSide(short f)
