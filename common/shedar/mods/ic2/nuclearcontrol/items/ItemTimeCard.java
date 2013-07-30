@@ -41,7 +41,7 @@ public class ItemTimeCard extends ItemCardBase
         List<PanelString> result = new ArrayList<PanelString>(1);
         PanelString item = new PanelString();
         result.add(item);
-        int time = (int)((FMLClientHandler.instance().getClient().theWorld.getWorldTime() - 18000) % 24000);
+        int time = (int)((FMLClientHandler.instance().getClient().theWorld.getWorldTime() + 6000) % 24000);
         int hours = time / 1000;
         int minutes = (time % 1000)*6/100;
         item.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelTime", String.format("%02d:%02d", hours, minutes), showLabels);  
