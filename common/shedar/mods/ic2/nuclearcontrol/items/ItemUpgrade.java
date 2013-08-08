@@ -2,6 +2,7 @@ package shedar.mods.ic2.nuclearcontrol.items;
 
 import java.util.List;
 
+import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.utils.TextureResolver;
 
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -15,12 +16,15 @@ public class ItemUpgrade extends Item
 {
     public static final int DAMAGE_RANGE = 0;
     public static final int DAMAGE_COLOR = 1;
+    public static final int DAMAGE_WEB = 2;
     
     private static final String TEXTURE_RANGE = "upgradeRange"; 
     private static final String TEXTURE_COLOR = "upgradeColor"; 
+    private static final String TEXTURE_WEB = "upgradeWeb"; 
     
     private Icon iconRange;
     private Icon iconColor;
+    private Icon iconWeb;
 
     public ItemUpgrade(int i)
     {
@@ -35,6 +39,7 @@ public class ItemUpgrade extends Item
     {
         iconRange = iconRegister.registerIcon(TextureResolver.getItemTexture(TEXTURE_RANGE));
         iconColor = iconRegister.registerIcon(TextureResolver.getItemTexture(TEXTURE_COLOR));
+        iconWeb = iconRegister.registerIcon(TextureResolver.getItemTexture(TEXTURE_WEB));
     }    
     
     @Override
@@ -47,6 +52,8 @@ public class ItemUpgrade extends Item
             return "item.ItemRangeUpgrade";
         case DAMAGE_COLOR:
             return "item.ItemColorUpgrade";
+        case DAMAGE_WEB:
+            return "item.ItemWebUpgrade";
         default:
             return "";
         }
@@ -61,6 +68,8 @@ public class ItemUpgrade extends Item
             return iconRange;
         case DAMAGE_COLOR:
             return iconColor;
+        case DAMAGE_WEB:
+            return iconWeb;
         default:
             return iconRange;
         }
@@ -72,5 +81,7 @@ public class ItemUpgrade extends Item
     {
         itemList.add(new ItemStack(par1, 1, DAMAGE_RANGE));
         itemList.add(new ItemStack(par1, 1, DAMAGE_COLOR));
+        if(IC2NuclearControl.instance.isHttpSensorAvailable)
+            itemList.add(new ItemStack(par1, 1, DAMAGE_WEB));
     }
 }

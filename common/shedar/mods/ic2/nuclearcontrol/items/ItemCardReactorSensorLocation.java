@@ -89,7 +89,6 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean advanced) 
     {
-        //CardWrapperImpl helper = new CardWrapperImpl(itemStack);
         ICardWrapper helper = CardHelper.getWrapper(itemStack);
         ChunkCoordinates target = helper.getTarget();
         if(target != null)

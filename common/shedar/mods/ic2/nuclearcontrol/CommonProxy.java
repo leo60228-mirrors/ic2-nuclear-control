@@ -1,5 +1,7 @@
 package shedar.mods.ic2.nuclearcontrol;
 
+import java.util.EnumSet;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -11,6 +13,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
+import shedar.mods.ic2.nuclearcontrol.panel.http.HttpCardSender;
 import shedar.mods.ic2.nuclearcontrol.subblocks.Subblock;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityHowlerAlarm;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
@@ -21,11 +24,13 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
 import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.IScheduledTickHandler;
+import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class CommonProxy implements IGuiHandler
+public class CommonProxy implements IGuiHandler, IScheduledTickHandler
 {
     public boolean isPlaying(String soundId)
     {
@@ -198,6 +203,38 @@ public class CommonProxy implements IGuiHandler
     {
         // null on server
         return null;
+    }
+
+    @Override
+    public void tickStart(EnumSet<TickType> type, Object... tickData)
+    {
+        // do nothing
+    }
+
+    @Override
+    public void tickEnd(EnumSet<TickType> type, Object... tickData)
+    {
+        if(IC2NuclearControl.instance.isHttpSensorAvailable)
+            HttpCardSender.instance.send();
+    }
+
+    @Override
+    public EnumSet<TickType> ticks()
+    {
+        return EnumSet.of(TickType.SERVER);
+    }
+
+    @Override
+    public String getLabel()
+    {
+        return "Nuclear Control sensor sender";
+    }
+
+    @Override
+    public int nextTickSpacing()
+    {
+        // TODO Auto-generated method stub
+        return 20*10;
     }
 
 }

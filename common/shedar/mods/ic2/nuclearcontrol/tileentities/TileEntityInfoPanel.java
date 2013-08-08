@@ -36,8 +36,10 @@ import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.items.ItemUpgrade;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.panel.Screen;
+import shedar.mods.ic2.nuclearcontrol.panel.http.HttpCardSender;
 import shedar.mods.ic2.nuclearcontrol.subblocks.InfoPanel;
 import shedar.mods.ic2.nuclearcontrol.utils.Damages;
+import shedar.mods.ic2.nuclearcontrol.utils.ItemStackUtils;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.RedstoneHelper;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -64,6 +66,7 @@ public class TileEntityInfoPanel extends TileEntity implements
     private static final byte SLOT_CARD = 0;
     private static final byte SLOT_UPGRADE_RANGE = 1;
     private static final byte SLOT_UPGRADE_COLOR = 2;
+    private static final byte SLOT_UPGRADE_WEB = 2;
     private static final byte LOCATION_RANGE = 8;
     
     public float lastTick = 0;
@@ -79,6 +82,9 @@ public class TileEntityInfoPanel extends TileEntity implements
 
     private boolean prevPowered;
     protected boolean powered;
+    
+    private boolean prevIsWeb = false;
+    protected boolean isWeb = false;
 
     protected final Map<Byte, Map<UUID, Integer>> displaySettings;
     
@@ -154,7 +160,6 @@ public class TileEntityInfoPanel extends TileEntity implements
         return powered;
     }    
     
-    
     public void setColored(boolean c)
     {
         colored = c;
@@ -168,6 +173,21 @@ public class TileEntityInfoPanel extends TileEntity implements
     public boolean getColored()
     {
         return colored;
+    }    
+    
+    public void setIsWeb(boolean c)
+    {
+        isWeb = c;
+        if (prevIsWeb != c)
+        {
+            NetworkHelper.updateTileEntityField(this, "isWeb");
+        }
+        prevIsWeb = isWeb;
+    }
+
+    public boolean getIsWeb()
+    {
+        return isWeb;
     }    
     
     public void setColorBackground(int c)
@@ -358,7 +378,7 @@ public class TileEntityInfoPanel extends TileEntity implements
     
     public TileEntityInfoPanel()
     {
-        this(3);//card + range upgrade + color upgrade
+        this(3);//card + range upgrade + color/web upgrade
     }
     
     @Override
@@ -374,6 +394,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         list.add("colorText");
         list.add("colored");
         list.add("screenData");
+        list.add("isWeb");
         return list;
     }
     
@@ -490,7 +511,7 @@ public class TileEntityInfoPanel extends TileEntity implements
             }
         }
     }
-
+    
     @Override
     public void readFromNBT(NBTTagCompound nbttagcompound)
     {
@@ -703,6 +724,19 @@ public class TileEntityInfoPanel extends TileEntity implements
         return itemStack != null && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_COLOR;
     }
     
+    protected boolean isWebEval()
+    {
+        if(!IC2NuclearControl.instance.isHttpSensorAvailable)
+            return false;
+        ItemStack itemStack = inventory[SLOT_UPGRADE_WEB];
+        return itemStack != null && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_WEB;
+    }
+    
+    public int getCardSlotsCount()
+    {
+        return 1;
+    }
+    
     public List<ItemStack> getCards()
     {
         List<ItemStack> data = new ArrayList<ItemStack>(1);
@@ -727,6 +761,26 @@ public class TileEntityInfoPanel extends TileEntity implements
         return slot;
     }
     
+    protected long getIdForCard(CardWrapperImpl cardHelper)
+    {
+        long id = cardHelper.getLong("_webSensorId");
+        if(id <= 0)
+        {
+            if(id<=-10){
+                id+=10;
+            }
+            if(id == 0)
+                HttpCardSender.instance.requestId();
+            Long newId = HttpCardSender.instance.availableIds.poll();
+            if(newId==null)
+                id--;
+            else
+                id = newId;
+            cardHelper.setLong("_webSensorId", id);
+        }
+        return id;
+    }
+    
     private void processCard(ItemStack card, int upgradeCountRange, int slot)
     {
         if(card == null)
@@ -739,6 +793,20 @@ public class TileEntityInfoPanel extends TileEntity implements
                 upgradeCountRange = 7;
             int range = LOCATION_RANGE * (int)Math.pow(2, upgradeCountRange);
             CardWrapperImpl cardHelper = new CardWrapperImpl(card, slot);
+            
+            if(isWeb)
+            {
+                long id = getIdForCard(cardHelper);
+                if(id>0)
+                {
+                    UUID cardType = card.getItem() instanceof IPanelMultiCard?
+                            ((IPanelMultiCard)card.getItem()).getCardType(cardHelper):
+                                ((IPanelDataSource)card.getItem()).getCardType();
+
+                    HttpCardSender.instance.add(ItemStackUtils.getTagCompound(card), cardType, id);
+                }
+            }
+            
             if(item instanceof IRemoteSensor)
             {
                 ChunkCoordinates target = cardHelper.getTarget();
@@ -779,6 +847,7 @@ public class TileEntityInfoPanel extends TileEntity implements
         {
             int upgradeCountRange = 0;
             setColored(isColoredEval());
+            setIsWeb(isWebEval());
             ItemStack itemStack = getRangeUpgrade();
             if(itemStack != null && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
             {
@@ -803,7 +872,9 @@ public class TileEntityInfoPanel extends TileEntity implements
             case SLOT_UPGRADE_RANGE:
                 return itemstack.getItem() instanceof ItemUpgrade && itemstack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE; 
             case SLOT_UPGRADE_COLOR:
-                return itemstack.getItem() instanceof ItemUpgrade && itemstack.getItemDamage() == ItemUpgrade.DAMAGE_COLOR; 
+                return itemstack.getItem() instanceof ItemUpgrade && 
+                        (itemstack.getItemDamage() == ItemUpgrade.DAMAGE_COLOR ||
+                        itemstack.getItemDamage() == ItemUpgrade.DAMAGE_WEB); 
             default:
                 return false;
         }

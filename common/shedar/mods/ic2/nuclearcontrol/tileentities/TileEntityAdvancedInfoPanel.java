@@ -8,6 +8,7 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.items.ItemUpgrade;
 
@@ -27,11 +28,12 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel
     
     public ItemStack card2;
     public ItemStack card3;
-
+    
     private static final byte SLOT_CARD1 = 0;
     private static final byte SLOT_CARD2 = 1;
     private static final byte SLOT_CARD3 = 2;
     private static final byte SLOT_UPGRADE_RANGE = 3;
+    private static final byte SLOT_UPGRADE_WEB = 3;
     
     public static final int POWER_REDSTONE = 0;
     public static final int POWER_INVERTED = 1;
@@ -45,11 +47,17 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel
     
     public TileEntityAdvancedInfoPanel()
     {
-        super(4);//3 cards + range upgrade
+        super(4);//3 cards + range/web upgrade
         colored = true;
         thickness = 16;
     }
     
+    @Override
+    public int getCardSlotsCount()
+    {
+        return 3;
+    }
+
     public byte getPowerMode()
     {
         return powerMode;
@@ -154,7 +162,9 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel
             case SLOT_CARD3:
                 return itemstack.getItem() instanceof IPanelDataSource;
             case SLOT_UPGRADE_RANGE:
-                return itemstack.getItem() instanceof ItemUpgrade && itemstack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE; 
+                return itemstack.getItem() instanceof ItemUpgrade && 
+                        (itemstack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE ||
+                        itemstack.getItemDamage() == ItemUpgrade.DAMAGE_WEB); 
             default:
                 return false;
         }
@@ -164,6 +174,15 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel
     protected boolean isColoredEval()
     {
         return true;
+    }
+
+    @Override
+    protected boolean isWebEval()
+    {
+        if(!IC2NuclearControl.instance.isHttpSensorAvailable)
+            return false;
+        ItemStack itemStack = inventory[SLOT_UPGRADE_WEB];
+        return itemStack != null && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_WEB;
     }
     
     @Override
@@ -211,7 +230,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel
         thickness = nbttagcompound.getByte("thickness");
         powerMode = nbttagcompound.getByte("powerMode");
     }
-    
+
     @Override
     protected void postReadFromNBT()
     {

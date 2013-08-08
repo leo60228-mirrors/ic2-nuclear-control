@@ -6,6 +6,7 @@ import ic2.api.recipe.Recipes;
 
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -47,6 +48,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 @Mod( modid = "IC2NuclearControl", name="Nuclear Control", version="1.5.1e", dependencies = "after:IC2")
@@ -107,6 +109,8 @@ public class IC2NuclearControl
     public int alarmRange;
     public int SMPMaxAlarmRange;
     public int maxAlarmRange;
+    public boolean isHttpSensorAvailable;
+    public String httpSensorKey;
     public List<String> availableAlarms;
     public int remoteThermalMonitorEnergyConsumption;
     public ScreenManager screenManager = new ScreenManager();
@@ -373,6 +377,7 @@ public class IC2NuclearControl
         configDir = event.getModConfigurationDirectory();
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(proxy);
+        TickRegistry.registerScheduledTickHandler(proxy, Side.SERVER);
     }
 
     @EventHandler
@@ -404,7 +409,8 @@ public class IC2NuclearControl
         screenRefreshPeriod = configuration.get(Configuration.CATEGORY_GENERAL, "infoPanelRefreshPeriod", 20).getInt();
         rangeTriggerRefreshPeriod = configuration.get(Configuration.CATEGORY_GENERAL, "rangeTriggerRefreshPeriod", 20).getInt();
         SMPMaxAlarmRange = configuration.get(Configuration.CATEGORY_GENERAL, "SMPMaxAlarmRange", 256).getInt();
-
+        isHttpSensorAvailable = configuration.get(Configuration.CATEGORY_GENERAL, "isHttpSensorAvailable", true).getBoolean(true);
+        httpSensorKey = configuration.get(Configuration.CATEGORY_GENERAL, "httpSensorKey", UUID.randomUUID().toString().replace("-", "")).getString();
         proxy.registerTileEntities();
         NetworkRegistry.instance().registerGuiHandler(instance, proxy);
         configuration.save();

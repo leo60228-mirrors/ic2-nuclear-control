@@ -2,12 +2,15 @@ package shedar.mods.ic2.nuclearcontrol.gui;
 
 import java.util.List;
 
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -55,6 +58,40 @@ public class GuiInfoPanel extends GuiContainer
         isColored = !this.container.panel.getColored(); 
     }
     
+    @Override
+    @SuppressWarnings("unchecked")
+    protected void drawItemStackTooltip(ItemStack itemStack, int par2, int par3)
+    {
+        @SuppressWarnings("rawtypes")
+        List list = itemStack.getTooltip(this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips);
+        
+        if(container.panel.getIsWeb() && itemStack.hasTagCompound())
+        {
+            NBTTagCompound tags = itemStack.getTagCompound();
+            if(tags.hasKey("_webSensorId")){
+                long id = tags.getLong("_webSensorId");
+                if(id>0)
+                    list.add("Web Id: "+id);
+            }
+        }
+
+        for (int k = 0; k < list.size(); ++k)
+        {
+            if (k == 0)
+            {
+                list.set(k, "\u00a7" + Integer.toHexString(itemStack.getRarity().rarityColor) + (String)list.get(k));
+            }
+            else
+            {
+                list.set(k, EnumChatFormatting.GRAY + (String)list.get(k));
+            }
+        }
+
+        FontRenderer font = itemStack.getItem().getFontRenderer(itemStack);
+        drawHoveringText(list, par2, par3, (font == null ? fontRenderer : font));
+    }
+    
+    
     @SuppressWarnings("unchecked")
     protected void initControls()
     {
@@ -64,7 +101,7 @@ public class GuiInfoPanel extends GuiContainer
         int h = fontRenderer.FONT_HEIGHT + 1;
         buttonList.clear();
         prevCard = card;
-        isColored = this.container.panel.getColored();
+        isColored = container.panel.getColored();
         buttonList.add(new GuiInfoPanelShowLabels(0, guiLeft + xSize - 25, guiTop + 42, container.panel));
         int delta = 0;
         if(isColored)

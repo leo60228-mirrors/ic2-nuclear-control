@@ -45,6 +45,7 @@ public class LanguageHelper
             setPhrase(configuration, "item.ItemEnergyArrayLocationCard.name", "Energy Array Location Card");
             setPhrase(configuration, "item.ItemRangeUpgrade.name", "Range Upgrade");
             setPhrase(configuration, "item.ItemColorUpgrade.name", "Color Upgrade");
+            setPhrase(configuration, "item.ItemWebUpgrade.name", "Web Upgrade");
             setPhrase(configuration, "item.ItemTimeCard.name", "Time Card");
             setPhrase(configuration, "item.ItemTextCard.name", "Text Card");
 
