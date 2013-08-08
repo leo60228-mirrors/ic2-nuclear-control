@@ -121,9 +121,12 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel
                 buttonList.add(new GuiInfoPanelCheckBox(0, guiLeft + 32, guiTop + 60 + h*row, panelSetting, container.panel, slot, fontRenderer));
                 row++;
             }
-            textboxTitle = new GuiTextField(fontRenderer, 7, 16, 162, 18);
-            textboxTitle.setFocused(true);
-            textboxTitle.setText(new CardWrapperImpl(card, activeTab).getTitle());
+            if(!modified)
+            {
+                textboxTitle = new GuiTextField(fontRenderer, 7, 16, 162, 18);
+                textboxTitle.setFocused(true);
+                textboxTitle.setText(new CardWrapperImpl(card, activeTab).getTitle());
+            }
         }
         else
         {
