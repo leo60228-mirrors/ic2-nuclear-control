@@ -241,6 +241,17 @@ public class IC2NuclearControl
                         Character.valueOf('A'), "dyeCyan",  
                         Character.valueOf('B'), "dyeBlue"  
                 });
+        if(isHttpSensorAvailable)
+        {
+            Recipes.advRecipes.addRecipe(new ItemStack(itemUpgrade, 1, ItemUpgrade.DAMAGE_WEB), new Object[] 
+                    {
+                        "CFC","CAC","CFC", 
+                            Character.valueOf('C'), new ItemStack(itemUpgrade, 1, ItemUpgrade.DAMAGE_RANGE), 
+                            Character.valueOf('A'), Items.getItem("advancedCircuit"),
+                            Character.valueOf('F'), Items.getItem("glassFiberCableItem")
+                    });
+        }
+        
         ItemStack energyCounter = new ItemStack(blockNuclearControlMain, 1, Damages.DAMAGE_ENERGY_COUNTER);
         Recipes.advRecipes.addRecipe(energyCounter, new Object[]
                 {
