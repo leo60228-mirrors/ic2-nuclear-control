@@ -11,6 +11,7 @@ import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
 
+import net.minecraft.client.multiplayer.NetClientHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ICrafting;
@@ -289,7 +290,9 @@ public class NuclearNetworkHelper
         packet.isChunkDataPacket = false;
         packet.data = output.toByteArray();
         packet.length = packet.data.length;
-        FMLClientHandler.instance().getClient().getNetHandler().addToSendQueue(packet);
+        NetClientHandler netHandler = FMLClientHandler.instance().getClient().getNetHandler();
+        if(netHandler!=null)
+            netHandler.addToSendQueue(packet);
     }
     
     //client
