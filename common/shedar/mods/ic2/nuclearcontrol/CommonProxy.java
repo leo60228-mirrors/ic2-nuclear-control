@@ -233,8 +233,7 @@ public class CommonProxy implements IGuiHandler, IScheduledTickHandler
     @Override
     public int nextTickSpacing()
     {
-        // TODO Auto-generated method stub
-        return 20*10;
+        return 20*20;
     }
 
 }
