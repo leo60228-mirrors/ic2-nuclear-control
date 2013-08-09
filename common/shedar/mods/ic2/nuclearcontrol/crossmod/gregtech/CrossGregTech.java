@@ -29,7 +29,7 @@ public class CrossGregTech
             return;
         try
         {
-            _cellClass = Class.forName("gregtechmod.common.items.GT_RadioactiveCell_Item");
+            _cellClass = Class.forName("gregtechmod.api.items.GT_RadioactiveCell_Item");
             _maxDelay = _cellClass.getDeclaredField("maxDelay");
             _maxDelay.setAccessible(true);
         } catch (Exception e)
@@ -57,7 +57,7 @@ public class CrossGregTech
     {
         try
         {
-            Class.forName("gregtechmod.common.items.GT_RadioactiveCell_Item", false, this.getClass().getClassLoader());
+            Class.forName("gregtechmod.api.items.GT_RadioactiveCell_Item", false, this.getClass().getClassLoader());
             _maxDelay = null;
             _isApiAvailable = true;
         } catch (ClassNotFoundException e)
