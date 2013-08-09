@@ -56,7 +56,7 @@ public class TileEntityHowlerAlarm extends TileEntity implements
         updateTicker = 0;
         powered = false;
         prevPowered = false;
-        soundName = DEFAULT_SOUND_NAME;
+        soundName = ""; 
         range = IC2NuclearControl.instance.alarmRange;
         soundReceived = false;
     }
@@ -65,6 +65,10 @@ public class TileEntityHowlerAlarm extends TileEntity implements
     {
         if(!worldObj.isRemote){
             RedstoneHelper.checkPowered(worldObj, this);
+        }
+        if(FMLCommonHandler.instance().getEffectiveSide().isServer() && "".equals(soundName))
+        {
+            setSoundName(DEFAULT_SOUND_NAME);
         }
         init = true;
     }
