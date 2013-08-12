@@ -24,10 +24,10 @@ import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter;
+import shedar.mods.ic2.nuclearcontrol.utils.LanguageHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.LiquidStorageHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 import shedar.mods.ic2.nuclearcontrol.utils.TextureResolver;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -204,7 +204,7 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase implements IRem
             int liquidId = card.getInt("liquidId");
             String name;
             if(liquidId == 0)
-                name = LanguageRegistry.instance().getStringLocalization("msg.nc.None");
+                name = LanguageHelper.translate("msg.nc.None");
             else
                 name = FluidRegistry.getFluidName(liquidId); 
             line = new PanelString();
@@ -283,18 +283,18 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase implements IRem
     public List<PanelSetting> getSettingsListCounter()
     {
         List<PanelSetting> result = new ArrayList<PanelSetting>(3);
-        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelEnergyCurrent"), DISPLAY_ENERGY, CARD_TYPE_COUNTER));
+        result.add(new PanelSetting(LanguageHelper.translate("msg.nc.cbInfoPanelEnergyCurrent"), DISPLAY_ENERGY, CARD_TYPE_COUNTER));
         return result;
     }
 
     public List<PanelSetting> getSettingsListLiquid()
     {
         List<PanelSetting> result = new ArrayList<PanelSetting>(3);
-        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelLiquidName"), DISPLAY_LIQUID_NAME, CARD_TYPE_LIQUID));
-        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelLiquidAmount"), DISPLAY_LIQUID_AMOUNT, CARD_TYPE_LIQUID));
-        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelLiquidFree"), DISPLAY_LIQUID_FREE, CARD_TYPE_LIQUID));
-        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelLiquidCapacity"), DISPLAY_LIQUID_CAPACITY, CARD_TYPE_LIQUID));
-        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelLiquidPercentage"), DISPLAY_LIQUID_PERCENTAGE, CARD_TYPE_LIQUID));
+        result.add(new PanelSetting(LanguageHelper.translate("msg.nc.cbInfoPanelLiquidName"), DISPLAY_LIQUID_NAME, CARD_TYPE_LIQUID));
+        result.add(new PanelSetting(LanguageHelper.translate("msg.nc.cbInfoPanelLiquidAmount"), DISPLAY_LIQUID_AMOUNT, CARD_TYPE_LIQUID));
+        result.add(new PanelSetting(LanguageHelper.translate("msg.nc.cbInfoPanelLiquidFree"), DISPLAY_LIQUID_FREE, CARD_TYPE_LIQUID));
+        result.add(new PanelSetting(LanguageHelper.translate("msg.nc.cbInfoPanelLiquidCapacity"), DISPLAY_LIQUID_CAPACITY, CARD_TYPE_LIQUID));
+        result.add(new PanelSetting(LanguageHelper.translate("msg.nc.cbInfoPanelLiquidPercentage"), DISPLAY_LIQUID_PERCENTAGE, CARD_TYPE_LIQUID));
         return result;
     }
 

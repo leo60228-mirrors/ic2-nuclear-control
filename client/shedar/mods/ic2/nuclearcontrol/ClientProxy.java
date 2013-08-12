@@ -31,6 +31,7 @@ import shedar.mods.ic2.nuclearcontrol.subblocks.Subblock;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
+import shedar.mods.ic2.nuclearcontrol.utils.LanguageHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -44,7 +45,6 @@ import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class ClientProxy extends CommonProxy
 {
@@ -143,7 +143,7 @@ public class ClientProxy extends CommonProxy
                 case PacketHandler.PACKET_CHAT:
                     String message = dat.readUTF();
                     String[] chunks = message.split(":");
-                    message = LanguageRegistry.instance().getStringLocalization("msg.nc."+chunks[0]);
+                    message = LanguageHelper.translate("msg.nc."+chunks[0]);
                     if(chunks.length > 1)
                     {
                         List<String> list = new ArrayList<String>(Arrays.asList(chunks));

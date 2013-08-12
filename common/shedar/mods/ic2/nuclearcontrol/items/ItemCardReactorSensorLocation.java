@@ -1,6 +1,5 @@
 package shedar.mods.ic2.nuclearcontrol.items;
 
-
 import ic2.api.reactor.IC2Reactor;
 import ic2.api.reactor.IReactor;
 
@@ -20,9 +19,9 @@ import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
+import shedar.mods.ic2.nuclearcontrol.utils.LanguageHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -161,12 +160,12 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
             if(reactorPowered)
             {
                 txtColor = 0x00ff00;
-                text = LanguageRegistry.instance().getStringLocalization("msg.nc.InfoPanelOn");
+                text = LanguageHelper.translate("msg.nc.InfoPanelOn");
             }
             else
             {
                 txtColor = 0xff0000;
-                text = LanguageRegistry.instance().getStringLocalization("msg.nc.InfoPanelOff");
+                text = LanguageHelper.translate("msg.nc.InfoPanelOff");
             }
             if(result.size()>0)
             {
@@ -189,12 +188,12 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
     public List<PanelSetting> getSettingsList()
     {
         List<PanelSetting> result = new ArrayList<PanelSetting>(6);
-        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelOnOff"), DISPLAY_ONOFF, CARD_TYPE));
-        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelHeat"), DISPLAY_HEAT, CARD_TYPE));
-        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelMaxHeat"), DISPLAY_MAXHEAT, CARD_TYPE));
-        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelMelting"), DISPLAY_MELTING, CARD_TYPE));
-        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelOutput"), DISPLAY_OUTPUT, CARD_TYPE));
-        result.add(new PanelSetting(LanguageRegistry.instance().getStringLocalization("msg.nc.cbInfoPanelTimeRemaining"), DISPLAY_TIME, CARD_TYPE));
+        result.add(new PanelSetting(LanguageHelper.translate("msg.nc.cbInfoPanelOnOff"), DISPLAY_ONOFF, CARD_TYPE));
+        result.add(new PanelSetting(LanguageHelper.translate("msg.nc.cbInfoPanelHeat"), DISPLAY_HEAT, CARD_TYPE));
+        result.add(new PanelSetting(LanguageHelper.translate("msg.nc.cbInfoPanelMaxHeat"), DISPLAY_MAXHEAT, CARD_TYPE));
+        result.add(new PanelSetting(LanguageHelper.translate("msg.nc.cbInfoPanelMelting"), DISPLAY_MELTING, CARD_TYPE));
+        result.add(new PanelSetting(LanguageHelper.translate("msg.nc.cbInfoPanelOutput"), DISPLAY_OUTPUT, CARD_TYPE));
+        result.add(new PanelSetting(LanguageHelper.translate("msg.nc.cbInfoPanelTimeRemaining"), DISPLAY_TIME, CARD_TYPE));
         return result;
     }
 

@@ -7,7 +7,6 @@ import java.util.List;
 
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class StringUtils
 {
@@ -29,7 +28,7 @@ public class StringUtils
     public static String getFormatted(String resourceName, String value, boolean showLabels)
     {
         if(showLabels)
-            return String.format(LanguageRegistry.instance().getStringLocalization(resourceName), value);
+            return String.format(LanguageHelper.translate(resourceName), value);
         else
             return value;
     }
@@ -41,7 +40,7 @@ public class StringUtils
 
     public static String getFormattedKey(String resourceName, Object... arguments)
     {
-        return String.format(LanguageRegistry.instance().getStringLocalization(resourceName), arguments);
+        return String.format(LanguageHelper.translate(resourceName), arguments);
     }
     
     
@@ -52,13 +51,13 @@ public class StringUtils
         switch (state)
         {
             case OUT_OF_RANGE:
-                line.textCenter = LanguageRegistry.instance().getStringLocalization("msg.nc.InfoPanelOutOfRange"); 
+                line.textCenter = LanguageHelper.translate("msg.nc.InfoPanelOutOfRange"); 
                 break;
             case INVALID_CARD:
-                line.textCenter = LanguageRegistry.instance().getStringLocalization("msg.nc.InfoPanelInvalidCard"); 
+                line.textCenter = LanguageHelper.translate("msg.nc.InfoPanelInvalidCard"); 
                 break;
             case NO_TARGET:
-                line.textCenter = LanguageRegistry.instance().getStringLocalization("msg.nc.InfoPanelNoTarget"); 
+                line.textCenter = LanguageHelper.translate("msg.nc.InfoPanelNoTarget"); 
                 break;
         case CUSTOM_ERROR:
             break;

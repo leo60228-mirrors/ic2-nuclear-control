@@ -36,7 +36,6 @@ import shedar.mods.ic2.nuclearcontrol.items.ItemToolThermometer;
 import shedar.mods.ic2.nuclearcontrol.items.ItemUpgrade;
 import shedar.mods.ic2.nuclearcontrol.panel.ScreenManager;
 import shedar.mods.ic2.nuclearcontrol.utils.Damages;
-import shedar.mods.ic2.nuclearcontrol.utils.LanguageHelper;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -78,7 +77,6 @@ public class IC2NuclearControl
     public static final String LOG_PREFIX = "[IC2NuclearControl] ";
     public static final String NETWORK_CHANNEL_NAME = "NuclearControl";
     
-    private static final String CONFIG_NUCLEAR_CONTROL_LANG = "IC2NuclearControl.lang";
     public static final String[] builtInAlarms = {"alarm-default.ogg", "alarm-sci-fi.ogg"};
     
     @Instance
@@ -407,10 +405,6 @@ public class IC2NuclearControl
         Configuration configuration;
         configuration = new Configuration(configFile);
         configuration.load();
-        if(evt.getSide().equals(Side.CLIENT))
-        {
-            LanguageHelper.addNames(new File(configDir, CONFIG_NUCLEAR_CONTROL_LANG));
-        }
         initBlocks(configuration);
         registerBlocks();
         alarmRange = configuration.get(Configuration.CATEGORY_GENERAL, "alarmRange", 64).getInt();
