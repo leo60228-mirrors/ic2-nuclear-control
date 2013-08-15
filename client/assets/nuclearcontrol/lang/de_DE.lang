@@ -1,4 +1,4 @@
-﻿item.ItemToolThermometer.name=Thermometer
+item.ItemToolThermometer.name=Thermometer
 item.ItemToolDigitalThermometer.name=Digitales Thermometer
 item.ItemRemoteSensorKit.name=Fernsensor-Bausatz
 item.ItemEnergySensorKit.name=Energiesensor-Bausatz
@@ -85,6 +85,8 @@ msg.nc.cbInfoPanelMaxHeat=Maximale Hitze
 msg.nc.cbInfoPanelMelting=Schmelztemp
 msg.nc.cbInfoPanelOutput=Leistung (EU/t)
 msg.nc.cbInfoPanelTimeRemaining=Zeit bis Durchlaufende
+
+msg.nc.cb24h=24h-Modus
 
 msg.nc.cbInfoPanelEnergyCurrent=Energie
 msg.nc.cbInfoPanelEnergyStorage=Speicher
