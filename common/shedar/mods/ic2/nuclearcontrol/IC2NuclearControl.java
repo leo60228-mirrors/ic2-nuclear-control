@@ -21,6 +21,7 @@ import org.modstats.Modstats;
 import shedar.mods.ic2.nuclearcontrol.crossmod.buildcraft.CrossBuildcraft;
 import shedar.mods.ic2.nuclearcontrol.crossmod.gregtech.CrossGregTech;
 import shedar.mods.ic2.nuclearcontrol.crossmod.ic2.CrossIndustrialCraft2;
+import shedar.mods.ic2.nuclearcontrol.crossmod.railcraft.CrossRailcraft;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardEnergyArrayLocation;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardEnergySensorLocation;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardMultipleSensorLocation;
@@ -118,6 +119,7 @@ public class IC2NuclearControl
     public CrossBuildcraft crossBC;
     public CrossIndustrialCraft2 crossIC2;
     public CrossGregTech crossGregTech;
+    public CrossRailcraft crossRailcraft;
     
     
     
@@ -395,6 +397,7 @@ public class IC2NuclearControl
         crossBC = new CrossBuildcraft();
         crossIC2 = new CrossIndustrialCraft2();
         crossGregTech = new CrossGregTech();
+        crossRailcraft = new CrossRailcraft();
     }
 
     @EventHandler
