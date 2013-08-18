@@ -40,6 +40,10 @@ public class CrossBuildcraft
         try
         {
             Class.forName("buildcraft.api.power.IPowerReceptor", false, this.getClass().getClassLoader());
+            Class.forName("buildcraft.api.power.IPowerEmitter", false, this.getClass().getClassLoader());
+            Class.forName("buildcraft.api.power.PowerHandler", false, this.getClass().getClassLoader());
+            Class.forName("buildcraft.api.tools.IToolWrench", false, this.getClass().getClassLoader());
+            Class.forName("buildcraft.api.transport.IPipeConnection", false, this.getClass().getClassLoader());
             _isApiAvailable = true;
             registerTileEntity();
         } catch (ClassNotFoundException e)
