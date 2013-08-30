@@ -11,6 +11,7 @@ import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import buildcraft.api.transport.IPipeConnection;
+import buildcraft.api.transport.IPipeTile.PipeType;
 
 public class TileEntityAverageCounterBC extends TileEntityAverageCounter implements IPowerReceptor, IPowerEmitter, IPipeConnection
 {
@@ -105,8 +106,10 @@ public class TileEntityAverageCounterBC extends TileEntityAverageCounter impleme
     }
 
     @Override
-    public boolean isPipeConnected(ForgeDirection with)
+    public ConnectOverride overridePipeConnection(PipeType type, ForgeDirection with)
     {
-        return with.ordinal() == getFacing();
+        if (type == PipeType.POWER)
+            return ConnectOverride.DEFAULT;
+        return ConnectOverride.DISCONNECT;
     }
 }
