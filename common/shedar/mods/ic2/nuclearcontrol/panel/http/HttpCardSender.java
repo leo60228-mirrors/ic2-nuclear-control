@@ -37,7 +37,6 @@ public class HttpCardSender
             executor.submit(new Request(new URL(ID_URL_TEMPLATE+IC2NuclearControl.instance.httpSensorKey), null));
         } catch (MalformedURLException e)
         {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -49,11 +48,9 @@ public class HttpCardSender
             executor.submit(new Request(new URL(DATA_URL_TEMPLATE), unsent));
         } catch (MalformedURLException e)
         {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
-//    HttpCardSender.instance.add(((IPanelDataSource)card.getItem()).getCardType(), ItemStackUtils.getTagCompound(card));
     
     public void add(NBTTagCompound cardData, UUID cardType, Long id)
     {
