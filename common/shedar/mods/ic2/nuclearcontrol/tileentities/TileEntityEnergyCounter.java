@@ -1,6 +1,5 @@
 package shedar.mods.ic2.nuclearcontrol.tileentities;
 
-import ic2.api.Direction;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
@@ -15,8 +14,6 @@ import ic2.api.tile.IWrenchable;
 import java.util.List;
 import java.util.Vector;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -24,10 +21,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Facing;
+import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.ISlotItemFilter;
 import shedar.mods.ic2.nuclearcontrol.utils.Damages;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 
 public class TileEntityEnergyCounter extends TileEntity implements 
@@ -135,15 +134,13 @@ public class TileEntityEnergyCounter extends TileEntity implements
             {
                 EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
                 MinecraftForge.EVENT_BUS.post(event);
-                EnergyNet enet = EnergyNet.getForWorld(worldObj);
-                prevTotal = enet.getTotalEnergyEmitted(this);
+                prevTotal = EnergyNet.instance.getTotalEnergyEmitted(this);
                 addedToEnergyNet = true;
             }
             if(updateTicker-- == 0)
             {
                 updateTicker = tickRate-1;
-                EnergyNet enet = EnergyNet.getForWorld(worldObj);
-                long total = enet.getTotalEnergyEmitted(this);
+                long total = EnergyNet.instance.getTotalEnergyEmitted(this);
                 if(total > 0)
                 {
                     if(prevTotal!=-1)
@@ -344,21 +341,15 @@ public class TileEntityEnergyCounter extends TileEntity implements
     };
 
     @Override
-    public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction)
+    public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
     {
-        return direction.toSideValue() == getFacing();
+        return direction.ordinal() == getFacing();
     }
 
     @Override
-    public boolean emitsEnergyTo(TileEntity emitter, Direction direction)
+    public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection direction)
     {
-        return direction.toSideValue()  != getFacing();
-    }
-
-    @Override
-    public boolean isAddedToEnergyNet()
-    {
-        return addedToEnergyNet;
+        return direction.ordinal() != getFacing();
     }
 
     @Override

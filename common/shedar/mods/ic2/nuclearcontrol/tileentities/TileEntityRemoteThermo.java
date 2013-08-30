@@ -1,6 +1,5 @@
 package shedar.mods.ic2.nuclearcontrol.tileentities;
 
-import ic2.api.Direction;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
@@ -19,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.IRotation;
@@ -452,25 +452,19 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     };
 
     @Override
-    public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction)
+    public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
     {
         return true;
     }
 
     @Override
-    public boolean isAddedToEnergyNet()
-    {
-        return addedToEnergyNet;
-    }
-
-    @Override
-    public int demandsEnergy()
+    public double demandedEnergyUnits()
     {
         return maxStorage-energy;
     }
 
     @Override
-    public int injectEnergy(Direction directionFrom, int amount)
+    public double injectEnergyUnits(ForgeDirection directionFrom, double amount)
     {
         if (amount > maxPacketSize)
         {
@@ -609,4 +603,5 @@ public class TileEntityRemoteThermo extends TileEntityIC2Thermo implements
     {
         return isItemValid(slot, itemstack);
     }
+
 }
