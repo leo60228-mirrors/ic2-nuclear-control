@@ -25,7 +25,8 @@ public class NuclearHelper {
 	
 	public static boolean isSteam(IReactor reactor)
 	{
-	    return IC2NuclearControl.instance.crossBC.isTankContainer(reactor);
+	    // no more steam reactors. Liquid container will be used for coolant liquids.
+	    return false;//IC2NuclearControl.instance.crossBC.isTankContainer(reactor);
 	}
 	
 	public static int euToSteam(int eu)
