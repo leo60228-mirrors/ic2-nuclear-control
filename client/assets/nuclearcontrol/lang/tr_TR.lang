@@ -97,7 +97,7 @@ msg.nc.cbInfoPanelEnergyEach=Kart Bilgisi
 msg.nc.cbInfoPanelEnergyTotal=Özet
 msg.nc.cbInfoPanelEnergyPercentage=Doldurun
 msg.nc.EnergyCardQuantity=Kartların miktarı: %d
-msg.nc.AverageCounterPeriod=Süre: %ssec
+msg.nc.AverageCounterPeriod=Süre: %ssaniye
 
 msg.nc.Reset=Reset
 msg.nc.ScreenColor=Ekran Rengi
