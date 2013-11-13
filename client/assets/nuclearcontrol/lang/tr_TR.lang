@@ -8,9 +8,9 @@ item.ItemCounterSensorKit.name=Counter Sensor Kit
 item.ItemLiquidSensorKit.name=Sıvı Sensör Kiti
 item.ItemSensorLocationCard.name=Reaktör Sensör Kartı
 item.ItemEnergySensorLocationCard.name=Enerji Sensör Kartı
-item.ItemCounterSensorLocationCard.name=Counter Sensor Location Card
+item.ItemCounterSensorLocationCard.name=Counter Sensör Yer Kartı
 item.ItemLiquidSensorLocationCard.name=Sıvı Sensör Yer Kartı
-item.ItemEnergyArrayLocationCard.name=Energy Array Location Card
+item.ItemEnergyArrayLocationCard.name=Enerji Array Yer Kartı
 item.ItemRangeUpgrade.name=Uzaklık Yükseltmesi
 item.ItemColorUpgrade.name=Renk Yükseltmesi
 item.ItemWebUpgrade.name=Web Yükseltmesi
@@ -26,14 +26,14 @@ tile.blockInfoPanelExtender.name=Extender Bilgi Paneli
 tile.blockAdvancedInfoPanel.name=Gelişmiş Bilgi Paneli
 tile.blockAdvancedInfoPanelExtender.name=Extender Gelişmiş Panel
 
-tile.blockEnergyCounter.name=Energy Counter
+tile.blockEnergyCounter.name=Enerji Counter
 tile.blockAverageCounter.name=Average Counter
 tile.blockRangeTrigger.name=Range Trigger
 
 msg.nc.HowlerAlarmSoundRange=Ses Seviyesi: %s
 msg.nc.HowlerAlarmSound=Ses
 msg.nc.ThermalMonitorSave=Ayarları Kaydet
-msg.nc.ThermalMonitorSignalAt=Signal at %s heat
+msg.nc.ThermalMonitorSignalAt=Sinyal %s sıcaklık
 msg.nc.Thermo=Şu anda sıcaklığı: %s
 msg.nc.ThermoDigital=Şu anda sıcaklığı: %s (Su Buharlaşması: %s / Çekirdek Erimesi: %s)
 msg.nc.SensorKit=Sensör kartı makinanın yerini tespit etti
@@ -86,18 +86,18 @@ msg.nc.cbInfoPanelHeat=Sıcaklığı
 msg.nc.cbInfoPanelMaxHeat=En yüksek sıcaklığı
 msg.nc.cbInfoPanelMelting=Çekirdek Erime Sıcaklığı
 msg.nc.cbInfoPanelOutput=Çıkış gücü (EU/t)
-msg.nc.cbInfoPanelTimeRemaining=Time to cycle end
+msg.nc.cbInfoPanelTimeRemaining=Zamanla biticek
 
 msg.nc.cb24h=24 saat
 
 msg.nc.cbInfoPanelEnergyCurrent=Enerji
 msg.nc.cbInfoPanelEnergyStorage=Depolanan
 msg.nc.cbInfoPanelEnergyFree=Boş
-msg.nc.cbInfoPanelEnergyEach=Each card info
-msg.nc.cbInfoPanelEnergyTotal=Summary
-msg.nc.cbInfoPanelEnergyPercentage=Fill percentage
-msg.nc.EnergyCardQuantity=Cards quantity: %d
-msg.nc.AverageCounterPeriod=Period: %ssec
+msg.nc.cbInfoPanelEnergyEach=Kart Bilgisi
+msg.nc.cbInfoPanelEnergyTotal=Özet
+msg.nc.cbInfoPanelEnergyPercentage=Doldurun
+msg.nc.EnergyCardQuantity=Kartların miktarı: %d
+msg.nc.AverageCounterPeriod=Süre: %ssec
 
 msg.nc.Reset=Reset
 msg.nc.ScreenColor=Ekran Rengi
